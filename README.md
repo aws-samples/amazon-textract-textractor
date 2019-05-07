@@ -70,6 +70,7 @@ Tool generates several files in the format below:
 ## Source Code
 - [textractor.py](./src/textractor.py) is the entry point. It parses input arguments, and query S3 or local folder to get input documents. It then iterates over input documents and use [DocumentProcessor](./src/tdp.py) to get response from Amazon Textract APIs.
 - [OutputGenerator](./src/og.py) takes Textract response and uses [Textract response parser](./src/trp.py) to process response and generate output.
+- Example below shows how [parser](./src/trp.py) helps process JSON returned from Amazon Textract.
 
 ```
 
