@@ -1,6 +1,6 @@
 # Textractor
 
-You can use textractor to extract text, forms and tables from documents using Amazon Textract and generate output in different formats including raw JSON, JSON for each page in the document, text, text in reading order, key/values exported as CSV, tables exported as CSV. It can also generate insights or translate detected text by using Amazon Comprehend, Amazon Comprehend Medical and Amazon Translate.
+textractor helps speed up PoCs by allowing you to quickly extract text, forms and tables from documents using Amazon Textract. It can generate output in different formats including raw JSON, JSON for each page in the document, text, text in reading order, key/values exported as CSV, tables exported as CSV. It can also generate insights or translate detected text by using Amazon Comprehend, Amazon Comprehend Medical and Amazon Translate.
 
 ## Prerequisites
 
