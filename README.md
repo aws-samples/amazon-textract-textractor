@@ -116,6 +116,12 @@ for page in doc.pages:
 ## Cost
   - As you run this tool, it calls different APIs (Amazon Textract, optionally Amazon Comprehend, Amazon Comprehend Medical, Amazon Translate) in your AWS account. You will get charged for all the API calls made as part of the analysis.
 
+## Other Resources
+
+- [Large scale document processing with Amazon Textract - Reference Architecture](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing)
+- [Batch processing tool](https://github.com/aws-samples/amazon-textract-textractor)
+- [JSON response parser](https://github.com/aws-samples/amazon-textract-response-parser)
+
 ## License
 
 This library is licensed under the Apache 2.0 License. 
