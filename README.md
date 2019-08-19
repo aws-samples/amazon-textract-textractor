@@ -14,9 +14,11 @@ textractor helps speed up PoCs by allowing you to quickly extract text, forms an
 ## Usage
 
 Format:
+
 - python3 textractor.py --documents [file|folder|S3Object|S3Folder] --text --forms --tables --region [AWSRegion] --insights --medical-insights --translate [LanguageCode]
 
 Examples:
+
 - python3 textractor.py --documents mydoc.jpg --text
 - python3 textractor.py --documents ./mydocs/ --text --forms --tables
 - python3 textractor.py --documents s3://mybucket/mydoc.pdf --text --forms --tables
@@ -56,18 +58,19 @@ Tool generates several files in the format below:
 
 ## Arguments
 
-  | Argument  | Description |
-  | ------------- | ------------- |
-  | --documents  | Name of the document or local folder/S3 bucket |
-  | --text  | Extract text from the document |
-  | --forms  | Extract key/value pairs from the document |
-  | --tables | Extract tables from the document |
-  | --region  | AWS region to use for Amazon Textract API call. us-east-1 is default. |
-  | --insights  | Generate files with sentiment, entities, syntax, and key phrases. |
-  | --medical-insights  | Generate files with medical entities and phi. |
-  | --translate  | Generate file with translation. |
+| Argument           | Description                                                           |
+| ------------------ | --------------------------------------------------------------------- |
+| --documents        | Name of the document or local folder/S3 bucket                        |
+| --text             | Extract text from the document                                        |
+| --forms            | Extract key/value pairs from the document                             |
+| --tables           | Extract tables from the document                                      |
+| --region           | AWS region to use for Amazon Textract API call. us-east-1 is default. |
+| --insights         | Generate files with sentiment, entities, syntax, and key phrases.     |
+| --medical-insights | Generate files with medical entities and phi.                         |
+| --translate        | Generate file with translation.                                       |
 
 ## Source Code
+
 - [textractor.py](./src/textractor.py) is the entry point. It parses input arguments, and query S3 or local folder to get input documents. It then iterates over input documents and use [DocumentProcessor](./src/tdp.py) to get response from Amazon Textract APIs.
 - [OutputGenerator](./src/og.py) takes Textract response and uses [Textract response parser](https://github.com/aws-samples/amazon-textract-response-parser) to process response and generate output.
 - Example below shows how [response parser library](https://github.com/aws-samples/amazon-textract-response-parser) helps process JSON returned from Amazon Textract.
@@ -88,7 +91,7 @@ for page in doc.pages:
         print("Line: {}--{}".format(line.text, line.confidence))
         for word in line.words:
             print("Word: {}--{}".format(word.text, word.confidence))
-    
+
     # Print tables
     for table in page.tables:
         for r, row in enumerate(table.rows):
@@ -114,7 +117,12 @@ for page in doc.pages:
 ```
 
 ## Cost
-  - As you run this tool, it calls different APIs (Amazon Textract, optionally Amazon Comprehend, Amazon Comprehend Medical, Amazon Translate) in your AWS account. You will get charged for all the API calls made as part of the analysis.
+
+- As you run this tool, it calls different APIs (Amazon Textract, optionally Amazon Comprehend, Amazon Comprehend Medical, Amazon Translate) in your AWS account. You will get charged for all the API calls made as part of the analysis.
+
+## .NET C# Implementation
+
+The complete implementation of .NET C# samples for Textractor is available inside `src-csharp` folder. For more details, refer to its [Readme](src-csharp/readme.md)
 
 ## Other Resources
 
@@ -124,4 +132,4 @@ for page in doc.pages:
 
 ## License
 
-This library is licensed under the Apache 2.0 License. 
+This library is licensed under the Apache 2.0 License.
