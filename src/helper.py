@@ -3,6 +3,9 @@ from botocore.client import Config
 import os
 import csv
 
+save_path = 'output'
+
+
 class AwsHelper:
     def getClient(self, name, awsRegion):
         config = Config(
@@ -76,17 +79,17 @@ class FileHelper:
 
     @staticmethod
     def readFile(fileName):
-        with open(fileName, 'r') as document:
+        with open(os.path.join(save_path, fileName), 'r') as document:
             return document.read()
 
     @staticmethod
     def writeToFile(fileName, content):
-        with open(fileName, 'w') as document:
+        with open(os.path.join(save_path, fileName), 'w') as document:
             document.write(content)
 
     @staticmethod
     def writeToFileWithMode(fileName, content, mode):
-        with open(fileName, mode) as document:
+        with open(os.path.join(save_path, fileName), mode) as document:
             document.write(content)
     @staticmethod
     def getFilesInFolder(path, fileTypes):
@@ -107,7 +110,7 @@ class FileHelper:
 
     @staticmethod
     def writeCSV(fileName, fieldNames, csvData):
-        with open(fileName, 'w') as csv_file:
+        with open(os.path.join(save_path, fileName), 'w') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=fieldNames)
             writer.writeheader()
 
@@ -121,7 +124,7 @@ class FileHelper:
 
     @staticmethod
     def writeCSVRaw(fileName, csvData):
-        with open(fileName, 'w') as csv_file:
+        with open(os.path.join(save_path, fileName), 'w') as csv_file:
             writer = csv.writer(csv_file)
             for item in csvData:
                 writer.writerow(item)
