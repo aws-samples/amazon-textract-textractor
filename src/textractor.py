@@ -91,9 +91,9 @@ class Textractor:
         else:
             ips["translate"] = ""
         if("output" in event):
-            ips["output"] = event["output"]
+            ips["output"] = os.path.join(os.path.dirname( __file__),event["output"])
         else:
-            ips["output"] = ""
+            ips["output"] = os.getcwd()
 
         return ips
 
