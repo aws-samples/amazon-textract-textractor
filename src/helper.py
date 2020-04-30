@@ -88,7 +88,7 @@ class FileHelper:
             except OSError as exc:  
                 if exc.errno != errno.EEXIST:
                     raise
-        with open(os.path.join(fileName), 'w') as document:
+        with open(fileName, 'w') as document:
             document.write(content)
 
     @staticmethod
@@ -99,7 +99,7 @@ class FileHelper:
             except OSError as exc:  
                 if exc.errno != errno.EEXIST:
                     raise
-        with open(os.path.join(fileName), mode) as document:
+        with open(fileName, mode) as document:
             document.write(content)
     @staticmethod
     def getFilesInFolder(path, fileTypes):
@@ -126,7 +126,7 @@ class FileHelper:
             except OSError as exc:  
                 if exc.errno != errno.EEXIST:
                     raise
-        with open(os.path.join(fileName), 'w') as csv_file:
+        with open(fileName, 'w') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=fieldNames)
             writer.writeheader()
 
@@ -146,7 +146,7 @@ class FileHelper:
             except OSError as exc:  
                 if exc.errno != errno.EEXIST:
                     raise
-        with open(os.path.join(fileName), 'w') as csv_file:
+        with open(fileName, 'w') as csv_file:
             writer = csv.writer(csv_file)
             for item in csvData:
                 writer.writerow(item)
