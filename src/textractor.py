@@ -32,6 +32,9 @@ class Textractor:
                 if(args[i] == '--translate'):
                     event['translate'] = args[i+1]
                     i = i + 1
+                if(args[i] == '--output'):
+                    event['output'] = args[i+1]
+                    i = i + 1
 
                 i = i + 1
         return event
@@ -87,6 +90,10 @@ class Textractor:
             ips["translate"] = event["translate"]
         else:
             ips["translate"] = ""
+        if("output" in event):
+            ips["output"] = event["output"]
+        else:
+            ips["output"] = ""
 
         return ips
 
@@ -104,8 +111,7 @@ class Textractor:
         #Generate output files
         print("Generating output...")
         name, ext = FileHelper.getFileNameAndExtension(document)
-        opg = OutputGenerator(response,
-                    "{}-{}".format(name, ext),
+        opg = OutputGenerator(response, os.path.join(ips["output"],"{}-{}".format(name, ext)),
                     ips["forms"], ips["tables"])
         opg.run()
 
@@ -119,8 +125,9 @@ class Textractor:
         print("Valid format:")
         print('- python3 textractor.py --documents mydoc.jpg --text --forms --tables --region us-east-1')
         print('- python3 textractor.py --documents ./myfolder/ --text --forms --tables')
-        print('- python3 textractor.py --document s3://mybucket/mydoc.pdf --text --forms --tables')
-        print('- python3 textractor.py --document s3://mybucket/ --text --forms --tables')
+        print('- python3 textractor.py --documents s3://mybucket/mydoc.pdf --text --forms --tables')
+        print('- python3 textractor.py --documents s3://mybucket/ --text --forms --tables')
+        print('- python3 textractor.py --documents s3://mybucket/ --output ../results/ --text --forms --tables')
 
     def run(self):
 
