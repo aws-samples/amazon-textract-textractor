@@ -97,22 +97,25 @@ class Textractor:
         # Get document textracted
         dp = DocumentProcessor(ips["bucketName"], document, ips["awsRegion"], ips["text"], ips["forms"], ips["tables"])
         response = dp.run()
-        print("Recieved Textract response...")
 
-        #FileHelper.writeToFile("temp-response.json", json.dumps(response))
+        if(response):
+            print("Recieved Textract response...")
+            #FileHelper.writeToFile("temp-response.json", json.dumps(response))
 
-        #Generate output files
-        print("Generating output...")
-        name, ext = FileHelper.getFileNameAndExtension(document)
-        opg = OutputGenerator(response,
-                    "{}-{}".format(name, ext),
-                    ips["forms"], ips["tables"])
-        opg.run()
+            #Generate output files
+            print("Generating output...")
+            name, ext = FileHelper.getFileNameAndExtension(document)
+            opg = OutputGenerator(response,
+                        "{}-{}".format(name, ext),
+                        ips["forms"], ips["tables"])
+            opg.run()
 
-        if(ips["insights"] or ips["medical-insights"] or ips["translate"]):
-            opg.generateInsights(ips["insights"], ips["medical-insights"], ips["translate"], ips["awsRegion"])
+            if(ips["insights"] or ips["medical-insights"] or ips["translate"]):
+                opg.generateInsights(ips["insights"], ips["medical-insights"], ips["translate"], ips["awsRegion"])
 
-        print("{} textracted successfully.".format(document))
+            print("{} textracted successfully.".format(document))
+        else:
+            print("Could not generate output for {}.".format(document))
 
     def printFormatException(self, e):
         print("Invalid input: {}".format(e))
@@ -147,9 +150,9 @@ class Textractor:
             if(remaining > 0):
                 print("\nRemaining documents: {}".format(remaining))
 
-                print("\nTaking a short break...")
-                time.sleep(20)
-                print("Allright, ready to go...\n")
+                # print("\nTaking a short break...")
+                # time.sleep(20)
+                # print("Allright, ready to go...\n")
 
             i = i + 1
 
