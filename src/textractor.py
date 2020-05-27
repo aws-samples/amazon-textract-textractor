@@ -122,8 +122,8 @@ class Textractor:
         print("Valid format:")
         print('- python3 textractor.py --documents mydoc.jpg --text --forms --tables --region us-east-1')
         print('- python3 textractor.py --documents ./myfolder/ --text --forms --tables')
-        print('- python3 textractor.py --document s3://mybucket/mydoc.pdf --text --forms --tables')
-        print('- python3 textractor.py --document s3://mybucket/ --text --forms --tables')
+        print('- python3 textractor.py --documents s3://mybucket/mydoc.pdf --text --forms --tables')
+        print('- python3 textractor.py --documents s3://mybucket/ --text --forms --tables')
 
     def run(self):
 
