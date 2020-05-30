@@ -104,9 +104,10 @@ class Textractor:
         # Get document textracted
         dp = DocumentProcessor(ips["bucketName"], document, ips["awsRegion"], ips["text"], ips["forms"], ips["tables"])
         response = dp.run()
-        print("Recieved Textract response...")
 
-        #FileHelper.writeToFile("temp-response.json", json.dumps(response))
+        if(response):
+            print("Recieved Textract response...")
+            #FileHelper.writeToFile("temp-response.json", json.dumps(response))
 
         #Generate output files
         print("Generating output...")
@@ -115,10 +116,13 @@ class Textractor:
                     ips["forms"], ips["tables"])
         opg.run()
 
-        if(ips["insights"] or ips["medical-insights"] or ips["translate"]):
-            opg.generateInsights(ips["insights"], ips["medical-insights"], ips["translate"], ips["awsRegion"])
 
-        print("{} textracted successfully.".format(document))
+            if(ips["insights"] or ips["medical-insights"] or ips["translate"]):
+                opg.generateInsights(ips["insights"], ips["medical-insights"], ips["translate"], ips["awsRegion"])
+
+            print("{} textracted successfully.".format(document))
+        else:
+            print("Could not generate output for {}.".format(document))
 
     def printFormatException(self, e):
         print("Invalid input: {}".format(e))
@@ -128,6 +132,7 @@ class Textractor:
         print('- python3 textractor.py --documents s3://mybucket/mydoc.pdf --text --forms --tables')
         print('- python3 textractor.py --documents s3://mybucket/ --text --forms --tables')
         print('- python3 textractor.py --documents s3://mybucket/ --output ../results/ --text --forms --tables')
+
 
     def run(self):
 
@@ -154,9 +159,9 @@ class Textractor:
             if(remaining > 0):
                 print("\nRemaining documents: {}".format(remaining))
 
-                print("\nTaking a short break...")
-                time.sleep(20)
-                print("Allright, ready to go...\n")
+                # print("\nTaking a short break...")
+                # time.sleep(20)
+                # print("Allright, ready to go...\n")
 
             i = i + 1
 

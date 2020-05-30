@@ -121,7 +121,7 @@ class PdfProcessor:
         else:
             response = client.get_document_analysis(JobId=jobId)
         status = response["JobStatus"]
-        print(status)
+        print("Job Status: {}".format(status))
 
         while(status == "IN_PROGRESS"):
             time.sleep(5)
@@ -130,7 +130,7 @@ class PdfProcessor:
             else:
                 response = client.get_document_analysis(JobId=jobId)
             status = response["JobStatus"]
-            print(status)
+            print("Job Status: {}".format(status))
 
         return status
 
@@ -138,7 +138,7 @@ class PdfProcessor:
 
         pages = []
 
-        time.sleep(5)
+        #time.sleep(5)
 
         client = AwsHelper().getClient('textract', self.inputParameters.awsRegion)
         if(not self.inputParameters.detectForms and not self.inputParameters.detectTables):
@@ -153,7 +153,7 @@ class PdfProcessor:
             #print("Next token: {}".format(nextToken))
 
         while(nextToken):
-            time.sleep(5)
+            #time.sleep(5)
 
             if(not self.inputParameters.detectForms and not self.inputParameters.detectTables):
                 response = client.get_document_text_detection(JobId=jobId, NextToken=nextToken)
