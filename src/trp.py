@@ -532,7 +532,7 @@ class Page:
                     bbox_left = item.geometry.boundingBox.left
                     bbox_right = item.geometry.boundingBox.left + item.geometry.boundingBox.width
                     bbox_centre = item.geometry.boundingBox.left + item.geometry.boundingBox.width/2
-                    column_centre = column['left'] + column['right']/2
+                    column_centre = (column['left'] + column['right'])/2
                     if (bbox_centre > column['left'] and bbox_centre < column['right']) or (column_centre > bbox_left and column_centre < bbox_right):
                         #Bbox appears inside the column
                         lines.append([index, item.text])
