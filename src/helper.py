@@ -2,21 +2,60 @@ import boto3
 from botocore.client import Config
 import os
 import csv
+from urllib.parse import urlparse
+
+from textract_features import TEXTRACT_SUFFIXES
 
 
 class AwsHelper:
-    def getClient(self, name, awsRegion):
+    @staticmethod
+    def getClient(name, awsRegion):
         config = Config(retries=dict(max_attempts=30))
         return boto3.client(name, region_name=awsRegion, config=config)
 
 
 class S3Helper:
     @staticmethod
+    def path_is_s3(path: str) -> bool:
+        if not path:
+            raise ValueError("no path passed to function")
+        return path.lower().startswith("s3://")
+
+    @staticmethod
     def getS3BucketRegion(bucketName):
         client = boto3.client('s3')
         response = client.get_bucket_location(Bucket=bucketName)
         awsRegion = response['LocationConstraint']
         return awsRegion
+
+    @staticmethod
+    def split_bucket_and_key(s3_object):
+        """return s3_bucket, s3_key from string"""
+        o = urlparse(s3_object)
+        return o.netloc, o.path[1:]
+
+    @staticmethod
+    def get_s3_object_keys(s3_object: str, allowedFileTypes=TEXTRACT_SUFFIXES):
+        """returns the documents as list of string. Either all document-keys in path (when str ends in /) or the document key
+           for the allowed file types [jpg, jpeg, png, pdf]
+        """
+        if not s3_object or not S3Helper.path_is_s3(s3_object):
+            raise ValueError(
+                "no s3_object or missing s3:// : '{}'".format(s3_object))
+        s3_bucket = None
+        documents = []
+        awsRegion = 'us-east-1'
+        s3_bucket, s3_key = S3Helper.split_bucket_and_key(s3_object)
+        ar = S3Helper.getS3BucketRegion(s3_bucket)
+        if (ar):
+            awsRegion = ar
+
+        if (s3_key.endswith("/")):
+            documents = S3Helper.getFileNames(awsRegion, s3_bucket, s3_key, 1,
+                                              allowedFileTypes)
+        else:
+            documents.append(s3_key)
+        return documents
 
     @staticmethod
     def getFileNames(awsRegion, bucketName, prefix, maxPages,
@@ -28,7 +67,7 @@ class S3Helper:
         hasMoreContent = True
         continuationToken = None
 
-        s3client = AwsHelper().getClient('s3', awsRegion)
+        s3client = AwsHelper.getClient('s3', awsRegion)
 
         while (hasMoreContent and currentPage <= maxPages):
             if (continuationToken):

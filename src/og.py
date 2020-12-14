@@ -2,15 +2,15 @@ import json
 from tabulate import tabulate
 from helper import FileHelper
 from ta import TextAnalyzer, TextMedicalAnalyzer, TextTranslater
-from trp import *
+from textract_features import TEXTRACT_FEATURES
+from trp import Document
 
 
 class OutputGenerator:
-    def __init__(self, response, fileName, forms, tables):
+    def __init__(self, response, fileName, textract_features):
         self.response = response
         self.fileName = fileName
-        self.forms = forms
-        self.tables = tables
+        self.textract_features = textract_features
 
         self.document = Document(self.response)
 
@@ -112,10 +112,10 @@ class OutputGenerator:
 
             self._outputText(page, p)
 
-            if (self.forms):
+            if TEXTRACT_FEATURES.FORMS in self.textract_features:
                 self._outputForm(page, p)
 
-            if (self.tables):
+            if TEXTRACT_FEATURES.TABLES in self.textract_features:
                 self._outputTable(page, p)
                 self._outputTablePretty(page, p)
 

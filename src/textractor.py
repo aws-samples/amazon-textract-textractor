@@ -1,167 +1,164 @@
-import sys
-import os
-from urllib.parse import urlparse
-import boto3
-import time
 from tdp import DocumentProcessor
+import os
 from og import OutputGenerator
 from helper import FileHelper, S3Helper
+import argparse
+from textract_features import TEXTRACT_FEATURES, TEXTRACT_SUFFIXES
+from typing import Optional
+
 
 class Textractor:
-    def getInputParameters(self, args):
-        event = {}
-        i = 0
-        if(args):
-            while(i < len(args)):
-                if(args[i] == '--documents'):
-                    event['documents'] = args[i+1]
-                    i = i + 1
-                if(args[i] == '--region'):
-                    event['region'] = args[i+1]
-                    i = i + 1
-                if(args[i] == '--text'):
-                    event['text'] = True
-                if(args[i] == '--forms'):
-                    event['forms'] = True
-                if(args[i] == '--tables'):
-                    event['tables'] = True
-                if(args[i] == '--insights'):
-                    event['insights'] = True
-                if(args[i] == '--medical-insights'):
-                    event['medical-insights'] = True
-                if(args[i] == '--translate'):
-                    event['translate'] = args[i+1]
-                    i = i + 1
+    def __init__(self,
+                 s3_bucket: Optional[str],
+                 documents: "list[str]",
+                 region: str,
+                 textract_features: "list[TEXTRACT_FEATURES]",
+                 insights: bool,
+                 medical_insights=bool,
+                 translate=bool):
+        self.s3_bucket = s3_bucket
+        self.documents = documents
+        self.region = region
+        self.textract_features = textract_features
+        self.insights = insights
+        self.medical_insights = medical_insights
+        self.translate = translate
 
-                i = i + 1
-        return event
-
-    def validateInput(self, args):
-
-        event = self.getInputParameters(args)
-
-        ips = {}
-
-        if(not 'documents' in event):
-            raise Exception("Document or path to a foler or S3 bucket containing documents is required.")
-
-        inputDocument = event['documents']
-        idl = inputDocument.lower()
-
-        bucketName = None
-        documents = []
-        awsRegion = 'us-east-1'
-
-        if(idl.startswith("s3://")):
-            o = urlparse(inputDocument)
-            bucketName = o.netloc
-            path = o.path[1:]
-            ar = S3Helper.getS3BucketRegion(bucketName)
-            if(ar):
-                awsRegion = ar
-
-            if(idl.endswith("/")):
-                allowedFileTypes = ["jpg", "jpeg", "png", "pdf"]
-                documents = S3Helper.getFileNames(awsRegion, bucketName, path, 1, allowedFileTypes)
+    @staticmethod
+    def get_document_list(document_path: str) -> "list[str]":
+        try:
+            file_list = S3Helper.get_s3_object_keys(
+                s3_object=document_path, allowedFileTypes=TEXTRACT_SUFFIXES)
+        except ValueError:
+            if os.path.isfile(document_path):
+                file_list = [document_path]
             else:
-                documents.append(path)
-        else:
-            if(idl.endswith("/")):
-                allowedFileTypes = ["jpg", "jpeg", "png"]
-                documents = FileHelper.getFileNames(inputDocument, allowedFileTypes)
-            else:
-                documents.append(inputDocument)
+                file_list = FileHelper.getFileNames(
+                    document_path, allowedLocalFileTypes=TEXTRACT_SUFFIXES)
+        return file_list
 
-            if('region' in event):
-                awsRegion = event['region']
-
-        ips["bucketName"] = bucketName
-        ips["documents"] = documents
-        ips["awsRegion"] = awsRegion
-        ips["text"] = ('text' in event)
-        ips["forms"] = ('forms' in event)
-        ips["tables"] = ('tables' in event)
-        ips["insights"] = ('insights' in event)
-        ips["medical-insights"] = ('medical-insights' in event)
-        if("translate" in event):
-            ips["translate"] = event["translate"]
-        else:
-            ips["translate"] = ""
-
-        return ips
-
-    def processDocument(self, ips, i, document):
-        print("\nTextracting Document # {}: {}".format(i, document))
-        print('=' * (len(document)+30))
+    def processDocument(self, bucket_name, document, s3_region,
+                        textract_features: "list[TEXTRACT_FEATURES]"):
+        print('=' * (len(document) + 30))
 
         # Get document textracted
-        dp = DocumentProcessor(ips["bucketName"], document, ips["awsRegion"], ips["text"], ips["forms"], ips["tables"])
+        dp = DocumentProcessor(bucket_name,
+                               document,
+                               s3_region,
+                               textract_features=textract_features)
         response = dp.run()
 
-        if(response):
+        if (response):
             print("Recieved Textract response...")
             #FileHelper.writeToFile("temp-response.json", json.dumps(response))
 
             #Generate output files
             print("Generating output...")
             name, ext = FileHelper.getFileNameAndExtension(document)
-            opg = OutputGenerator(response,
-                        "{}-{}".format(name, ext),
-                        ips["forms"], ips["tables"])
+            opg = OutputGenerator(response, "{}-{}".format(name, ext),
+                                  self.textract_features)
             opg.run()
 
-            if(ips["insights"] or ips["medical-insights"] or ips["translate"]):
-                opg.generateInsights(ips["insights"], ips["medical-insights"], ips["translate"], ips["awsRegion"])
+            if (self.insights or self.medical_insights or self.translate):
+                opg.generateInsights(self.insights, self.medical_insights,
+                                     self.translate, self.region)
 
             print("{} textracted successfully.".format(document))
         else:
-            print("Could not generate output for {}.".format(document))
+            print(f"Could not generate output for {document}.")
 
-    def printFormatException(self, e):
-        print("Invalid input: {}".format(e))
-        print("Valid format:")
-        print('- python3 textractor.py --documents mydoc.jpg --text --forms --tables --region us-east-1')
-        print('- python3 textractor.py --documents ./myfolder/ --text --forms --tables')
-        print('- python3 textractor.py --documents s3://mybucket/mydoc.pdf --text --forms --tables')
-        print('- python3 textractor.py --documents s3://mybucket/ --text --forms --tables')
+    @staticmethod
+    def get_textract_features(text: str, forms: str,
+                              tables: str) -> "list[TEXTRACT_FEATURES]":
+        textract_features: "list[TEXTRACT_FEATURES]" = list()
+        if text:
+            textract_features.append(TEXTRACT_FEATURES.TEXT)
+        if forms:
+            textract_features.append(TEXTRACT_FEATURES.FORMS)
+        if tables:
+            textract_features.append(TEXTRACT_FEATURES.TABLES)
+        return textract_features
 
     def run(self):
-
-        ips = None
-        try:
-            ips = self.validateInput(sys.argv)
-        except Exception as e:
-            self.printFormatException(e)
-
-        #try:
-        i = 1
-        totalDocuments = len(ips["documents"])
-
         print("\n")
         print('*' * 60)
-        print("Total input documents: {}".format(totalDocuments))
+        print("Total input documents: {}".format(len(self.documents)))
         print('*' * 60)
+        for idx, document in enumerate(self.documents):
+            print("\nTextracting Document # {}: {}".format(idx + 1, document))
+            self.processDocument(bucket_name=s3_bucket,
+                                 document=document,
+                                 s3_region=args.region,
+                                 textract_features=self.textract_features)
 
-        for document in ips["documents"]:
-            self.processDocument(ips, i, document)
+            remaining = len(document_list) - idx + 1
 
-            remaining = len(ips["documents"])-i
-
-            if(remaining > 0):
+            if (remaining > 0):
                 print("\nRemaining documents: {}".format(remaining))
 
                 # print("\nTaking a short break...")
                 # time.sleep(20)
                 # print("Allright, ready to go...\n")
 
-            i = i + 1
-
         print("\n")
         print('*' * 60)
-        print("Successfully textracted documents: {}".format(totalDocuments))
+        print("Successfully textracted documents: {}".format(
+            len(self.documents)))
         print('*' * 60)
         print("\n")
-        #except Exception as e:
-        #    print("Something went wrong:\n====================================================\n{}".format(e))
 
-Textractor().run()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--documents",
+        required=True,
+        metavar="LOCATION_OF_DOCUMENT(S)",
+        help=
+        "either location of one document or path to a documents. Documents can be on s3:// or local filepath"
+    )
+    textract_features_group = parser.add_argument_group("textract_features")
+    textract_features_group.add_argument("--text", action='store_true')
+    textract_features_group.add_argument("--forms", action='store_true')
+    textract_features_group.add_argument("--tables", action='store_true')
+    parser.add_argument("--region",
+                        metavar="AWS_REGION",
+                        help="AWS Region code (e. g. us-east-1)")
+    parser.add_argument(
+        "--insights",
+        action='store_true',
+        help=
+        "Calls Amazon Comprehend, a natural language processing (NLP) service that uses machine learning to find insights and relationships in text. No machine learning experience required."
+    )
+    parser.add_argument(
+        "--medical-insights",
+        action='store_true',
+        help=
+        "Calls Amazon Comprehend Medical, a HIPAA-eligible natural language processing (NLP) service that uses machine learning to extract health data from medical text–no machine learning experience is required"
+    )
+    parser.add_argument(
+        "--translate",
+        metavar='LANGUAGE_CODE',
+        help=
+        "Target Language Code for Amazon Translate (https://docs.aws.amazon.com/translate/latest/dg/what-is.html)"
+    )
+    args = parser.parse_args()
+    if not args.text and not args.forms and not args.tables:
+        parser.error("at least one of --text, --forms or --tables is required")
+
+    path_is_s3 = S3Helper.path_is_s3(args.documents)
+    s3_bucket = None
+    if path_is_s3:
+        s3_bucket, _ = S3Helper.split_bucket_and_key(args.documents)
+
+    document_list = Textractor.get_document_list(args.documents)
+    textract_features = Textractor.get_textract_features(
+        args.text, args.forms, args.tables)
+    textractor = Textractor(s3_bucket=s3_bucket,
+                            documents=document_list,
+                            region=args.region,
+                            textract_features=textract_features,
+                            insights=args.insights,
+                            medical_insights=args.medical_insights,
+                            translate=args.translate)
+    textractor.run()

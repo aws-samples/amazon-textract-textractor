@@ -77,7 +77,12 @@ Tool generates several files in the format below:
 ```
 
 # Call Amazon Textract and get JSON response
-docproc = DocumentProcessor(bucketName, filePath, awsRegion, detectText, detectForms, tables)
+from textract_features import TEXTRACT_FEATURES 
+
+docproc = DocumentProcessor(bucket_name="Name of S3 Bucket (if file not local)",
+                            document="path/to/file.jpg",
+                            s3_region="e. g. us-east-1",
+                            textract_features="a list like: [TEXTRACT_FEATURES.TEXT, TEXTRACT_FEATURES.FORMS, TEXTRACT_FEATURES.TABLES]")
 response = docproc.run()
 
 # Get DOM
