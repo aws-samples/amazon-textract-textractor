@@ -19,4 +19,5 @@ share/python-wheels/
 *.egg
 MANIFEST
 .#
-tests/test_simple_script.sh
+test_simple_script.sh
+temp/

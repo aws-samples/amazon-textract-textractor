@@ -91,14 +91,10 @@ class Textractor:
                                  s3_region=args.region,
                                  textract_features=self.textract_features)
 
-            remaining = len(document_list) - idx + 1
+            remaining = len(document_list) - (idx + 1)
 
             if (remaining > 0):
                 print("\nRemaining documents: {}".format(remaining))
-
-                # print("\nTaking a short break...")
-                # time.sleep(20)
-                # print("Allright, ready to go...\n")
 
         print("\n")
         print('*' * 60)

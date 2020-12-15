@@ -4,14 +4,13 @@ from textract_features import TEXTRACT_ASYNC_ONLY_SUFFIXES, TEXTRACT_FEATURES, T
 
 
 class ImageProcessor:
-    def __init__(self, s3_bucket, document: str, local: bool, region: str,
+    def __init__(self, s3_bucket, document: str, region: str,
                  textract_features: "list[TEXTRACT_FEATURES]"):
         ''' Constructor. '''
         self.s3_bucket = s3_bucket
         self.region = region
         self.document = document
         self.textract_features = textract_features
-        self.local = local
         self.analyze_features = [
             x.name for x in self.textract_features
             if x in TEXTRACT_ANALYZE_FEATURES
@@ -20,7 +19,7 @@ class ImageProcessor:
     def _callTextract(self):
         textract = AwsHelper.getClient('textract', awsRegion=self.region)
         if not self.analyze_features:
-            if (self.local):
+            if not self.s3_bucket:
                 with open(self.document, 'rb') as document:
                     imageData = document.read()
                     imageBytes = bytearray(imageData)
@@ -35,7 +34,7 @@ class ImageProcessor:
                     }
                 })
         else:
-            if (self.local):
+            if not self.s3_bucket:
                 with open(self.document, 'rb') as document:
                     imageData = document.read()
                     imageBytes = bytearray(imageData)
@@ -61,14 +60,17 @@ class ImageProcessor:
 
 
 class PdfProcessor:
-    def __init__(self, s3_bucket, document: str, local: bool, region: str,
+    def __init__(self, s3_bucket, document: str, region: str,
                  textract_features: "list[TEXTRACT_FEATURES]"):
         ''' Constructor. '''
+        if not s3_bucket:
+            raise ValueError(
+                f"PDF documents have to be processed from an S3 location. No S3 location provided: {s3_bucket}"
+            )
         self.s3_bucket = s3_bucket
         self.region = region
         self.document = document
         self.textract_features = textract_features
-        self.local = local
         self.analyze_features = [
             x.name for x in self.textract_features
             if x in TEXTRACT_ANALYZE_FEATURES
@@ -190,7 +192,6 @@ class DocumentProcessor:
         if (self.document_type == "IMAGE"):
             ip = ImageProcessor(s3_bucket=self.s3_bucket,
                                 document=self.document,
-                                local=self.local,
                                 region=self.region,
                                 textract_features=self.textract_features)
             response = ip.run()
@@ -200,7 +201,6 @@ class DocumentProcessor:
         else:
             pp = PdfProcessor(s3_bucket=self.s3_bucket,
                               document=self.document,
-                              local=self.local,
                               region=self.region,
                               textract_features=self.textract_features)
             responsePages = pp.run()
