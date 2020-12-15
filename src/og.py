@@ -260,7 +260,7 @@ class OutputGenerator:
 
         tt = None
         if (translate):
-            tt = TextTranslater('en', translate, awsRegion)
+            tt = TextTranslater('auto', translate, awsRegion)
 
         p = 1
         for page in self.document.pages:
