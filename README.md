@@ -91,7 +91,7 @@ By default, any subfolder structure inside `--documents` is mapped through to th
 - [OutputGenerator](./src/og.py) takes Textract response and uses [Textract response parser](https://github.com/aws-samples/amazon-textract-response-parser) to process response and generate output.
 - Example below shows how [response parser library](https://github.com/aws-samples/amazon-textract-response-parser) helps process JSON returned from Amazon Textract.
 
-```
+```python
 
 # Call Amazon Textract and get JSON response
 docproc = DocumentProcessor(bucketName, filePath, awsRegion, detectText, detectForms, tables)
