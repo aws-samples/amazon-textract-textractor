@@ -1,167 +1,207 @@
-import sys
+import argparse
 import os
-from urllib.parse import urlparse
-import boto3
+import sys
 import time
+import traceback
+from types import SimpleNamespace
+from urllib.parse import urlparse
+
+import boto3
+
 from tdp import DocumentProcessor
 from og import OutputGenerator
 from helper import FileHelper, S3Helper
 
 class Textractor:
-    def getInputParameters(self, args):
-        event = {}
-        i = 0
-        if(args):
-            while(i < len(args)):
-                if(args[i] == '--documents'):
-                    event['documents'] = args[i+1]
-                    i = i + 1
-                if(args[i] == '--region'):
-                    event['region'] = args[i+1]
-                    i = i + 1
-                if(args[i] == '--text'):
-                    event['text'] = True
-                if(args[i] == '--forms'):
-                    event['forms'] = True
-                if(args[i] == '--tables'):
-                    event['tables'] = True
-                if(args[i] == '--insights'):
-                    event['insights'] = True
-                if(args[i] == '--medical-insights'):
-                    event['medical-insights'] = True
-                if(args[i] == '--translate'):
-                    event['translate'] = args[i+1]
-                    i = i + 1
+    def parseInput(self, args):
+        parser = argparse.ArgumentParser(
+            description="Textractor: Easily process documents with Amazon Textract",
+        )
+        parser.add_argument(
+            "--documents", type=str, required=True,
+            help="Document(s) to process: path to a local file or folder, or an s3://... URI",
+        )
+        parser.add_argument(
+            "--output", type=str, default=".",
+            help="Local folder to save outputs to: Defaults to current working directory",
+        )
+        parser.add_argument(
+            "--region", type=str, default=None,
+            help="AWS Region to use for API calls, e.g. us-east-1 (Ignored if processing S3 input)",
+        )
+        parser.add_argument(
+            "--text", action="store_true",
+            help="Set this flag to extract the plain text from the document",
+        )
+        parser.add_argument(
+            "--forms", action="store_true",
+            help="Set this flag to extract form field key-value pairs from the document",
+        )
+        parser.add_argument(
+            "--tables", action="store_true",
+            help="Set this flag to extract structured table data from the document",
+        )
+        parser.add_argument(
+            "--insights", action="store_true",
+            help="Set this flag to extract structured table data from the document",
+        )
+        parser.add_argument(
+            "--medical-insights", action="store_true",
+            help="Set this flag to extract structured table data from the document",
+        )
+        parser.add_argument(
+            "--translate", type=str, default=None,
+            help="Optional language code to translate extracted text into with Amazon Translate, e.g. es",
+        )
+        parser.add_argument(
+            "--fail-on-error", action="store_true",
+            help="Set this flag to fail the job if any document fails to process",
+        )
 
-                i = i + 1
-        return event
+        # Parse the raw args first:
+        config = parser.parse_args(args)
 
-    def validateInput(self, args):
+        # Create the output folder if it doesn't exist already:
+        os.makedirs(config.output, exist_ok=True)
 
-        event = self.getInputParameters(args)
-
-        ips = {}
-
-        if(not 'documents' in event):
-            raise Exception("Document or path to a foler or S3 bucket containing documents is required.")
-
-        inputDocument = event['documents']
-        idl = inputDocument.lower()
-
-        bucketName = None
-        documents = []
-        awsRegion = 'us-east-1'
-
-        if(idl.startswith("s3://")):
-            o = urlparse(inputDocument)
+        # Post-validations and transformations:
+        # - Expand ips.documents to a list of individual files
+        # - Set default 'us-east-1' or override region if S3 input specified
+        inputs = SimpleNamespace(bucket=None, paths=[])
+        if(config.documents.lower().startswith("s3://")):
+            o = urlparse(config.documents)
             bucketName = o.netloc
-            path = o.path[1:]
-            ar = S3Helper.getS3BucketRegion(bucketName)
-            if(ar):
-                awsRegion = ar
+            s3Path = o.path[1:]
+            inputs.bucket = bucketName
 
-            if(idl.endswith("/")):
+            bucketRegion = S3Helper.getS3BucketRegion(bucketName)
+            if(bucketRegion):
+                config.region = bucketRegion  # Explicitly override
+            else:
+                config.region = "us-east-1"
+
+            if(s3Path.endswith("/")):
                 allowedFileTypes = ["jpg", "jpeg", "png", "pdf"]
-                documents = S3Helper.getFileNames(awsRegion, bucketName, path, 1, allowedFileTypes)
+                # TODO: Parameterize or remove max_pages=1
+                # Keeping this for now to preserve previous behaviour but I'd argue this non-configurable
+                # limit is a bug or at least a significant flaw.
+                inputs.paths = S3Helper.getFileNames(
+                    bucketRegion,
+                    bucketName,
+                    s3Path,
+                    1,
+                    allowedFileTypes,
+                )
             else:
-                documents.append(path)
+                if(S3Helper.checkObjectExists(bucketRegion, bucketName, s3Path)):
+                    inputs.paths = [s3Path]
+                else:
+                    raise ValueError(
+                        (
+                            "S3 Object not found (Please use a trailing '/' to specify a folder, or '*' to"
+                            "specify a prefix). Got: {}"
+                        ).format(config.documents)
+                    )
         else:
-            if(idl.endswith("/")):
+            if(config.documents.endswith(os.path.sep)):
                 allowedFileTypes = ["jpg", "jpeg", "png"]
-                documents = FileHelper.getFileNames(inputDocument, allowedFileTypes)
+                inputs.paths = FileHelper.getFileNames(config.documents, allowedFileTypes)
             else:
-                documents.append(inputDocument)
+                if(FileHelper.checkFileExists(config.documents)):
+                    inputs.paths = [config.documents]
+                else:
+                    raise ValueError(
+                        "File not found (Please include a trailing slash to specify a folder): {}".format(
+                            config.documents,
+                        )
+                    )
+        if(len(inputs.paths) == 0):
+            raise ValueError("No documents found under folder/prefix {} matching allowed types {}".format(
+                config.documents,
+                allowedFileTypes,
+            ))
 
-            if('region' in event):
-                awsRegion = event['region']
+        return config, inputs
 
-        ips["bucketName"] = bucketName
-        ips["documents"] = documents
-        ips["awsRegion"] = awsRegion
-        ips["text"] = ('text' in event)
-        ips["forms"] = ('forms' in event)
-        ips["tables"] = ('tables' in event)
-        ips["insights"] = ('insights' in event)
-        ips["medical-insights"] = ('medical-insights' in event)
-        if("translate" in event):
-            ips["translate"] = event["translate"]
-        else:
-            ips["translate"] = ""
-
-        return ips
-
-    def processDocument(self, ips, i, document):
-        print("\nTextracting Document # {}: {}".format(i, document))
-        print('=' * (len(document)+30))
+    def processDocument(self, config, path, bucket=None, i=None):
+        print("\nTextracting Document # {}: {}".format(i, path))
+        print("=" * (len(path) + 30))
 
         # Get document textracted
-        dp = DocumentProcessor(ips["bucketName"], document, ips["awsRegion"], ips["text"], ips["forms"], ips["tables"])
+        dp = DocumentProcessor(bucket, path, config.region, config.text, config.forms, config.tables)
         response = dp.run()
 
-        if(response):
-            print("Recieved Textract response...")
-            #FileHelper.writeToFile("temp-response.json", json.dumps(response))
+        if(not response):
+            raise ValueError("Empty response from DocumentProcessor")
 
-            #Generate output files
-            print("Generating output...")
-            name, ext = FileHelper.getFileNameAndExtension(document)
-            opg = OutputGenerator(response,
-                        "{}-{}".format(name, ext),
-                        ips["forms"], ips["tables"])
-            opg.run()
+        print("Recieved Textract response...")
+        #FileHelper.writeToFile("temp-response.json", json.dumps(response))
 
-            if(ips["insights"] or ips["medical-insights"] or ips["translate"]):
-                opg.generateInsights(ips["insights"], ips["medical-insights"], ips["translate"], ips["awsRegion"])
+        #Generate output files
+        print("Generating output...")
+        name, ext = FileHelper.getFileNameAndExtension(path)
+        opg = OutputGenerator(
+            response,
+            "{}-{}".format(name, ext),
+            config.forms,
+            config.tables,
+            basePath=config.output,
+        )
+        opg.run()
 
-            print("{} textracted successfully.".format(document))
-        else:
-            print("Could not generate output for {}.".format(document))
+        if(config.insights or config.medical_insights or config.translate):
+            opg.generateInsights(
+                config.insights,
+                config.medical_insights,
+                config.translate,
+                config.region,
+            )
 
-    def printFormatException(self, e):
-        print("Invalid input: {}".format(e))
-        print("Valid format:")
-        print('- python3 textractor.py --documents mydoc.jpg --text --forms --tables --region us-east-1')
-        print('- python3 textractor.py --documents ./myfolder/ --text --forms --tables')
-        print('- python3 textractor.py --documents s3://mybucket/mydoc.pdf --text --forms --tables')
-        print('- python3 textractor.py --documents s3://mybucket/ --text --forms --tables')
+    def run(self, args=None):
+        """Run the Textractor utility
 
-    def run(self):
+        Parameters
+        ----------
+        args : List[str] (Optional)
+            By default, the current process' command line arguments will be used. Use this parameter to
+            override instead, if you need. E.g. ["--documents", "./myfolder/", "--forms"]
+        """
 
-        ips = None
-        try:
-            ips = self.validateInput(sys.argv)
-        except Exception as e:
-            self.printFormatException(e)
+        config, inputs = self.parseInput(args)
 
-        #try:
-        i = 1
-        totalDocuments = len(ips["documents"])
+        totalDocuments = len(inputs.paths)
+        successes = 0
 
         print("\n")
-        print('*' * 60)
+        print("*" * 60)
         print("Total input documents: {}".format(totalDocuments))
-        print('*' * 60)
+        print("*" * 60)
 
-        for document in ips["documents"]:
-            self.processDocument(ips, i, document)
+        for i, docPath in enumerate(inputs.paths, start=1):
+            try:
+                self.processDocument(config, docPath, bucket=inputs.bucket, i=i)
+                successes += 1
+                print("{} textracted successfully.".format(docPath))
+            except Exception as e:
+                if(config.fail_on_error):
+                    raise e
+                else:
+                    print("{} failed to process.".format(docPath))
+                    traceback.print_exc()
 
-            remaining = len(ips["documents"])-i
-
-            if(remaining > 0):
-                print("\nRemaining documents: {}".format(remaining))
+            if(i < totalDocuments):
+                print("\nRemaining documents: {}".format(totalDocuments - i))
 
                 # print("\nTaking a short break...")
                 # time.sleep(20)
                 # print("Allright, ready to go...\n")
 
-            i = i + 1
-
         print("\n")
-        print('*' * 60)
-        print("Successfully textracted documents: {}".format(totalDocuments))
-        print('*' * 60)
+        print("*" * 60)
+        print("Successfully textracted {} of {} documents".format(successes, totalDocuments))
+        print("*" * 60)
         print("\n")
-        #except Exception as e:
-        #    print("Something went wrong:\n====================================================\n{}".format(e))
 
-Textractor().run()
+
+if __name__ == "__main__":
+    Textractor().run()

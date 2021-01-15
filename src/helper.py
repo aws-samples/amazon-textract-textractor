@@ -19,6 +19,29 @@ class S3Helper:
         return awsRegion
 
     @staticmethod
+    def checkObjectExists(awsRegion, bucketName, key):
+        s3client = AwsHelper().getClient("s3", awsRegion)
+        try:
+            meta = s3client.head_object(
+                Bucket=bucketName,
+                Key=key,
+            )
+            if meta.get("DeleteMarker", False):
+                return False
+            else:
+                return True
+        # At time of writing, boto3 API doc says that head_object should raise
+        # NoSuchKey but current behavior is generic ClientError per issue at:
+        # https://github.com/boto/boto3/issues/2442
+        except s3client.exceptions.NoSuchKey:
+            return False
+        except s3client.exceptions.ClientError as e:
+            if e.response.get("Error", {}).get("Code") == "NoSuchKey":
+                return False
+            else:
+                raise e
+
+    @staticmethod
     def getFileNames(awsRegion, bucketName, prefix, maxPages,
                      allowedFileTypes):
 
@@ -46,6 +69,9 @@ class S3Helper:
             else:
                 hasMoreContent = False
 
+            # "Contents" may be missing if KeyCount is 0 (no objects)
+            if listObjectsResponse["KeyCount"] == 0:
+                continue
             for doc in listObjectsResponse['Contents']:
                 docName = doc['Key']
                 docExt = FileHelper.getFileExtenstion(docName)
@@ -89,6 +115,10 @@ class FileHelper:
     def writeToFileWithMode(fileName, content, mode):
         with open(fileName, mode) as document:
             document.write(content)
+
+    @staticmethod
+    def checkFileExists(path):
+        return os.path.isfile(path)
 
     @staticmethod
     def getFilesInFolder(path, fileTypes):

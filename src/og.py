@@ -1,4 +1,5 @@
 import json
+import os
 from tabulate import tabulate
 from helper import FileHelper
 from ta import TextAnalyzer, TextMedicalAnalyzer, TextTranslater
@@ -6,11 +7,12 @@ from trp import *
 
 
 class OutputGenerator:
-    def __init__(self, response, fileName, forms, tables):
+    def __init__(self, response, fileName, forms, tables, basePath="."):
         self.response = response
         self.fileName = fileName
         self.forms = forms
         self.tables = tables
+        self.basePath = basePath
 
         self.document = Document(self.response)
 
@@ -26,18 +28,33 @@ class OutputGenerator:
                     csvItem.append("")
                 csvData.append(csvItem)
         csvFieldNames = ['Word-Id', 'Word-Text']
-        FileHelper.writeCSV("{}-page-{}-words.csv".format(self.fileName, p),
-                            csvFieldNames, csvData)
+        FileHelper.writeCSV(
+            os.path.join(
+                self.basePath,
+                "{}-page-{}-words.csv".format(self.fileName, p),
+            ),
+            csvFieldNames,
+            csvData,
+        )
 
     def _outputText(self, page, p):
         text = page.text
-        FileHelper.writeToFile("{}-page-{}-text.txt".format(self.fileName, p),
-                               text)
+        FileHelper.writeToFile(
+            os.path.join(
+                self.basePath,
+                "{}-page-{}-text.txt".format(self.fileName, p),
+            ),
+            text,
+        )
 
         textInReadingOrder = page.getTextInReadingOrder()
         FileHelper.writeToFile(
-            "{}-page-{}-text-inreadingorder.txt".format(self.fileName, p),
-            textInReadingOrder)
+            os.path.join(
+                self.basePath,
+                "{}-page-{}-text-inreadingorder.txt".format(self.fileName, p),
+            ),
+            textInReadingOrder,
+        )
 
     def _outputForm(self, page, p):
         csvData = []
@@ -57,11 +74,16 @@ class OutputGenerator:
                 csvItem.append("")
             csvData.append(csvItem)
         csvFieldNames = ['Key', 'KeyConfidence', 'Value', 'ValueConfidence']
-        FileHelper.writeCSV("{}-page-{}-forms.csv".format(self.fileName, p),
-                            csvFieldNames, csvData)
+        FileHelper.writeCSV(
+            os.path.join(
+                self.basePath,
+                "{}-page-{}-forms.csv".format(self.fileName, p),
+            ),
+            csvFieldNames,
+            csvData,
+        )
 
     def _outputTable(self, page, p):
-
         csvData = []
         for table in page.tables:
             csvRow = []
@@ -76,7 +98,12 @@ class OutputGenerator:
             csvData.append([])
 
         FileHelper.writeCSVRaw(
-            "{}-page-{}-tables.csv".format(self.fileName, p), csvData)
+            os.path.join(
+                self.basePath,
+                "{}-page-{}-tables.csv".format(self.fileName, p),
+            ),
+            csvData,
+        )
 
     def _outputTablePretty(self, page, p, table_format='github'):
         for table_number, table in enumerate(page.tables):
@@ -88,16 +115,26 @@ class OutputGenerator:
                 rows_list.append(one_row)
             pretty_table = tabulate(rows_list, tablefmt=table_format)
             FileHelper.writeToFile(
-                "{}-page-{}-table-{}-tables-pretty.txt".format(
-                    self.fileName, p, table_number), pretty_table)
+                os.path.join(
+                    self.basePath,
+                    "{}-page-{}-table-{}-tables-pretty.txt".format(
+                        self.fileName, p, table_number,
+                    )
+                ),
+                pretty_table,
+            )
 
     def run(self):
-
         if (not self.document.pages):
             return
 
-        FileHelper.writeToFile("{}-response.json".format(self.fileName),
-                               json.dumps(self.response))
+        FileHelper.writeToFile(
+            os.path.join(
+                self.basePath,
+                "{}-response.json".format(self.fileName),
+            ),
+            json.dumps(self.response),
+        )
 
         print("Total Pages in Document: {}".format(len(self.document.pages)))
 
@@ -105,8 +142,12 @@ class OutputGenerator:
         for page in self.document.pages:
 
             FileHelper.writeToFile(
-                "{}-page-{}-response.json".format(self.fileName, p),
-                json.dumps(page.blocks))
+                os.path.join(
+                    self.basePath,
+                    "{}-page-{}-response.json".format(self.fileName, p),
+                ),
+                json.dumps(page.blocks),
+            )
 
             self._outputWords(page, p)
 
@@ -215,37 +256,82 @@ class OutputGenerator:
 
         if (insights):
             FileHelper.writeCSV(
-                "{}-page-{}-insights-sentiment.csv".format(self.fileName, p),
-                ["Sentiment"], sentiment)
+                os.path.join(
+                    self.basePath,
+                    "{}-page-{}-insights-sentiment.csv".format(
+                        self.fileName, p,
+                    ),
+                ),
+                ["Sentiment"],
+                sentiment,
+            )
             FileHelper.writeCSV(
-                "{}-page-{}-insights-entities.csv".format(self.fileName, p),
+                os.path.join(
+                    self.basePath,
+                    "{}-page-{}-insights-entities.csv".format(
+                        self.fileName, p,
+                    ),
+                ),
                 ["Type", "Text", "Score", "BeginOffset", "EndOffset"],
-                entities)
+                entities,
+            )
             FileHelper.writeCSV(
-                "{}-page-{}-insights-syntax.csv".format(self.fileName, p), [
+                os.path.join(
+                    self.basePath,
+                    "{}-page-{}-insights-syntax.csv".format(self.fileName, p),
+                ),
+                [
                     "PartOfSpeech-Tag", "PartOfSpeech-Score", "Text",
-                    "BeginOffset", "EndOffset"
-                ], syntax)
+                    "BeginOffset", "EndOffset",
+                ],
+                syntax,
+            )
             FileHelper.writeCSV(
-                "{}-page-{}-insights-keyPhrases.csv".format(self.fileName, p),
-                ["Text", "Score", "BeginOffset", "EndOffset"], keyPhrases)
+                os.path.join(
+                    self.basePath,
+                    "{}-page-{}-insights-keyPhrases.csv".format(
+                        self.fileName, p,
+                    ),
+                ),
+                ["Text", "Score", "BeginOffset", "EndOffset"],
+                keyPhrases,
+            )
 
         if (medicalInsights):
             FileHelper.writeCSV(
-                "{}-page-{}-medical-insights-entities.csv".format(
-                    self.fileName, p), [
-                        "Text", "Type", "Category", "Score", "BeginOffset",
-                        "EndOffset"
-                    ], medicalEntities)
+                os.path.join(
+                    self.basePath,
+                    "{}-page-{}-medical-insights-entities.csv".format(
+                        self.fileName, p,
+                    ),
+                ),
+                [
+                    "Text", "Type", "Category", "Score", "BeginOffset",
+                    "EndOffset",
+                ],
+                medicalEntities,
+            )
 
             FileHelper.writeToFile(
-                "{}-page-{}-medical-insights-phi.json".format(
-                    self.fileName, p), json.dumps(phi))
+                os.path.join(
+                    self.basePath,
+                    "{}-page-{}-medical-insights-phi.json".format(
+                        self.fileName, p,
+                    ),
+                ),
+                json.dumps(phi),
+            )
 
         if (translate):
             FileHelper.writeToFile(
-                "{}-page-{}-text-translation.txt".format(self.fileName, p),
-                translation)
+                os.path.join(
+                    self.basePath,
+                    "{}-page-{}-text-translation.txt".format(
+                        self.fileName, p,
+                    ),
+                ),
+                translation,
+            )
 
     def generateInsights(self, insights, medicalInsights, translate,
                          awsRegion):
@@ -262,9 +348,7 @@ class OutputGenerator:
         if (translate):
             tt = TextTranslater('auto', translate, awsRegion)
 
-        p = 1
-        for page in self.document.pages:
+        for p, page in enumerate(self.document.pages, start=1):
             self._generateInsightsPerDocument(page, p, insights,
                                               medicalInsights, translate, ta,
                                               tma, tt)
-            p = p + 1
