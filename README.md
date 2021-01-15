@@ -1,6 +1,6 @@
 # Textractor
 
-textractor helps speed up PoCs by allowing you to quickly extract text, forms and tables from documents using Amazon Textract. It can generate output in different formats including raw JSON, JSON for each page in the document, text, text in reading order, key/values exported as CSV, tables exported as CSV. It can also generate insights or translate detected text by using Amazon Comprehend, Amazon Comprehend Medical and Amazon Translate. It takes advantage of [Textract response parser library](https://github.com/aws-samples/amazon-textract-response-parser) to easily consume JSON returned by Amazon Textract.
+Textractor helps speed up PoCs by allowing you to quickly extract text, forms and tables from documents using Amazon Textract. It can generate output in different formats including raw JSON, JSON for each page in the document, text, text in reading order, key/values exported as CSV, tables exported as CSV. It can also generate insights or translate detected text by using Amazon Comprehend, Amazon Comprehend Medical and Amazon Translate. It takes advantage of [Textract response parser library](https://github.com/aws-samples/amazon-textract-response-parser) to easily consume JSON returned by Amazon Textract.
 
 ## Prerequisites
 
@@ -10,31 +10,45 @@ textractor helps speed up PoCs by allowing you to quickly extract text, forms an
 ## Setup
 
 - Download [code](./zip/textractor.zip) and unzip on your local machine.
-- run ```python -m pip install -r requirements.txt```
+- run `python -m pip install -r requirements.txt`
 
 ## Usage
 
-Format:
-- python3 textractor.py --documents [file|folder|S3Object|S3Folder] --text --forms --tables --region [AWSRegion] --insights --medical-insights --translate [LanguageCode]
+**Display help:**
 
-Examples:
-- python3 textractor.py --documents mydoc.jpg --text
-- python3 textractor.py --documents ./mydocs/ --text --forms --tables
-- python3 textractor.py --documents s3://mybucket/mydoc.pdf --text --forms --tables
-- python3 textractor.py --documents s3://mybucket/myfolder/ --forms
-- python3 textractor.py --documents s3://mybucket/myfolder/ --text --forms --tables --region us-east-1 --insights --medical-insights --translate es
+- `python3 textractor.py --help`
+
+**General format:**
+
+- `python3 textractor.py --documents [file|folder|S3Object|S3Folder] --text --forms --tables --region [AWSRegion] --insights --medical-insights --translate [LanguageCode] --output [folder] --fail-on-error --flatten-folders`
+
+**Examples:**
+
+- `python3 textractor.py --documents mydoc.jpg --text`
+- `python3 textractor.py --documents ./mydocs/ --text --forms --tables --output ./results/`
+- `python3 textractor.py --documents s3://mybucket/mydoc.pdf --text --forms --tables`
+- `python3 textractor.py --documents s3://mybucket/myfolder/ --forms`
+- `python3 textractor.py --documents s3://mybucket/myfolder/ --text --forms --tables --region us-east-1 --insights --medical-insights --translate es`
+
+**Notes:**
 
 > Path to a folder on local drive or S3 bucket must end with /
 
-> Only one of the flags (--text, --forms and --tables) is required at the minimum. You can use combination of all three.
+> For folder batch jobs, only [supported file types for Amazon Textract](https://docs.aws.amazon.com/textract/latest/dg/how-it-works-documents.html) will be processed (as determined by the file extension). Other files in the folder/bucket will be ignored.
 
-> --region is optional. us-east-1 is default for local files/folder. For documents in S3, region of S3 bucket is selected as default AWS region to call Amazon Textract.
+> At least one of the Textract analysis flags (`--text`, `--forms` and `--tables`) is required, but you can use any combination of all three.
 
-> --insights, --medical-insights and --translate are optional.
+> `--region` is optional. `us-east-1` is default for local files/folder. For documents in S3, the region of the S3 bucket is selected and will override this option - calling Amazon Textract in that same region.
+
+> `--insights`, `--medical-insights` and `--translate` are optional. For translation, refer to the [list of supported language codes for Amazon Translate](https://docs.aws.amazon.com/translate/latest/dg/what-is.html#what-is-languages).
+
+> By default, Textractor will continue trying to process remaining documents if any fail - and report the total successes/failures. To instead fail the job if any document fails to process, set the `--fail-on-error` flag.
 
 ## Generated Output
 
-Tool generates several files in the format below:
+The tool generates several files in the format below.
+
+By default, any subfolder structure inside `--documents` is mapped through to the output. To flatten the results to filename only, set the `--flatten-folders` option.
 
 #### Text, forms and tables related output files
 
@@ -53,21 +67,24 @@ Tool generates several files in the format below:
 - document-page-n-insights-keyPhrases.csv: Key phrases in detected text for each page in the document.
 - document-page-n-insights-syntax.csv: Syntax in detected text for each page in the document.
 - document-page-n-medical-insights-entities.csv: Medical entities in detected text for each page in the document.
-- document-page-n-medical-insights-phi.json: Phi in detected text for each page in the document.
+- document-page-n-medical-insights-phi.json: Personal Health Information (PHI) in detected text for each page in the document.
 - document-page-n-text-translation.txt: Translation of detected text for each page in the document.
 
 ## Arguments
 
   | Argument  | Description |
-  | ------------- | ------------- |
-  | --documents  | Name of the document or local folder/S3 bucket |
-  | --text  | Extract text from the document |
-  | --forms  | Extract key/value pairs from the document |
-  | --tables | Extract tables from the document |
-  | --region  | AWS region to use for Amazon Textract API call. us-east-1 is default. |
-  | --insights  | Generate files with sentiment, entities, syntax, and key phrases. |
-  | --medical-insights  | Generate files with medical entities and phi. |
-  | --translate  | Generate file with translation. |
+  | --------- | ----------- |
+  | `--documents` | Name of the document or local folder/S3 bucket |
+  | `--text` | Extract text from the document |
+  | `--forms` | Extract key/value pairs from the document |
+  | `--tables` | Extract tables from the document |
+  | `--region` | AWS region to use for Amazon Textract API call. us-east-1 is default. |
+  | `--insights` | Generate files with sentiment, entities, syntax, and key phrases. |
+  | `--medical-insights` | Generate files with medical entities and PHI. |
+  | `--translate` | Generate file with translation. |
+  | `--output` | Name of the local folder to write results to (defaults to current working directory). |
+  | `--flatten-folders` | Generate all result files directly in the output folder, regardless of subfolders in the input. |
+  | `--fail-on-error` | Immediately fail the job if any document fails processing (instead of trying remaining documents). |
 
 ## Source Code
 - [textractor.py](./src/textractor.py) is the entry point. It parses input arguments, and query S3 or local folder to get input documents. It then iterates over input documents and use [DocumentProcessor](./src/tdp.py) to get response from Amazon Textract APIs.

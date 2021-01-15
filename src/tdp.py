@@ -206,7 +206,7 @@ class DocumentProcessor:
         else:
             ip.isLocalDocument = True
 
-        ext = FileHelper.getFileExtenstion(ip.documentPath).lower()
+        ext = FileHelper.getFileExtension(ip.documentPath).lower()
         if(ext == "pdf"):
             ip.documentType = "PDF"
         elif(ext == "jpg" or ext == "jpeg" or ext == "png"):

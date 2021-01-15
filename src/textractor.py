@@ -57,17 +57,21 @@ class Textractor:
             "--fail-on-error", action="store_true",
             help="Set this flag to fail the job if any document fails to process",
         )
+        parser.add_argument(
+            "--flatten-folders", action="store_true",
+            help="Set this flag to output a flat set of files only, instead of preserving input subfolders",
+        )
 
         # Parse the raw args first:
         config = parser.parse_args(args)
 
         # Create the output folder if it doesn't exist already:
-        os.makedirs(config.output, exist_ok=True)
+        FileHelper.ensureFolder(config.output)
 
         # Post-validations and transformations:
         # - Expand ips.documents to a list of individual files
         # - Set default 'us-east-1' or override region if S3 input specified
-        inputs = SimpleNamespace(bucket=None, paths=[])
+        inputs = SimpleNamespace(bucket=None, paths=[], basePath=None)
         if(config.documents.lower().startswith("s3://")):
             o = urlparse(config.documents)
             bucketName = o.netloc
@@ -92,7 +96,9 @@ class Textractor:
                     1,
                     allowedFileTypes,
                 )
+                inputs.basePath = s3Path
             else:
+                inputs.basePath = s3Path.rpartition("/")[0] or "."
                 if(S3Helper.checkObjectExists(bucketRegion, bucketName, s3Path)):
                     inputs.paths = [s3Path]
                 else:
@@ -106,9 +112,11 @@ class Textractor:
             if(config.documents.endswith(os.path.sep)):
                 allowedFileTypes = ["jpg", "jpeg", "png"]
                 inputs.paths = FileHelper.getFileNames(config.documents, allowedFileTypes)
+                inputs.basePath = config.documents
             else:
                 if(FileHelper.checkFileExists(config.documents)):
                     inputs.paths = [config.documents]
+                    inputs.basePath = os.path.dirname(config.documents) or "."
                 else:
                     raise ValueError(
                         "File not found (Please include a trailing slash to specify a folder): {}".format(
@@ -123,7 +131,7 @@ class Textractor:
 
         return config, inputs
 
-    def processDocument(self, config, path, bucket=None, i=None):
+    def processDocument(self, config, path, pathBase=None, bucket=None, i=None):
         print("\nTextracting Document # {}: {}".format(i, path))
         print("=" * (len(path) + 30))
 
@@ -140,12 +148,17 @@ class Textractor:
         #Generate output files
         print("Generating output...")
         name, ext = FileHelper.getFileNameAndExtension(path)
+        if(config.flatten_folders):
+            outFolder = config.output
+        else:
+            outFolder = FileHelper.mapSubFolder(pathBase, path, config.output)
+            FileHelper.ensureFolder(outFolder)
         opg = OutputGenerator(
             response,
             "{}-{}".format(name, ext),
             config.forms,
             config.tables,
-            basePath=config.output,
+            basePath=outFolder,
         )
         opg.run()
 
@@ -179,7 +192,7 @@ class Textractor:
 
         for i, docPath in enumerate(inputs.paths, start=1):
             try:
-                self.processDocument(config, docPath, bucket=inputs.bucket, i=i)
+                self.processDocument(config, docPath, inputs.basePath, bucket=inputs.bucket, i=i)
                 successes += 1
                 print("{} textracted successfully.".format(docPath))
             except Exception as e:

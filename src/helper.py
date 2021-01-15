@@ -74,7 +74,7 @@ class S3Helper:
                 continue
             for doc in listObjectsResponse['Contents']:
                 docName = doc['Key']
-                docExt = FileHelper.getFileExtenstion(docName)
+                docExt = FileHelper.getFileExtension(docName)
                 docExtLower = docExt.lower()
                 if (docExtLower in allowedFileTypes):
                     files.append(docName)
@@ -96,7 +96,7 @@ class FileHelper:
         return dn
 
     @staticmethod
-    def getFileExtenstion(fileName):
+    def getFileExtension(fileName):
         basename = os.path.basename(fileName)
         dn, dext = os.path.splitext(basename)
         return dext[1:]
@@ -121,21 +121,51 @@ class FileHelper:
         return os.path.isfile(path)
 
     @staticmethod
-    def getFilesInFolder(path, fileTypes):
-        for file in os.listdir(path):
-            if os.path.isfile(os.path.join(path, file)):
-                ext = FileHelper.getFileExtenstion(file)
-                if (ext.lower() in fileTypes):
-                    yield file
+    def ensureFolder(path):
+        return os.makedirs(path, exist_ok=True)
 
     @staticmethod
     def getFileNames(path, allowedLocalFileTypes):
-        files = []
+        results = []
+        for currpath, dirs, files in os.walk(path):
+            for file in files:
+                ext = FileHelper.getFileExtension(file)
+                if (ext.lower() in allowedLocalFileTypes):
+                    results.append(os.path.join(currpath, file))
+        return results
 
-        for file in FileHelper.getFilesInFolder(path, allowedLocalFileTypes):
-            files.append(path + file)
+    @staticmethod
+    def mapSubFolder(fromBase, path, toBase):
+        """Map directories of `path` below `fromBase` to `toBase`
 
-        return files
+        Parameters
+        ----------
+        fromBase : Union[str, None]
+            Base folder within which `path` exists. If None (unknown), the
+            function will just return `toBase`. E.g. 'a/'
+        path : str
+            File path of interest. E.g. 'a/b/c/d.jpg'
+        toBase : str
+            Base output folder that `path` is being mapped to, relative to
+            `fromBase`. E.g. 'out/'
+
+        Returns
+        -------
+        folder : str
+            Output subfolder, including `toBase` but excluding filename. E.g.
+            'out/b/c'
+        """
+        if fromBase is None:
+            return toBase
+        pathDir = os.path.dirname(path)
+        if pathDir == "":
+            return toBase
+        # Otherwise calculate subfolders between fromBase->path:
+        subfolders = os.path.relpath(pathDir, start=fromBase)
+        # And join to `toBase`, normalizing because subfolders may be the
+        # special '.' same folder link and we don't want to confuse downstream
+        # logic with paths like 'out/./img.jpg':
+        return os.path.normpath(os.path.join(toBase, subfolders))
 
     @staticmethod
     def writeCSV(fileName, fieldNames, csvData):
