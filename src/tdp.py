@@ -174,7 +174,7 @@ class PdfProcessor:
 
     def run(self):
         jobId = self._startJob()
-        print("Started Asyc Job with Id: {}".format(jobId))
+        print("Started Asnyc Job with Id: {}".format(jobId))
         status = self._isJobComplete(jobId)
         if(status == "SUCCEEDED"):
             responsePages = self._getJobResults(jobId)
