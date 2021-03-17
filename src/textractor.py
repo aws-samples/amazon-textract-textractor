@@ -99,7 +99,7 @@ class Textractor:
         response = dp.run()
 
         if(response):
-            print("Recieved Textract response...")
+            print("Received Textract response...")
             #FileHelper.writeToFile("temp-response.json", json.dumps(response))
 
             #Generate output files
