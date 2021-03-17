@@ -43,7 +43,7 @@ class Textractor:
         ips = {}
 
         if(not 'documents' in event):
-            raise Exception("Document or path to a foler or S3 bucket containing documents is required.")
+            raise Exception("Document or path to a folder or S3 bucket containing documents is required.")
 
         inputDocument = event['documents']
         idl = inputDocument.lower()
