@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+
+import argparse
+from textracthelper.t_call import Textract_Features, call_textract
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--input-document", help="s3 object (s3://) or file from local filesystem", required=True)
+parser.add_argument("--features", nargs='+', type=str, choices=["FORMS", "TABLES"], help="")
+args = parser.parse_args()
+
+input_document = args.input_document
+features_arg = args.features
+features = None
+if features_arg:
+    features = [Textract_Features[x] for x in features_arg]
+
+print(call_textract(input_document=input_document, features=features))
