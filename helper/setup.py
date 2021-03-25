@@ -25,7 +25,7 @@ if sys.argv[-1] == 'publish':
 
 setup(name='amazon-textract-textractor-helper',
       packages=['textracthelper'],
-      version='0.0.1',
+      version='0.0.2',
       description='Amazon Textract Helper tools',
       install_requires=requirements,
       scripts=['bin/textract'],
