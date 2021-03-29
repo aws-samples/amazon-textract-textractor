@@ -2,11 +2,13 @@ import trp
 from typing import List, Optional
 from tabulate import tabulate
 from enum import Enum
+import json
 
 Textract_Pretty_Print = Enum('Textract_Pretty_Print', ["WORDS", "LINES", "FORMS", "TABLES"], start=0)
 
 
-def get_string(doc: trp.Document, output_type: Optional[List[Textract_Pretty_Print]] = None):
+def get_string(input_document: str, output_type: Optional[List[Textract_Pretty_Print]] = None):
+    doc= trp.Document(json.loads(input_document))
     result_value = ""
     for t in output_type:
         if t == Textract_Pretty_Print.WORDS:

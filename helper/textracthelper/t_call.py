@@ -9,6 +9,7 @@ import sys
 import json
 
 Textract_Features = Enum('Textract_Features', ["FORMS", "TABLES"], start=0)
+Textract_Types = Enum('Textract_Types', ["WORD", "LINE", "TABLE", "CELL", "KEY", "VALUE", "FORM"])
 Textract_API = Enum('Textract_API', ["ANALYZE", "DETECT"], start=0)
 
 logging.basicConfig(stream=sys.stdout)
