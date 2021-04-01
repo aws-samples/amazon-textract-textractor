@@ -59,6 +59,9 @@ def get_tables_string(doc: trp.Document,
 
 
 def get_forms_string(doc: trp.Document, with_confidence: bool = False, with_geo: bool = False) -> str:
+    """
+    returns string with key-values printed out in format: key: value
+    """
     result_value = ""
     for page in doc.pages:
         for field in page.form.fields:
@@ -80,6 +83,9 @@ def get_forms_string(doc: trp.Document, with_confidence: bool = False, with_geo:
 
 
 def get_lines_string(doc: trp.Document, with_page_number: bool = False) -> str:
+    """
+    returns string with lines seperated by \n
+    """
     i = 0
     result_value = ""
     for page in doc.pages:
@@ -92,6 +98,9 @@ def get_lines_string(doc: trp.Document, with_page_number: bool = False) -> str:
 
 
 def get_words_string(doc: trp.Document, with_page_number: bool = False) -> str:
+    """
+    returns string with words seperated by \n
+    """
     i = 0
     result_value = ""
     for page in doc.pages:

@@ -5,18 +5,23 @@ import os
 import io
 import boto3
 from textracthelper.t_call import Textract_Features, Textract_Types, call_textract
+import textracthelper.t_call
 from textracthelper.t_overlay import DocumentDimensions, get_bounding_boxes
 from textracthelper.t_pretty_print import Textract_Pretty_Print, get_string
 from textracthelper.image_tools import get_filename_from_document
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--input-document", help="s3 object (s3://) or file from local filesystem", required=True)
+input_doc_or_example = parser.add_mutually_exclusive_group(required=True)
+input_doc_or_example.add_argument("--input-document", help="s3 object (s3://) or file from local filesystem")
+input_doc_or_example.add_argument("--example", dest='use_example', action='store_true')
+input_doc_or_example.set_defaults(use_example=False)
+
 parser.add_argument("--features", nargs='+', type=str, choices=["FORMS", "TABLES"], help="")
 parser.add_argument("--pretty-print", nargs='+', type=str, choices=["WORDS", "LINES", "FORMS", "TABLES"])
 parser.add_argument("--overlay", nargs='+', type=str, choices=["WORD", "LINE", "FORM", "KEY", "VALUE", "TABLE", "CELL"])
 parser.add_argument("--pop-up-overlay-output", dest='showoutput', action='store_true')
 parser.add_argument("--no-pop-up-overlay-output", dest='showoutput', action='store_false')
-parser.set_defaults(showoutput=True)
+parser.set_defaults(showoutput=False)
 parser.add_argument("--overlay-output-folder", type=str, default=None)
 parser.add_argument("--no-stdout",
                     dest='showstdout',
@@ -32,7 +37,11 @@ overlay_output_folder = args.overlay_output_folder
 overlay_arg = args.overlay
 showoutput = args.showoutput
 showstdout = args.showstdout
+use_example = args.use_example
 
+if use_example:
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(textracthelper.t_call.__file__))
+    input_document = os.path.join(SCRIPT_DIR, "examples/employmentapp.png")
 
 features = None
 if features_arg:
@@ -48,11 +57,20 @@ else:
     overlay = list()
 
 exit_code = 0
-if pretty_print_arg and "FORMS" in pretty_print_arg and features_arg and (not features_arg or "FORMS" not in features_arg):
+if pretty_print_arg and "FORMS" in pretty_print_arg and (not features_arg or "FORMS" not in features_arg):
     print("should pretty-print FORMS but is not requested as --features")
     exit_code = 1
-if pretty_print_arg and "TABLES" in pretty_print_arg and features_arg and (not features_arg or "TABLES" not in features_arg):
+if pretty_print_arg and "TABLES" in pretty_print_arg and (not features_arg or "TABLES" not in features_arg):
     print("should pretty-print TABLES but is not requested as --features")
+    exit_code = 1
+if overlay_arg and any([x for x in [ "CELL", "TABLE" ] if x in overlay_arg]) and (not features_arg or "TABLES" not in features_arg):
+    print("should overlay TABLE or CELL but is not requested as --features TABLES")
+    exit_code = 1
+if showoutput and overlay_arg and any([x for x in [ "FORM", "KEY", "VALUE"] if x in overlay_arg]) and (not features_arg or "FORMS" not in features_arg):
+    print("should overlay FORM or KEY or VALUE but FORMS not requested as --features FORMS")
+    exit_code = 1
+if showoutput and not overlay_arg:
+    print("asked for --pop-up-overlay-output or --overlay-output-folder, but not --overlay arguments given")
     exit_code = 1
 if exit_code > 0:
     exit(1)
@@ -80,6 +98,7 @@ if overlay_output_folder or showoutput:
         is_s3_document = True
         input_document = input_document.replace("s3://", "")
         s3_bucket, s3_key = input_document.split("/", 1)
+        print(s3_bucket, s3_key)
     ext: str = ""
     _, ext = os.path.splitext(input_document)
 
@@ -99,7 +118,7 @@ if overlay_output_folder or showoutput:
     bounding_box_list = get_bounding_boxes(textract_json=doc, document_dimensions=document_dimension, overlay_features=overlay)
     for bbox in bounding_box_list:
         box_color = colors[bbox.box_type.name]
-        draw.rectangle(xy=[bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax], outline=box_color, width=5)
+        draw.rectangle(xy=[bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax], outline=box_color, width=2)
 
     if showoutput:
         rgb_im.show()
