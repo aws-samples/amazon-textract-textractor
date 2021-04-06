@@ -14,7 +14,7 @@ requirements = [
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
-    os.system('rm dist/*')
+    os.system('rm -rf dist/*')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypitest dist/*')
@@ -22,7 +22,7 @@ if sys.argv[-1] == 'publish-test':
 
 if sys.argv[-1] == 'publish':
     os.system(f"cd {os.path.dirname(__file__)}")
-    os.system('rm dist/*')
+    os.system('rm -rf dist/*')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypi dist/*')
@@ -31,7 +31,8 @@ if sys.argv[-1] == 'publish':
 setup(name='amazon-textract-helper',
       packages=['textracthelper'],
       include_package_data=True,
-      version='0.0.11',
+      exclude_package_data={"textracthelper": ["test_*.py", "**/__pycache__"]},
+      version='0.0.12',
       description='Amazon Textract Helper tools',
       install_requires=requirements,
       scripts=['bin/amazon-textract'],
