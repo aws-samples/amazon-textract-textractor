@@ -9,7 +9,7 @@ from textractoverlayer.t_overlay import DocumentDimensions, get_bounding_boxes
 from textractprettyprinter.t_pretty_print import Textract_Pretty_Print, get_string
 from textractoverlayer.image_tools import get_filename_from_document
 from textracthelper._version import __version__
-
+import textracthelper._version
 
 parser = argparse.ArgumentParser()
 input_doc_or_example = parser.add_mutually_exclusive_group(required=True)
@@ -42,7 +42,7 @@ showstdout = args.showstdout
 use_example = args.use_example
 
 if use_example:
-    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(textracthelper._version.__file__))
     input_document = os.path.join(SCRIPT_DIR, "examples/employmentapp.png")
 
 features = None
