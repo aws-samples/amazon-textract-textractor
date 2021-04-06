@@ -1,7 +1,7 @@
 import io
 import os
 import sys
-from textracthelper.t_overlay import DocumentDimensions
+from textractoverlayer.t_overlay import DocumentDimensions
 import boto3
 
 # Conditionally add /opt to the PYTHON PATH

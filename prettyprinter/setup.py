@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'amazon-textract-response-parser', 'amazon-textract-caller', 'amazon-textract-overlayer', 'amazon-textract-prettyprinter', 'Pillow==8.1.2', 'PyPDF2==1.26.0']
+requirements = ['boto3', 'botocore', 'amazon-textract-response-parser', 'tabulate==0.8.9']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
@@ -23,12 +23,11 @@ if sys.argv[-1] == 'publish':
     os.system('twine upload --repository pypi dist/*')
     sys.exit()
 
-setup(name='amazon-textract-helper',
-      packages=['textracthelper'],
+setup(name='amazon-textract-prettyprinter',
+      packages=['textractprettyprinter'],
       version='0.0.4',
       description='Amazon Textract Helper tools',
       install_requires=requirements,
-      scripts=['bin/amazon-textract'],
       long_description_content_type='text/markdown',
       long_description=read('README.md'),
       author='Amazon Rekognition Textract Demoes',

@@ -4,11 +4,12 @@ import argparse
 import os
 import io
 import boto3
-from textracthelper.t_call import Textract_Features, Textract_Types, call_textract
-import textracthelper.t_call
-from textracthelper.t_overlay import DocumentDimensions, get_bounding_boxes
-from textracthelper.t_pretty_print import Textract_Pretty_Print, get_string
-from textracthelper.image_tools import get_filename_from_document
+from textractcaller.t_call import Textract_Features, Textract_Types, call_textract
+from textractoverlayer.t_overlay import DocumentDimensions, get_bounding_boxes
+from textractprettyprinter.t_pretty_print import Textract_Pretty_Print, get_string
+from textractoverlayer.image_tools import get_filename_from_document
+from textracthelper._version import __version__
+
 
 parser = argparse.ArgumentParser()
 input_doc_or_example = parser.add_mutually_exclusive_group(required=True)
@@ -23,6 +24,7 @@ parser.add_argument("--pop-up-overlay-output", dest='showoutput', action='store_
 parser.add_argument("--no-pop-up-overlay-output", dest='showoutput', action='store_false')
 parser.set_defaults(showoutput=False)
 parser.add_argument("--overlay-output-folder", type=str, default=None)
+parser.add_argument("--version", action='version', version='%(prog)s {version}'.format(version=__version__))
 parser.add_argument("--no-stdout",
                     dest='showstdout',
                     action='store_false')
@@ -30,7 +32,7 @@ parser.set_defaults(showstdout=True)
 
 
 args = parser.parse_args()
-input_document = args.input_document
+input_document:str = args.input_document
 features_arg = args.features
 pretty_print_arg = args.pretty_print
 overlay_output_folder = args.overlay_output_folder
@@ -40,7 +42,7 @@ showstdout = args.showstdout
 use_example = args.use_example
 
 if use_example:
-    SCRIPT_DIR = os.path.dirname(os.path.abspath(textracthelper.t_call.__file__))
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     input_document = os.path.join(SCRIPT_DIR, "examples/employmentapp.png")
 
 features = None

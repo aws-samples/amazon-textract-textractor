@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from textracthelper.t_call import Textract_Types
+from textractcaller.t_call import Textract_Types
 from typing import List
 import trp
 import json

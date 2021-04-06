@@ -82,7 +82,6 @@ pdf_suffixes = ['.pdf']
 image_suffixes = ['.png', '.jpg', '.jpeg']
 supported_suffixes = pdf_suffixes + image_suffixes
 
-textract = boto3.client("textract")
 
 
 def generate_request_params(document_location: DocumentLocation = None,
@@ -115,30 +114,32 @@ def generate_request_params(document_location: DocumentLocation = None,
     return params
 
 
-def get_job_response(job_id: str = None, textract_api: Textract_API = Textract_API.DETECT, extra_args=None):
+def get_job_response(job_id: str = None, textract_api: Textract_API = Textract_API.DETECT, extra_args=None, boto3_textract_client=None):
+    if not boto3_textract_client:
+        raise ValueError("Need boto3_textract_client")
     if extra_args == None:
         extra_args = {}
     if textract_api == Textract_API.DETECT:
-        return textract.get_document_text_detection(JobId=job_id, **extra_args)
+        return boto3_textract_client.get_document_text_detection(JobId=job_id, **extra_args)
     else:
-        return textract.get_document_analysis(JobId=job_id, )
+        return boto3_textract_client.get_document_analysis(JobId=job_id, )
 
 
-def get_full_json(job_id: str = None, textract_api: Textract_API = Textract_API.DETECT):
+def get_full_json(job_id: str = None, textract_api: Textract_API = Textract_API.DETECT, boto3_textract_client=None):
     """returns full json for call, even when response is chunked"""
     logger.info(f"get_full_json: job_id: {job_id}, Textract_API: {textract_api.name}")
-    job_response = get_job_response(job_id=job_id, textract_api=textract_api)
+    job_response = get_job_response(job_id=job_id, textract_api=textract_api, boto3_textract_client=boto3_textract_client)
     logger.info("job_response")
     job_status = job_response['JobStatus']
     while job_status == "IN_PROGRESS":
-        job_response = get_job_response(job_id=job_id, textract_api=textract_api)
+        job_response = get_job_response(job_id=job_id, textract_api=textract_api, boto3_textract_client=boto3_textract_client)
         job_status = job_response['JobStatus']
         time.sleep(1)
     if job_status == 'SUCCEEDED':
         result_value = {"Blocks": []}
         extra_args = {}
         while True:
-            textract_results = get_job_response(job_id=job_id, textract_api=textract_api, extra_args=extra_args)
+            textract_results = get_job_response(job_id=job_id, textract_api=textract_api, extra_args=extra_args, boto3_textract_client=boto3_textract_client)
             result_value['Blocks'].extend(textract_results['Blocks'])
             if 'NextToken' in textract_results:
                 extra_args['NextToken'] = textract_results['NextToken']
@@ -157,7 +158,8 @@ def call_textract(input_document: Union[str, bytearray],
                   notification_channel: NotificationChannel = None,
                   client_request_token: str = None,
                   return_job_id: bool = False,
-                  force_async_api: bool = False) -> str:
+                  force_async_api: bool = False,
+                  boto3_textract_client=None) -> str:
     """
     calls Textract and returns a response (either full json or the job_id when return_job_id=True)
     input_document: points to document on S3 when string starts with s3://
@@ -168,9 +170,14 @@ def call_textract(input_document: Union[str, bytearray],
     force_async_api: when passing in an image default is to call sync API, this forces the async API to be called (input-document has to be on S3)
     client_request_token: passed down to Textract API
     job_tag: passed down to Textract API
+    boto_3_textract_client: pass in boto3 client (to overcome missing region in environmnent, e. g.)
     returns: str with full json response or job_id str
     raises LimitExceededException when receiving LimitExceededException from Textract API. Expectation is to handle in calling function
     """
+    if not boto3_textract_client:
+        textract = boto3.client("textract")
+    else:
+        textract = boto3_textract_client
     is_s3_document: bool = False
     s3_bucket = ""
     s3_key = ""
@@ -214,7 +221,7 @@ def call_textract(input_document: Union[str, bytearray],
                 if return_job_id:
                     return submission_status['JobId']
                 else:
-                    result_value = get_full_json(submission_status['JobId'], textract_api=textract_api)
+                    result_value = get_full_json(submission_status['JobId'], textract_api=textract_api, boto3_textract_client=textract)
             else:
                 raise Exception(f"Got non-200 response code: {submission_status}")
 
