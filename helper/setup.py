@@ -25,7 +25,7 @@ if sys.argv[-1] == 'publish':
 
 setup(name='amazon-textract-helper',
       packages=['textracthelper'],
-      version='0.0.7',
+      version='0.0.8',
       description='Amazon Textract Helper tools',
       install_requires=requirements,
       scripts=['bin/amazon-textract'],
