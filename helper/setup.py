@@ -7,7 +7,10 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'amazon-textract-response-parser', 'amazon-textract-caller', 'amazon-textract-overlayer', 'amazon-textract-prettyprinter', 'Pillow==8.1.2', 'PyPDF2==1.26.0']
+requirements = [
+    'boto3', 'botocore', 'amazon-textract-response-parser', 'amazon-textract-caller', 'amazon-textract-overlayer',
+    'amazon-textract-prettyprinter', 'Pillow==8.1.2', 'PyPDF2==1.26.0'
+]
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
@@ -18,6 +21,8 @@ if sys.argv[-1] == 'publish-test':
     sys.exit()
 
 if sys.argv[-1] == 'publish':
+    os.system(f"cd {os.path.dirname(__file__)}")
+    os.system('rm dist/*')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypi dist/*')
@@ -25,7 +30,8 @@ if sys.argv[-1] == 'publish':
 
 setup(name='amazon-textract-helper',
       packages=['textracthelper'],
-      version='0.0.10',
+      include_package_data=True,
+      version='0.0.11',
       description='Amazon Textract Helper tools',
       install_requires=requirements,
       scripts=['bin/amazon-textract'],
