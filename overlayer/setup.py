@@ -25,7 +25,7 @@ if sys.argv[-1] == 'publish':
 
 setup(name='amazon-textract-overlayer',
       packages=['textractoverlayer'],
-      version='0.0.5',
+      version='0.0.6',
       description='Amazon Textract Overlay tools',
       install_requires=requirements,
       long_description_content_type='text/markdown',
