@@ -80,7 +80,7 @@ if exit_code > 0:
 doc = call_textract(input_document=input_document, features=features)
 if showstdout:
     if pretty_print:
-        print(get_string(input_document=doc, output_type=pretty_print))
+        print(get_string(textract_json_string=doc, output_type=pretty_print))
     else:
         print(doc)
 
@@ -117,7 +117,7 @@ if overlay_output_folder or showoutput:
     rgb_im = image.convert('RGB')
     draw = ImageDraw.Draw(rgb_im)
     document_dimension:DocumentDimensions = DocumentDimensions(doc_width=image.size[0], doc_height=image.size[1])
-    bounding_box_list = get_bounding_boxes(textract_json=doc, document_dimensions=document_dimension, overlay_features=overlay)
+    bounding_box_list = get_bounding_boxes(textract_json_string=doc, document_dimensions=document_dimension, overlay_features=overlay)
     for bbox in bounding_box_list:
         box_color = colors[bbox.box_type.name]
         draw.rectangle(xy=[bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax], outline=box_color, width=2)

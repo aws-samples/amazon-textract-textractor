@@ -73,9 +73,9 @@ class BoundingBox():
         return self.__page_number
 
 
-def get_bounding_boxes(textract_json: str, overlay_features: List[Textract_Types],
+def get_bounding_boxes(textract_json_string: str, overlay_features: List[Textract_Types],
                        document_dimensions: DocumentDimensions) -> "list[BoundingBox]":
-    doc = trp.Document(json.loads(textract_json))
+    doc = trp.Document(json.loads(textract_json_string))
     bounding_box_list: List[BoundingBox] = list()
     page_number: int = 0
     for page in doc.pages:

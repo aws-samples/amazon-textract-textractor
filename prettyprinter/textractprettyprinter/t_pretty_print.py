@@ -7,18 +7,17 @@ import json
 Textract_Pretty_Print = Enum('Textract_Pretty_Print', ["WORDS", "LINES", "FORMS", "TABLES"], start=0)
 
 
-def get_string(input_document: str, output_type: Optional[List[Textract_Pretty_Print]] = None):
-    doc= trp.Document(json.loads(input_document))
+def get_string(textract_json_string: str, output_type: Optional[List[Textract_Pretty_Print]] = None):
     result_value = ""
     for t in output_type:
         if t == Textract_Pretty_Print.WORDS:
-            result_value += get_words_string(doc=doc)
+            result_value += get_words_string(textract_json_string=textract_json_string)
         if t == Textract_Pretty_Print.LINES:
-            result_value += get_lines_string(doc=doc)
+            result_value += get_lines_string(textract_json_string=textract_json_string)
         if t == Textract_Pretty_Print.FORMS:
-            result_value += get_forms_string(doc=doc)
+            result_value += get_forms_string(textract_json_string=textract_json_string)
         if t == Textract_Pretty_Print.TABLES:
-            result_value += get_tables_string(doc=doc)
+            result_value += get_tables_string(textract_json_string=textract_json_string)
     return result_value
 
 
@@ -38,7 +37,7 @@ def convert_table_to_list(trp_table: trp.Table, with_confidence: bool = False, w
     return rows_list
 
 
-def get_tables_string(doc: trp.Document,
+def get_tables_string(textract_json_string: str,
                       table_format: str = 'github',
                       with_confidence: bool = False,
                       with_geo: bool = False) -> str:
@@ -48,6 +47,7 @@ def get_tables_string(doc: trp.Document,
     with_confidence: output confidence scores as well
     with_geo: output geo information as well
     """
+    doc= trp.Document(json.loads(textract_json_string))
     result_value = ""
     for page in doc.pages:
         for table in page.tables:
@@ -58,10 +58,11 @@ def get_tables_string(doc: trp.Document,
     return result_value
 
 
-def get_forms_string(doc: trp.Document, with_confidence: bool = False, with_geo: bool = False) -> str:
+def get_forms_string(textract_json_string: str, with_confidence: bool = False, with_geo: bool = False) -> str:
     """
     returns string with key-values printed out in format: key: value
     """
+    doc= trp.Document(json.loads(textract_json_string))
     result_value = ""
     for page in doc.pages:
         for field in page.form.fields:
@@ -82,10 +83,11 @@ def get_forms_string(doc: trp.Document, with_confidence: bool = False, with_geo:
     return result_value
 
 
-def get_lines_string(doc: trp.Document, with_page_number: bool = False) -> str:
+def get_lines_string(textract_json_string: str, with_page_number: bool = False) -> str:
     """
     returns string with lines seperated by \n
     """
+    doc= trp.Document(json.loads(textract_json_string))
     i = 0
     result_value = ""
     for page in doc.pages:
@@ -97,10 +99,11 @@ def get_lines_string(doc: trp.Document, with_page_number: bool = False) -> str:
     return result_value
 
 
-def get_words_string(doc: trp.Document, with_page_number: bool = False) -> str:
+def get_words_string(textract_json_string: str, with_page_number: bool = False) -> str:
     """
     returns string with words seperated by \n
     """
+    doc= trp.Document(json.loads(textract_json_string))
     i = 0
     result_value = ""
     for page in doc.pages:

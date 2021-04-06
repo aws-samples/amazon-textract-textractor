@@ -2,16 +2,11 @@
 
 amazon-textractor-textract-helper provides a collection of ready to use functions and sample implementations to speed up the evaluation and development for any project using Amazon Textract.
 
-Main features:
-* Python executable ```amazon-textract``` to quickly run Amazon Textract from command line
-* ```call_textract``` - method to simplify calling Textract regardless of file type and location
-* ```get_bounding_boxes``` - method to generate bounding boxes locations for specific block types
-* ```get_forms_string``` and ```get_tables_string``` to generate pretty-printed output for FORMS and TABLES
 
 # Install
 
 ```bash
-> python -m pip install amazon-textract-textractor-helper
+> python -m pip install amazon-textract-helper
 ```
 
 Make sure your environment is setup with AWS credentials through configuration files or environment variables or an attached role. (https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
@@ -130,27 +125,3 @@ The following command runs AnalyzeDocument for FORMS and TABLES, pretty prints F
 <img src="./docs/employmentapp_boxed_FORM_CELL_.png" alt="Sample overlay FORM CELL" width="50%" height="50%" border="1">
 
 
-# Calling Amazon Textract
-
-Making it easy to call Amazon Textract regardless of file type and location.
-
-```
-def call_textract(input_document: Union[str, bytearray],
-                  features: List[Textract_Features] = None,
-                  output_config: OutputConfig = None,
-                  kms_key_id: str = None,
-                  job_tag: str = None,
-                  notification_channel: NotificationChannel = None,
-                  client_request_token: str = None,
-                  return_job_id: bool = False,
-                  force_async_api: bool = False) -> str:
-```
-
-## Samples
-### from bin/textract
-
-```
-from textracthelper.t_call import Textract_Features, Textract_Types, call_textract
-
-response = call_textract(input_document="s3://some-bucket/w2-example.png", force_async_api=True)
-```
