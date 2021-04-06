@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'amazon-textract-textractor-caller']
+requirements = ['boto3', 'botocore', 'amazon-textract-caller']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
@@ -25,7 +25,7 @@ if sys.argv[-1] == 'publish':
 
 setup(name='amazon-textract-overlayer',
       packages=['textractoverlayer'],
-      version='0.0.4',
+      version='0.0.5',
       description='Amazon Textract Overlay tools',
       install_requires=requirements,
       long_description_content_type='text/markdown',
