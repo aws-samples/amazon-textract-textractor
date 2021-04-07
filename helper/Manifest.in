@@ -2,6 +2,6 @@ include LICENSE
 
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co] test_*.py
-recursive-include bin/amazon-textract-helper-examples *
+recursive-include textracthelper/examples *
 
 recursive-include docs *.rst conf.py Makefile make.bat *.jpg *.png *.gif

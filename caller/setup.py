@@ -11,13 +11,15 @@ requirements = ['boto3', 'botocore']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
-    os.system('rm dist/*')
+    os.system('rm -rf dist/*')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypitest dist/*')
     sys.exit()
 
 if sys.argv[-1] == 'publish':
+    os.system(f"cd {os.path.dirname(__file__)}")
+    os.system('rm -rf dist/*')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypi dist/*')
@@ -25,7 +27,9 @@ if sys.argv[-1] == 'publish':
 
 setup(name='amazon-textract-caller',
       packages=['textractcaller'],
-      version='0.0.6',
+      include_package_data=True,
+      exclude_package_data={"textractcaller": ["**/test_*.py", "**/__pycache__"]},
+      version='0.0.7',
       description='Amazon Textract Caller tools',
       install_requires=requirements,
       long_description_content_type='text/markdown',
