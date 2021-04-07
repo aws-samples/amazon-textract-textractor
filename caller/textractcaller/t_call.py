@@ -12,7 +12,6 @@ Textract_Features = Enum('Textract_Features', ["FORMS", "TABLES"], start=0)
 Textract_Types = Enum('Textract_Types', ["WORD", "LINE", "TABLE", "CELL", "KEY", "VALUE", "FORM"])
 Textract_API = Enum('Textract_API', ["ANALYZE", "DETECT"], start=0)
 
-logging.basicConfig(stream=sys.stdout)
 logger = logging.getLogger(__name__)
 
 
@@ -83,7 +82,6 @@ image_suffixes = ['.png', '.jpg', '.jpeg']
 supported_suffixes = pdf_suffixes + image_suffixes
 
 
-
 def generate_request_params(document_location: DocumentLocation = None,
                             document: Document = None,
                             features: Optional[List[Textract_Features]] = None,
@@ -114,7 +112,10 @@ def generate_request_params(document_location: DocumentLocation = None,
     return params
 
 
-def get_job_response(job_id: str = None, textract_api: Textract_API = Textract_API.DETECT, extra_args=None, boto3_textract_client=None):
+def get_job_response(job_id: str = None,
+                     textract_api: Textract_API = Textract_API.DETECT,
+                     extra_args=None,
+                     boto3_textract_client=None):
     if not boto3_textract_client:
         raise ValueError("Need boto3_textract_client")
     if extra_args == None:
@@ -128,18 +129,25 @@ def get_job_response(job_id: str = None, textract_api: Textract_API = Textract_A
 def get_full_json(job_id: str = None, textract_api: Textract_API = Textract_API.DETECT, boto3_textract_client=None):
     """returns full json for call, even when response is chunked"""
     logger.info(f"get_full_json: job_id: {job_id}, Textract_API: {textract_api.name}")
-    job_response = get_job_response(job_id=job_id, textract_api=textract_api, boto3_textract_client=boto3_textract_client)
+    job_response = get_job_response(job_id=job_id,
+                                    textract_api=textract_api,
+                                    boto3_textract_client=boto3_textract_client)
     logger.info("job_response")
     job_status = job_response['JobStatus']
     while job_status == "IN_PROGRESS":
-        job_response = get_job_response(job_id=job_id, textract_api=textract_api, boto3_textract_client=boto3_textract_client)
+        job_response = get_job_response(job_id=job_id,
+                                        textract_api=textract_api,
+                                        boto3_textract_client=boto3_textract_client)
         job_status = job_response['JobStatus']
         time.sleep(1)
     if job_status == 'SUCCEEDED':
         result_value = {"Blocks": []}
         extra_args = {}
         while True:
-            textract_results = get_job_response(job_id=job_id, textract_api=textract_api, extra_args=extra_args, boto3_textract_client=boto3_textract_client)
+            textract_results = get_job_response(job_id=job_id,
+                                                textract_api=textract_api,
+                                                extra_args=extra_args,
+                                                boto3_textract_client=boto3_textract_client)
             result_value['Blocks'].extend(textract_results['Blocks'])
             if 'NextToken' in textract_results:
                 extra_args['NextToken'] = textract_results['NextToken']
@@ -221,7 +229,9 @@ def call_textract(input_document: Union[str, bytearray],
                 if return_job_id:
                     return submission_status['JobId']
                 else:
-                    result_value = get_full_json(submission_status['JobId'], textract_api=textract_api, boto3_textract_client=textract)
+                    result_value = get_full_json(submission_status['JobId'],
+                                                 textract_api=textract_api,
+                                                 boto3_textract_client=textract)
             else:
                 raise Exception(f"Got non-200 response code: {submission_status}")
 

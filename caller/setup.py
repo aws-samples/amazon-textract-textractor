@@ -1,6 +1,6 @@
 import os
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -26,9 +26,9 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 setup(name='amazon-textract-caller',
-      packages=['textractcaller'],
+      packages=find_packages(exclude=['tests']),
       include_package_data=True,
-      exclude_package_data={"textractcaller": ["**/test_*.py", "**/__pycache__"]},
+      exclude_package_data={"": ["test_*.py", "__pycache__"]},
       version='0.0.7',
       description='Amazon Textract Caller tools',
       install_requires=requirements,
