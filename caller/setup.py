@@ -11,7 +11,7 @@ requirements = ['boto3', 'botocore']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
-    os.system('rm -rf dist/*')
+    os.system('rm -rf dist/ build/ amazon_textract_caller.egg-info/')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypitest dist/*')
@@ -19,7 +19,7 @@ if sys.argv[-1] == 'publish-test':
 
 if sys.argv[-1] == 'publish':
     os.system(f"cd {os.path.dirname(__file__)}")
-    os.system('rm -rf dist/*')
+    os.system('rm -rf dist/ build/ amazon_textract_caller.egg-info/')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypi dist/*')

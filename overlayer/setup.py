@@ -1,6 +1,6 @@
 import os
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -11,20 +11,24 @@ requirements = ['boto3', 'botocore', 'amazon-textract-caller']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
-    os.system('rm dist/*')
+    os.system('rm -rf dist/ build/ amazon_textract_overlayer.egg-info/')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypitest dist/*')
     sys.exit()
 
 if sys.argv[-1] == 'publish':
+    os.system(f"cd {os.path.dirname(__file__)}")
+    os.system('rm -rf dist/ build/ amazon_textract_overlayer.egg-info/')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypi dist/*')
     sys.exit()
 
 setup(name='amazon-textract-overlayer',
-      packages=['textractoverlayer'],
+      packages=find_packages(exclude=['tests']),
+      include_package_data=True,
+      exclude_package_data={"": ["test_*.py", "__pycache__"]},
       version='0.0.6',
       description='Amazon Textract Overlay tools',
       install_requires=requirements,

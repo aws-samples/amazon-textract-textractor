@@ -11,13 +11,15 @@ requirements = ['boto3', 'botocore', 'amazon-textract-response-parser', 'tabulat
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
-    os.system('rm dist/*')
+    os.system('rm -rf dist/ build/ amazon_textract_prettyprinter.egg-info/')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypitest dist/*')
     sys.exit()
 
 if sys.argv[-1] == 'publish':
+    os.system(f"cd {os.path.dirname(__file__)}")
+    os.system('rm -rf dist/ build/ amazon_textract_prettyprinter.egg-info/')
     os.system('python setup.py sdist bdist_wheel')
     os.system('twine check dist/*')
     os.system('twine upload --repository pypi dist/*')
@@ -26,14 +28,14 @@ if sys.argv[-1] == 'publish':
 setup(name='amazon-textract-prettyprinter',
       packages=['textractprettyprinter'],
       version='0.0.7',
-      description='Amazon Textract Helper tools',
+      description='Amazon Textract Helper tools for pretty printing',
       install_requires=requirements,
       long_description_content_type='text/markdown',
       long_description=read('README.md'),
       author='Amazon Rekognition Textract Demoes',
       author_email='rekognition-textract-demos@amazon.com',
       url='https://github.com/aws-samples/amazon-textract-textractor',
-      keywords='amazon-textract-textractor amazon textract textractor helper',
+      keywords='amazon-textract-textractor amazon textract textractor helper pretty-print',
       license="Apache License Version 2.0",
       classifiers=[
           "Development Status :: 4 - Beta",
