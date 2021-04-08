@@ -197,6 +197,7 @@ def call_textract(input_document: Union[str, bytearray],
             s3_bucket, s3_key = input_document.split("/", 1)
         ext: str = ""
         _, ext = os.path.splitext(input_document)
+        ext = ext.lower()
 
         is_pdf: bool = (ext != None and ext.lower() in pdf_suffixes)
         if is_pdf and not is_s3_document:
