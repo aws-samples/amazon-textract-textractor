@@ -123,16 +123,16 @@ def get_job_response(job_id: str = None,
     if textract_api == Textract_API.DETECT:
         return boto3_textract_client.get_document_text_detection(JobId=job_id, **extra_args)
     else:
-        return boto3_textract_client.get_document_analysis(JobId=job_id, )
+        return boto3_textract_client.get_document_analysis(JobId=job_id, **extra_args)
 
 
 def get_full_json(job_id: str = None, textract_api: Textract_API = Textract_API.DETECT, boto3_textract_client=None):
     """returns full json for call, even when response is chunked"""
-    logger.info(f"get_full_json: job_id: {job_id}, Textract_API: {textract_api.name}")
+    logger.debug(f"get_full_json: job_id: {job_id}, Textract_API: {textract_api.name}")
     job_response = get_job_response(job_id=job_id,
                                     textract_api=textract_api,
                                     boto3_textract_client=boto3_textract_client)
-    logger.info("job_response")
+    logger.debug(f"job_response for job_id: {job_id}")
     job_status = job_response['JobStatus']
     while job_status == "IN_PROGRESS":
         job_response = get_job_response(job_id=job_id,
@@ -150,6 +150,7 @@ def get_full_json(job_id: str = None, textract_api: Textract_API = Textract_API.
                                                 boto3_textract_client=boto3_textract_client)
             result_value['Blocks'].extend(textract_results['Blocks'])
             if 'NextToken' in textract_results:
+                logger.debug(f"got next token {textract_results['NextToken']}")
                 extra_args['NextToken'] = textract_results['NextToken']
             else:
                 break
@@ -182,6 +183,7 @@ def call_textract(input_document: Union[str, bytearray],
     returns: str with full json response or job_id str
     raises LimitExceededException when receiving LimitExceededException from Textract API. Expectation is to handle in calling function
     """
+    logger.debug("call_textract")
     if not boto3_textract_client:
         textract = boto3.client("textract")
     else:
@@ -210,6 +212,7 @@ def call_textract(input_document: Union[str, bytearray],
             raise ValueError("when submitting notification_channel, has to also expect the job_id as result atm.")
         # ASYNC
         if is_pdf or force_async_api and is_s3_document:
+            logger.debug(f"is_pdf or force_async_api and is_s3_document")
             params = generate_request_params(
                 document_location=DocumentLocation(s3_bucket=s3_bucket, s3_prefix=s3_key),
                 features=features,

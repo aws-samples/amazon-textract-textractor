@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import sys
 import io
 import boto3
 from textractcaller.t_call import Textract_Features, Textract_Types, call_textract
@@ -10,6 +11,9 @@ from textractprettyprinter.t_pretty_print import Textract_Pretty_Print, get_stri
 from textractoverlayer.image_tools import get_filename_from_document
 from textracthelper._version import __version__
 import textracthelper._version
+import logging
+
+logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser()
 input_doc_or_example = parser.add_mutually_exclusive_group(required=True)
@@ -25,14 +29,16 @@ parser.add_argument("--no-pop-up-overlay-output", dest='showoutput', action='sto
 parser.set_defaults(showoutput=False)
 parser.add_argument("--overlay-output-folder", type=str, default=None)
 parser.add_argument("--version", action='version', version='%(prog)s {version}'.format(version=__version__))
-parser.add_argument("--no-stdout",
-                    dest='showstdout',
-                    action='store_false')
+parser.add_argument("--no-stdout", dest='showstdout', action='store_false')
 parser.set_defaults(showstdout=True)
-
+show_logs = parser.add_mutually_exclusive_group(required=False)
+show_logs.add_argument("-v", dest='showinfo', action='store_true')
+show_logs.set_defaults(showinfo=False)
+show_logs.add_argument("-vv", dest='showdebug', action='store_true')
+show_logs.set_defaults(showdebug=False)
 
 args = parser.parse_args()
-input_document:str = args.input_document
+input_document: str = args.input_document
 features_arg = args.features
 pretty_print_arg = args.pretty_print
 overlay_output_folder = args.overlay_output_folder
@@ -40,6 +46,27 @@ overlay_arg = args.overlay
 showoutput = args.showoutput
 showstdout = args.showstdout
 use_example = args.use_example
+showdebug = args.showdebug
+showinfo = args.showinfo
+
+if showinfo or showdebug:
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    handler.setLevel(logging.INFO)
+    logger.setLevel(logging.INFO)
+    logger.addHandler(handler)
+    caller_logger = logging.getLogger('textractcaller')
+    caller_logger.propagate = True
+    caller_logger.setLevel(logging.INFO)
+    caller_logger.addHandler(handler)
+    logger.info("log level: INFO")
+
+    if showdebug:
+        handler.setLevel(logging.DEBUG)
+        logger.setLevel(logging.DEBUG)
+        caller_logger.setLevel(logging.DEBUG)
+        logger.debug("current log level: DEBUG")
 
 if use_example:
     SCRIPT_DIR = os.path.dirname(os.path.abspath(textracthelper._version.__file__))
@@ -65,10 +92,12 @@ if pretty_print_arg and "FORMS" in pretty_print_arg and (not features_arg or "FO
 if pretty_print_arg and "TABLES" in pretty_print_arg and (not features_arg or "TABLES" not in features_arg):
     print("should pretty-print TABLES but is not requested as --features")
     exit_code = 1
-if overlay_arg and any([x for x in [ "CELL", "TABLE" ] if x in overlay_arg]) and (not features_arg or "TABLES" not in features_arg):
+if overlay_arg and any([x for x in ["CELL", "TABLE"] if x in overlay_arg]) and (not features_arg
+                                                                                or "TABLES" not in features_arg):
     print("should overlay TABLE or CELL but is not requested as --features TABLES")
     exit_code = 1
-if showoutput and overlay_arg and any([x for x in [ "FORM", "KEY", "VALUE"] if x in overlay_arg]) and (not features_arg or "FORMS" not in features_arg):
+if showoutput and overlay_arg and any([x for x in ["FORM", "KEY", "VALUE"] if x in overlay_arg
+                                       ]) and (not features_arg or "FORMS" not in features_arg):
     print("should overlay FORM or KEY or VALUE but FORMS not requested as --features FORMS")
     exit_code = 1
 if showoutput and not overlay_arg:
@@ -77,7 +106,9 @@ if showoutput and not overlay_arg:
 if exit_code > 0:
     exit(1)
 
+logger.debug(f"calling Textract")
 doc = call_textract(input_document=input_document, features=features)
+logger.debug(f"receivedTextract response")
 if showstdout:
     if pretty_print:
         print(get_string(textract_json_string=doc, output_type=pretty_print))
@@ -85,17 +116,19 @@ if showstdout:
         print(doc)
 
 if overlay_output_folder or showoutput:
-    colors = {"WORD": (128,128,0),
-              "LINE": (0,128,128),
-              "FORM":(128,0,128),
-              "KEY": (255,0,0),
-              "VALUE": (0,255,255),
-              "CELL": (255,0,255),
-              "TABLE": (255,255,0)}
+    colors = {
+        "WORD": (128, 128, 0),
+        "LINE": (0, 128, 128),
+        "FORM": (128, 0, 128),
+        "KEY": (255, 0, 0),
+        "VALUE": (0, 255, 255),
+        "CELL": (255, 0, 255),
+        "TABLE": (255, 255, 0)
+    }
     from PIL import Image, ImageDraw
     is_s3_document: bool = False
-    s3_bucket:str = ""
-    s3_key:str = ""
+    s3_bucket: str = ""
+    s3_key: str = ""
     if len(input_document) > 7 and input_document.lower().startswith("s3://"):
         is_s3_document = True
         input_document = input_document.replace("s3://", "")
@@ -109,15 +142,17 @@ if overlay_output_folder or showoutput:
         o = s3.get_object(Bucket=s3_bucket, Key=s3_key)
         input_bytes = o.get('Body').read()
         f = io.BytesIO(input_bytes)
-        image:Image.Image = Image.open(f)
+        image: Image.Image = Image.open(f)
         file_name, suffix = os.path.splitext(os.path.basename(s3_key))
     else:
         image = Image.open(input_document)
         file_name, suffix = os.path.splitext(os.path.basename(input_document))
     rgb_im = image.convert('RGB')
     draw = ImageDraw.Draw(rgb_im)
-    document_dimension:DocumentDimensions = DocumentDimensions(doc_width=image.size[0], doc_height=image.size[1])
-    bounding_box_list = get_bounding_boxes(textract_json_string=doc, document_dimensions=document_dimension, overlay_features=overlay)
+    document_dimension: DocumentDimensions = DocumentDimensions(doc_width=image.size[0], doc_height=image.size[1])
+    bounding_box_list = get_bounding_boxes(textract_json_string=doc,
+                                           document_dimensions=document_dimension,
+                                           overlay_features=overlay)
     for bbox in bounding_box_list:
         box_color = colors[bbox.box_type.name]
         draw.rectangle(xy=[bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax], outline=box_color, width=2)
