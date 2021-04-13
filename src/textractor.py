@@ -43,7 +43,7 @@ class Textractor:
         ips = {}
 
         if(not 'documents' in event):
-            raise Exception("Document or path to a foler or S3 bucket containing documents is required.")
+            raise Exception("Document or path to a folder or S3 bucket containing documents is required.")
 
         inputDocument = event['documents']
         idl = inputDocument.lower()
@@ -99,7 +99,7 @@ class Textractor:
         response = dp.run()
 
         if(response):
-            print("Recieved Textract response...")
+            print("Received Textract response...")
             #FileHelper.writeToFile("temp-response.json", json.dumps(response))
 
             #Generate output files

@@ -146,7 +146,7 @@ class PdfProcessor:
         else:
             response = client.get_document_analysis(JobId=jobId)
         pages.append(response)
-        print("Resultset page recieved: {}".format(len(pages)))
+        print("Resultset page received: {}".format(len(pages)))
         nextToken = None
         if('NextToken' in response):
             nextToken = response['NextToken']
@@ -161,7 +161,7 @@ class PdfProcessor:
                 response = client.get_document_analysis(JobId=jobId, NextToken=nextToken)
 
             pages.append(response)
-            print("Resultset page recieved: {}".format(len(pages)))
+            print("Resultset page received: {}".format(len(pages)))
             nextToken = None
             if('NextToken' in response):
                 nextToken = response['NextToken']
@@ -174,7 +174,7 @@ class PdfProcessor:
 
     def run(self):
         jobId = self._startJob()
-        print("Started Asyc Job with Id: {}".format(jobId))
+        print("Started Asnyc Job with Id: {}".format(jobId))
         status = self._isJobComplete(jobId)
         if(status == "SUCCEEDED"):
             responsePages = self._getJobResults(jobId)
