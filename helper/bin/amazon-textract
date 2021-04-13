@@ -1,0 +1,171 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import sys
+import io
+import boto3
+from textractcaller.t_call import Textract_Features, Textract_Types, call_textract
+from textractoverlayer.t_overlay import DocumentDimensions, get_bounding_boxes
+from textractprettyprinter.t_pretty_print import Textract_Pretty_Print, get_string
+from textractoverlayer.image_tools import get_filename_from_document
+from textracthelper._version import __version__
+import textracthelper._version
+import logging
+
+logger = logging.getLogger(__name__)
+
+parser = argparse.ArgumentParser()
+input_doc_or_example = parser.add_mutually_exclusive_group(required=True)
+input_doc_or_example.add_argument("--input-document", help="s3 object (s3://) or file from local filesystem")
+input_doc_or_example.add_argument("--example", dest='use_example', action='store_true')
+input_doc_or_example.set_defaults(use_example=False)
+
+parser.add_argument("--features", nargs='+', type=str, choices=["FORMS", "TABLES"], help="")
+parser.add_argument("--pretty-print", nargs='+', type=str, choices=["WORDS", "LINES", "FORMS", "TABLES"])
+parser.add_argument("--overlay", nargs='+', type=str, choices=["WORD", "LINE", "FORM", "KEY", "VALUE", "TABLE", "CELL"])
+parser.add_argument("--pop-up-overlay-output", dest='showoutput', action='store_true')
+parser.add_argument("--no-pop-up-overlay-output", dest='showoutput', action='store_false')
+parser.set_defaults(showoutput=False)
+parser.add_argument("--overlay-output-folder", type=str, default=None)
+parser.add_argument("--version", action='version', version='%(prog)s {version}'.format(version=__version__))
+parser.add_argument("--no-stdout", dest='showstdout', action='store_false')
+parser.set_defaults(showstdout=True)
+show_logs = parser.add_mutually_exclusive_group(required=False)
+show_logs.add_argument("-v", dest='showinfo', action='store_true')
+show_logs.set_defaults(showinfo=False)
+show_logs.add_argument("-vv", dest='showdebug', action='store_true')
+show_logs.set_defaults(showdebug=False)
+
+args = parser.parse_args()
+input_document: str = args.input_document
+features_arg = args.features
+pretty_print_arg = args.pretty_print
+overlay_output_folder = args.overlay_output_folder
+overlay_arg = args.overlay
+showoutput = args.showoutput
+showstdout = args.showstdout
+use_example = args.use_example
+showdebug = args.showdebug
+showinfo = args.showinfo
+
+if showinfo or showdebug:
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter)
+    handler.setLevel(logging.INFO)
+    logger.setLevel(logging.INFO)
+    logger.addHandler(handler)
+    caller_logger = logging.getLogger('textractcaller')
+    caller_logger.propagate = True
+    caller_logger.setLevel(logging.INFO)
+    caller_logger.addHandler(handler)
+    logger.info("log level: INFO")
+
+    if showdebug:
+        handler.setLevel(logging.DEBUG)
+        logger.setLevel(logging.DEBUG)
+        caller_logger.setLevel(logging.DEBUG)
+        logger.debug("current log level: DEBUG")
+
+if use_example:
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(textracthelper._version.__file__))
+    input_document = os.path.join(SCRIPT_DIR, "examples/employmentapp.png")
+
+features = None
+if features_arg:
+    features = [Textract_Features[x] for x in features_arg]
+
+pretty_print = None
+if pretty_print_arg:
+    pretty_print = [Textract_Pretty_Print[x] for x in pretty_print_arg]
+
+if overlay_arg:
+    overlay = [Textract_Types[x] for x in overlay_arg]
+else:
+    overlay = list()
+
+exit_code = 0
+if pretty_print_arg and "FORMS" in pretty_print_arg and (not features_arg or "FORMS" not in features_arg):
+    print("should pretty-print FORMS but is not requested as --features")
+    exit_code = 1
+if pretty_print_arg and "TABLES" in pretty_print_arg and (not features_arg or "TABLES" not in features_arg):
+    print("should pretty-print TABLES but is not requested as --features")
+    exit_code = 1
+if overlay_arg and any([x for x in ["CELL", "TABLE"] if x in overlay_arg]) and (not features_arg
+                                                                                or "TABLES" not in features_arg):
+    print("should overlay TABLE or CELL but is not requested as --features TABLES")
+    exit_code = 1
+if showoutput and overlay_arg and any([x for x in ["FORM", "KEY", "VALUE"] if x in overlay_arg
+                                       ]) and (not features_arg or "FORMS" not in features_arg):
+    print("should overlay FORM or KEY or VALUE but FORMS not requested as --features FORMS")
+    exit_code = 1
+if showoutput and not overlay_arg:
+    print("asked for --pop-up-overlay-output or --overlay-output-folder, but not --overlay arguments given")
+    exit_code = 1
+if exit_code > 0:
+    exit(1)
+
+logger.debug(f"calling Textract")
+doc = call_textract(input_document=input_document, features=features)
+logger.debug(f"receivedTextract response")
+if showstdout:
+    if pretty_print:
+        print(get_string(textract_json_string=doc, output_type=pretty_print))
+    else:
+        print(doc)
+
+if overlay_output_folder or showoutput:
+    colors = {
+        "WORD": (128, 128, 0),
+        "LINE": (0, 128, 128),
+        "FORM": (128, 0, 128),
+        "KEY": (255, 0, 0),
+        "VALUE": (0, 255, 255),
+        "CELL": (255, 0, 255),
+        "TABLE": (255, 255, 0)
+    }
+    from PIL import Image, ImageDraw
+    is_s3_document: bool = False
+    s3_bucket: str = ""
+    s3_key: str = ""
+    if len(input_document) > 7 and input_document.lower().startswith("s3://"):
+        is_s3_document = True
+        input_document = input_document.replace("s3://", "")
+        s3_bucket, s3_key = input_document.split("/", 1)
+        print(s3_bucket, s3_key)
+    ext: str = ""
+    _, ext = os.path.splitext(input_document)
+
+    if is_s3_document:
+        s3 = boto3.client('s3')
+        o = s3.get_object(Bucket=s3_bucket, Key=s3_key)
+        input_bytes = o.get('Body').read()
+        f = io.BytesIO(input_bytes)
+        image: Image.Image = Image.open(f)
+        file_name, suffix = os.path.splitext(os.path.basename(s3_key))
+    else:
+        image = Image.open(input_document)
+        file_name, suffix = os.path.splitext(os.path.basename(input_document))
+    rgb_im = image.convert('RGB')
+    draw = ImageDraw.Draw(rgb_im)
+    document_dimension: DocumentDimensions = DocumentDimensions(doc_width=image.size[0], doc_height=image.size[1])
+    bounding_box_list = get_bounding_boxes(textract_json_string=doc,
+                                           document_dimensions=document_dimension,
+                                           overlay_features=overlay)
+    for bbox in bounding_box_list:
+        box_color = colors[bbox.box_type.name]
+        draw.rectangle(xy=[bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax], outline=box_color, width=2)
+
+    if showoutput:
+        rgb_im.show()
+    if overlay_output_folder:
+        if not os.path.exists(overlay_output_folder):
+            os.makedirs(overlay_output_folder, exist_ok=True)
+        file_name, suffix = get_filename_from_document(input_document=input_document)
+        output_types = "_".join(overlay_arg)
+        output_file_name = os.path.join(overlay_output_folder, f"{file_name}_boxed_{output_types}_{suffix}")
+        output_format = suffix[1:]
+        if output_format.upper() == "JPG":
+            output_format = "JPEG"
+        rgb_im.save(output_file_name, output_format)
