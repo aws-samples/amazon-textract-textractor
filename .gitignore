@@ -110,3 +110,9 @@ caller/tests/test_call.py
 overlayer/tests/test_overlay.py
 prettyprinter/tests/test_pretty_print.py
 
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.#

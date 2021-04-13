@@ -3,14 +3,12 @@ from botocore.client import Config
 import os
 import csv
 
+
 class AwsHelper:
     def getClient(self, name, awsRegion):
-        config = Config(
-            retries = dict(
-                max_attempts = 30
-            )
-        )
+        config = Config(retries=dict(max_attempts=30))
         return boto3.client(name, region_name=awsRegion, config=config)
+
 
 class S3Helper:
     @staticmethod
@@ -21,7 +19,8 @@ class S3Helper:
         return awsRegion
 
     @staticmethod
-    def getFileNames(awsRegion, bucketName, prefix, maxPages, allowedFileTypes):
+    def getFileNames(awsRegion, bucketName, prefix, maxPages,
+                     allowedFileTypes):
 
         files = []
 
@@ -31,19 +30,19 @@ class S3Helper:
 
         s3client = AwsHelper().getClient('s3', awsRegion)
 
-        while(hasMoreContent and currentPage <= maxPages):
-            if(continuationToken):
+        while (hasMoreContent and currentPage <= maxPages):
+            if (continuationToken):
                 listObjectsResponse = s3client.list_objects_v2(
                     Bucket=bucketName,
                     Prefix=prefix,
                     ContinuationToken=continuationToken)
             else:
                 listObjectsResponse = s3client.list_objects_v2(
-                    Bucket=bucketName,
-                    Prefix=prefix)
+                    Bucket=bucketName, Prefix=prefix)
 
-            if(listObjectsResponse['IsTruncated']):
-                continuationToken = listObjectsResponse['NextContinuationToken']
+            if (listObjectsResponse['IsTruncated']):
+                continuationToken = listObjectsResponse[
+                    'NextContinuationToken']
             else:
                 hasMoreContent = False
 
@@ -51,10 +50,11 @@ class S3Helper:
                 docName = doc['Key']
                 docExt = FileHelper.getFileExtenstion(docName)
                 docExtLower = docExt.lower()
-                if(docExtLower in allowedFileTypes):
+                if (docExtLower in allowedFileTypes):
                     files.append(docName)
 
         return files
+
 
 class FileHelper:
     @staticmethod
@@ -63,16 +63,17 @@ class FileHelper:
         dn, dext = os.path.splitext(basename)
         return (dn, dext[1:])
 
+    @staticmethod
     def getFileName(fileName):
         basename = os.path.basename(fileName)
         dn, dext = os.path.splitext(basename)
         return dn
 
+    @staticmethod
     def getFileExtenstion(fileName):
         basename = os.path.basename(fileName)
         dn, dext = os.path.splitext(basename)
         return dext[1:]
-
 
     @staticmethod
     def readFile(fileName):
@@ -88,12 +89,13 @@ class FileHelper:
     def writeToFileWithMode(fileName, content, mode):
         with open(fileName, mode) as document:
             document.write(content)
+
     @staticmethod
     def getFilesInFolder(path, fileTypes):
         for file in os.listdir(path):
             if os.path.isfile(os.path.join(path, file)):
                 ext = FileHelper.getFileExtenstion(file)
-                if(ext.lower() in fileTypes):
+                if (ext.lower() in fileTypes):
                     yield file
 
     @staticmethod

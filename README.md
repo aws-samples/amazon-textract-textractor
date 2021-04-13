@@ -10,6 +10,7 @@ textractor helps speed up PoCs by allowing you to quickly extract text, forms an
 ## Setup
 
 - Download [code](./zip/textractor.zip) and unzip on your local machine.
+- run ```python -m pip install -r requirements.txt```
 
 ## Usage
 
@@ -43,6 +44,7 @@ Tool generates several files in the format below:
 - document-page-n-text-inreadingorder.txt: Detected text in reading order (multi-column) for each page in the document.
 - document-page-n-forms.csv: Key/Value pairs for each page in the document.
 - document-page-n-tables.csv: Tables detected for each page in the document.
+- document-page-n-table-n-tables.csv: Pretty-printed tables detected for each page in the document.
 
 #### Insights related output files
 
