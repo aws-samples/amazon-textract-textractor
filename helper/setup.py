@@ -10,7 +10,7 @@ def read(fname):
 requirements = [
     'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.2',
     'amazon-textract-caller>=0.0.3', 'amazon-textract-overlayer',
-    'amazon-textract-prettyprinter>=0.0.2', 'Pillow==8.1.2', 'PyPDF2==1.26.0'
+    'amazon-textract-prettyprinter>=0.0.3', 'Pillow==8.1.2', 'PyPDF2==1.26.0'
 ]
 
 if sys.argv[-1] == 'publish-test':
