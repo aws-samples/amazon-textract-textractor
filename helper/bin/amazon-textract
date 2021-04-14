@@ -2,12 +2,11 @@
 
 import argparse
 import os
-import sys
 import io
 import boto3
 from textractcaller.t_call import Textract_Features, Textract_Types, call_textract
 from textractoverlayer.t_overlay import DocumentDimensions, get_bounding_boxes
-from textractprettyprinter.t_pretty_print import Textract_Pretty_Print, get_string
+from textractprettyprinter.t_pretty_print import Pretty_Print_Table_Format, Textract_Pretty_Print, get_string
 from textractoverlayer.image_tools import get_filename_from_document
 from textracthelper._version import __version__
 import textracthelper._version
@@ -23,6 +22,7 @@ input_doc_or_example.set_defaults(use_example=False)
 
 parser.add_argument("--features", nargs='+', type=str, choices=["FORMS", "TABLES"], help="")
 parser.add_argument("--pretty-print", nargs='+', type=str, choices=["WORDS", "LINES", "FORMS", "TABLES"])
+parser.add_argument("--pretty-print-table-format", type=str, choices=["csv", "plain" ,"simple" ,"github" ,"grid" ,"fancy_grid" ,"pipe" ,"orgtbl" ,"jira" ,"presto" ,"pretty" ,"psql" ,"rst" ,"mediawiki" ,"moinmoin" ,"youtrack" ,"html" ,"unsafehtml" ,"latex" ,"latex_raw" ,"latex_booktabs" ,"latex_longtable" ,"textile" ,"tsv"], default='github')
 parser.add_argument("--overlay", nargs='+', type=str, choices=["WORD", "LINE", "FORM", "KEY", "VALUE", "TABLE", "CELL"])
 parser.add_argument("--pop-up-overlay-output", dest='showoutput', action='store_true')
 parser.add_argument("--no-pop-up-overlay-output", dest='showoutput', action='store_false')
@@ -48,6 +48,7 @@ showstdout = args.showstdout
 use_example = args.use_example
 showdebug = args.showdebug
 showinfo = args.showinfo
+pretty_print_table_format_arg = args.pretty_print_table_format
 
 if showinfo or showdebug:
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -60,12 +61,17 @@ if showinfo or showdebug:
     caller_logger.propagate = True
     caller_logger.setLevel(logging.INFO)
     caller_logger.addHandler(handler)
+    printer_logger = logging.getLogger('textractprettyprinter')
+    printer_logger.propagate = True
+    printer_logger.setLevel(logging.INFO)
+    printer_logger.addHandler(handler)
     logger.info("log level: INFO")
 
     if showdebug:
         handler.setLevel(logging.DEBUG)
         logger.setLevel(logging.DEBUG)
         caller_logger.setLevel(logging.DEBUG)
+        printer_logger.setLevel(logging.DEBUG)
         logger.debug("current log level: DEBUG")
 
 if use_example:
@@ -75,7 +81,8 @@ if use_example:
 features = None
 if features_arg:
     features = [Textract_Features[x] for x in features_arg]
-
+pretty_print_table_format = Pretty_Print_Table_Format[pretty_print_table_format_arg]
+logger.debug(f"pretty_print_table_format: {pretty_print_table_format}")
 pretty_print = None
 if pretty_print_arg:
     pretty_print = [Textract_Pretty_Print[x] for x in pretty_print_arg]
@@ -111,7 +118,7 @@ doc = call_textract(input_document=input_document, features=features)
 logger.debug(f"receivedTextract response")
 if showstdout:
     if pretty_print:
-        print(get_string(textract_json_string=doc, output_type=pretty_print))
+        print(get_string(textract_json_string=doc, output_type=pretty_print, table_format=pretty_print_table_format))
     else:
         print(doc)
 
