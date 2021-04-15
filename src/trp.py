@@ -524,6 +524,10 @@ class Page:
                         print(item)
 
     def getLinesInReadingOrder(self):
+        starting_point_tolerance = 0.01
+        height_tolerance = 3
+        same_line_top_tolerance = 0.001
+        same_line_spacing_tolerance = 5
         columns = []
         lines = []
         for item in self._lines:
@@ -532,14 +536,32 @@ class Page:
                     bbox_left = item.geometry.boundingBox.left
                     bbox_right = item.geometry.boundingBox.left + item.geometry.boundingBox.width
                     bbox_centre = item.geometry.boundingBox.left + item.geometry.boundingBox.width/2
-                    column_centre = (column['left'] + column['right'])/2
-                    if (bbox_centre > column['left'] and bbox_centre < column['right']) or (column_centre > bbox_left and column_centre < bbox_right):
+                    bbox_top = item.geometry.boundingBox.top
+                    bbox_height = item.geometry.boundingBox.height
+
+                    # new logic:  
+                    # if the starting point is within starting_point_tolerance (first_condition) and 
+                    # the top location is within height_tolerance * bbox_height (second_condition), or
+                    # the new line appeared to be broken by Textract mistake and should be of the same line 
+                    # by looking at the top (third_condition) and 
+                    # the left of the new line appears right next to the right of the last line (fourth_condition)
+                    # then consider the new line as part of said column
+                    first_condition = abs(bbox_left - column['left']) < starting_point_tolerance
+                    second_condition = abs(bbox_top - column['top']) < height_tolerance * bbox_height
+                    third_condition = abs(bbox_top - column['top']) < same_line_top_tolerance # appeared to be in the same line
+                    fourth_condition = abs(bbox_left - column['right']) < same_line_spacing_tolerance * starting_point_tolerance
+                    if (first_condition and second_condition) or (third_condition and fourth_condition):
                         #Bbox appears inside the column
                         lines.append([index, item.text])
+                        # update the top and right with the new line added.
+                        columns[index]['top'] = bbox_top
+                        columns[index]['right'] = bbox_right
                         column_found=True
                         break
                 if not column_found:
-                    columns.append({'left':item.geometry.boundingBox.left, 'right':item.geometry.boundingBox.left + item.geometry.boundingBox.width})
+                    columns.append({'left':item.geometry.boundingBox.left, 
+                                    'right':item.geometry.boundingBox.left + item.geometry.boundingBox.width,
+                                    'top':item.geometry.boundingBox.top})
                     lines.append([len(columns)-1, item.text])
 
         lines.sort(key=lambda x: x[0])
