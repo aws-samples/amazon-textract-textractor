@@ -16,14 +16,29 @@ def call_textract(input_document: Union[str, bytearray],
                   force_async_api: bool = False) -> str:
 ```
 
+Also useful when receiving the JSON response from an asynchronous job (start_document_text_detection or start_document_analysis)
+
+```
+def get_full_json(job_id: str = None,
+                  textract_api: Textract_API = Textract_API.DETECT,
+                  boto3_textract_client=None)->dict:
+```
+
+And when receiving the JSON from the OutputConfig location, this is useful as well.
+```
+def get_full_json_from_output_config(output_config: OutputConfig = None,
+                                     job_id: str = None,
+                                     s3_client = None)->dict:
+```
+
 ## Samples
 
-### Calling with file from local filesystem only OCR
+### Calling with file from local filesystem only with detect_text
 ```
 textract_json = call_textract(input_document="/folder/local-filesystem-file.png")
 ```
 
-### Calling with file from local filesystem only OCR and using in Textract Response Parser
+### Calling with file from local filesystem only detect_text and using in Textract Response Parser
 
 (needs trp dependency through```python -m pip install amazon-textract-response-parser```)
 ```
