@@ -106,7 +106,7 @@ ENV/
 .mypy_cache/
 
 # remove test with fixed input-document locations till we add a Textract mock
-caller/tests/test_call.py
+caller/tests/test_*
 overlayer/tests/test_overlay.py
 prettyprinter/tests/test_pretty_print.py
 
@@ -116,3 +116,5 @@ share/python-wheels/
 *.egg
 MANIFEST
 .#
+
+
