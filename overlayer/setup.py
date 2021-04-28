@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'amazon-textract-caller']
+requirements = ['boto3', 'botocore', 'amazon-textract-caller>=0.0.11']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
@@ -29,14 +29,14 @@ setup(name='amazon-textract-overlayer',
       packages=find_packages(exclude=['tests']),
       include_package_data=True,
       exclude_package_data={"": ["test_*.py", "__pycache__"]},
-      version='0.0.1',
+      version='0.0.2',
       description='Amazon Textract Overlay tools',
       install_requires=requirements,
       long_description_content_type='text/markdown',
       long_description=read('README.md'),
       author='Amazon Rekognition Textract Demoes',
       author_email='rekognition-textract-demos@amazon.com',
-      url='https://github.com/aws-samples/amazon-textract-textractor',
+      url='https://github.com/aws-samples/amazon-textract-textractor/tree/master/overlayer',
       keywords='amazon-textract-textractor amazon textract textractor helper overlayer',
       license="Apache License Version 2.0",
       classifiers=[

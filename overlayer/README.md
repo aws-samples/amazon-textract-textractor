@@ -29,4 +29,18 @@ overlay=[Textract_Types.WORD, Textract_Types.CELL]
 bounding_box_list = get_bounding_boxes(textract_json=doc, document_dimensions=document_dimension, overlay_features=overlay)
 ```
 
-The actual overlay drawing of bounding boxes for images is in the ```amazon-textract``` command from the package ```amazon-textract-helper```.
+The actual overlay drawing of bounding boxes for images is in the ```amazon-textract``` command from the package ```amazon-textract-helper``` and looks like this:
+
+```python
+from PIL import Image, ImageDraw
+
+image = Image.open(input_document)
+rgb_im = image.convert('RGB')
+draw = ImageDraw.Draw(rgb_im)
+
+# check the impl in amazon-textract-helper for ways to associate different colors to types
+for bbox in bounding_box_list:
+    draw.rectangle(xy=[bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax], outline=(128, 128, 0), width=2)
+
+rgb_im.show()
+```

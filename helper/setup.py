@@ -8,9 +8,9 @@ def read(fname):
 
 
 requirements = [
-    'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.2',
-    'amazon-textract-caller>=0.0.3', 'amazon-textract-overlayer',
-    'amazon-textract-prettyprinter>=0.0.3', 'Pillow==8.1.2', 'PyPDF2==1.26.0'
+    'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.5',
+    'amazon-textract-caller>=0.0.11', 'amazon-textract-overlayer>=0.0.2',
+    'amazon-textract-prettyprinter>=0.0.6', 'Pillow==8.1.2', 'PyPDF2==1.26.0'
 ]
 
 if sys.argv[-1] == 'publish-test':
@@ -41,7 +41,7 @@ setup(name='amazon-textract-helper',
       long_description=read('README.md'),
       author='Amazon Rekognition Textract Demoes',
       author_email='rekognition-textract-demos@amazon.com',
-      url='https://github.com/aws-samples/amazon-textract-textractor',
+      url='https://github.com/aws-samples/amazon-textract-textractor/tree/master/helper',
       keywords='amazon-textract-textractor amazon textract textractor helper',
       license="Apache License Version 2.0",
       classifiers=[

@@ -17,24 +17,23 @@ logger = logging.getLogger(__name__)
 parser = argparse.ArgumentParser()
 input_doc_or_example = parser.add_mutually_exclusive_group(required=True)
 input_doc_or_example.add_argument("--input-document", help="s3 object (s3://) or file from local filesystem")
-input_doc_or_example.add_argument("--example", dest='use_example', action='store_true')
+input_doc_or_example.add_argument("--example", dest='use_example', action='store_true', help="using the example document to call Textract")
 input_doc_or_example.set_defaults(use_example=False)
 
-parser.add_argument("--features", nargs='+', type=str, choices=["FORMS", "TABLES"], help="")
-parser.add_argument("--pretty-print", nargs='+', type=str, choices=["WORDS", "LINES", "FORMS", "TABLES"])
-parser.add_argument("--pretty-print-table-format", type=str, choices=["csv", "plain" ,"simple" ,"github" ,"grid" ,"fancy_grid" ,"pipe" ,"orgtbl" ,"jira" ,"presto" ,"pretty" ,"psql" ,"rst" ,"mediawiki" ,"moinmoin" ,"youtrack" ,"html" ,"unsafehtml" ,"latex" ,"latex_raw" ,"latex_booktabs" ,"latex_longtable" ,"textile" ,"tsv"], default='github')
-parser.add_argument("--overlay", nargs='+', type=str, choices=["WORD", "LINE", "FORM", "KEY", "VALUE", "TABLE", "CELL"])
-parser.add_argument("--pop-up-overlay-output", dest='showoutput', action='store_true')
-parser.add_argument("--no-pop-up-overlay-output", dest='showoutput', action='store_false')
+parser.add_argument("--features", nargs='+', type=str, choices=["FORMS", "TABLES"], help="features to call Textract with. Will trigger call to AnalyzeDocument instead of DetectDocumentText")
+parser.add_argument("--pretty-print", nargs='+', type=str, choices=["WORDS", "LINES", "FORMS", "TABLES"], help="")
+parser.add_argument("--pretty-print-table-format", type=str, choices=["csv", "plain" ,"simple" ,"github" ,"grid" ,"fancy_grid" ,"pipe" ,"orgtbl" ,"jira" ,"presto" ,"pretty" ,"psql" ,"rst" ,"mediawiki" ,"moinmoin" ,"youtrack" ,"html" ,"unsafehtml" ,"latex" ,"latex_raw" ,"latex_booktabs" ,"latex_longtable" ,"textile" ,"tsv"], default='github', help="which format to output the pretty print information to. Only effects FORMS and TABLES")
+parser.add_argument("--overlay", nargs='+', type=str, choices=["WORD", "LINE", "FORM", "KEY", "VALUE", "TABLE", "CELL"], help="defines what bounding boxes to draw on the output")
+parser.add_argument("--pop-up-overlay-output", dest='showoutput', action='store_true', help="shows image with overlay")
 parser.set_defaults(showoutput=False)
-parser.add_argument("--overlay-output-folder", type=str, default=None)
-parser.add_argument("--version", action='version', version='%(prog)s {version}'.format(version=__version__))
-parser.add_argument("--no-stdout", dest='showstdout', action='store_false')
+parser.add_argument("--overlay-output-folder", type=str, default=None, help="output with bounding boxes to folder")
+parser.add_argument("--version", action='version', version='%(prog)s {version}'.format(version=__version__), help="print version information")
+parser.add_argument("--no-stdout", dest='showstdout', action='store_false', help="no output to stdout")
 parser.set_defaults(showstdout=True)
 show_logs = parser.add_mutually_exclusive_group(required=False)
-show_logs.add_argument("-v", dest='showinfo', action='store_true')
+show_logs.add_argument("-v", dest='showinfo', action='store_true', help=">=INFO level logging output to stderr")
 show_logs.set_defaults(showinfo=False)
-show_logs.add_argument("-vv", dest='showdebug', action='store_true')
+show_logs.add_argument("-vv", dest='showdebug', action='store_true', help=">=DEBUG level logging output to stderr")
 show_logs.set_defaults(showdebug=False)
 
 args = parser.parse_args()
@@ -118,7 +117,7 @@ doc = call_textract(input_document=input_document, features=features)
 logger.debug(f"receivedTextract response")
 if showstdout:
     if pretty_print:
-        print(get_string(textract_json_string=doc, output_type=pretty_print, table_format=pretty_print_table_format))
+        print(get_string(textract_json=doc, output_type=pretty_print, table_format=pretty_print_table_format))
     else:
         print(doc)
 
@@ -157,7 +156,7 @@ if overlay_output_folder or showoutput:
     rgb_im = image.convert('RGB')
     draw = ImageDraw.Draw(rgb_im)
     document_dimension: DocumentDimensions = DocumentDimensions(doc_width=image.size[0], doc_height=image.size[1])
-    bounding_box_list = get_bounding_boxes(textract_json_string=doc,
+    bounding_box_list = get_bounding_boxes(textract_json=doc,
                                            document_dimensions=document_dimension,
                                            overlay_features=overlay)
     for bbox in bounding_box_list:
