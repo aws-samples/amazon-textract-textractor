@@ -4,7 +4,16 @@ amazon-textract-caller provides a collection of ready to use functions and sampl
 
 Making it easy to call Amazon Textract regardless of file type and location.
 
+## Install
+
+```bash
+> python -m pip install amazon-textract-caller
 ```
+
+## Functions
+
+```python
+from textractcaller.t_call import call_textract
 def call_textract(input_document: Union[str, bytearray],
                   features: List[Textract_Features] = None,
                   output_config: OutputConfig = None,
@@ -13,19 +22,22 @@ def call_textract(input_document: Union[str, bytearray],
                   notification_channel: NotificationChannel = None,
                   client_request_token: str = None,
                   return_job_id: bool = False,
-                  force_async_api: bool = False) -> str:
+                  force_async_api: bool = False) -> dict:
 ```
 
 Also useful when receiving the JSON response from an asynchronous job (start_document_text_detection or start_document_analysis)
 
-```
+```python
+from textractcaller.t_call import get_full_json
 def get_full_json(job_id: str = None,
                   textract_api: Textract_API = Textract_API.DETECT,
                   boto3_textract_client=None)->dict:
 ```
 
-And when receiving the JSON from the OutputConfig location, this is useful as well.
-```
+And when receiving the JSON from the OutputConfig location, this method is useful as well.
+
+```python
+from textractcaller.t_call import get_full_json_from_output_config
 def get_full_json_from_output_config(output_config: OutputConfig = None,
                                      job_id: str = None,
                                      s3_client = None)->dict:
@@ -34,27 +46,29 @@ def get_full_json_from_output_config(output_config: OutputConfig = None,
 ## Samples
 
 ### Calling with file from local filesystem only with detect_text
-```
+
+```python
 textract_json = call_textract(input_document="/folder/local-filesystem-file.png")
 ```
 
 ### Calling with file from local filesystem only detect_text and using in Textract Response Parser
 
-(needs trp dependency through```python -m pip install amazon-textract-response-parser```)
-```
+(needs trp dependency through ```python -m pip install amazon-textract-response-parser```)
+
+```python
 import json
 from trp import Document
-from textracthelper.t_call call_textract
+from textractcaller.t_call import call_textract
 
 textract_json = call_textract(input_document="/folder/local-filesystem-file.png")
-d = Document(json.loads(response))
+d = Document(textract_json)
 ```
 
 
 ### Calling with file from local filesystem with TABLES features
 
-```
-from textracthelper.t_call call_textract, Textract_Features
+```python
+from textractcaller.t_call import call_textract, Textract_Features
 features = [Textract_Features.TABLES]
 response = call_textract(
     input_document="/folder/local-filesystem-file.png", features=features)
@@ -62,15 +76,15 @@ response = call_textract(
 
 ### Call with images located on S3 but force asynchronous API
 
-```
-from textracthelper.t_call call_textract
+```python
+from textractcaller.t_call import call_textract
 response = call_textract(input_document="s3://some-bucket/w2-example.png", force_async_api=True)
 ```
 
 ### Call with OutputConfig, Customer-Managed-Key
 
-```
-from textracthelper.t_call call_textract
+```python
+from textractcaller.t_call import call_textract
 from textractcaller.t_call import OutputConfig, Textract_Features
 output_config = OutputConfig(s3_bucket="somebucket-encrypted", s3_prefix="output/")
 response = call_textract(input_document="s3://someprefix/somefile.png",
@@ -81,4 +95,12 @@ response = call_textract(input_document="s3://someprefix/somefile.png",
                           job_tag="sometag",
                           client_request_token="sometoken")
 
+```
+
+### Call with PDF located on S3 and force return of JobId instead of JSON response
+
+```python
+from textractcaller.t_call import call_textract
+response = call_textract(input_document="s3://some-bucket/some-document.pdf", return_job_id=True)
+job_id = response['JobId']
 ```

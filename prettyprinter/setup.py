@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'amazon-textract-response-parser', 'tabulate==0.8.9']
+requirements = ['boto3', 'botocore', 'amazon-textract-response-parser>=0.1.5', 'tabulate==0.8.9']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
@@ -27,14 +27,14 @@ if sys.argv[-1] == 'publish':
 
 setup(name='amazon-textract-prettyprinter',
       packages=['textractprettyprinter'],
-      version='0.0.3',
+      version='0.0.6',
       description='Amazon Textract Helper tools for pretty printing',
       install_requires=requirements,
       long_description_content_type='text/markdown',
       long_description=read('README.md'),
       author='Amazon Rekognition Textract Demoes',
       author_email='rekognition-textract-demos@amazon.com',
-      url='https://github.com/aws-samples/amazon-textract-textractor',
+      url='https://github.com/aws-samples/amazon-textract-textractor/tree/master/prettyprinter',
       keywords='amazon-textract-textractor amazon textract textractor helper pretty-print',
       license="Apache License Version 2.0",
       classifiers=[

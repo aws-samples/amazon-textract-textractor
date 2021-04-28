@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from textractcaller.t_call import Textract_Types
 from typing import List
 import trp
-import json
 
 
 @dataclass
@@ -73,9 +72,9 @@ class BoundingBox():
         return self.__page_number
 
 
-def get_bounding_boxes(textract_json_string: str, overlay_features: List[Textract_Types],
-                       document_dimensions: DocumentDimensions) -> "list[BoundingBox]":
-    doc = trp.Document(json.loads(textract_json_string))
+def get_bounding_boxes(textract_json: dict, overlay_features: List[Textract_Types],
+                       document_dimensions: DocumentDimensions) -> List[BoundingBox]:
+    doc = trp.Document(textract_json)
     bounding_box_list: List[BoundingBox] = list()
     page_number: int = 0
     for page in doc.pages:

@@ -7,6 +7,42 @@ textractor helps speed up PoCs by allowing you to quickly extract text, forms an
 - Python3
 - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 
+# Overview
+
+The project is structured a little different now.
+
+The original textractor implementation is still available under src, while the new PyPI packages for different features are setup in the following folders:
+
+* helper
+* caller
+* overlayer
+* prettyprinter
+
+All packages are available on PyPI as well.
+
+## Helper
+
+Command line tool to easily call Textract. Essentially the command uses the caller, overlayer and prettyprinter methods.
+Usage in the README: https://github.com/aws-samples/amazon-textract-textractor/tree/master/helper
+
+## Caller
+
+Making it easy to call Textract and get the response, also when paginated or stored on S3 through OutputConfig
+Usage in README: https://github.com/aws-samples/amazon-textract-textractor/tree/master/caller
+
+## Prettyprinter
+
+Format the Textract JSON output for easy reading or use in other systems (e. g. CSV).
+Usage in README: https://github.com/aws-samples/amazon-textract-textractor/tree/master/prettyprinter
+
+## Overlayer
+
+Generate Bounding Boxes to make it easier to draw for visualizations.
+Usage in README: https://github.com/aws-samples/amazon-textract-textractor/tree/master/overlayer
+
+
+# Original Implementation 
+
 ## Setup
 
 - Download [code](./zip/textractor.zip) and unzip on your local machine.

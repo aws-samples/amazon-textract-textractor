@@ -3,7 +3,6 @@ from typing import List, Optional
 from tabulate import tabulate
 from enum import Enum
 from io import StringIO
-import json
 import csv
 import logging
 
@@ -14,23 +13,23 @@ Textract_Pretty_Print = Enum('Textract_Pretty_Print',
                              start=0)
 Pretty_Print_Table_Format = Enum('Pretty_Print_Table_Format', ["csv", "plain" ,"simple" ,"github" ,"grid" ,"fancy_grid" ,"pipe" ,"orgtbl" ,"jira" ,"presto" ,"pretty" ,"psql" ,"rst" ,"mediawiki" ,"moinmoin" ,"youtrack" ,"html" ,"unsafehtml" ,"latex" ,"latex_raw" ,"latex_booktabs" ,"latex_longtable" ,"textile" ,"tsv"])
 
-def get_string(textract_json_string: str,
+def get_string(textract_json:dict,
                output_type: Optional[List[Textract_Pretty_Print]] = None,
                table_format: Pretty_Print_Table_Format=Pretty_Print_Table_Format.github):
     result_value = ""
     for t in output_type:
         if t == Textract_Pretty_Print.WORDS:
             result_value += get_words_string(
-                textract_json_string=textract_json_string)
+                textract_json=textract_json)
         if t == Textract_Pretty_Print.LINES:
             result_value += get_lines_string(
-                textract_json_string=textract_json_string)
+                textract_json=textract_json)
         if t == Textract_Pretty_Print.FORMS:
             result_value += get_forms_string(
-                textract_json_string=textract_json_string, table_format=table_format)
+                textract_json=textract_json, table_format=table_format)
         if t == Textract_Pretty_Print.TABLES:
             result_value += get_tables_string(
-                textract_json_string=textract_json_string, table_format=table_format)
+                textract_json=textract_json, table_format=table_format)
     return result_value
 
 
@@ -74,7 +73,7 @@ def convert_form_to_list(trp_form: trp.Form,
         rows_list.append([t_key, t_value])
     return rows_list
 
-def get_tables_string(textract_json_string: str,
+def get_tables_string(textract_json: dict,
                       table_format: Pretty_Print_Table_Format = Pretty_Print_Table_Format.github,
                       with_confidence: bool = False,
                       with_geo: bool = False) -> str:
@@ -85,7 +84,7 @@ def get_tables_string(textract_json_string: str,
     with_geo: output geo information as well
     """
     logger.debug(f"table_format: {table_format}")
-    doc = trp.Document(json.loads(textract_json_string))
+    doc = trp.Document(textract_json)
     result_value = ""
     if not table_format==Pretty_Print_Table_Format.csv:
         for page in doc.pages:
@@ -107,7 +106,7 @@ def get_tables_string(textract_json_string: str,
     return result_value
 
 
-def get_forms_string(textract_json_string: str,
+def get_forms_string(textract_json: dict,
                     table_format: Pretty_Print_Table_Format = Pretty_Print_Table_Format.github,
                     with_confidence: bool = False,
                     with_geo: bool = False) -> str:
@@ -115,7 +114,7 @@ def get_forms_string(textract_json_string: str,
     returns string with key-values printed out in format: key: value
     """
     logger.debug(f"table_format: {table_format}")
-    doc = trp.Document(json.loads(textract_json_string))
+    doc = trp.Document(textract_json)
     result_value = ""
     if not table_format==Pretty_Print_Table_Format.csv:
         for page in doc.pages:
@@ -135,12 +134,12 @@ def get_forms_string(textract_json_string: str,
     return result_value
 
 
-def get_lines_string(textract_json_string: str,
+def get_lines_string(textract_json: dict,
                      with_page_number: bool = False) -> str:
     """
     returns string with lines seperated by \n
     """
-    doc = trp.Document(json.loads(textract_json_string))
+    doc = trp.Document(textract_json)
     i = 0
     result_value = ""
     for page in doc.pages:
@@ -152,12 +151,12 @@ def get_lines_string(textract_json_string: str,
     return result_value
 
 
-def get_words_string(textract_json_string: str,
+def get_words_string(textract_json:dict,
                      with_page_number: bool = False) -> str:
     """
     returns string with words seperated by \n
     """
-    doc = trp.Document(json.loads(textract_json_string))
+    doc = trp.Document(textract_json)
     i = 0
     result_value = ""
     for page in doc.pages:

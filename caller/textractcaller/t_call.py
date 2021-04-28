@@ -198,6 +198,8 @@ def get_full_json_from_output_config(output_config: OutputConfig = None,
             result_value['Blocks'].extend(response['Blocks'])
         else:
             result_value = response
+    if 'NextToken' in result_value:
+        del result_value['NextToken']
     return result_value
 
 
@@ -238,6 +240,8 @@ def get_full_json(job_id: str = None,
                 extra_args['NextToken'] = textract_results['NextToken']
             else:
                 break
+        if 'NextToken' in result_value:
+            del result_value['NextToken']
         return result_value
     else:
         logger.error(f"{job_response}")
@@ -255,7 +259,7 @@ def call_textract(input_document: Union[str, bytearray],
                   client_request_token: str = None,
                   return_job_id: bool = False,
                   force_async_api: bool = False,
-                  boto3_textract_client=None) -> str:
+                  boto3_textract_client=None) -> dict:
     """
     calls Textract and returns a response (either full json as string (json.dumps)or the job_id when return_job_id=True)
     input_document: points to document on S3 when string starts with s3://
@@ -267,7 +271,7 @@ def call_textract(input_document: Union[str, bytearray],
     client_request_token: passed down to Textract API
     job_tag: passed down to Textract API
     boto_3_textract_client: pass in boto3 client (to overcome missing region in environmnent, e. g.)
-    returns: str with full json response or job_id str
+    returns: dict with either Textract response or async API response (incl. the JobId)
     raises LimitExceededException when receiving LimitExceededException from Textract API. Expectation is to handle in calling function
     """
     logger.debug("call_textract")
@@ -278,7 +282,7 @@ def call_textract(input_document: Union[str, bytearray],
     is_s3_document: bool = False
     s3_bucket = ""
     s3_key = ""
-    result_value = ""
+    result_value = {}
     if isinstance(input_document, str):
         if len(input_document) > 7 and input_document.lower().startswith(
                 "s3://"):
@@ -325,7 +329,7 @@ def call_textract(input_document: Union[str, bytearray],
                     **params)
             if submission_status["ResponseMetadata"]["HTTPStatusCode"] == 200:
                 if return_job_id:
-                    return submission_status['JobId']
+                    return submission_status
                 else:
                     result_value = get_full_json(
                         submission_status['JobId'],
@@ -375,4 +379,4 @@ def call_textract(input_document: Union[str, bytearray],
         else:
             result_value = textract.detect_document_text(**params)
 
-    return json.dumps(result_value)
+    return result_value
