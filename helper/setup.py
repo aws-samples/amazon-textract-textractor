@@ -8,7 +8,7 @@ def read(fname):
 
 
 requirements = [
-    'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.6',
+    'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.7',
     'amazon-textract-caller>=0.0.11', 'amazon-textract-overlayer>=0.0.2',
     'amazon-textract-prettyprinter>=0.0.6', 'Pillow==8.1.2', 'PyPDF2==1.26.0'
 ]
