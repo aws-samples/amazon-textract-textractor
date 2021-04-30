@@ -16,9 +16,10 @@ Make sure your environment is setup with AWS credentials through configuration f
 
 ```bash
 > amazon-textract --help
-usage: amazon-textract [-h] (--input-document INPUT_DOCUMENT | --example) [--features {FORMS,TABLES} [{FORMS,TABLES} ...]]
+usage: amazon-textract [-h] (--input-document INPUT_DOCUMENT | --example | --stdin) [--features {FORMS,TABLES} [{FORMS,TABLES} ...]]
                        [--pretty-print {WORDS,LINES,FORMS,TABLES} [{WORDS,LINES,FORMS,TABLES} ...]]
-                       [--pretty-print-table-format {csv,plain,simple,github,grid,fancy_grid,pipe,orgtbl,jira,presto,pretty,psql,rst,mediawiki,moinmoin,youtrack,html,unsafehtml,latex,latex_raw,latex_booktabs,latex_longtable,textile,tsv}]
+                       [--pretty-print-table-format {csv,plain,simple,github,grid,fancy_grid,pipe,orgtbl,jira,presto,pretty,psql,rst,medi
+awiki,moinmoin,youtrack,html,unsafehtml,latex,latex_raw,latex_booktabs,latex_longtable,textile,tsv}]
                        [--overlay {WORD,LINE,FORM,KEY,VALUE,TABLE,CELL} [{WORD,LINE,FORM,KEY,VALUE,TABLE,CELL} ...]]
                        [--pop-up-overlay-output] [--overlay-output-folder OVERLAY_OUTPUT_FOLDER] [--version] [--no-stdout] [-v | -vv]
 
@@ -27,10 +28,12 @@ optional arguments:
   --input-document INPUT_DOCUMENT
                         s3 object (s3://) or file from local filesystem
   --example             using the example document to call Textract
+  --stdin               receive JSON from stdin
   --features {FORMS,TABLES} [{FORMS,TABLES} ...]
                         features to call Textract with. Will trigger call to AnalyzeDocument instead of DetectDocumentText
   --pretty-print {WORDS,LINES,FORMS,TABLES} [{WORDS,LINES,FORMS,TABLES} ...]
-  --pretty-print-table-format {csv,plain,simple,github,grid,fancy_grid,pipe,orgtbl,jira,presto,pretty,psql,rst,mediawiki,moinmoin,youtrack,html,unsafehtml,latex,latex_raw,latex_booktabs,latex_longtable,textile,tsv}
+  --pretty-print-table-format {csv,plain,simple,github,grid,fancy_grid,pipe,orgtbl,jira,presto,pretty,psql,rst,mediawiki,moinmoin,youtrac
+k,html,unsafehtml,latex,latex_raw,latex_booktabs,latex_longtable,textile,tsv}
                         which format to output the pretty print information to. Only effects FORMS and TABLES
   --overlay {WORD,LINE,FORM,KEY,VALUE,TABLE,CELL} [{WORD,LINE,FORM,KEY,VALUE,TABLE,CELL} ...]
                         defines what bounding boxes to draw on the output
@@ -81,6 +84,15 @@ Output similar to Easy Start
 Output similar to Easy Start
 
 We will continue to use the ```--example``` parameter to keep it simple and easy to reproduce. S3 and local files work the same way, just instead of --example use --input-document <location>.
+
+## Call with STDIN
+
+```bash
+# first create JSON
+amazon-textract --example > example.json
+# now use a stored JSON with the ```amazon-textract``` command
+cat example.json | amazon-textract --stdin -pretty-print LINES
+```
 
 ## Call with FORMS and TABLES
 
