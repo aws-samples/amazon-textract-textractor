@@ -68,7 +68,7 @@ class DocumentLocation():
 @dataclass
 class Document():
     def __init__(self,
-                 byte_data: bytearray = None,
+                 byte_data: bytes = None,
                  s3_bucket: str = None,
                  s3_prefix: str = None,
                  version: str = None):
@@ -250,7 +250,7 @@ def get_full_json(job_id: str = None,
         )
 
 
-def call_textract(input_document: Union[str, bytearray],
+def call_textract(input_document: Union[str, bytes],
                   features: List[Textract_Features] = None,
                   output_config: OutputConfig = None,
                   kms_key_id: str = None,
@@ -367,7 +367,8 @@ def call_textract(input_document: Union[str, bytearray],
                         result_value = textract.detect_document_text(**params)
 
     # got bytearray, calling sync API
-    elif isinstance(input_document, bytearray):
+    elif isinstance(input_document, (bytes, bytearray)):
+        logger.debug("processing bytes or bytearray")
         if force_async_api:
             raise Exception("cannot run async for bytearray")
         params = generate_request_params(
@@ -378,5 +379,7 @@ def call_textract(input_document: Union[str, bytearray],
             result_value = textract.analyze_document(**params)
         else:
             result_value = textract.detect_document_text(**params)
+    else:
+        raise ValueError(f"unsupported input_document type: {type(input_document)}")
 
     return result_value
