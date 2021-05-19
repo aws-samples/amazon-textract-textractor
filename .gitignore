@@ -105,10 +105,8 @@ ENV/
 # mypy
 .mypy_cache/
 
-# remove test with fixed input-document locations till we add a Textract mock
-caller/tests/test_*
-overlayer/tests/test_overlay.py
-prettyprinter/tests/test_pretty_print.py
+# remove test with fixed input-document locations on S3 till we add a Textract and S3 mock
+test_local*
 
 share/python-wheels/
 *.egg-info/
@@ -117,4 +115,5 @@ share/python-wheels/
 MANIFEST
 .#
 
+.dir-locals.el
 
