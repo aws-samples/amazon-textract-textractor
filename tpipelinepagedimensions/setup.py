@@ -34,7 +34,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     exclude_package_data={"": ["test_*.py", "__pycache__"]},
-    version='0.0.1',
+    version='0.0.2',
     description=
     'Amazon Textract Pipeline Component to add page dimensions to page block types',
     install_requires=requirements,
