@@ -153,6 +153,7 @@ for page in doc.pages:
 
 ## Cost
   - As you run this tool, it calls different APIs (Amazon Textract, optionally Amazon Comprehend, Amazon Comprehend Medical, Amazon Translate) in your AWS account. You will get charged for all the API calls made as part of the analysis.
+  - If you are using the free tier, the free limit is different when using only the --text flag than using also the flags --forms and --tables [check the pricing here](https://aws.amazon.com/textract/pricing/) 
 
 ## Other Resources
 
