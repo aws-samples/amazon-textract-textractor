@@ -8,9 +8,9 @@ def read(fname):
 
 
 requirements = [
-    'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.7',
+    'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.9',
     'amazon-textract-caller>=0.0.11', 'amazon-textract-overlayer>=0.0.2',
-    'amazon-textract-prettyprinter>=0.0.6', 'Pillow==8.1.2', 'PyPDF2==1.26.0'
+    'amazon-textract-prettyprinter>=0.0.6', 'Pillow==8.2.0', 'PyPDF2==1.26.0'
 ]
 
 if sys.argv[-1] == 'publish-test':
@@ -33,7 +33,7 @@ setup(name='amazon-textract-helper',
       packages=find_packages(exclude=['tests']),
       include_package_data=True,
       exclude_package_data={"": ["test_*.py", "__pycache__"]},
-      version='0.0.18',
+      version='0.0.21',
       description='Amazon Textract Helper tools',
       install_requires=requirements,
       scripts=['bin/amazon-textract'],
