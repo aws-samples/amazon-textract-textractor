@@ -13,7 +13,7 @@ Making it easy to call Amazon Textract regardless of file type and location.
 ## Functions
 
 ```python
-from textractcaller.t_call import call_textract
+from textractcaller import call_textract
 def call_textract(input_document: Union[str, bytearray],
                   features: List[Textract_Features] = None,
                   output_config: OutputConfig = None,
@@ -28,7 +28,7 @@ def call_textract(input_document: Union[str, bytearray],
 Also useful when receiving the JSON response from an asynchronous job (start_document_text_detection or start_document_analysis)
 
 ```python
-from textractcaller.t_call import get_full_json
+from textractcaller import get_full_json
 def get_full_json(job_id: str = None,
                   textract_api: Textract_API = Textract_API.DETECT,
                   boto3_textract_client=None)->dict:
@@ -37,7 +37,7 @@ def get_full_json(job_id: str = None,
 And when receiving the JSON from the OutputConfig location, this method is useful as well.
 
 ```python
-from textractcaller.t_call import get_full_json_from_output_config
+from textractcaller import get_full_json_from_output_config
 def get_full_json_from_output_config(output_config: OutputConfig = None,
                                      job_id: str = None,
                                      s3_client = None)->dict:
@@ -58,7 +58,7 @@ textract_json = call_textract(input_document="/folder/local-filesystem-file.png"
 ```python
 import json
 from trp import Document
-from textractcaller.t_call import call_textract
+from textractcaller import call_textract
 
 textract_json = call_textract(input_document="/folder/local-filesystem-file.png")
 d = Document(textract_json)
@@ -68,7 +68,7 @@ d = Document(textract_json)
 ### Calling with file from local filesystem with TABLES features
 
 ```python
-from textractcaller.t_call import call_textract, Textract_Features
+from textractcaller import call_textract, Textract_Features
 features = [Textract_Features.TABLES]
 response = call_textract(
     input_document="/folder/local-filesystem-file.png", features=features)
@@ -77,15 +77,15 @@ response = call_textract(
 ### Call with images located on S3 but force asynchronous API
 
 ```python
-from textractcaller.t_call import call_textract
+from textractcaller import call_textract
 response = call_textract(input_document="s3://some-bucket/w2-example.png", force_async_api=True)
 ```
 
 ### Call with OutputConfig, Customer-Managed-Key
 
 ```python
-from textractcaller.t_call import call_textract
-from textractcaller.t_call import OutputConfig, Textract_Features
+from textractcaller import call_textract
+from textractcaller import OutputConfig, Textract_Features
 output_config = OutputConfig(s3_bucket="somebucket-encrypted", s3_prefix="output/")
 response = call_textract(input_document="s3://someprefix/somefile.png",
                           force_async_api=True,
@@ -100,7 +100,7 @@ response = call_textract(input_document="s3://someprefix/somefile.png",
 ### Call with PDF located on S3 and force return of JobId instead of JSON response
 
 ```python
-from textractcaller.t_call import call_textract
+from textractcaller import call_textract
 response = call_textract(input_document="s3://some-bucket/some-document.pdf", return_job_id=True)
 job_id = response['JobId']
 ```

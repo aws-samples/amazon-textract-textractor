@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import os
@@ -17,58 +17,45 @@ import logging
 logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser()
-input_doc_or_example_or_stdin = parser.add_mutually_exclusive_group(
-    required=True)
-input_doc_or_example_or_stdin.add_argument(
-    "--input-document", help="s3 object (s3://) or file from local filesystem")
-input_doc_or_example_or_stdin.add_argument(
-    "--example",
-    dest='use_example',
-    action='store_true',
-    help="using the example document to call Textract")
+input_doc_or_example_or_stdin = parser.add_mutually_exclusive_group(required=True)
+input_doc_or_example_or_stdin.add_argument("--input-document", help="s3 object (s3://) or file from local filesystem")
+input_doc_or_example_or_stdin.add_argument("--example",
+                                           dest='use_example',
+                                           action='store_true',
+                                           help="using the example document to call Textract")
 input_doc_or_example_or_stdin.set_defaults(use_example=False)
 input_doc_or_example_or_stdin.add_argument("--stdin",
                                            dest='inputfromstdin',
                                            action='store_true',
                                            help="receive JSON from stdin")
 input_doc_or_example_or_stdin.set_defaults(inputfromstdin=False)
-
+parser.add_argument(
+    "--overlay-document",
+    help=
+    "point to overlay document when input is --stdin and overlay is requested. Similar to --input-document could be on s3:// or local file",
+    type=str)
 parser.add_argument(
     "--features",
     nargs='+',
     type=str,
     choices=["FORMS", "TABLES"],
-    help=
-    "features to call Textract with. Will trigger call to AnalyzeDocument instead of DetectDocumentText"
-)
-parser.add_argument("--pretty-print",
+    help="features to call Textract with. Will trigger call to AnalyzeDocument instead of DetectDocumentText")
+parser.add_argument("--pretty-print", nargs='+', type=str, choices=["WORDS", "LINES", "FORMS", "TABLES"], help="")
+parser.add_argument("--pretty-print-table-format",
+                    type=str,
+                    choices=[
+                        "csv", "plain", "simple", "github", "grid", "fancy_grid", "pipe", "orgtbl", "jira", "presto",
+                        "pretty", "psql", "rst", "mediawiki", "moinmoin", "youtrack", "html", "unsafehtml", "latex",
+                        "latex_raw", "latex_booktabs", "latex_longtable", "textile", "tsv"
+                    ],
+                    default='github',
+                    help="which format to output the pretty print information to. Only effects FORMS and TABLES")
+parser.add_argument("--overlay",
                     nargs='+',
                     type=str,
-                    choices=["WORDS", "LINES", "FORMS", "TABLES"],
-                    help="")
-parser.add_argument(
-    "--pretty-print-table-format",
-    type=str,
-    choices=[
-        "csv", "plain", "simple", "github", "grid", "fancy_grid", "pipe",
-        "orgtbl", "jira", "presto", "pretty", "psql", "rst", "mediawiki",
-        "moinmoin", "youtrack", "html", "unsafehtml", "latex", "latex_raw",
-        "latex_booktabs", "latex_longtable", "textile", "tsv"
-    ],
-    default='github',
-    help=
-    "which format to output the pretty print information to. Only effects FORMS and TABLES"
-)
-parser.add_argument(
-    "--overlay",
-    nargs='+',
-    type=str,
-    choices=["WORD", "LINE", "FORM", "KEY", "VALUE", "TABLE", "CELL"],
-    help="defines what bounding boxes to draw on the output")
-parser.add_argument("--pop-up-overlay-output",
-                    dest='showoutput',
-                    action='store_true',
-                    help="shows image with overlay")
+                    choices=["WORD", "LINE", "FORM", "KEY", "VALUE", "TABLE", "CELL"],
+                    help="defines what bounding boxes to draw on the output")
+parser.add_argument("--pop-up-overlay-output", dest='showoutput', action='store_true', help="shows image with overlay")
 parser.set_defaults(showoutput=False)
 parser.add_argument("--overlay-text",
                     dest="showoverlaytext",
@@ -81,33 +68,22 @@ parser.add_argument("--overlay-confidence",
                     # TODO: Default to showing WORD confidence if --overlay-text not specified?
                     help="shows image with confidence overlay. Only supported for WORD or LINE")
 parser.set_defaults(showconfidence=False)                    
-parser.add_argument("--overlay-output-folder",
-                    type=str,
-                    default=None,
-                    help="output with bounding boxes to folder")
+parser.add_argument("--overlay-output-folder", type=str, default=None, help="output with bounding boxes to folder")
 parser.add_argument("--version",
                     action='version',
                     version='%(prog)s {version}'.format(version=__version__),
                     help="print version information")
-parser.add_argument("--no-stdout",
-                    dest='showstdout',
-                    action='store_false',
-                    help="no output to stdout")
+parser.add_argument("--no-stdout", dest='showstdout', action='store_false', help="no output to stdout")
 parser.set_defaults(showstdout=True)
 show_logs = parser.add_mutually_exclusive_group(required=False)
-show_logs.add_argument("-v",
-                       dest='showinfo',
-                       action='store_true',
-                       help=">=INFO level logging output to stderr")
+show_logs.add_argument("-v", dest='showinfo', action='store_true', help=">=INFO level logging output to stderr")
 show_logs.set_defaults(showinfo=False)
-show_logs.add_argument("-vv",
-                       dest='showdebug',
-                       action='store_true',
-                       help=">=DEBUG level logging output to stderr")
+show_logs.add_argument("-vv", dest='showdebug', action='store_true', help=">=DEBUG level logging output to stderr")
 show_logs.set_defaults(showdebug=False)
 
 args = parser.parse_args()
 input_document: str = args.input_document
+overlay_document: str = args.overlay_document
 features_arg = args.features
 pretty_print_arg = args.pretty_print
 overlay_output_folder = args.overlay_output_folder
@@ -123,8 +99,7 @@ show_overlay_confidence = args.showconfidence
 pretty_print_table_format_arg = args.pretty_print_table_format
 
 if showinfo or showdebug:
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
     handler.setLevel(logging.INFO)
@@ -148,15 +123,13 @@ if showinfo or showdebug:
         logger.debug("current log level: DEBUG")
 
 if use_example:
-    SCRIPT_DIR = os.path.dirname(
-        os.path.abspath(textracthelper._version.__file__))
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(textracthelper._version.__file__))
     input_document = os.path.join(SCRIPT_DIR, "examples/employmentapp.png")
 
 features = None
 if features_arg:
     features = [Textract_Features[x] for x in features_arg]
-pretty_print_table_format = Pretty_Print_Table_Format[
-    pretty_print_table_format_arg]
+pretty_print_table_format = Pretty_Print_Table_Format[pretty_print_table_format_arg]
 logger.debug(f"pretty_print_table_format: {pretty_print_table_format}")
 pretty_print = None
 if pretty_print_arg:
@@ -168,32 +141,29 @@ else:
     overlay = list()
 
 exit_code = 0
-if not use_stdin and pretty_print_arg and "FORMS" in pretty_print_arg and (
-        not features_arg or "FORMS" not in features_arg):
+if input_document and overlay_document:
+    print(
+        "both --input-document and --overlay-document do not make sense at the moment. --overlay-document is only used with --stdin"
+    )
+    exit_code = 1
+if not use_stdin and pretty_print_arg and "FORMS" in pretty_print_arg and (not features_arg
+                                                                           or "FORMS" not in features_arg):
     print("should pretty-print FORMS but is not requested as --features")
     exit_code = 1
-if not use_stdin and pretty_print_arg and "TABLES" in pretty_print_arg and (
-        not features_arg or "TABLES" not in features_arg):
+if not use_stdin and pretty_print_arg and "TABLES" in pretty_print_arg and (not features_arg
+                                                                            or "TABLES" not in features_arg):
     print("should pretty-print TABLES but is not requested as --features")
     exit_code = 1
-if not use_stdin and overlay_arg and any([
-        x for x in ["CELL", "TABLE"] if x in overlay_arg
-]) and (not features_arg or "TABLES" not in features_arg):
-    print(
-        "should overlay TABLE or CELL but is not requested as --features TABLES"
-    )
+if not use_stdin and overlay_arg and any([x for x in ["CELL", "TABLE"] if x in overlay_arg
+                                          ]) and (not features_arg or "TABLES" not in features_arg):
+    print("should overlay TABLE or CELL but is not requested as --features TABLES")
     exit_code = 1
-if not use_stdin and showoutput and overlay_arg and any([
-        x for x in ["FORM", "KEY", "VALUE"] if x in overlay_arg
-]) and (not features_arg or "FORMS" not in features_arg):
-    print(
-        "should overlay FORM or KEY or VALUE but FORMS not requested as --features FORMS"
-    )
+if not use_stdin and showoutput and overlay_arg and any([x for x in ["FORM", "KEY", "VALUE"] if x in overlay_arg
+                                                         ]) and (not features_arg or "FORMS" not in features_arg):
+    print("should overlay FORM or KEY or VALUE but FORMS not requested as --features FORMS")
     exit_code = 1
 if showoutput and not overlay_arg:
-    print(
-        "asked for --pop-up-overlay-output or --overlay-output-folder, but not --overlay arguments given"
-    )
+    print("asked for --pop-up-overlay-output or --overlay-output-folder, but not --overlay arguments given")
     exit_code = 1
 if exit_code > 0:
     exit(1)
@@ -201,19 +171,19 @@ if exit_code > 0:
 logger.debug(f"calling Textract")
 if use_stdin:
     doc = json.load(sys.stdin)
+    input_document = overlay_document
 else:
     doc = call_textract(input_document=input_document, features=features)
 logger.debug(f"receivedTextract response")
 if showstdout:
     if pretty_print:
-        print(
-            get_string(textract_json=doc,
-                       output_type=pretty_print,
-                       table_format=pretty_print_table_format))
+        print(get_string(textract_json=doc, output_type=pretty_print, table_format=pretty_print_table_format))
     else:
         print(json.dumps(doc))
 
+logger.debug(f"overlay_output_folder or showoutput: {overlay_output_folder or showoutput}")
 if overlay_output_folder or showoutput:
+    logger.debug(f"overlay")
     colors = {
         "WORD": (128, 128, 0),
         "LINE": (0, 128, 128),
@@ -247,12 +217,10 @@ if overlay_output_folder or showoutput:
         file_name, suffix = os.path.splitext(os.path.basename(input_document))
     rgb_im = image.convert('RGB')
     draw = ImageDraw.Draw(rgb_im)
-    document_dimension: DocumentDimensions = DocumentDimensions(
-        doc_width=image.size[0], doc_height=image.size[1])
-    bounding_box_list = get_bounding_boxes(
-        textract_json=doc,
-        document_dimensions=document_dimension,
-        overlay_features=overlay)
+    document_dimension: DocumentDimensions = DocumentDimensions(doc_width=image.size[0], doc_height=image.size[1])
+    bounding_box_list = get_bounding_boxes(textract_json=doc,
+                                           document_dimensions=document_dimension,
+                                           overlay_features=overlay)
 
     suppress_line_text_overlay = False
     # use WORD text overlay when both LINE and WORD overlays are specified
@@ -260,9 +228,7 @@ if overlay_output_folder or showoutput:
         suppress_line_text_overlay = True
     for bbox in bounding_box_list:
         box_color = colors[bbox.box_type.name]
-        draw.rectangle(xy=[bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax],
-                       outline=box_color,
-                       width=2)
+        draw.rectangle(xy=(bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax), outline=box_color, width=2)
         if show_overlay_text and (
             bbox.box_type.name == 'WORD' or (bbox.box_type.name == 'LINE' and not suppress_line_text_overlay)):
                 box_height = round((bbox.ymax - bbox.ymin) * 0.8)
@@ -278,12 +244,9 @@ if overlay_output_folder or showoutput:
     if overlay_output_folder:
         if not os.path.exists(overlay_output_folder):
             os.makedirs(overlay_output_folder, exist_ok=True)
-        file_name, suffix = get_filename_from_document(
-            input_document=input_document)
+        file_name, suffix = get_filename_from_document(input_document=input_document)
         output_types = "_".join(overlay_arg)
-        output_file_name = os.path.join(
-            overlay_output_folder,
-            f"{file_name}_boxed_{output_types}_{suffix}")
+        output_file_name = os.path.join(overlay_output_folder, f"{file_name}_boxed_{output_types}_{suffix}")
         output_format = suffix[1:]
         if output_format.upper() == "JPG":
             output_format = "JPEG"
