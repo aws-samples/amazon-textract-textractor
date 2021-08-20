@@ -70,6 +70,17 @@ parser.add_argument("--pop-up-overlay-output",
                     action='store_true',
                     help="shows image with overlay")
 parser.set_defaults(showoutput=False)
+parser.add_argument("--overlay-text",
+                    dest="showoverlaytext",
+                    action="store_true",
+                    help="shows image with WORD or LINE text overlay. When both WORD and LINE overlay are specified, WORD text will be overlayed")
+parser.set_defaults(showoverlaytext=False)
+parser.add_argument("--overlay-confidence",
+                    dest='showconfidence',
+                    action='store_true',
+                    # TODO: Default to showing WORD confidence if --overlay-text not specified?
+                    help="shows image with confidence overlay. Only supported for WORD or LINE")
+parser.set_defaults(showconfidence=False)                    
 parser.add_argument("--overlay-output-folder",
                     type=str,
                     default=None,
@@ -107,6 +118,8 @@ use_example = args.use_example
 showdebug = args.showdebug
 showinfo = args.showinfo
 use_stdin = args.inputfromstdin
+show_overlay_text = args.showoverlaytext
+show_overlay_confidence = args.showconfidence 
 pretty_print_table_format_arg = args.pretty_print_table_format
 
 if showinfo or showdebug:
@@ -210,7 +223,7 @@ if overlay_output_folder or showoutput:
         "CELL": (255, 0, 255),
         "TABLE": (255, 255, 0)
     }
-    from PIL import Image, ImageDraw
+    from PIL import Image, ImageDraw, ImageFont
     is_s3_document: bool = False
     s3_bucket: str = ""
     s3_key: str = ""
@@ -240,11 +253,25 @@ if overlay_output_folder or showoutput:
         textract_json=doc,
         document_dimensions=document_dimension,
         overlay_features=overlay)
+
+    suppress_line_text_overlay = False
+    # use WORD text overlay when both LINE and WORD overlays are specified
+    if show_overlay_text and len([x for x in ['WORD', 'LINE'] if x in overlay_arg]) == 2:
+        suppress_line_text_overlay = True
     for bbox in bounding_box_list:
         box_color = colors[bbox.box_type.name]
         draw.rectangle(xy=[bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax],
                        outline=box_color,
                        width=2)
+        if show_overlay_text and (
+            bbox.box_type.name == 'WORD' or (bbox.box_type.name == 'LINE' and not suppress_line_text_overlay)):
+                box_height = round((bbox.ymax - bbox.ymin) * 0.8)
+                font = ImageFont.truetype('Roboto-Regular.ttf', size=box_height)
+                logger.debug(f"bbox type {bbox.box_type.name}: {bbox.text}, confidence: {bbox.confidence}")
+                overlay_text = bbox.text 
+                if show_overlay_confidence:
+                    overlay_text += f" {bbox.confidence}%"
+                draw.text(xy=[bbox.xmin, bbox.ymin - box_height], text=overlay_text, fill=box_color, align='center', font=font)
 
     if showoutput:
         rgb_im.show()
