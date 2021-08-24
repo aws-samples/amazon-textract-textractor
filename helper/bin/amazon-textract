@@ -231,13 +231,17 @@ if overlay_output_folder or showoutput:
         draw.rectangle(xy=(bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax), outline=box_color, width=2)
         if show_overlay_text and (
             bbox.box_type.name == 'WORD' or (bbox.box_type.name == 'LINE' and not suppress_line_text_overlay)):
-                box_height = round((bbox.ymax - bbox.ymin) * 0.8)
-                font = ImageFont.truetype('Roboto-Regular.ttf', size=box_height)
                 logger.debug(f"bbox type {bbox.box_type.name}: {bbox.text}, confidence: {bbox.confidence}")
                 overlay_text = bbox.text 
+                box_height = round((bbox.ymax - bbox.ymin) * 0.8)
                 if show_overlay_confidence:
                     overlay_text += f" {bbox.confidence}%"
-                draw.text(xy=[bbox.xmin, bbox.ymin - box_height], text=overlay_text, fill=box_color, align='center', font=font)
+                try: 
+                    font = ImageFont.truetype('Roboto-Regular.ttf', size=box_height)
+                    draw.text(xy=[bbox.xmin, bbox.ymin - box_height], text=overlay_text, fill=box_color, align='center', font=font)
+                except:
+                    # use default font
+                    draw.text(xy=[bbox.xmin, bbox.ymin - box_height], text=overlay_text, fill=box_color, align='center')
 
     if showoutput:
         rgb_im.show()
