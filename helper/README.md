@@ -39,6 +39,8 @@ k,html,unsafehtml,latex,latex_raw,latex_booktabs,latex_longtable,textile,tsv}
                         defines what bounding boxes to draw on the output
   --pop-up-overlay-output
                         shows image with overlay
+  --overlay-text        shows image with WORD or LINE text overlay. When both WORD and LINE overlay are specified, WORD text will be overlayed
+  --overlay-confidence  shows image with confidence overlay
   --overlay-output-folder OVERLAY_OUTPUT_FOLDER
                         output with bounding boxes to folder
   --version             print version information
@@ -169,3 +171,21 @@ The following command runs AnalyzeDocument for FORMS and TABLES, pretty prints F
 <img src="https://github.com/aws-samples/amazon-textract-textractor/blob/master/helper/docs/employmentapp_boxed_FORM_CELL_.png" alt="Sample overlay FORM CELL" width="50%" height="50%" border="1">
 
 
+The following command draws bounding boxes around each WORD, overlays the detected WORD text, and displays the result in a popup window and stores it to a folder called 'overlay-output-folder-name'.
+
+```bash
+> amazon-textract --example --overlay WORD --overlay-text --pop-up-overlay-output --overlay-output-folder overlay-output-folder-name
+```
+
+
+<img src="https://github.com/aws-samples/amazon-textract-textractor/blob/master/helper/docs/employmentapp_boxed_WORD_TEXT_OVERLAY.png" alt="Sample overlay LINE with overlay text and confidence percentage" width="50%" height="50%" border="1">
+
+
+The following command draws bounding boxes around each LINE, overlays LINE text along with percentage confidence of the detected LINE text, and displays the result in a popup window and stores it to a folder called 'overlay-output-folder-name'.
+
+```bash
+> amazon-textract --example --overlay LINE --overlay-text --overlay-confidence --pop-up-overlay-output --overlay-output-folder overlay-output-folder-name
+```
+
+
+<img src="https://github.com/aws-samples/amazon-textract-textractor/blob/master/helper/docs/employmentapp_boxed_LINE_TEXT_OVERLAY.png" alt="Sample overlay LINE with overlay text and confidence percentage" width="50%" height="50%" border="1">

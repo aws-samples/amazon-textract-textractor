@@ -115,4 +115,7 @@ share/python-wheels/
 MANIFEST
 .#
 
-.dir-locals.el 
+.dir-locals.el
+
+.vscode
+
