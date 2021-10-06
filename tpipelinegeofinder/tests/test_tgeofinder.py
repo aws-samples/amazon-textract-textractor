@@ -92,7 +92,7 @@ def test_get_selection_values_in_area(caplog):
     doc_width = 1000
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
         qdoc = tq.TQuery(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
-        fever_question = qdoc.find_phrase_in_lines("did you feel fever or feverish lately")[0]
+        fever_question = qdoc.find_phrase_on_page("did you feel fever or feverish lately")[0]
         top_left = t2.TPoint(y=fever_question.ymin - 50, x=0)
         lower_right = t2.TPoint(y=fever_question.ymax + 50, x=doc_width)
         sel_values: List[SelectionElement] = qdoc.get_selection_values_in_area(area_selection=AreaSelection(
@@ -101,7 +101,7 @@ def test_get_selection_values_in_area(caplog):
         assert sel_values
         assert len(sel_values) == 2
 
-        cough_question = qdoc.find_phrase_in_lines("do you have a cough")[0]
+        cough_question = qdoc.find_phrase_on_page("do you have a cough")[0]
         top_left = t2.TPoint(y=cough_question.ymin - 50, x=0)
         lower_right = t2.TPoint(y=cough_question.ymax + 50, x=doc_width)
         sel_values: List[SelectionElement] = qdoc.get_selection_values_in_area(area_selection=AreaSelection(

@@ -9,8 +9,8 @@ from uuid import uuid4
 from trp.trp2 import TPoint
 from trp import FieldKey, FieldValue, Line, Word as trpWord
 
-alphanum_regex_with_space = re.compile(r'[^a-zA-Z ]+')
-alphanum_regex_without_space = re.compile(r'[^a-zA-Z]+')
+alphanum_regex_with_space = re.compile(r'[^a-zA-Z 0-9]+')
+alphanum_regex_without_space = re.compile(r'[^a-zA-Z0-9]+')
 number_regex = re.compile("[0-9]")
 
 
