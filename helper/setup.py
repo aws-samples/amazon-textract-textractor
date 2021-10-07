@@ -7,6 +7,7 @@ from setuptools.command.install import install
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 class FontInstaller(install):
     def run(self):
         self._copy_fonts()
@@ -29,12 +30,12 @@ class FontInstaller(install):
                     # According to the freedesktop spec, XDG_DATA_DIRS should
                     # default to /usr/share
                     tgt_dir = "/usr/share/fonts"
-                else: 
+                else:
                     lindir = lindirs.split(":")[0]
                     tgt_dir = os.path.join(lindir, "fonts")
             elif sys.platform == "darwin":
                 tgt_dir = os.path.expanduser("~/Library/Fonts")
-            
+
             if not os.path.isdir(tgt_dir):
                 print('WARNING: Could not locate fonts directory. Default font will be used')
             else:
@@ -45,12 +46,12 @@ class FontInstaller(install):
                     shutil.copyfile(os.path.join(_src_dir, _font_file), os.path.join(tgt_dir, _font_file))
 
         except:
-            print('WARNING: An issue occured while installing the custom fonts. Default font will be used')    
+            print('WARNING: An issue occured while installing the custom fonts. Default font will be used')
+
 
 requirements = [
-    'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.9',
-    'amazon-textract-caller>=0.0.11', 'amazon-textract-overlayer>=0.0.2',
-    'amazon-textract-prettyprinter>=0.0.6', 'Pillow==8.3.2', 'PyPDF2==1.26.0'
+    'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.17', 'amazon-textract-caller>=0.0.11',
+    'amazon-textract-overlayer>=0.0.2', 'amazon-textract-prettyprinter>=0.0.6', 'Pillow==8.3.2', 'PyPDF2==1.26.0'
 ]
 
 if sys.argv[-1] == 'publish-test':
@@ -93,5 +94,5 @@ setup(name='amazon-textract-helper',
           'Programming Language :: Python :: 3.8',
           'Programming Language :: Python :: 3.9',
       ],
-      cmdclass={'install': FontInstaller},      
+      cmdclass={'install': FontInstaller},
       python_requires='>=3.6')

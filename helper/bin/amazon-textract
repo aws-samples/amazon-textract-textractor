@@ -4,6 +4,7 @@ import argparse
 import os
 import io
 import boto3
+import glob
 import json
 import sys
 from textractcaller.t_call import Textract_Features, Textract_Types, call_textract
@@ -19,6 +20,8 @@ logger = logging.getLogger(__name__)
 parser = argparse.ArgumentParser()
 input_doc_or_example_or_stdin = parser.add_mutually_exclusive_group(required=True)
 input_doc_or_example_or_stdin.add_argument("--input-document", help="s3 object (s3://) or file from local filesystem")
+input_doc_or_example_or_stdin.add_argument("--input-glob", help="local filesystem glob to go through many files")
+
 input_doc_or_example_or_stdin.add_argument("--example",
                                            dest='use_example',
                                            action='store_true',
@@ -57,17 +60,21 @@ parser.add_argument("--overlay",
                     help="defines what bounding boxes to draw on the output")
 parser.add_argument("--pop-up-overlay-output", dest='showoutput', action='store_true', help="shows image with overlay")
 parser.set_defaults(showoutput=False)
-parser.add_argument("--overlay-text",
-                    dest="showoverlaytext",
-                    action="store_true",
-                    help="shows image with WORD or LINE text overlay. When both WORD and LINE overlay are specified, WORD text will be overlayed")
+parser.add_argument(
+    "--overlay-text",
+    dest="showoverlaytext",
+    action="store_true",
+    help=
+    "shows image with WORD or LINE text overlay. When both WORD and LINE overlay are specified, WORD text will be overlayed"
+)
 parser.set_defaults(showoverlaytext=False)
-parser.add_argument("--overlay-confidence",
-                    dest='showconfidence',
-                    action='store_true',
-                    # TODO: Default to showing WORD confidence if --overlay-text not specified?
-                    help="shows image with confidence overlay. Only supported for WORD or LINE")
-parser.set_defaults(showconfidence=False)                    
+parser.add_argument(
+    "--overlay-confidence",
+    dest='showconfidence',
+    action='store_true',
+    # TODO: Default to showing WORD confidence if --overlay-text not specified?
+    help="shows image with confidence overlay. Only supported for WORD or LINE")
+parser.set_defaults(showconfidence=False)
 parser.add_argument("--overlay-output-folder", type=str, default=None, help="output with bounding boxes to folder")
 parser.add_argument("--version",
                     action='version',
@@ -84,6 +91,7 @@ show_logs.set_defaults(showdebug=False)
 args = parser.parse_args()
 input_document: str = args.input_document
 overlay_document: str = args.overlay_document
+input_glob: str = args.input_glob
 features_arg = args.features
 pretty_print_arg = args.pretty_print
 overlay_output_folder = args.overlay_output_folder
@@ -95,7 +103,7 @@ showdebug = args.showdebug
 showinfo = args.showinfo
 use_stdin = args.inputfromstdin
 show_overlay_text = args.showoverlaytext
-show_overlay_confidence = args.showconfidence 
+show_overlay_confidence = args.showconfidence
 pretty_print_table_format_arg = args.pretty_print_table_format
 
 if showinfo or showdebug:
@@ -170,88 +178,101 @@ if exit_code > 0:
 
 logger.debug(f"calling Textract")
 if use_stdin:
-    doc = json.load(sys.stdin)
-    input_document = overlay_document
+    input_documents = [overlay_document]
 else:
-    doc = call_textract(input_document=input_document, features=features)
-logger.debug(f"receivedTextract response")
-if showstdout:
-    if pretty_print:
-        print(get_string(textract_json=doc, output_type=pretty_print, table_format=pretty_print_table_format))
+    if input_glob:
+        input_documents = glob.glob(input_glob)
     else:
-        print(json.dumps(doc))
+        input_documents = [input_document]
 
-logger.debug(f"overlay_output_folder or showoutput: {overlay_output_folder or showoutput}")
-if overlay_output_folder or showoutput:
-    logger.debug(f"overlay")
-    colors = {
-        "WORD": (128, 128, 0),
-        "LINE": (0, 128, 128),
-        "FORM": (128, 0, 128),
-        "KEY": (255, 0, 0),
-        "VALUE": (0, 255, 255),
-        "CELL": (255, 0, 255),
-        "TABLE": (255, 255, 0)
-    }
-    from PIL import Image, ImageDraw, ImageFont
-    is_s3_document: bool = False
-    s3_bucket: str = ""
-    s3_key: str = ""
-    if len(input_document) > 7 and input_document.lower().startswith("s3://"):
-        is_s3_document = True
-        input_document = input_document.replace("s3://", "")
-        s3_bucket, s3_key = input_document.split("/", 1)
-        print(s3_bucket, s3_key)
-    ext: str = ""
-    _, ext = os.path.splitext(input_document)
-
-    if is_s3_document:
-        s3 = boto3.client('s3')
-        o = s3.get_object(Bucket=s3_bucket, Key=s3_key)
-        input_bytes = o.get('Body').read()
-        f = io.BytesIO(input_bytes)
-        image: Image.Image = Image.open(f)
-        file_name, suffix = os.path.splitext(os.path.basename(s3_key))
+for input_document in input_documents:
+    if use_stdin:
+        doc = json.load(sys.stdin)
     else:
-        image = Image.open(input_document)
-        file_name, suffix = os.path.splitext(os.path.basename(input_document))
-    rgb_im = image.convert('RGB')
-    draw = ImageDraw.Draw(rgb_im)
-    document_dimension: DocumentDimensions = DocumentDimensions(doc_width=image.size[0], doc_height=image.size[1])
-    bounding_box_list = get_bounding_boxes(textract_json=doc,
-                                           document_dimensions=document_dimension,
-                                           overlay_features=overlay)
+        logger.debug(f"input_document: '{input_document}'")
+        doc = call_textract(input_document=input_document, features=features)
+    logger.debug(f"receivedTextract response")
+    if showstdout:
+        if pretty_print:
+            print(get_string(textract_json=doc, output_type=pretty_print, table_format=pretty_print_table_format))
+        else:
+            print(json.dumps(doc))
 
-    suppress_line_text_overlay = False
-    # use WORD text overlay when both LINE and WORD overlays are specified
-    if show_overlay_text and len([x for x in ['WORD', 'LINE'] if x in overlay_arg]) == 2:
-        suppress_line_text_overlay = True
-    for bbox in bounding_box_list:
-        box_color = colors[bbox.box_type.name]
-        draw.rectangle(xy=(bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax), outline=box_color, width=2)
-        if show_overlay_text and (
-            bbox.box_type.name == 'WORD' or (bbox.box_type.name == 'LINE' and not suppress_line_text_overlay)):
+    logger.debug(f"overlay_output_folder or showoutput: {overlay_output_folder or showoutput}")
+    if overlay_output_folder or showoutput:
+        logger.debug(f"overlay")
+        colors = {
+            "WORD": (128, 128, 0),
+            "LINE": (0, 128, 128),
+            "FORM": (128, 0, 128),
+            "KEY": (255, 0, 0),
+            "VALUE": (0, 255, 255),
+            "CELL": (255, 0, 255),
+            "TABLE": (255, 255, 0)
+        }
+        from PIL import Image, ImageDraw, ImageFont
+        is_s3_document: bool = False
+        s3_bucket: str = ""
+        s3_key: str = ""
+        if len(input_document) > 7 and input_document.lower().startswith("s3://"):
+            is_s3_document = True
+            input_document = input_document.replace("s3://", "")
+            s3_bucket, s3_key = input_document.split("/", 1)
+            print(s3_bucket, s3_key)
+        ext: str = ""
+        _, ext = os.path.splitext(input_document)
+
+        if is_s3_document:
+            s3 = boto3.client('s3')
+            o = s3.get_object(Bucket=s3_bucket, Key=s3_key)
+            input_bytes = o.get('Body').read()
+            f = io.BytesIO(input_bytes)
+            image: Image.Image = Image.open(f)
+            file_name, suffix = os.path.splitext(os.path.basename(s3_key))
+        else:
+            image = Image.open(input_document)
+            file_name, suffix = os.path.splitext(os.path.basename(input_document))
+        rgb_im = image.convert('RGB')
+        draw = ImageDraw.Draw(rgb_im)
+        document_dimension: DocumentDimensions = DocumentDimensions(doc_width=image.size[0], doc_height=image.size[1])
+        bounding_box_list = get_bounding_boxes(textract_json=doc,
+                                               document_dimensions=document_dimension,
+                                               overlay_features=overlay)
+
+        suppress_line_text_overlay = False
+        # use WORD text overlay when both LINE and WORD overlays are specified
+        if show_overlay_text and len([x for x in ['WORD', 'LINE'] if x in overlay_arg]) == 2:
+            suppress_line_text_overlay = True
+        for bbox in bounding_box_list:
+            box_color = colors[bbox.box_type.name]
+            draw.rectangle(xy=(bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax), outline=box_color, width=2)
+            if show_overlay_text and (bbox.box_type.name == 'WORD' or
+                                      (bbox.box_type.name == 'LINE' and not suppress_line_text_overlay)):
                 logger.debug(f"bbox type {bbox.box_type.name}: {bbox.text}, confidence: {bbox.confidence}")
-                overlay_text = bbox.text 
+                overlay_text = bbox.text
                 box_height = round((bbox.ymax - bbox.ymin) * 0.8)
                 if show_overlay_confidence:
                     overlay_text += f" {bbox.confidence}%"
-                try: 
+                try:
                     font = ImageFont.truetype('Roboto-Regular.ttf', size=box_height)
-                    draw.text(xy=[bbox.xmin, bbox.ymin - box_height], text=overlay_text, fill=box_color, align='center', font=font)
+                    draw.text(xy=(bbox.xmin, bbox.ymin - box_height),
+                              text=overlay_text,
+                              fill=box_color,
+                              align='center',
+                              font=font)
                 except:
                     # use default font
-                    draw.text(xy=[bbox.xmin, bbox.ymin - box_height], text=overlay_text, fill=box_color, align='center')
+                    draw.text(xy=(bbox.xmin, bbox.ymin - box_height), text=overlay_text, fill=box_color, align='center')
 
-    if showoutput:
-        rgb_im.show()
-    if overlay_output_folder:
-        if not os.path.exists(overlay_output_folder):
-            os.makedirs(overlay_output_folder, exist_ok=True)
-        file_name, suffix = get_filename_from_document(input_document=input_document)
-        output_types = "_".join(overlay_arg)
-        output_file_name = os.path.join(overlay_output_folder, f"{file_name}_boxed_{output_types}_{suffix}")
-        output_format = suffix[1:]
-        if output_format.upper() == "JPG":
-            output_format = "JPEG"
-        rgb_im.save(output_file_name, output_format)
+        if showoutput:
+            rgb_im.show()
+        if overlay_output_folder:
+            if not os.path.exists(overlay_output_folder):
+                os.makedirs(overlay_output_folder, exist_ok=True)
+            file_name, suffix = get_filename_from_document(input_document=input_document)
+            output_types = "_".join(overlay_arg)
+            output_file_name = os.path.join(overlay_output_folder, f"{file_name}_boxed_{output_types}_{suffix}")
+            output_format = suffix[1:]
+            if output_format.upper() == "JPG":
+                output_format = "JPEG"
+            rgb_im.save(output_file_name, output_format)
