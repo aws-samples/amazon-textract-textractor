@@ -76,10 +76,11 @@ class BoundingBox():
     @property
     def confidence(self) -> float:
         return self.__confidence
-    
+
     @property
     def text(self) -> str:
         return self.__text
+
 
 def get_bounding_boxes(textract_json: dict, overlay_features: List[Textract_Types],
                        document_dimensions: DocumentDimensions) -> List[BoundingBox]:
@@ -118,14 +119,18 @@ def get_bounding_boxes(textract_json: dict, overlay_features: List[Textract_Type
                             BoundingBox(geometry=field.key.geometry,
                                         document_dimensions=document_dimensions,
                                         box_type=Textract_Types.KEY,
-                                        page_number=page_number))
+                                        page_number=page_number,
+                                        confidence=field.key.confidence,
+                                        text=field.key.text))
                 if any([x for x in overlay_features if x in [Textract_Types.FORM, Textract_Types.VALUE]]):
                     if field and field.value:
                         bounding_box_list.append(
                             BoundingBox(geometry=field.value.geometry,
                                         document_dimensions=document_dimensions,
                                         box_type=Textract_Types.VALUE,
-                                        page_number=page_number))
+                                        page_number=page_number,
+                                        confidence=field.value.confidence,
+                                        text=field.value.text))
 
         if any([x for x in overlay_features if x in [Textract_Types.TABLE, Textract_Types.CELL]]):
             for table in page.tables:
@@ -134,7 +139,9 @@ def get_bounding_boxes(textract_json: dict, overlay_features: List[Textract_Type
                         BoundingBox(geometry=table.geometry,
                                     document_dimensions=document_dimensions,
                                     box_type=Textract_Types.TABLE,
-                                    page_number=page_number))
+                                    page_number=page_number,
+                                    confidence=table.confidence,
+                                    text="table"))
 
                 if Textract_Types.CELL in overlay_features:
                     for _, row in enumerate(table.rows):
@@ -144,6 +151,8 @@ def get_bounding_boxes(textract_json: dict, overlay_features: List[Textract_Type
                                     BoundingBox(geometry=cell.geometry,
                                                 document_dimensions=document_dimensions,
                                                 box_type=Textract_Types.CELL,
-                                                page_number=page_number))
+                                                page_number=page_number,
+                                                confidence=cell.confidence,
+                                                text="cell"))
 
     return bounding_box_list
