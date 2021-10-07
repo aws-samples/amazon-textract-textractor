@@ -39,7 +39,9 @@ class OCRDB():
     def getInstance() -> OCRDB:
         if OCRDB.__instance == None:
             OCRDB()
-        return OCRDB.__instance
+        if OCRDB.__instance != None:
+            return OCRDB.__instance
+        raise Exception("could not instantiate OCRDB instance")
 
     def __init__(self):
         """
