@@ -47,7 +47,7 @@ class PhraseCoordinate:
     min_textdistance: float = 0.8
 
 
-class TQuery():
+class TGeoFinder():
     supported_suffixes = ['.png', '.jpg', '.jpeg', '.pdf']
     image_suffixes = ['.png', '.jpg', '.jpeg']
     approx_line_difference = 5
@@ -271,9 +271,9 @@ class TQuery():
                                number_of_words_to_return: int = None,
                                text_type: str = 'word',
                                area_selection: AreaSelection = None) -> List[TWord]:
-        ymin_pos = anker.top_left.y - TQuery.approx_line_difference
+        ymin_pos = anker.top_left.y - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
-        ymax_pos = anker.lower_right.y + TQuery.approx_line_difference
+        ymax_pos = anker.lower_right.y + TGeoFinder.approx_line_difference
 
         query = '''and ? < ( ymin + ymax ) / 2
                 and ? > ( ymin + ymax ) / 2
@@ -361,9 +361,9 @@ class TQuery():
                                      current_word: TWord,
                                      below_word: TWord,
                                      area_selection: AreaSelection = None):
-        ymin_pos = current_word.ymin - TQuery.approx_line_difference
+        ymin_pos = current_word.ymin - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
-        below_word_ymin_pos = below_word.ymin - TQuery.approx_line_difference
+        below_word_ymin_pos = below_word.ymin - TGeoFinder.approx_line_difference
         below_word_ymin_pos = below_word_ymin_pos if below_word_ymin_pos >= 0 else 0
 
         query = ''' and text_type='line'
@@ -396,10 +396,10 @@ class TQuery():
                                   current_word_x_offset: int = 0,
                                   below_word_x_offset: int = 0,
                                   area_selection: AreaSelection = None):
-        ymin_pos = current_word.ymin - TQuery.approx_line_difference
+        ymin_pos = current_word.ymin - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
         ymax_pos = current_word.ymax
-        below_word_ymin_pos = below_word.ymin - TQuery.approx_line_difference
+        below_word_ymin_pos = below_word.ymin - TGeoFinder.approx_line_difference
         below_word_ymin_pos = below_word_ymin_pos if below_word_ymin_pos >= 0 else 0
 
         query = ''' and text_type='line'
@@ -437,9 +437,9 @@ class TQuery():
                                 area_selection: AreaSelection = None):
         logger.debug(
             f"get_words_between_words - left_word: {left_word}, right_word: {right_word}, text_type: {text_type}")
-        ymin_pos = min([left_word.ymin, right_word.ymin]) - TQuery.approx_line_difference
+        ymin_pos = min([left_word.ymin, right_word.ymin]) - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
-        ymax_pos = max([left_word.ymax, right_word.ymax]) + TQuery.approx_line_difference
+        ymax_pos = max([left_word.ymax, right_word.ymax]) + TGeoFinder.approx_line_difference
         xmin_pos = left_word.xmax
         xmax_pos = right_word.xmin
 
@@ -500,9 +500,9 @@ class TQuery():
         return return_value
 
     def get_next_selection_element_to_the_right(self, word: TWord, xmax: int, area_selection: AreaSelection = None):
-        ymin_pos = word.ymin - TQuery.approx_line_difference
+        ymin_pos = word.ymin - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
-        ymax_pos = word.ymax + TQuery.approx_line_difference
+        ymax_pos = word.ymax + TGeoFinder.approx_line_difference
         xmin_pos = word.xmax
         query = ''' and text_type='selection_element'
                     and (ymin + ymax) / 2 > ?
@@ -542,10 +542,10 @@ class TQuery():
             next_sel: List[TWord] = self.get_next_selection_element_to_the_right(word=t,
                                                                                  xmax=int(area_selection.lower_right.x))
             if next_sel:
-                text_bound_lower_right = t2.TPoint(x=next_sel[0].xmin, y=t.ymax + TQuery.approx_line_difference)
+                text_bound_lower_right = t2.TPoint(x=next_sel[0].xmin, y=t.ymax + TGeoFinder.approx_line_difference)
             else:
                 text_bound_lower_right = t2.TPoint(x=area_selection.lower_right.x,
-                                                   y=t.ymax + TQuery.approx_line_difference)
+                                                   y=t.ymax + TGeoFinder.approx_line_difference)
 
             text_bound_top_left = t2.TPoint(x=t.xmax, y=t.ymin)
             sel_words = self.get_twords_in_area(AreaSelection(top_left=text_bound_top_left,
@@ -596,9 +596,9 @@ class TQuery():
                                     word: TWord,
                                     number_of_boxes_to_return: int = None,
                                     area_selection: AreaSelection = None):
-        ymin_pos = word.ymin - TQuery.approx_line_difference
+        ymin_pos = word.ymin - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
-        ymax_pos = word.ymax + TQuery.approx_line_difference
+        ymax_pos = word.ymax + TGeoFinder.approx_line_difference
         xmin_pos = word.xmax
         xmax_pos = word.xmin
 
@@ -627,7 +627,7 @@ class TQuery():
     def get_min_distance_for_list_of_tword(twords: List[TWord]) -> float:
         min_distances = list()
         for idx, word_start in enumerate(twords[:-1]):
-            min_distances.append(TQuery.get_min_distance(word_start, twords[idx + 1]))
+            min_distances.append(TGeoFinder.get_min_distance(word_start, twords[idx + 1]))
         return max(min_distances)
 
     @staticmethod
@@ -698,7 +698,7 @@ class TQuery():
             current_word = first_word_option
             for word in phrase_words[1:]:
                 logger.debug(f"find_phrase_on_page - looking for word: {word} with current_word: {current_word}")
-                words_to_right = self.get_words_to_the_right(anker=TQuery.get_anker_for_twords([current_word]),
+                words_to_right = self.get_words_to_the_right(anker=TGeoFinder.get_anker_for_twords([current_word]),
                                                              number_of_words_to_return=1)
                 logger.debug(f"find_phrase_on_page - words to the right: {words_to_right}")
                 if words_to_right and get_diff_for_alphanum_words(word1=words_to_right[0].text,
@@ -761,7 +761,7 @@ class TQuery():
         """returns new phrases, regardless of orientation"""
         """TODO: cannot do the caching this way with area_selection, because when using with area_selection first, it will create a phrase for the area and it will just return the value and not consider the other areas """
         phrase_words = phrase.split(" ")
-        phrase_words = TQuery.clean_up_phrase_words(phrase_words=phrase_words)
+        phrase_words = TGeoFinder.clean_up_phrase_words(phrase_words=phrase_words)
         logger.debug(f"find_phrase_on_page: phrase_words: {phrase_words}")
         if len(phrase_words) < 1:
             raise ValueError(f"no valid phrase: '{phrase}")
@@ -785,7 +785,7 @@ class TQuery():
                 return found_phrases
             # now we try phrase combinations
             else:
-                phrase_combinations = TQuery.get_phrase_combinations(phrase_words)
+                phrase_combinations = TGeoFinder.get_phrase_combinations(phrase_words)
                 logger.debug(f"find_phrase_on_page: phrase_combinations: {phrase_combinations}")
                 for phrase_combination in phrase_combinations:
                     found_phrases = self.__find_phrase_on_page(

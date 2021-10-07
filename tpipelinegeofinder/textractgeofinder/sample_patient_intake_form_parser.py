@@ -1,5 +1,5 @@
 from textractgeofinder.ocrdb import AreaSelection
-from textractgeofinder.tgeofinder import KeyValue, TQuery, AreaSelection, SelectionElement
+from textractgeofinder.tgeofinder import KeyValue, TGeoFinder, AreaSelection, SelectionElement
 import trp.trp2 as t2
 import logging
 
@@ -29,7 +29,7 @@ def add_key_value_lables(t_document: t2.TDocument) -> t2.TDocument:
     t_doc = t2.TDocumentSchema().dump(t_document)
     doc_height = 1000
     doc_width = 1000
-    geofinder_doc = TQuery(t_doc, doc_height=doc_height, doc_width=doc_width)
+    geofinder_doc = TGeoFinder(t_doc, doc_height=doc_height, doc_width=doc_width)
     # patient information
     patient_information = geofinder_doc.find_phrase_on_page("patient information")[0]
     emergency_contact_1 = geofinder_doc.find_phrase_on_page("emergency contact 1:", min_textdistance=0.99)[0]

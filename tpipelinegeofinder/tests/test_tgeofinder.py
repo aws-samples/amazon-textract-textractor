@@ -15,7 +15,7 @@ def test_words_between_words(caplog):
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     input_filename = os.path.join(SCRIPT_DIR, "data/tquery_samples.json")
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
-        qdoc = tq.TQuery(json.load(input_fp), doc_height=1000, doc_width=1000)
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=1000, doc_width=1000)
         word_left = qdoc.find_phrase_in_lines("word_left")[0]
         word_right = qdoc.find_phrase_in_lines("word_right")[0]
         r = qdoc.get_words_between_words(word_left, word_right)
@@ -28,7 +28,7 @@ def test_get_value_for_phrase_coordiante(caplog):
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     input_filename = os.path.join(SCRIPT_DIR, "data/test_sample.json")
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
-        qdoc = tq.TQuery(json.load(input_fp), doc_height=1000, doc_width=1000)
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=1000, doc_width=1000)
         c = qdoc.get_values_for_phrase_coordinate(
             phrase_coordinates=[tq.PhraseCoordinate(phrase="word_left", coordinate=tq.PointValueType.XMAX)])
         assert c == [98]
@@ -71,7 +71,7 @@ def test_get_keys_in_area(caplog):
     doc_height = 1000
     doc_width = 1000
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
-        qdoc = tq.TQuery(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
         patient_information = qdoc.find_phrase_in_lines("patient information")[0]
         emergency_contact_1 = qdoc.find_phrase_in_lines("emergency contact 1")[0]
         top_left = t2.TPoint(y=patient_information.ymax, x=0)
@@ -91,7 +91,7 @@ def test_get_selection_values_in_area(caplog):
     doc_height = 1000
     doc_width = 1000
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
-        qdoc = tq.TQuery(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
         fever_question = qdoc.find_phrase_on_page("did you feel fever or feverish lately")[0]
         top_left = t2.TPoint(y=fever_question.ymin - 50, x=0)
         lower_right = t2.TPoint(y=fever_question.ymax + 50, x=doc_width)
@@ -118,7 +118,7 @@ def test_phrase_coordinates(caplog):
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     input_filename = os.path.join(SCRIPT_DIR, "data/patient_intake_form_sample.json")
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
-        qdoc = tq.TQuery(json.load(input_fp), doc_height=1000, doc_width=1000)
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=1000, doc_width=1000)
         r: list[float] = qdoc.get_values_for_phrase_coordinate([
             PhraseCoordinate(phrase="patient information", coordinate=PointValueType.YMIN, min_textdistance=0.95),
             PhraseCoordinate(phrase="emergency contact 1:", coordinate=PointValueType.YMIN, min_textdistance=0.92),
@@ -131,7 +131,7 @@ def test_find_word_on_page(caplog):
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     input_filename = os.path.join(SCRIPT_DIR, "data/test_sample.json")
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
-        qdoc = tq.TQuery(json.load(input_fp), doc_height=1920, doc_width=1080)
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=1920, doc_width=1080)
         r = qdoc.find_word_on_page(word_to_find="word", min_textdistance=0.9)
         assert len(r) == 3
 
@@ -149,7 +149,7 @@ def test_find_phrase_on_page(caplog):
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     input_filename = os.path.join(SCRIPT_DIR, "data/test_sample.json")
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
-        qdoc = tq.TQuery(json.load(input_fp), doc_height=1920, doc_width=1080)
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=1920, doc_width=1080)
         r = qdoc.find_phrase_on_page(phrase="word phrase test", min_textdistance=0.9)
         assert len(r) == 3
 
@@ -158,4 +158,4 @@ def test_phrase_combinations(caplog):
     caplog.set_level(logging.DEBUG)
     phrase = ["test", "1", "2", "3"]
     phrase_combiantions = [["test1", "2", "3"], ["test", "12", "3"], ["test", "1", "23"]]
-    assert tq.TQuery.get_phrase_combinations(phrase) == phrase_combiantions
+    assert tq.TGeoFinder.get_phrase_combinations(phrase) == phrase_combiantions
