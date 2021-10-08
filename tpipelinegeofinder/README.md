@@ -29,8 +29,8 @@ From there functions to parse the information in the area help to extract the in
 
 The response for the sample image [[./tests/data/patient_intake_form_sample.jpg>]] from the Amazon Textract AnalyzeDocument API with the FORMS featur does include the following keys:
 
-|----------------------------------------------|----------------|
 | Key                                          | Value          |
+|----------------------------------------------|----------------|
 | First Name:                                  | ALEJANDRO      |
 | First Name:                                  | CARLOS         |
 | Relationship to Patient:                     | BROTHER        |
@@ -111,8 +111,8 @@ set_hierarchy_kv(list_kv=form_fields, t_document=t_document, prefix='PATIENT', p
 print(get_forms_string(t2.TDocumentSchema().dump(t_document)))
 ```
 
-|-------------------------+----------------|
 | Key                     | Value          |
+|-------------------------|----------------|
 | ...                     | ...            |
 | PATIENT_first name:     | ALEJANDRO      |
 | PATIENT_address:        | 123 ANY STREET |
@@ -135,8 +135,8 @@ This will show the full result, like the notebook.
 > cat tests/data/patient_intake_form_sample.json| bin/amazon-textract-geofinder | amazon-textract --stdin --pretty-print FORMS
 ```
 
-|----------------------------------------------|----------------|
-| Key                                          | Value          |
+| Key                     | Value          |
+|-------------------------|----------------|
 | First Name:                                  | ALEJANDRO      |
 | First Name:                                  | CARLOS         |
 | Relationship to Patient:                     | BROTHER        |
