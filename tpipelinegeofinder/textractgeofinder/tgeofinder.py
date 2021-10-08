@@ -120,9 +120,11 @@ class TGeoFinder():
         return (x_min, y_min, x_max, y_max)
 
     def __fill_sql_from_textract_json(self):
+        logger.debug("__fill_sql_from_textract_json")
         word_list: "list[TWord]" = list()
         line_list: "list[TWord]" = list()
         forms_list: List[TWord] = list()
+        selection_elements: List[TWord] = list()
 
         for idx, page in enumerate(self.doc.pages):
             logger.debug(f"page: {idx}")
@@ -143,7 +145,7 @@ class TGeoFinder():
             for field in page.form.fields:
                 reference = ""
                 if field.key:
-                    logger.debug(f"field-key: {field}")
+                    logger.debug(f"field-key: {field.key}")
                     if field.value:
                         forms_list.append(
                             TWord(trp_word=field.value,
@@ -217,13 +219,13 @@ class TGeoFinder():
                                   doc_width=self.doc_width,
                                   doc_height=self.doc_height))
 
-            if self.ocrdb:
-                self.ocrdb.insert_bulk(textract_doc_uuid=self.textract_doc_uuid, rows=word_list)
-                self.ocrdb.insert_bulk(textract_doc_uuid=self.textract_doc_uuid, rows=line_list)
-                self.ocrdb.insert_bulk(textract_doc_uuid=self.textract_doc_uuid, rows=selection_elements)
-                self.ocrdb.insert_bulk(textract_doc_uuid=self.textract_doc_uuid, rows=forms_list)
-            else:
-                logger.error(f"no ocrdb")
+        if self.ocrdb:
+            self.ocrdb.insert_bulk(textract_doc_uuid=self.textract_doc_uuid, rows=word_list)
+            self.ocrdb.insert_bulk(textract_doc_uuid=self.textract_doc_uuid, rows=line_list)
+            self.ocrdb.insert_bulk(textract_doc_uuid=self.textract_doc_uuid, rows=selection_elements)
+            self.ocrdb.insert_bulk(textract_doc_uuid=self.textract_doc_uuid, rows=forms_list)
+        else:
+            logger.error(f"no ocrdb")
 
     def get_keys_for_key_variations(self, key_variations: List[str], min_textdistance=0.8) -> List[t2.TBlock]:
         """does return for all pages values found for the key given"""

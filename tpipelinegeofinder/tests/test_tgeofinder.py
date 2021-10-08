@@ -8,6 +8,8 @@ import json
 import logging
 import pytest
 
+logger = logging.getLogger(__name__)
+
 
 def test_words_between_words(caplog):
     caplog.set_level(logging.DEBUG)
