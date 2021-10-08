@@ -65,7 +65,9 @@ The response for the sample image [[./tests/data/patient_intake_form_sample.jpg>
 
 But the information to which section of the document the individual keys belong is not obvious. Most keys appear multiple times and we want to give them context to associate them with the 'Patient', 'Emergency Contact 1', 'Emergency Contact 2' or specific questions.
 
+
 Here is a Jupyter notebook that walks through the sample: [sample notebook](./geofinder-sample-notebook.ipynb)
+Make sure to have AWS credentials setup when starting the notebook locally or use a SageMaker notebook with a role including permissions for Amazon Textract. 
 
 ```bash
 python -m pip install amazon-textract-helper amazon-textract-geofinder
@@ -109,8 +111,63 @@ set_hierarchy_kv(list_kv=form_fields, t_document=t_document, prefix='PATIENT', p
 print(get_forms_string(t2.TDocumentSchema().dump(t_document)))
 ```
 
+|-------------------------+----------------|
+| Key                     | Value          |
+| ...                     | ...            |
+| PATIENT_first name:     | ALEJANDRO      |
+| PATIENT_address:        | 123 ANY STREET |
+| PATIENT_sex:            | M              |
+| PATIENT_state:          | CA             |
+| PATIENT_zip code:       | 12345          |
+| PATIENT_marital status: | MARRIED        |
+| PATIENT_last name:      | ROSALEZ        |
+| PATIENT_phone:          | 646-555-0111   |
+| PATIENT_email address:  |                |
+| PATIENT_city:           | ANYTOWN        |
+| PATIENT_date of birth:  | 10/10/1982     |
+
+## Using the Amazon Textact Helper command line tool with the sample
+
+This will show the full result, like the notebook.
+
+```bash
+> python -m pip install amazon-textract-helper amazon-textract-geofinder
+> cat tests/data/patient_intake_form_sample.json| bin/amazon-textract-geofinder | amazon-textract --stdin --pretty-print FORMS
+```
+
 |----------------------------------------------|----------------|
 | Key                                          | Value          |
+| First Name:                                  | ALEJANDRO      |
+| First Name:                                  | CARLOS         |
+| Relationship to Patient:                     | BROTHER        |
+| First Name:                                  | JANE           |
+| Marital Status:                              | MARRIED        |
+| Phone:                                       | 646-555-0111   |
+| Last Name:                                   | SALAZAR        |
+| Phone:                                       | 212-555-0150   |
+| Relationship to Patient:                     | FRIEND         |
+| Last Name:                                   | ROSALEZ        |
+| City:                                        | ANYTOWN        |
+| Phone:                                       | 650-555-0123   |
+| Address:                                     | 123 ANY STREET |
+| Yes                                          | SELECTED       |
+| Yes                                          | NOT_SELECTED   |
+| Date of Birth:                               | 10/10/1982     |
+| Last Name:                                   | DOE            |
+| Sex:                                         | M              |
+| Yes                                          | NOT_SELECTED   |
+| Yes                                          | NOT_SELECTED   |
+| Yes                                          | NOT_SELECTED   |
+| State:                                       | CA             |
+| Zip Code:                                    | 12345          |
+| Email Address:                               |                |
+| No                                           | NOT_SELECTED   |
+| No                                           | SELECTED       |
+| No                                           | NOT_SELECTED   |
+| Yes                                          | SELECTED       |
+| No                                           | SELECTED       |
+| No                                           | SELECTED       |
+| No                                           | SELECTED       |
 | PATIENT_first name:                          | ALEJANDRO      |
 | PATIENT_address:                             | 123 ANY STREET |
 | PATIENT_sex:                                 | M              |
@@ -122,12 +179,23 @@ print(get_forms_string(t2.TDocumentSchema().dump(t_document)))
 | PATIENT_email address:                       |                |
 | PATIENT_city:                                | ANYTOWN        |
 | PATIENT_date of birth:                       | 10/10/1982     |
-
-## Using the Amazon Textact Helper command line tool with the sample
-
-This will show the full result, like the notebook.
-
-```bash
-> python -m pip install amazon-textract-helper amazon-textract-geofinder
-> cat tests/data/patient_intake_form_sample.json| bin/amazon-textract-geofinder | amazon-textract --stdin --pretty-print FORMS
-```
+| EMERGENCY_CONTACT_1_first name:              | CARLOS         |
+| EMERGENCY_CONTACT_1_phone:                   | 212-555-0150   |
+| EMERGENCY_CONTACT_1_relationship to patient: | BROTHER        |
+| EMERGENCY_CONTACT_1_last name:               | SALAZAR        |
+| EMERGENCY_CONTACT_2_first name:              | JANE           |
+| EMERGENCY_CONTACT_2_phone:                   | 650-555-0123   |
+| EMERGENCY_CONTACT_2_last name:               | DOE            |
+| EMERGENCY_CONTACT_2_relationship to patient: | FRIEND         |
+| FEVER->YES                                   | SELECTED       |
+| FEVER->NO                                    | NOT_SELECTED   |
+| SHORTNESS->YES                               | NOT_SELECTED   |
+| SHORTNESS->NO                                | SELECTED       |
+| COUGH->YES                                   | NOT_SELECTED   |
+| COUGH->NO                                    | SELECTED       |
+| LOSS_OF_TASTE->YES                           | NOT_SELECTED   |
+| LOSS_OF_TASTE->NO                            | SELECTED       |
+| COVID_CONTACT->YES                           | SELECTED       |
+| COVID_CONTACT->NO                            | NOT_SELECTED   |
+| TRAVEL->YES                                  | NOT_SELECTED   |
+| TRAVEL->NO                                   | SELECTED       |
