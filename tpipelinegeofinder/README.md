@@ -27,7 +27,11 @@ From there functions to parse the information in the area help to extract the in
 
 ## Get context for key value pairs
 
-The response for the sample image [[./tests/data/patient_intake_form_sample.jpg>]] from the Amazon Textract AnalyzeDocument API with the FORMS featur does include the following keys:
+Sample image:
+
+<img src="./tests/data/patient_intake_form_sample.jpg" width=300> 
+
+The Amazon Textract AnalyzeDocument API with the FORMS feature returns the following keys:
 
 | Key                                          | Value          |
 |----------------------------------------------|----------------|
@@ -63,11 +67,14 @@ The response for the sample image [[./tests/data/patient_intake_form_sample.jpg>
 | No                                           | SELECTED       |
 | No                                           | SELECTED       |
 
+
 But the information to which section of the document the individual keys belong is not obvious. Most keys appear multiple times and we want to give them context to associate them with the 'Patient', 'Emergency Contact 1', 'Emergency Contact 2' or specific questions.
 
 
-Here is a Jupyter notebook that walks through the sample: [sample notebook](./geofinder-sample-notebook.ipynb)
+This Jupyter notebook that walks through the sample: [sample notebook](./geofinder-sample-notebook.ipynb)
 Make sure to have AWS credentials setup when starting the notebook locally or use a SageMaker notebook with a role including permissions for Amazon Textract. 
+
+This code snippet is take from the notebook.
 
 ```bash
 python -m pip install amazon-textract-helper amazon-textract-geofinder
