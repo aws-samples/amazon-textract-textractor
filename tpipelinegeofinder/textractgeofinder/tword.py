@@ -100,7 +100,7 @@ class TWord():
                 missing_values.append("confidence")
             else:
                 self.confidence: float = confidence
-            if not xmin or not ymin or not xmax or not ymax:
+            if xmin == None or ymin == None or xmax == None or ymax == None:
                 missing_values.append("xmin ymin xmax or ymax")
             else:
                 self.xmin: int = xmin

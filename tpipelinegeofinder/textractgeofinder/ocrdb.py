@@ -75,7 +75,8 @@ class OCRDB():
                            doc_height int,
                            child_relationships text,
                            reference text,
-                           FOREIGN KEY(reference) REFERENCES ocrdb(id))''')
+                           FOREIGN KEY(reference) REFERENCES ocrdb(id)
+        )''')
         cursor.execute('''CREATE INDEX idx_ocrdb_text_type ON ocrdb (text_type);''')
         cursor.execute('''CREATE INDEX idx_ocrdb_textract_doc_uuid ON ocrdb (textract_doc_uuid);''')
         cursor.execute('''CREATE INDEX idx_ocrdb_page_number ON ocrdb (page_number);''')
@@ -83,6 +84,14 @@ class OCRDB():
         cursor.execute('''CREATE INDEX idx_ocrdb_ymin ON ocrdb (ymin);''')
         cursor.execute('''CREATE INDEX idx_ocrdb_xmax ON ocrdb (xmax);''')
         cursor.execute('''CREATE INDEX idx_ocrdb_ymax ON ocrdb (ymax);''')
+
+    def insert(self, textract_doc_uuid, x: TWord):
+        # logger.warning(f"insert: {x}")
+        cursor: sqlite3.Cursor = self.conn.cursor()
+        cursor.execute('INSERT INTO ocrdb VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)', [
+            textract_doc_uuid, x.page_number, x.text_type, x.text, x.original_text, x.confidence, x.xmin, x.ymin,
+            x.xmax, x.ymax, x.id, x.doc_width, x.doc_height, x.child_relationships, x.reference
+        ])
 
     def insert_bulk(self, textract_doc_uuid, rows: "list[TWord]"):
         cursor: sqlite3.Cursor = self.conn.cursor()
