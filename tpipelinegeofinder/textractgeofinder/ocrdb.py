@@ -3,7 +3,7 @@ from textractgeofinder.tword import TWord
 import sqlite3
 from typing import Iterable, Any, List, Optional
 import trp.trp2 as t2
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 class AreaSelection:
     top_left: t2.TPoint
     lower_right: t2.TPoint
+    page_number: int    # = field(default=1)
 
     @property
     def area(self) -> float:
@@ -145,6 +146,8 @@ class OCRDB():
         query_composed = "select * from ocrdb where textract_doc_uuid=? and page_number=? "
         params_composed = list()
         params_composed.append(textract_doc_uuid)
+        if page_number and area_selection and area_selection.page_number != page_number:
+            raise ValueError("page_number and area_selection.page_number are not equal")
         params_composed.append(page_number)
         if area_selection:
             area_xmin = area_selection.top_left.x
@@ -154,9 +157,10 @@ class OCRDB():
             query_composed += "  and (ymin + ymax) / 2 > ? \
                         and (ymin + ymax) / 2 < ? \
                         and (xmin + xmax) / 2 > ? \
-                        and (xmin + xmax) / 2 < ? "
+                        and (xmin + xmax) / 2 < ? \
+                        and (page_number) = ?"
 
-            params_composed.extend([area_ymin, area_ymax, area_xmin, area_xmax])
+            params_composed.extend([area_ymin, area_ymax, area_xmin, area_xmax, area_selection.page_number])
         if exclude_ids:
             query_composed += f" and id not in ({','.join(['?']*len(exclude_ids))}) "
             params_composed.extend(exclude_ids)
