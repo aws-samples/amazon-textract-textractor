@@ -293,12 +293,14 @@ class TGeoFinder():
                                   area_selection=area_selection)
 
     def find_intersect_for_area(self, area1: AreaSelection, area2: AreaSelection) -> List[TWord]:
+        if area1.page_number != area2.page_number:
+            raise ValueError(f"page numbers don't match for areas. area1: {area1}, area2: {area2}")
         xmax = min(area1.lower_right.x, area2.lower_right.x)
         xmin = max(area1.top_left.x, area2.top_left.x)
         ymax = min(area1.lower_right.y, area2.lower_right.y)
         ymin = max(area1.top_left.y, area2.top_left.y)
-        return self.get_twords_in_area(
-            area_selection=AreaSelection(top_left=t2.TPoint(x=xmin, y=ymin), lower_right=t2.TPoint(x=xmax, y=ymax)))
+        return self.get_twords_in_area(area_selection=AreaSelection(
+            top_left=t2.TPoint(x=xmin, y=ymin), lower_right=t2.TPoint(x=xmax, y=ymax), page_number=area1.page_number))
 
     def find_intersect_value(self,
                              word_left: str,
@@ -551,7 +553,8 @@ class TGeoFinder():
 
             text_bound_top_left = t2.TPoint(x=t.xmax, y=t.ymin)
             sel_words = self.get_twords_in_area(AreaSelection(top_left=text_bound_top_left,
-                                                              lower_right=text_bound_lower_right),
+                                                              lower_right=text_bound_lower_right,
+                                                              page_number=area_selection.page_number),
                                                 exclude_ids=exclude_ids)
             sel_result.append(SelectionElement(selection=t, key=sel_words))
 
@@ -563,7 +566,14 @@ class TGeoFinder():
         xmax = max([tw.xmax for tw in twords])
         ymin = min([tw.ymin for tw in twords])
         ymax = max([tw.ymax for tw in twords])
-        return AreaSelection(top_left=t2.TPoint(x=xmin, y=ymin), lower_right=t2.TPoint(x=xmax, y=ymax))
+        pages = [x.page_number for x in twords]
+        if len(pages) > 1:
+            raise ValueError(f"all twords should be on same page: {twords}")
+        if len(pages) < 1:
+            raise ValueError("twords without x/y coordinates")
+        return AreaSelection(top_left=t2.TPoint(x=xmin, y=ymin),
+                             lower_right=t2.TPoint(x=xmax, y=ymax),
+                             page_number=pages[0])
 
     def get_area(self,
                  area_selection: AreaSelection,
@@ -573,6 +583,7 @@ class TGeoFinder():
             query=f" and text_type in ({','.join(['?']*len(text_type))}) order by xmin asc",
             params=text_type,
             textract_doc_uuid=self.textract_doc_uuid,
+            page_number=area_selection.page_number,
             area_selection=area_selection,
             exclude_ids=exclude_ids)
         logger.debug(f"get_area: number of words: {len(words)}")
@@ -632,13 +643,13 @@ class TGeoFinder():
             min_distances.append(TGeoFinder.get_min_distance(word_start, twords[idx + 1]))
         return max(min_distances)
 
-    @staticmethod
-    def get_anker_for_twords(words: List[TWord]) -> AreaSelection:
-        xmin = min([x.xmin for x in words])
-        xmax = max([x.xmax for x in words])
-        ymin = min([x.ymin for x in words])
-        ymax = max([x.ymax for x in words])
-        return AreaSelection(top_left=t2.TPoint(x=xmin, y=ymin), lower_right=t2.TPoint(x=xmax, y=ymax))
+    # @staticmethod
+    # def get_anker_for_twords(words: List[TWord]) -> AreaSelection:
+    #     xmin = min([x.xmin for x in words])
+    #     xmax = max([x.xmax for x in words])
+    #     ymin = min([x.ymin for x in words])
+    #     ymax = max([x.ymax for x in words])
+    #     return AreaSelection(top_left=t2.TPoint(x=xmin, y=ymin), lower_right=t2.TPoint(x=xmax, y=ymax))
 
     def find_word_on_page(self,
                           word_to_find: str,
@@ -649,6 +660,7 @@ class TGeoFinder():
         query = " and text_type=? and page_number=? "
         params = ["word", page_number]
         words = self.ocrdb.execute(textract_doc_uuid=self.textract_doc_uuid,
+                                   page_number=page_number,
                                    area_selection=area_selection,
                                    params=params,
                                    query=query,
@@ -683,6 +695,7 @@ class TGeoFinder():
         # find first words and then walk to right and down and lower_left_word is always the left-most and lowest
         lower_left_word = phrase_words[0]
         first_word_twords: List[TWord] = self.find_word_on_page(lower_left_word,
+                                                                page_number=page_number,
                                                                 min_textdistance=min_textdistance,
                                                                 exclude_ids=exclude_ids)
         logger.debug(f"find_phrase_on_page - first_word_twords: {first_word_twords}")
@@ -694,13 +707,15 @@ class TGeoFinder():
             valid_combination.append(first_word_option)
             below_area: AreaSelection = AreaSelection(
                 top_left=t2.TPoint(x=lower_left_word.xmin, y=lower_left_word.ymax),
-                lower_right=t2.TPoint(x=lower_left_word.xmax + lower_left_word.height * 3, y=self.doc_width))
+                lower_right=t2.TPoint(x=lower_left_word.xmax + lower_left_word.height * 3, y=self.doc_width),
+                page_number=page_number)
 
             found_combination = True
             current_word = first_word_option
             for word in phrase_words[1:]:
                 logger.debug(f"find_phrase_on_page - looking for word: {word} with current_word: {current_word}")
-                words_to_right = self.get_words_to_the_right(anker=TGeoFinder.get_anker_for_twords([current_word]),
+                words_to_right = self.get_words_to_the_right(anker=TGeoFinder.get_area_selection_for_twords(
+                    [current_word]),
                                                              number_of_words_to_return=1)
                 logger.debug(f"find_phrase_on_page - words to the right: {words_to_right}")
                 if words_to_right and get_diff_for_alphanum_words(word1=words_to_right[0].text,
@@ -769,6 +784,7 @@ class TGeoFinder():
             raise ValueError(f"no valid phrase: '{phrase}")
         # check if already in DB
         found_phrases: "list[TWord]" = self.ocrdb.select_text(textract_doc_uuid=self.textract_doc_uuid,
+                                                              page_number=page_number,
                                                               text=make_alphanum_and_lower_for_non_numbers(phrase),
                                                               area_selection=area_selection,
                                                               exclude_ids=exclude_ids)
