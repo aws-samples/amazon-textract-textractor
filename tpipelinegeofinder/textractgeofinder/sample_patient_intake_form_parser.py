@@ -19,9 +19,10 @@ def add_sel_elements(t_document: t2.TDocument, selection_values: list[SelectionE
         sel_key_string = "_".join([s_key.original_text.upper() for s_key in sel_element.key if s_key.original_text])
         if sel_key_string:
             if sel_element.selection.original_text:
-                t_document.add_key_values(page_block=page_block,
-                                          key_name=f"{key_base_name}->{sel_key_string}",
-                                          values=[t_document.get_block_by_id(sel_element.selection.id)])
+                t_document.add_virtual_key_for_existing_key(page_block=page_block,
+                                                            key_name=f"{key_base_name}->{sel_key_string}",
+                                                            existing_key=t_document.get_block_by_id(
+                                                                sel_element.key[0].id))
     return t_document
 
 
@@ -36,7 +37,7 @@ def add_key_value_lables(t_document: t2.TDocument) -> t2.TDocument:
     top_left = t2.TPoint(y=patient_information.ymax, x=0)
     lower_right = t2.TPoint(y=emergency_contact_1.ymin, x=doc_width)
     form_fields = geofinder_doc.get_form_fields_in_area(
-        area_selection=AreaSelection(top_left=top_left, lower_right=lower_right))
+        area_selection=AreaSelection(top_left=top_left, lower_right=lower_right, page_number=1))
     set_hierarchy_kv(list_kv=form_fields, t_document=t_document, prefix='PATIENT', page_block=t_document.pages[0])
 
     #Emergency contact 1
@@ -45,7 +46,7 @@ def add_key_value_lables(t_document: t2.TDocument) -> t2.TDocument:
     top_left = t2.TPoint(y=emergency_contact_1.ymax, x=0)
     lower_right = t2.TPoint(y=emergency_contact_2.ymin, x=doc_width)
     form_fields = geofinder_doc.get_form_fields_in_area(
-        area_selection=AreaSelection(top_left=top_left, lower_right=lower_right))
+        area_selection=AreaSelection(top_left=top_left, lower_right=lower_right, page_number=1))
     set_hierarchy_kv(list_kv=form_fields,
                      t_document=t_document,
                      prefix='EMERGENCY_CONTACT_1',
@@ -55,7 +56,7 @@ def add_key_value_lables(t_document: t2.TDocument) -> t2.TDocument:
     top_left = t2.TPoint(y=emergency_contact_2.ymax, x=0)
     lower_right = t2.TPoint(y=fever_question.ymin, x=doc_width)
     form_fields = geofinder_doc.get_form_fields_in_area(
-        area_selection=AreaSelection(top_left=top_left, lower_right=lower_right))
+        area_selection=AreaSelection(top_left=top_left, lower_right=lower_right, page_number=1))
     set_hierarchy_kv(list_kv=form_fields,
                      t_document=t_document,
                      prefix='EMERGENCY_CONTACT_2',
@@ -65,7 +66,7 @@ def add_key_value_lables(t_document: t2.TDocument) -> t2.TDocument:
     top_left = t2.TPoint(y=fever_question.ymin - 50, x=0)
     lower_right = t2.TPoint(y=fever_question.ymax + 50, x=doc_width)
     sel_values: list[SelectionElement] = geofinder_doc.get_selection_values_in_area(area_selection=AreaSelection(
-        top_left=top_left, lower_right=lower_right),
+        top_left=top_left, lower_right=lower_right, page_number=1),
                                                                                     exclude_ids=[])
     add_sel_elements(t_document=t_document,
                      selection_values=sel_values,
@@ -78,7 +79,7 @@ def add_key_value_lables(t_document: t2.TDocument) -> t2.TDocument:
     top_left = t2.TPoint(y=shortness_question.ymin - 50, x=0)
     lower_right = t2.TPoint(y=shortness_question.ymax + 50, x=doc_width)
     sel_values: list[SelectionElement] = geofinder_doc.get_selection_values_in_area(area_selection=AreaSelection(
-        top_left=top_left, lower_right=lower_right),
+        top_left=top_left, lower_right=lower_right, page_number=1),
                                                                                     exclude_ids=[])
     add_sel_elements(t_document=t_document,
                      selection_values=sel_values,
@@ -91,7 +92,7 @@ def add_key_value_lables(t_document: t2.TDocument) -> t2.TDocument:
     top_left = t2.TPoint(y=question.ymin - 50, x=0)
     lower_right = t2.TPoint(y=question.ymax + 50, x=doc_width)
     sel_values: list[SelectionElement] = geofinder_doc.get_selection_values_in_area(area_selection=AreaSelection(
-        top_left=top_left, lower_right=lower_right),
+        top_left=top_left, lower_right=lower_right, page_number=1),
                                                                                     exclude_ids=[])
     add_sel_elements(t_document=t_document,
                      selection_values=sel_values,
@@ -102,7 +103,7 @@ def add_key_value_lables(t_document: t2.TDocument) -> t2.TDocument:
     top_left = t2.TPoint(y=question.ymin - 50, x=0)
     lower_right = t2.TPoint(y=question.ymax + 50, x=doc_width)
     sel_values: list[SelectionElement] = geofinder_doc.get_selection_values_in_area(area_selection=AreaSelection(
-        top_left=top_left, lower_right=lower_right),
+        top_left=top_left, lower_right=lower_right, page_number=1),
                                                                                     exclude_ids=[])
     add_sel_elements(t_document=t_document,
                      selection_values=sel_values,
@@ -113,7 +114,7 @@ def add_key_value_lables(t_document: t2.TDocument) -> t2.TDocument:
     top_left = t2.TPoint(y=question.ymin - 50, x=0)
     lower_right = t2.TPoint(y=question.ymax + 50, x=doc_width)
     sel_values: list[SelectionElement] = geofinder_doc.get_selection_values_in_area(area_selection=AreaSelection(
-        top_left=top_left, lower_right=lower_right),
+        top_left=top_left, lower_right=lower_right, page_number=1),
                                                                                     exclude_ids=[])
     add_sel_elements(t_document=t_document,
                      selection_values=sel_values,
@@ -124,7 +125,7 @@ def add_key_value_lables(t_document: t2.TDocument) -> t2.TDocument:
     top_left = t2.TPoint(y=question.ymin - 50, x=0)
     lower_right = t2.TPoint(y=question.ymax + 50, x=doc_width)
     sel_values: list[SelectionElement] = geofinder_doc.get_selection_values_in_area(area_selection=AreaSelection(
-        top_left=top_left, lower_right=lower_right),
+        top_left=top_left, lower_right=lower_right, page_number=1),
                                                                                     exclude_ids=[])
     add_sel_elements(t_document=t_document,
                      selection_values=sel_values,

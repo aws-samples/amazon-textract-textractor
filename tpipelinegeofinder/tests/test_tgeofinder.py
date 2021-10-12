@@ -11,6 +11,19 @@ import pytest
 logger = logging.getLogger(__name__)
 
 
+def add_sel_elements(t_document: t2.TDocument, selection_values: list[SelectionElement], key_base_name: str,
+                     page_block: t2.TBlock) -> t2.TDocument:
+    for sel_element in selection_values:
+        sel_key_string = "_".join([s_key.original_text.upper() for s_key in sel_element.key if s_key.original_text])
+        if sel_key_string:
+            if sel_element.selection.original_text:
+                t_document.add_virtual_key_for_existing_key(page_block=page_block,
+                                                            key_name=f"{key_base_name}->{sel_key_string}",
+                                                            existing_key=t_document.get_block_by_id(
+                                                                sel_element.key[0].id))
+    return t_document
+
+
 def test_words_between_words(caplog):
     caplog.set_level(logging.DEBUG)
     caplog.set_level(logging.DEBUG, logger='textractgeofinder')
@@ -113,7 +126,8 @@ def test_get_selection_values_in_area(caplog):
     doc_height = 1000
     doc_width = 1000
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
-        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
+        j = json.load(input_fp)
+        qdoc = tq.TGeoFinder(j, doc_height=doc_height, doc_width=doc_width)
         fever_question = qdoc.find_phrase_on_page("did you feel fever or feverish lately")[0]
         top_left = t2.TPoint(y=fever_question.ymin - 50, x=0)
         lower_right = t2.TPoint(y=fever_question.ymax + 50, x=doc_width)
@@ -131,6 +145,15 @@ def test_get_selection_values_in_area(caplog):
                                                                                exclude_ids=[])
         assert sel_values
         assert len(sel_values) == 2
+
+        t_document: t2.TDocument = t2.TDocumentSchema().load(j)
+        add_sel_elements(t_document=t_document,
+                         selection_values=sel_values,
+                         key_base_name="test",
+                         page_block=t_document.pages[0])
+        sel1 = t_document.value_for_key(t_document.get_block_by_id(sel_values[0].key[0].id))
+        assert 1 == len(sel1)
+        assert 'NOT_SELECTED' == t_document.get_text_for_tblocks(tblocks=sel1)
 
 
 def test_phrase_coordinates(caplog):
