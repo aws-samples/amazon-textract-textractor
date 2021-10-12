@@ -535,30 +535,26 @@ class TGeoFinder():
             result_set.append(KeyValue(key=k, value=value))
         return result_set
 
+    # FIXME: add block_type to ocrdb  for easier check if selection element
+    # "BlockType": "SELECTION_ELEMENT"
     def get_selection_values_in_area(self,
                                      area_selection: AreaSelection,
                                      exclude_ids: List[str] = None) -> List[SelectionElement]:
-        area: List[TWord] = self.get_area(area_selection, exclude_ids=exclude_ids)
-        logger.debug(f"area: {area}")
-        sel_result: List[SelectionElement] = list()
-        for t in [x for x in area if x.text_type == "selection_element"]:
-            # next selection element to the right?
-            next_sel: List[TWord] = self.get_next_selection_element_to_the_right(word=t,
-                                                                                 xmax=int(area_selection.lower_right.x))
-            if next_sel:
-                text_bound_lower_right = t2.TPoint(x=next_sel[0].xmin, y=t.ymax + TGeoFinder.approx_line_difference)
-            else:
-                text_bound_lower_right = t2.TPoint(x=area_selection.lower_right.x,
-                                                   y=t.ymax + TGeoFinder.approx_line_difference)
-
-            text_bound_top_left = t2.TPoint(x=t.xmax, y=t.ymin)
-            sel_words = self.get_twords_in_area(AreaSelection(top_left=text_bound_top_left,
-                                                              lower_right=text_bound_lower_right,
-                                                              page_number=area_selection.page_number),
-                                                exclude_ids=exclude_ids)
-            sel_result.append(SelectionElement(selection=t, key=sel_words))
-
-        return sel_result
+        if not area_selection:
+            raise ValueError("need and area_selection")
+        keys: List[TWord] = self.get_area(area_selection=area_selection, exclude_ids=exclude_ids, text_type=["KEY"])
+        result_set: List[SelectionElement] = list()
+        logger.debug(f"get_form_fields_in_area: found keys: {keys}")
+        for k in keys:
+            logger.debug(f"get_form_fields_in_area: key: {k}")
+            value = None
+            if k.reference:
+                value = self.ocrdb.get_id(id=k.reference, textract_doc_uuid=self.textract_doc_uuid)
+                logger.debug(f"get_form_fields_in_area: value: {value}")
+                if value and ((value.original_text and value.original_text == "NOT_SELECTED") or
+                              (value.original_text and value.original_text == "SELECTED")):
+                    result_set.append(SelectionElement(key=[k], selection=value))
+        return result_set
 
     @staticmethod
     def get_area_selection_for_twords(twords: Iterable[TWord]) -> AreaSelection:
