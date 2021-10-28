@@ -7,11 +7,12 @@ import boto3
 import glob
 import json
 import sys
-from textractcaller.t_call import Textract_Features, Textract_Types, call_textract
+from textractcaller.t_call import Textract_Features, Textract_Types, call_textract, is_tiff
 from textractoverlayer.t_overlay import DocumentDimensions, get_bounding_boxes
 from textractprettyprinter.t_pretty_print import Pretty_Print_Table_Format, Textract_Pretty_Print, get_string
 from textractoverlayer.image_tools import get_filename_from_document
 from textracthelper._version import __version__
+from PIL import Image, ImageSequence
 import textracthelper._version
 import logging
 
@@ -186,11 +187,40 @@ else:
         input_documents = [input_document]
 
 for input_document in input_documents:
+    is_s3_document: bool = False
+    s3_bucket: str = ""
+    s3_key: str = ""
+    if len(input_document) > 7 and input_document.lower().startswith("s3://"):
+        is_s3_document = True
+        s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+        logger.debug(f"s3_bucket: {s3_bucket}, s3_key: {s3_key}")
+    ext: str = ""
+    _, ext = os.path.splitext(input_document)
     if use_stdin:
         doc = json.load(sys.stdin)
     else:
         logger.debug(f"input_document: '{input_document}'")
-        doc = call_textract(input_document=input_document, features=features)
+        # check if TIFF multi-page, if so force async
+        force_async = False
+        if is_tiff(input_document):
+            num_pages = 0
+            if is_s3_document:
+                s3 = boto3.client('s3')
+                o = s3.get_object(Bucket=s3_bucket, Key=s3_key)
+                input_bytes = o.get('Body').read()
+                f = io.BytesIO(input_bytes)
+            else:
+                f = open(input_document).read()
+            img = Image.open(f)
+            for i, page in enumerate(ImageSequence.Iterator(img)):
+                num_pages += 1
+            if num_pages > 1:
+                force_async = True
+                logger.warning(f"multi-page TIFF, have to do async")
+        if force_async:
+            doc = call_textract(input_document=input_document, features=features, force_async_api=True)
+        else:
+            doc = call_textract(input_document=input_document, features=features)
     logger.debug(f"receivedTextract response")
     if showstdout:
         if pretty_print:
@@ -211,17 +241,6 @@ for input_document in input_documents:
             "TABLE": (255, 255, 0)
         }
         from PIL import Image, ImageDraw, ImageFont
-        is_s3_document: bool = False
-        s3_bucket: str = ""
-        s3_key: str = ""
-        if len(input_document) > 7 and input_document.lower().startswith("s3://"):
-            is_s3_document = True
-            input_document = input_document.replace("s3://", "")
-            s3_bucket, s3_key = input_document.split("/", 1)
-            print(s3_bucket, s3_key)
-        ext: str = ""
-        _, ext = os.path.splitext(input_document)
-
         if is_s3_document:
             s3 = boto3.client('s3')
             o = s3.get_object(Bucket=s3_bucket, Key=s3_key)
