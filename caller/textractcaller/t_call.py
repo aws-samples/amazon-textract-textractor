@@ -8,6 +8,8 @@ import logging
 import json
 import io
 
+from marshmallow.fields import Boolean
+
 Textract_Features = Enum('Textract_Features', ["FORMS", "TABLES"], start=0)
 Textract_Types = Enum('Textract_Types', ["WORD", "LINE", "TABLE", "CELL", "KEY", "VALUE", "FORM"])
 Textract_API = Enum('Textract_API', ["ANALYZE", "DETECT"], start=0)
@@ -77,9 +79,17 @@ class Document():
             return return_value
 
 
-pdf_suffixes = ['.pdf']
-image_suffixes = ['.png', '.jpg', '.jpeg']
-supported_suffixes = pdf_suffixes + image_suffixes
+only_async_suffixes = ['.pdf']
+tiff_suffixes = ['.tiff', '.tif']
+sync_suffixes = ['.png', '.jpg', '.jpeg'] + tiff_suffixes
+supported_suffixes = only_async_suffixes + sync_suffixes
+
+
+def is_tiff(filename: str) -> bool:
+    _, suffix = os.path.splitext(filename)
+    if suffix in tiff_suffixes:
+        return True
+    return False
 
 
 def generate_request_params(document_location: DocumentLocation = None,
@@ -223,6 +233,8 @@ def call_textract(input_document: Union[str, bytes],
                   job_done_polling_interval=1) -> dict:
     """
     calls Textract and returns a response (either full json as string (json.dumps)or the job_id when return_job_id=True)
+    In case of TIFF the default is calling sync, so if a multi-page TIFF is passed in the caller has to set force_async_api=True or will get a botocore.errorfactory.UnsupportedDocumentException
+
     input_document: points to document on S3 when string starts with s3://
                     points to local file when string does not start with s3://
                     or bytearray when object is in memory
@@ -232,6 +244,7 @@ def call_textract(input_document: Union[str, bytes],
     client_request_token: passed down to Textract API
     job_tag: passed down to Textract API
     boto_3_textract_client: pass in boto3 client (to overcome missing region in environmnent, e. g.)
+    job_done_polling_interval: when using async (pdf document of force_async_api, the implementation polls every x seconds (1 second by default))
     returns: dict with either Textract response or async API response (incl. the JobId)
     raises LimitExceededException when receiving LimitExceededException from Textract API. Expectation is to handle in calling function
     """
@@ -253,7 +266,7 @@ def call_textract(input_document: Union[str, bytes],
         _, ext = os.path.splitext(input_document)
         ext = ext.lower()
 
-        is_pdf: bool = (ext != None and ext.lower() in pdf_suffixes)
+        is_pdf: bool = (ext != None and ext.lower() in only_async_suffixes)
         if is_pdf and not is_s3_document:
             raise ValueError("PDF only supported when located on S3")
         if not is_s3_document and force_async_api:
@@ -292,7 +305,7 @@ def call_textract(input_document: Union[str, bytes],
             else:
                 raise Exception(f"Got non-200 response code: {submission_status}")
 
-        elif ext in image_suffixes:
+        elif ext in sync_suffixes:
             # s3 file
             if is_s3_document:
                 params = generate_request_params(document=Document(s3_bucket=s3_bucket, s3_prefix=s3_key),
