@@ -210,7 +210,7 @@ for input_document in input_documents:
                 input_bytes = o.get('Body').read()
                 f = io.BytesIO(input_bytes)
             else:
-                f = open(input_document).read()
+                f = input_document
             img = Image.open(f)
             for i, page in enumerate(ImageSequence.Iterator(img)):
                 num_pages += 1
