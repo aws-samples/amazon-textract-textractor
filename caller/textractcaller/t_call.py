@@ -233,6 +233,8 @@ def call_textract(input_document: Union[str, bytes],
                   job_done_polling_interval=1) -> dict:
     """
     calls Textract and returns a response (either full json as string (json.dumps)or the job_id when return_job_id=True)
+    In case of TIFF the default is calling sync, so if a multi-page TIFF is passed in the caller has to set force_async_api=True or will get a botocore.errorfactory.UnsupportedDocumentException
+
     input_document: points to document on S3 when string starts with s3://
                     points to local file when string does not start with s3://
                     or bytearray when object is in memory
@@ -242,6 +244,7 @@ def call_textract(input_document: Union[str, bytes],
     client_request_token: passed down to Textract API
     job_tag: passed down to Textract API
     boto_3_textract_client: pass in boto3 client (to overcome missing region in environmnent, e. g.)
+    job_done_polling_interval: when using async (pdf document of force_async_api, the implementation polls every x seconds (1 second by default))
     returns: dict with either Textract response or async API response (incl. the JobId)
     raises LimitExceededException when receiving LimitExceededException from Textract API. Expectation is to handle in calling function
     """
