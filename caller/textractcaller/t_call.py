@@ -260,8 +260,7 @@ def call_textract(input_document: Union[str, bytes],
     if isinstance(input_document, str):
         if len(input_document) > 7 and input_document.lower().startswith("s3://"):
             is_s3_document = True
-            input_document = input_document.replace("s3://", "")
-            s3_bucket, s3_key = input_document.split("/", 1)
+            s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
         ext: str = ""
         _, ext = os.path.splitext(input_document)
         ext = ext.lower()
