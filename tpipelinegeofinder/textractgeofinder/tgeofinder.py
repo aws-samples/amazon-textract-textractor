@@ -562,14 +562,15 @@ class TGeoFinder():
         xmax = max([tw.xmax for tw in twords])
         ymin = min([tw.ymin for tw in twords])
         ymax = max([tw.ymax for tw in twords])
-        pages = [x.page_number for x in twords]
+        pages = {x.page_number for x in twords}
         if len(pages) > 1:
             raise ValueError(f"all twords should be on same page: {twords}")
         if len(pages) < 1:
             raise ValueError("twords without x/y coordinates")
+        page = pages.pop()
         return AreaSelection(top_left=t2.TPoint(x=xmin, y=ymin),
                              lower_right=t2.TPoint(x=xmax, y=ymax),
-                             page_number=pages[0])
+                             page_number=page)
 
     def get_area(self,
                  area_selection: AreaSelection,
@@ -728,16 +729,17 @@ class TGeoFinder():
                 words_below = self.get_twords_in_area(area_selection=below_area)
                 logger.debug(f"find_phrase_on_page - found words_below: {words_below}")
                 euclidean_distance_list = [x.euclid_distance(first_word_option) for x in words_below]
-                combined_list = zip(euclidean_distance_list, words_below)
-                sorted_below_words = sorted(combined_list)
-                word_below_sorted = [x for (_, x) in sorted_below_words]
-                if word_below_sorted and get_diff_for_alphanum_words(word1=word_below_sorted[0].text,
-                                                                     word2=word) > min_textdistance:
-                    logger.debug(f"find_phrase_on_page - found word_below: {word_below_sorted[0]}")
-                    valid_combination.append(word_below_sorted[0])
-                    lower_left_word = word_below_sorted[0]
-                    current_word = word_below_sorted[0]
-                    continue
+                combined_list = [x for x in zip(euclidean_distance_list, words_below)]
+                if len(combined_list):
+                    sorted_below_words = sorted(combined_list)
+                    word_below_sorted = [x for (_, x) in sorted_below_words]
+                    if word_below_sorted and get_diff_for_alphanum_words(word1=word_below_sorted[0].text,
+                                                                         word2=word) > min_textdistance:
+                        logger.debug(f"find_phrase_on_page - found word_below: {word_below_sorted[0]}")
+                        valid_combination.append(word_below_sorted[0])
+                        lower_left_word = word_below_sorted[0]
+                        current_word = word_below_sorted[0]
+                        continue
                 logger.debug(f"find_phrase_on_page - did not find word right or below for {word}")
                 found_combination = False
                 break

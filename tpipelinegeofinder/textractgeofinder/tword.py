@@ -178,6 +178,18 @@ class TWord():
     # def __repr__(self) -> str:
     #     return f"text: {self.text} original_text: {self.original_text} text_type: {self.text_type} confidence: {self.confidence} id: {self.id} xmin: {self.xmin} ymin: {self.ymin} xmax: {self.xmax} ymax: {self.ymax} page_number: {self.page_number} doc_width: {self.doc_width} doc_height: {self.doc_height} child_relationships: {self.child_relationships} reference: {self.reference} resolver: Optional[str] "
 
+    def __eq__(self, o: object) -> bool:
+        return isinstance(o, TWord) and self.id == o.id
+
+    def __ne__(self, o: object) -> bool:
+        return not self.__eq__
+
+    def __gt__(self, o) -> bool:
+        return isinstance(o, TWord) and self.id > o.id
+
+    def __lt__(self, o) -> bool:
+        return isinstance(o, TWord) and self.id < o.id
+
     @property
     def center(self) -> TPoint:
         return TPoint(x=(self.xmin + self.xmax) / 2, y=(self.ymin + self.ymax) / 2)
