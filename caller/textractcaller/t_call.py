@@ -347,3 +347,54 @@ def call_textract(input_document: Union[str, bytes],
         raise ValueError(f"unsupported input_document type: {type(input_document)}")
 
     return result_value
+
+
+@dataclass
+class DocumentPage():
+    def __init__(self, byte_data: bytes = None, s3_object: dict = None):
+        if not byte_data and not s3_object:
+            raise ValueError("both bytes and s3_object have to be specified")
+        self.bytes_data = byte_data
+        self.s3_object = s3_object
+
+    def get_dict(self):
+        result = {}
+        if self.bytes_data:
+            result['Bytes'] = self.bytes_data
+        if self.s3_object:
+            result['S3Object'] = self.s3_object
+        return result
+
+def generate_analyzeid_request_params(document_pages: List[DocumentPage] = None) -> dict:
+    if document_pages is None or len(document_pages) == 0:
+        raise ValueError("No Document Page provided")
+    params = {
+        "DocumentPages": []
+    }
+    if document_pages:
+        for dp in document_pages:
+            params['DocumentPages'].append(dp.get_dict())
+    return params
+
+def call_textract_analyzeid(document_pages: List[DocumentPage] = None,
+                            boto3_textract_client=None,) -> dict:
+    """
+    calls Textract AnalyzeId and returns a response (either full json as string (json.dumps)or the job_id when return_job_id=True)
+    AnalyzeId endpoint only supports syncronize call so far
+
+    document_pages: 
+
+    returns: dict with either Textract AnalyzeId response
+    """
+    logger.debug("call_textract_analyzeid")
+    if not boto3_textract_client:
+        textract = boto3.client("textract")
+    else:
+        textract = boto3_textract_client
+    
+
+    params = generate_analyzeid_request_params(
+        document_pages=document_pages 
+    )
+
+    return textract.analyze_id(**params)
