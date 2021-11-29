@@ -6,9 +6,6 @@ import boto3
 import time
 import logging
 import json
-import io
-
-from marshmallow.fields import Boolean
 
 Textract_Features = Enum('Textract_Features', ["FORMS", "TABLES"], start=0)
 Textract_Types = Enum('Textract_Types', ["WORD", "LINE", "TABLE", "CELL", "KEY", "VALUE", "FORM"])
