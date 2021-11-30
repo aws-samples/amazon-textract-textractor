@@ -348,50 +348,72 @@ def call_textract(input_document: Union[str, bytes],
 
 @dataclass
 class DocumentPage():
-    def __init__(self, byte_data: bytes = None, s3_object: dict = None):
+    def __init__(self, byte_data: bytes = None, s3_object: DocumentLocation = None):
         if not byte_data and not s3_object:
-            raise ValueError("both bytes and s3_object have to be specified")
+            raise ValueError("Either bytes or s3_object have to be specified")
+        elif byte_data and s3_object:
+            raise ValueError("Only one of bytes or s3_object have to be specified")
         self.bytes_data = byte_data
         self.s3_object = s3_object
 
     def get_dict(self):
-        result = {}
         if self.bytes_data:
-            result['Bytes'] = self.bytes_data
+            return {'Bytes': self.bytes_data}
         if self.s3_object:
-            result['S3Object'] = self.s3_object
-        return result
+            return self.s3_object.get_dict()
+
 
 def generate_analyzeid_request_params(document_pages: List[DocumentPage] = None) -> dict:
     if document_pages is None or len(document_pages) == 0:
         raise ValueError("No Document Page provided")
-    params = {
-        "DocumentPages": []
-    }
-    if document_pages:
-        for dp in document_pages:
-            params['DocumentPages'].append(dp.get_dict())
+    params = {"DocumentPages": []}
+    for dp in document_pages:
+        params['DocumentPages'].append(dp.get_dict())
     return params
 
-def call_textract_analyzeid(document_pages: List[DocumentPage] = None,
-                            boto3_textract_client=None,) -> dict:
+
+def call_textract_analyzeid(
+    document_pages: List[Union[str, bytes]],
+    boto3_textract_client=None,
+) -> dict:
     """
     calls Textract AnalyzeId and returns a response (either full json as string (json.dumps)or the job_id when return_job_id=True)
     AnalyzeId endpoint only supports syncronize call so far
 
-    document_pages: 
+    document_pages:
 
     returns: dict with either Textract AnalyzeId response
     """
     logger.debug("call_textract_analyzeid")
+
+    # checks
+    if not document_pages:
+        raise ValueError("empty document_pages")
+    elif len(document_pages) > 2:
+        raise ValueError("document_pages only allows up to 2 document pages at the moment for AnalyzeID.")
+    elif len(document_pages) < 1:
+        raise ValueError("no document_pages received.")
+
     if not boto3_textract_client:
         textract = boto3.client("textract")
     else:
         textract = boto3_textract_client
-    
 
-    params = generate_analyzeid_request_params(
-        document_pages=document_pages 
-    )
+    document_pages_param: List[DocumentPage] = list()
+    for input_document in document_pages:
+        if isinstance(input_document, str):
+            if len(input_document) > 7 and input_document.lower().startswith("s3://"):
+                logger.debug("processing s3")
+                s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+                document_pages_param.append(
+                    DocumentPage(s3_object=DocumentLocation(s3_bucket=s3_bucket, s3_prefix=s3_key)))
+            else:
+                logger.debug("processing local file")
+                document_pages_param.append(DocumentPage(byte_data=open(input_document, 'rb').read()))
+        elif isinstance(input_document, (bytes, bytearray)):
+            logger.debug("processing bytes or bytearray")
+            document_pages_param.append(DocumentPage(byte_data=bytes(input_document)))
+
+    params = generate_analyzeid_request_params(document_pages=document_pages_param)
 
     return textract.analyze_id(**params)

@@ -1,6 +1,6 @@
-from textractcaller import call_textract
-from caller.textractcaller.t_call import call_textract_analyzeid, DocumentPage
+from textractcaller import call_textract, call_textract_analyzeid, DocumentPage
 from trp import Document
+import trp.trp2_analyzeid as t2id
 import pytest
 import logging
 import os
@@ -91,27 +91,32 @@ def test_tiff_compressed_sync(caplog):
         doc = Document(j)
         assert doc
 
+
 def test_analyzeid(caplog):
     caplog.set_level(logging.DEBUG, logger="textractcaller")
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     input_file = os.path.join(SCRIPT_DIR, "data/driverlicense.png")
 
     # photo from S3
-    j = call_textract_analyzeid(document_pages=[DocumentPage(s3_object={"Bucket":"customer-data-lanaz","Name":"test/employmentapp.png"})])
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    j = call_textract_analyzeid(document_pages=["s3://amazon-textract-public-content/analyzeid/driverlicense.png"],
+                                boto3_textract_client=textract_client)
     assert j
     assert 'DocumentMetadata' in j
     assert 'IdentityDocuments' in j
-    assert len(j['IdentityDocuments']['IdentityDocumentFields']) == 22
-    doc = Document(j)
+    assert 'IdentityDocumentFields' in j['IdentityDocuments'][0]
+    assert len(j['IdentityDocuments'][0]['IdentityDocumentFields']) == 20
+    doc: t2id.TAnalyzeIdDocument = t2id.TAnalyzeIdDocumentSchema().load(j)
     assert doc
 
     # photo from local disk
     with open(input_file, "rb") as sample_file:
         b = bytearray(sample_file.read())
-        j = call_textract_analyzeid(document_pages=[DocumentPage(byte_data=b)])
+        j = call_textract_analyzeid(document_pages=[b])
         assert j
         assert 'DocumentMetadata' in j
         assert 'IdentityDocuments' in j
-        assert len(j['IdentityDocuments']['IdentityDocumentFields']) == 22
-        doc = Document(j)
+        assert 'IdentityDocumentFields' in j['IdentityDocuments'][0]
+        assert len(j['IdentityDocuments'][0]['IdentityDocumentFields']) == 20
+        doc: t2id.TAnalyzeIdDocument = t2id.TAnalyzeIdDocumentSchema().load(j)
         assert doc
