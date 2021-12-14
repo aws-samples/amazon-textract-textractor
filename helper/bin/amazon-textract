@@ -179,7 +179,7 @@ if exit_code > 0:
 
 logger.debug(f"calling Textract")
 if use_stdin:
-    input_documents = [overlay_document]
+    input_documents = [json.load(sys.stdin)]
 else:
     if input_glob:
         input_documents = glob.glob(input_glob)
@@ -195,10 +195,12 @@ for input_document in input_documents:
         s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
         logger.debug(f"s3_bucket: {s3_bucket}, s3_key: {s3_key}")
     ext: str = ""
-    _, ext = os.path.splitext(input_document)
+    # TODO: have to clean this up, too much reuse of the same variable name for different purposes
     if use_stdin:
-        doc = json.load(sys.stdin)
+        doc = input_document
+        input_document = overlay_document
     else:
+        _, ext = os.path.splitext(input_document)
         logger.debug(f"input_document: '{input_document}'")
         # check if TIFF multi-page, if so force async
         force_async = False
