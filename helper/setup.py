@@ -50,7 +50,7 @@ class FontInstaller(install):
 
 
 requirements = [
-    'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.20', 'amazon-textract-caller>=0.0.16',
+    'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.27', 'amazon-textract-caller>=0.0.16',
     'amazon-textract-overlayer>=0.0.3', 'amazon-textract-prettyprinter>=0.0.10', 'Pillow>=9.0.1', 'PyPDF2==1.26.0'
 ]
 
