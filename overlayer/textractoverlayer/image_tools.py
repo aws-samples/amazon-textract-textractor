@@ -5,14 +5,14 @@ from textractoverlayer.t_overlay import DocumentDimensions
 import boto3
 
 # Conditionally add /opt to the PYTHON PATH
-if os.getenv('AWS_EXECUTION_ENV') is not None:
-    sys.path.append('/opt')
+if os.getenv("AWS_EXECUTION_ENV") is not None:
+    sys.path.append("/opt")
 
 from PIL import Image
 from PyPDF2 import PdfFileReader
 
-pdf_suffixes = ['.pdf']
-image_suffixes = ['.png', '.jpg', '.jpeg']
+pdf_suffixes = [".pdf"]
+image_suffixes = [".png", ".jpg", ".jpeg"]
 supported_suffixes = pdf_suffixes + image_suffixes
 
 
@@ -22,16 +22,18 @@ def get_size_from_filestream(fs, ext) -> DocumentDimensions:
         return DocumentDimensions(doc_width=img.width, doc_height=img.height)
     else:
         input1 = PdfFileReader(fs)
-        pdf = input1.getPage(0).mediaBox
-        return DocumentDimensions(doc_width=pdf.width, doc_height=pdf.height)
+        pdf_page = input1.getPage(0).mediaBox
+        return DocumentDimensions(
+            doc_width=float(pdf_page.getWidth()), doc_height=float(pdf_page.getHeight())
+        )
 
 
 def get_size_from_s3(s3_bucket, s3_key) -> DocumentDimensions:
     _, ext = os.path.splitext(s3_key)
     if ext in supported_suffixes:
-        s3 = boto3.client('s3')
+        s3 = boto3.client("s3")
         o = s3.get_object(Bucket=s3_bucket, Key=s3_key)
-        input_bytes = o.get('Body').read()
+        input_bytes = o.get("Body").read()
         f = io.BytesIO(input_bytes)
         return get_size_from_filestream(f, ext)
     else:
@@ -65,17 +67,18 @@ def get_width_height_from_s3_object(s3_bucket, s3_key) -> DocumentDimensions:
 def get_width_height_from_file(filepath) -> DocumentDimensions:
     _, ext = os.path.splitext(filepath)
     if ext in supported_suffixes:
-        with open(filepath, 'rb') as input_fs:
+        with open(filepath, "rb") as input_fs:
             return get_size_from_filestream(input_fs, ext)
     else:
         raise ValueError(f"{filepath} not in {supported_suffixes}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('--s3-bucket', required=True)
-    parser.add_argument('--s3-key', required=True)
+    parser.add_argument("--s3-bucket", required=True)
+    parser.add_argument("--s3-key", required=True)
     args = parser.parse_args()
     s3_bucket = args.s3_bucket
     s3_key = args.s3_key
