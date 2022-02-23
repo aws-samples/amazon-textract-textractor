@@ -6,6 +6,7 @@ import trp
 
 @dataclass
 class DocumentDimensions:
+
     def __init__(self, doc_width: int, doc_height: int):
         self.__doc_width = doc_width
         self.__doc_height = doc_height
@@ -21,6 +22,7 @@ class DocumentDimensions:
 
 @dataclass
 class BoundingBox:
+
     def __init__(
         self,
         geometry: trp.Geometry,
@@ -31,9 +33,7 @@ class BoundingBox:
         text: str,
     ):
         if not geometry or not document_dimensions:
-            raise ValueError(
-                "need geometry and document_dimensions to create BoundingBox object"
-            )
+            raise ValueError("need geometry and document_dimensions to create BoundingBox object")
         self.__box_type = box_type
         self.__page_number = page_number
         bbox_width = geometry.boundingBox.width
@@ -42,12 +42,8 @@ class BoundingBox:
         bbox_top = geometry.boundingBox.top
         self.__xmin: int = round(bbox_left * document_dimensions.doc_width)
         self.__ymin: int = round(bbox_top * document_dimensions.doc_height)
-        self.__xmax: int = round(
-            self.__xmin + (bbox_width * document_dimensions.doc_width)
-        )
-        self.__ymax: int = round(
-            self.__ymin + (bbox_height * document_dimensions.doc_height)
-        )
+        self.__xmax: int = round(self.__xmin + (bbox_width * document_dimensions.doc_width))
+        self.__ymax: int = round(self.__ymin + (bbox_height * document_dimensions.doc_height))
         self.__confidence: float = round(confidence, 2)
         self.__text: str = text
 
@@ -58,15 +54,9 @@ class BoundingBox:
         return self.__str__()
 
     def __eq__(self, obj):
-        return (
-            isinstance(obj, BoundingBox)
-            and obj.box_type == self.__box_type
-            and obj.xmin == self.xmin
-            and obj.ymin == self.ymin
-            and obj.xmax == self.xmax
-            and obj.ymax == self.ymax
-            and self.page_number == obj.page_number
-        )
+        return (isinstance(obj, BoundingBox) and obj.box_type == self.__box_type and obj.xmin == self.xmin
+                and obj.ymin == self.ymin and obj.xmax == self.xmax and obj.ymax == self.ymax
+                and self.page_number == obj.page_number)
 
     @property
     def xmin(self) -> int:
@@ -112,10 +102,7 @@ def get_bounding_boxes(
     for page in doc.pages:
         page_dimensions = document_dimensions[page_number]
         page_number += 1
-        if (
-            Textract_Types.WORD in overlay_features
-            or Textract_Types.LINE in overlay_features
-        ):
+        if (Textract_Types.WORD in overlay_features or Textract_Types.LINE in overlay_features):
             for line in page.lines:
                 if Textract_Types.LINE in overlay_features:
                     if line:
@@ -127,8 +114,7 @@ def get_bounding_boxes(
                                 page_number=page_number,
                                 confidence=line.confidence,
                                 text=line.text,
-                            )
-                        )
+                            ))
                 if Textract_Types.WORD in overlay_features:
                     for word in line.words:
                         if word:
@@ -140,24 +126,11 @@ def get_bounding_boxes(
                                     page_number=page_number,
                                     confidence=word.confidence,
                                     text=word.text,
-                                )
-                            )
+                                ))
 
-        if any(
-            [
-                x
-                for x in overlay_features
-                if x in [Textract_Types.FORM, Textract_Types.KEY, Textract_Types.VALUE]
-            ]
-        ):
+        if any([x for x in overlay_features if x in [Textract_Types.FORM, Textract_Types.KEY, Textract_Types.VALUE]]):
             for field in page.form.fields:
-                if any(
-                    [
-                        x
-                        for x in overlay_features
-                        if x in [Textract_Types.FORM, Textract_Types.KEY]
-                    ]
-                ):
+                if any([x for x in overlay_features if x in [Textract_Types.FORM, Textract_Types.KEY]]):
                     if field and field.key:
                         bounding_box_list.append(
                             BoundingBox(
@@ -167,15 +140,8 @@ def get_bounding_boxes(
                                 page_number=page_number,
                                 confidence=field.key.confidence,
                                 text=field.key.text,
-                            )
-                        )
-                if any(
-                    [
-                        x
-                        for x in overlay_features
-                        if x in [Textract_Types.FORM, Textract_Types.VALUE]
-                    ]
-                ):
+                            ))
+                if any([x for x in overlay_features if x in [Textract_Types.FORM, Textract_Types.VALUE]]):
                     if field and field.value:
                         bounding_box_list.append(
                             BoundingBox(
@@ -185,16 +151,9 @@ def get_bounding_boxes(
                                 page_number=page_number,
                                 confidence=field.value.confidence,
                                 text=field.value.text,
-                            )
-                        )
+                            ))
 
-        if any(
-            [
-                x
-                for x in overlay_features
-                if x in [Textract_Types.TABLE, Textract_Types.CELL]
-            ]
-        ):
+        if any([x for x in overlay_features if x in [Textract_Types.TABLE, Textract_Types.CELL]]):
             for table in page.tables:
                 if Textract_Types.TABLE in overlay_features:
                     bounding_box_list.append(
@@ -205,8 +164,7 @@ def get_bounding_boxes(
                             page_number=page_number,
                             confidence=table.confidence,
                             text="table",
-                        )
-                    )
+                        ))
 
                 if Textract_Types.CELL in overlay_features:
                     for _, row in enumerate(table.rows):
@@ -220,7 +178,6 @@ def get_bounding_boxes(
                                         page_number=page_number,
                                         confidence=cell.confidence,
                                         text="cell",
-                                    )
-                                )
+                                    ))
 
     return bounding_box_list
