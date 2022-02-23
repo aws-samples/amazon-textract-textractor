@@ -8,11 +8,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-Textract_Pretty_Print = Enum(
-    "Textract_Pretty_Print", ["WORDS", "LINES", "FORMS", "TABLES"], start=0
-)
+Textract_Pretty_Print = Enum('Textract_Pretty_Print', ["WORDS", "LINES", "FORMS", "TABLES"], start=0)
 Pretty_Print_Table_Format = Enum(
-    "Pretty_Print_Table_Format",
+    'Pretty_Print_Table_Format',
     [
         "csv",
         "plain",
@@ -55,13 +53,9 @@ def get_string(
     if output_type:
         for t in output_type:
             if t == Textract_Pretty_Print.WORDS:
-                result_value += get_words_string(
-                    textract_json=textract_json, with_page_number=with_page_number
-                )
+                result_value += get_words_string(textract_json=textract_json, with_page_number=with_page_number)
             if t == Textract_Pretty_Print.LINES:
-                result_value += get_lines_string(
-                    textract_json=textract_json, with_page_number=with_page_number
-                )
+                result_value += get_lines_string(textract_json=textract_json, with_page_number=with_page_number)
             if t == Textract_Pretty_Print.FORMS:
                 result_value += get_forms_string(
                     textract_json=textract_json,
@@ -81,9 +75,7 @@ def get_string(
     return result_value
 
 
-def convert_table_to_list(
-    trp_table: trp.Table, with_confidence: bool = False, with_geo: bool = False
-) -> List:
+def convert_table_to_list(trp_table: trp.Table, with_confidence: bool = False, with_geo: bool = False) -> List:
     rows_list = list()
     for _, row in enumerate(trp_table.rows):
         one_row = list()
@@ -99,9 +91,7 @@ def convert_table_to_list(
     return rows_list
 
 
-def convert_form_to_list(
-    trp_form: trp.Form, with_confidence: bool = False, with_geo: bool = False
-) -> List:
+def convert_form_to_list(trp_form: trp.Form, with_confidence: bool = False, with_geo: bool = False) -> List:
     rows_list = list()
     rows_list.append(["Key", "Value"])
     for field in trp_form.fields:
@@ -141,23 +131,15 @@ def get_tables_string(
     if not table_format == Pretty_Print_Table_Format.csv:
         for page in doc.pages:
             for table in page.tables:
-                table_list = convert_table_to_list(
-                    table, with_confidence=with_confidence, with_geo=with_geo
-                )
-                result_value += (
-                    tabulate(table_list, tablefmt=table_format.name) + "\n\n"
-                )
+                table_list = convert_table_to_list(table, with_confidence=with_confidence, with_geo=with_geo)
+                result_value += (tabulate(table_list, tablefmt=table_format.name) + "\n\n")
     if table_format == Pretty_Print_Table_Format.csv:
         logger.debug(f"pretty print - csv")
         csv_output = StringIO()
-        csv_writer = csv.writer(
-            csv_output, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
-        )
+        csv_writer = csv.writer(csv_output, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for page in doc.pages:
             for table in page.tables:
-                table_list = convert_table_to_list(
-                    table, with_confidence=with_confidence, with_geo=with_geo
-                )
+                table_list = convert_table_to_list(table, with_confidence=with_confidence, with_geo=with_geo)
                 csv_writer.writerows(table_list)
                 csv_writer.writerow([])
         result_value = csv_output.getvalue()
@@ -178,20 +160,14 @@ def get_forms_string(
     result_value = ""
     if not table_format == Pretty_Print_Table_Format.csv:
         for page in doc.pages:
-            forms_list = convert_form_to_list(
-                page.form, with_confidence=with_confidence, with_geo=with_geo
-            )
+            forms_list = convert_form_to_list(page.form, with_confidence=with_confidence, with_geo=with_geo)
             result_value += tabulate(forms_list, tablefmt=table_format.name) + "\n\n"
     if table_format == Pretty_Print_Table_Format.csv:
         logger.debug(f"pretty print - csv")
         csv_output = StringIO()
-        csv_writer = csv.writer(
-            csv_output, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL
-        )
+        csv_writer = csv.writer(csv_output, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for page in doc.pages:
-            forms_list = convert_form_to_list(
-                page.form, with_confidence=with_confidence, with_geo=with_geo
-            )
+            forms_list = convert_form_to_list(page.form, with_confidence=with_confidence, with_geo=with_geo)
             csv_writer.writerows(forms_list)
         csv_writer.writerow([])
         result_value = csv_output.getvalue()
@@ -207,9 +183,7 @@ def get_lines_string(textract_json: dict, with_page_number: bool = False) -> str
     result_value = ""
     for page in doc.pages:
         if with_page_number:
-            result_value += (
-                f"--------- page number: {i} - page ID: {page.id} --------------"
-            )
+            result_value += (f"--------- page number: {i} - page ID: {page.id} --------------")
         for line in page.lines:
             result_value += f"{line.text}\n"
         i += 1
@@ -225,9 +199,7 @@ def get_words_string(textract_json: dict, with_page_number: bool = False) -> str
     result_value = ""
     for page in doc.pages:
         if with_page_number:
-            result_value += (
-                f"--------- page number: {i} - page ID: {page.id} --------------"
-            )
+            result_value += (f"--------- page number: {i} - page ID: {page.id} --------------")
         for line in page.lines:
             for word in line.words:
                 result_value += f"{word.text}\n"
