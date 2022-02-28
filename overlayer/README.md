@@ -44,3 +44,28 @@ for bbox in bounding_box_list:
 
 rgb_im.show()
 ```
+
+The draw bounding boxes within PDF documents the following code can be used:
+
+```python
+import fitz
+
+# for local stored files
+file_path = "<<replace with the local path to your pdf file>>"
+doc = fitz.open(file_path)
+# for files stored in S3 the streaming object can be used
+# doc = fitz.open(stream="<<replace with stream_object_variable>>", filetype="pdf")
+
+# draw boxes
+for p, page in enumerate(doc):
+    p += 1
+    for bbox in bounding_box_list:
+        if bbox.page_number == p:
+            page.draw_rect(
+                [bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax], color=(0, 1, 0), width=2
+            )
+
+# save file locally 
+doc.save("<<local path for output file>>")
+
+```
