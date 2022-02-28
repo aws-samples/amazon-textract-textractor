@@ -22,8 +22,8 @@ def get_size_from_filestream(fs, ext) -> DocumentDimensions:
         return DocumentDimensions(doc_width=img.width, doc_height=img.height)
     else:
         input1 = PdfFileReader(fs)
-        pdf = input1.getPage(0).mediaBox
-        return DocumentDimensions(doc_width=pdf.width, doc_height=pdf.height)
+        pdf_page = input1.getPage(0).mediaBox
+        return DocumentDimensions(doc_width=int(pdf_page.getWidth()), doc_height=int(pdf_page.getHeight()))
 
 
 def get_size_from_s3(s3_bucket, s3_key) -> DocumentDimensions:
@@ -35,14 +35,14 @@ def get_size_from_s3(s3_bucket, s3_key) -> DocumentDimensions:
         f = io.BytesIO(input_bytes)
         return get_size_from_filestream(f, ext)
     else:
-        raise ValueError(f"{s3_key} not in {supported_suffixes}")
+        raise ValueError(f'{s3_key} not in {supported_suffixes}')
 
 
 def get_filename_from_document(input_document: str):
-    file_name = ""
-    if len(input_document) > 7 and input_document.lower().startswith("s3://"):
-        input_document = input_document.replace("s3://", "")
-        _, s3_key = input_document.split("/", 1)
+    file_name = ''
+    if len(input_document) > 7 and input_document.lower().startswith('s3://'):
+        input_document = input_document.replace('s3://', '')
+        _, s3_key = input_document.split('/', 1)
         file_name, suffix = os.path.splitext(os.path.basename(s3_key))
     else:
         file_name, suffix = os.path.splitext(os.path.basename(input_document))
@@ -50,9 +50,9 @@ def get_filename_from_document(input_document: str):
 
 
 def get_size_from_document(input_document: str) -> DocumentDimensions:
-    if len(input_document) > 7 and input_document.lower().startswith("s3://"):
-        input_document = input_document.replace("s3://", "")
-        s3_bucket, s3_key = input_document.split("/", 1)
+    if len(input_document) > 7 and input_document.lower().startswith('s3://'):
+        input_document = input_document.replace('s3://', '')
+        s3_bucket, s3_key = input_document.split('/', 1)
         return get_size_from_s3(s3_bucket=s3_bucket, s3_key=s3_key)
     else:
         return get_size_from_document(input_document)
@@ -68,11 +68,12 @@ def get_width_height_from_file(filepath) -> DocumentDimensions:
         with open(filepath, 'rb') as input_fs:
             return get_size_from_filestream(input_fs, ext)
     else:
-        raise ValueError(f"{filepath} not in {supported_suffixes}")
+        raise ValueError(f'{filepath} not in {supported_suffixes}')
 
 
 if __name__ == '__main__':
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--s3-bucket', required=True)
     parser.add_argument('--s3-key', required=True)
