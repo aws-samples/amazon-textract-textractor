@@ -73,7 +73,7 @@ class Word:
         self._geometry = Geometry(block['Geometry'])
         self._id = block['Id']
         self._text = ""
-        if (block['Text']):
+        if(block['Text']):
             self._text = block['Text']
 
     def __str__(self):
@@ -108,15 +108,15 @@ class Line:
         self._id = block['Id']
 
         self._text = ""
-        if (block['Text']):
+        if(block['Text']):
             self._text = block['Text']
 
         self._words = []
-        if ('Relationships' in block and block['Relationships']):
+        if('Relationships' in block and block['Relationships']):
             for rs in block['Relationships']:
-                if (rs['Type'] == 'CHILD'):
+                if(rs['Type'] == 'CHILD'):
                     for cid in rs['Ids']:
-                        if (blockMap[cid]["BlockType"] == "WORD"):
+                        if(blockMap[cid]["BlockType"] == "WORD"):
                             self._words.append(Word(blockMap[cid], blockMap))
 
     def __str__(self):
@@ -187,12 +187,12 @@ class FieldKey:
 
         for eid in children:
             wb = blockMap[eid]
-            if (wb['BlockType'] == "WORD"):
+            if(wb['BlockType'] == "WORD"):
                 w = Word(wb, blockMap)
                 self._content.append(w)
                 t.append(w.text)
 
-        if (t):
+        if(t):
             self._text = ' '.join(t)
 
     def __str__(self):
@@ -235,16 +235,16 @@ class FieldValue:
 
         for eid in children:
             wb = blockMap[eid]
-            if (wb['BlockType'] == "WORD"):
+            if(wb['BlockType'] == "WORD"):
                 w = Word(wb, blockMap)
                 self._content.append(w)
                 t.append(w.text)
-            elif (wb['BlockType'] == "SELECTION_ELEMENT"):
+            elif(wb['BlockType'] == "SELECTION_ELEMENT"):
                 se = SelectionElement(wb, blockMap)
                 self._content.append(se)
                 self._text = se.selectionStatus
 
-        if (t):
+        if(t):
             self._text = ' '.join(t)
 
     def __str__(self):
@@ -280,24 +280,24 @@ class Field:
         self._value = None
 
         for item in block['Relationships']:
-            if (item["Type"] == "CHILD"):
+            if(item["Type"] == "CHILD"):
                 self._key = FieldKey(block, item['Ids'], blockMap)
-            elif (item["Type"] == "VALUE"):
+            elif(item["Type"] == "VALUE"):
                 for eid in item['Ids']:
                     vkvs = blockMap[eid]
                     if 'VALUE' in vkvs['EntityTypes']:
-                        if ('Relationships' in vkvs):
+                        if('Relationships' in vkvs):
                             for vitem in vkvs['Relationships']:
-                                if (vitem["Type"] == "CHILD"):
+                                if(vitem["Type"] == "CHILD"):
                                     self._value = FieldValue(vkvs, vitem['Ids'], blockMap)
 
     def __str__(self):
         s = "\nField\n==========\n"
         k = ""
         v = ""
-        if (self._key):
+        if(self._key):
             k = str(self._key)
-        if (self._value):
+        if(self._value):
             v = str(self._value)
         s = s + "Key: {}\nValue: {}".format(k, v)
         return s
@@ -331,7 +331,7 @@ class Form:
 
     def getFieldByKey(self, key):
         field = None
-        if (key in self._fieldsMap):
+        if(key in self._fieldsMap):
             field = self._fieldsMap[key]
         return field
 
@@ -339,7 +339,7 @@ class Form:
         searchKey = key.lower()
         results = []
         for field in self._fields:
-            if (field.key and searchKey in field.key.text.lower()):
+            if(field.key and searchKey in field.key.text.lower()):
                 results.append(field)
         return results
 
@@ -355,16 +355,16 @@ class Cell:
         self._id = block['Id']
         self._content = []
         self._text = ""
-        if ('Relationships' in block and block['Relationships']):
+        if('Relationships' in block and block['Relationships']):
             for rs in block['Relationships']:
-                if (rs['Type'] == 'CHILD'):
+                if(rs['Type'] == 'CHILD'):
                     for cid in rs['Ids']:
                         blockType = blockMap[cid]["BlockType"]
-                        if (blockType == "WORD"):
+                        if(blockType == "WORD"):
                             w = Word(blockMap[cid], blockMap)
                             self._content.append(w)
                             self._text = self._text + w.text + ' '
-                        elif (blockType == "SELECTION_ELEMENT"):
+                        elif(blockType == "SELECTION_ELEMENT"):
                             se = SelectionElement(blockMap[cid], blockMap)
                             self._content.append(se)
                             self._text = self._text + se.selectionStatus + ', '
@@ -440,17 +440,17 @@ class Table:
         ri = 1
         row = Row()
         cell = None
-        if ('Relationships' in block and block['Relationships']):
+        if('Relationships' in block and block['Relationships']):
             for rs in block['Relationships']:
-                if (rs['Type'] == 'CHILD'):
+                if(rs['Type'] == 'CHILD'):
                     for cid in rs['Ids']:
                         cell = Cell(blockMap[cid], blockMap)
-                        if (cell.rowIndex > ri):
+                        if(cell.rowIndex > ri):
                             self._rows.append(row)
                             row = Row()
                             ri = cell.rowIndex
                         row.cells.append(cell)
-                    if (row and row.cells):
+                    if(row and row.cells):
                         self._rows.append(row)
 
     def __str__(self):
@@ -516,7 +516,7 @@ class Page:
             elif item["BlockType"] == "KEY_VALUE_SET":
                 if 'KEY' in item['EntityTypes']:
                     f = Field(item, blockMap)
-                    if (f.key):
+                    if(f.key):
                         self._form.addField(f)
                         self._content.append(f)
                     else:
@@ -553,7 +553,7 @@ class Page:
                                       column['top']) < same_line_top_tolerance    # appeared to be in the same line
                 fourth_condition = abs(bbox_left -
                                        column['right']) < same_line_spacing_tolerance * starting_point_tolerance
-                if (first_condition and second_condition) or (third_condition and fourth_condition):
+                if(first_condition and second_condition) or (third_condition and fourth_condition):
                     #Bbox appears inside the column
                     lines.append([index, item.text])
                     # update the top and right with the new line added.
@@ -614,7 +614,7 @@ class Page:
 class Document:
     def __init__(self, responsePages):
 
-        if (not isinstance(responsePages, list)):
+        if(not isinstance(responsePages, list)):
             rps = []
             rps.append(responsePages)
             responsePages = rps
@@ -638,17 +638,17 @@ class Document:
         documentPage = None
         for page in self._responsePages:
             for block in page['Blocks']:
-                if ('BlockType' in block and 'Id' in block):
+                if('BlockType' in block and 'Id' in block):
                     blockMap[block['Id']] = block
 
-                if (block['BlockType'] == 'PAGE'):
-                    if (documentPage):
+                if(block['BlockType'] == 'PAGE'):
+                    if(documentPage):
                         documentPages.append({"Blocks": documentPage})
                     documentPage = []
                     documentPage.append(block)
                 else:
                     documentPage.append(block)
-        if (documentPage):
+        if(documentPage):
             documentPages.append({"Blocks": documentPage})
         return documentPages, blockMap
 
@@ -673,6 +673,6 @@ class Document:
 
     def getBlockById(self, blockId):
         block = None
-        if (self._blockMap and blockId in self._blockMap):
+        if(self._blockMap and blockId in self._blockMap):
             block = self._blockMap[blockId]
         return block
