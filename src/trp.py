@@ -1,8 +1,6 @@
 import json
 
-
 class BoundingBox:
-
     def __init__(self, width, height, left, top):
         self._width = width
         self._height = height
@@ -28,9 +26,7 @@ class BoundingBox:
     def top(self):
         return self._top
 
-
 class Polygon:
-
     def __init__(self, x, y):
         self._x = x
         self._y = y
@@ -46,9 +42,7 @@ class Polygon:
     def y(self):
         return self._y
 
-
 class Geometry:
-
     def __init__(self, geometry):
         boundingBox = geometry["BoundingBox"]
         polygon = geometry["Polygon"]
@@ -72,9 +66,7 @@ class Geometry:
     def polygon(self):
         return self._polygon
 
-
 class Word:
-
     def __init__(self, block, blockMap):
         self._block = block
         self._confidence = block['Confidence']
@@ -107,9 +99,7 @@ class Word:
     def block(self):
         return self._block
 
-
 class Line:
-
     def __init__(self, block, blockMap):
 
         self._block = block
@@ -161,9 +151,7 @@ class Line:
     def block(self):
         return self._block
 
-
 class SelectionElement:
-
     def __init__(self, block, blockMap):
         self._confidence = block['Confidence']
         self._geometry = Geometry(block['Geometry'])
@@ -186,9 +174,7 @@ class SelectionElement:
     def selectionStatus(self):
         return self._selectionStatus
 
-
 class FieldKey:
-
     def __init__(self, block, children, blockMap):
         self._block = block
         self._confidence = block['Confidence']
@@ -236,9 +222,7 @@ class FieldKey:
     def block(self):
         return self._block
 
-
 class FieldValue:
-
     def __init__(self, block, children, blockMap):
         self._block = block
         self._confidence = block['Confidence']
@@ -290,9 +274,7 @@ class FieldValue:
     def block(self):
         return self._block
 
-
 class Field:
-
     def __init__(self, block, blockMap):
         self._key = None
         self._value = None
@@ -328,9 +310,7 @@ class Field:
     def value(self):
         return self._value
 
-
 class Form:
-
     def __init__(self):
         self._fields = []
         self._fieldsMap = {}
@@ -363,9 +343,7 @@ class Form:
                 results.append(field)
         return results
 
-
 class Cell:
-
     def __init__(self, block, blockMap):
         self._block = block
         self._confidence = block['Confidence']
@@ -434,9 +412,7 @@ class Cell:
     def block(self):
         return self._block
 
-
 class Row:
-
     def __init__(self):
         self._cells = []
 
@@ -450,9 +426,7 @@ class Row:
     def cells(self):
         return self._cells
 
-
 class Table:
-
     def __init__(self, block, blockMap):
 
         self._block = block
@@ -506,9 +480,7 @@ class Table:
     def block(self):
         return self._block
 
-
 class Page:
-
     def __init__(self, blocks, blockMap):
         self._blocks = blocks
         self._text = ""
@@ -639,9 +611,7 @@ class Page:
     def id(self):
         return self._id
 
-
 class Document:
-
     def __init__(self, responsePages):
 
         if (not isinstance(responsePages, list)):
