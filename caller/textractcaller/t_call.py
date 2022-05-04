@@ -74,7 +74,10 @@ class QueriesConfig():
     queries: List[Query]
 
     def get_dict(self):
-        return {'Queries': [x.get_dict() for x in self.queries]}
+        if self.queries:
+            return {'Queries': [x.get_dict() for x in self.queries]}
+        else:
+            return {}
 
 
 @dataclass
@@ -132,7 +135,7 @@ def generate_request_params(document_location: DocumentLocation = None,
         params['FeatureTypes'] = [x.name for x in features]
         if Textract_Features.QUERIES in features and not queries_config:
             raise ValueError("QUERIES feature requested but not queries_config passed in.")
-    if queries_config:
+    if queries_config and queries_config.queries:
         params['QueriesConfig'] = queries_config.get_dict()
     if client_request_token:
         params['ClientRequestToken'] = client_request_token
