@@ -126,6 +126,8 @@ def test_analyzeid(caplog):
 
 def test_queries(caplog):
     caplog.set_level(logging.DEBUG, logger="textractcaller")
+    queries_config = QueriesConfig(queries=[])
+    assert not queries_config.get_dict()
     query1 = Query(text="What is the applicant full name?")
     query2 = Query(text="What is the applicant phone number?", alias="PHONE_NUMBER")
     query3 = Query(text="What is the applicant home address?", alias="HOME_ADDRESS", pages=["1"])
