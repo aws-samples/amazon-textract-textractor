@@ -1,14 +1,14 @@
 from typing import Union, List, Optional
 from enum import Enum
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import boto3
 import time
 import logging
 import json
 
-Textract_Features = Enum('Textract_Features', ["FORMS", "TABLES"], start=0)
-Textract_Types = Enum('Textract_Types', ["WORD", "LINE", "TABLE", "CELL", "KEY", "VALUE", "FORM"])
+Textract_Features = Enum('Textract_Features', ["FORMS", "TABLES", "QUERIES"], start=0)
+Textract_Types = Enum('Textract_Types', ["WORD", "LINE", "TABLE", "CELL", "KEY", "VALUE", "FORM", "QUERIES"])
 Textract_API = Enum('Textract_API', ["ANALYZE", "DETECT"], start=0)
 
 logger = logging.getLogger(__name__)
@@ -55,6 +55,29 @@ class DocumentLocation():
 
 
 @dataclass
+class Query():
+    text: str
+    alias: str = ""
+    pages: List[str] = field(default_factory=list)
+
+    def get_dict(self):
+        return_dict: dict = {'Text': self.text}
+        if self.alias:
+            return_dict['Alias'] = self.alias
+        if self.pages:
+            return_dict['Pages'] = self.pages    # type: ignore
+        return return_dict
+
+
+@dataclass
+class QueriesConfig():
+    queries: List[Query]
+
+    def get_dict(self):
+        return {'Queries': [x.get_dict() for x in self.queries]}
+
+
+@dataclass
 class Document():
     def __init__(self, byte_data: bytes = None, s3_bucket: str = None, s3_prefix: str = None, version: str = None):
         if byte_data and s3_bucket:
@@ -92,6 +115,7 @@ def is_tiff(filename: str) -> bool:
 def generate_request_params(document_location: DocumentLocation = None,
                             document: Document = None,
                             features: Optional[List[Textract_Features]] = None,
+                            queries_config: QueriesConfig = None,
                             client_request_token: str = None,
                             job_tag: str = None,
                             notification_channel: Optional[NotificationChannel] = None,
@@ -106,6 +130,10 @@ def generate_request_params(document_location: DocumentLocation = None,
         params['Document'] = document.get_dict()
     if features:
         params['FeatureTypes'] = [x.name for x in features]
+        if Textract_Features.QUERIES in features and not queries_config:
+            raise ValueError("QUERIES feature requested but not queries_config passed in.")
+    if queries_config:
+        params['QueriesConfig'] = queries_config.get_dict()
     if client_request_token:
         params['ClientRequestToken'] = client_request_token
     if job_tag:
@@ -116,6 +144,7 @@ def generate_request_params(document_location: DocumentLocation = None,
         params['OutputConfig'] = output_config.get_dict()
     if kms_key_id:
         params['KMSKeyId'] = kms_key_id
+    logger.debug(f"params: {params}")
     return params
 
 
@@ -219,6 +248,7 @@ def get_full_json(job_id: str = None,
 
 def call_textract(input_document: Union[str, bytes],
                   features: List[Textract_Features] = None,
+                  queries_config: QueriesConfig = None,
                   output_config: OutputConfig = None,
                   kms_key_id: str = None,
                   job_tag: str = None,
@@ -277,6 +307,7 @@ def call_textract(input_document: Union[str, bytes],
             params = generate_request_params(
                 document_location=DocumentLocation(s3_bucket=s3_bucket, s3_prefix=s3_key),
                 features=features,
+                queries_config=queries_config,
                 output_config=output_config,
                 notification_channel=notification_channel,
                 kms_key_id=kms_key_id,
@@ -306,6 +337,7 @@ def call_textract(input_document: Union[str, bytes],
             if is_s3_document:
                 params = generate_request_params(document=Document(s3_bucket=s3_bucket, s3_prefix=s3_key),
                                                  features=features,
+                                                 queries_config=queries_config,
                                                  output_config=output_config,
                                                  kms_key_id=kms_key_id,
                                                  notification_channel=notification_channel)
@@ -317,10 +349,9 @@ def call_textract(input_document: Union[str, bytes],
             else:
                 with open(input_document, 'rb') as input_file:
                     doc_bytes: bytearray = bytearray(input_file.read())
-                    params = generate_request_params(
-                        document=Document(byte_data=doc_bytes),
-                        features=features,
-                    )
+                    params = generate_request_params(document=Document(byte_data=doc_bytes),
+                                                     features=features,
+                                                     queries_config=queries_config)
 
                     if features:
                         result_value = textract.analyze_document(**params)
@@ -332,10 +363,9 @@ def call_textract(input_document: Union[str, bytes],
         logger.debug("processing bytes or bytearray")
         if force_async_api:
             raise Exception("cannot run async for bytearray")
-        params = generate_request_params(
-            document=Document(byte_data=input_document),
-            features=features,
-        )
+        params = generate_request_params(document=Document(byte_data=input_document),
+                                         features=features,
+                                         queries_config=queries_config)
         if features:
             result_value = textract.analyze_document(**params)
         else:

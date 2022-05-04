@@ -1,5 +1,7 @@
-from textractcaller import call_textract, call_textract_analyzeid, DocumentPage
+from textractcaller import call_textract, call_textract_analyzeid, QueriesConfig, Query
+from textractcaller.t_call import Textract_Features
 from trp import Document
+import trp.trp2 as t2
 import trp.trp2_analyzeid as t2id
 import pytest
 import logging
@@ -120,3 +122,23 @@ def test_analyzeid(caplog):
         assert len(j['IdentityDocuments'][0]['IdentityDocumentFields']) == 20
         doc: t2id.TAnalyzeIdDocument = t2id.TAnalyzeIdDocumentSchema().load(j)
         assert doc
+
+
+def test_queries(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    query1 = Query(text="What is the applicant full name?")
+    query2 = Query(text="What is the applicant phone number?", alias="PHONE_NUMBER")
+    query3 = Query(text="What is the applicant home address?", alias="HOME_ADDRESS", pages=["1"])
+    queries_config = QueriesConfig(queries=[query1, query2, query3])
+
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    j = call_textract(input_document="s3://amazon-textract-public-content/blogs/employeeapp20210510.png",
+                      boto3_textract_client=textract_client,
+                      features=[Textract_Features.QUERIES],
+                      queries_config=queries_config)
+    assert j
+    tdoc = t2.TDocumentSchema().load(j)
+    assert tdoc
+    page = tdoc.pages[0]
+    query_answers = tdoc.get_query_answers(page=page)
+    assert len(query_answers) == 3
