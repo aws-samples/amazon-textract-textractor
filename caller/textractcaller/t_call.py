@@ -9,7 +9,7 @@ import json
 
 Textract_Features = Enum('Textract_Features', ["FORMS", "TABLES", "QUERIES"], start=0)
 Textract_Types = Enum('Textract_Types', ["WORD", "LINE", "TABLE", "CELL", "KEY", "VALUE", "FORM", "QUERIES"])
-Textract_API = Enum('Textract_API', ["ANALYZE", "DETECT"], start=0)
+Textract_API = Enum('Textract_API', ["ANALYZE", "DETECT", "EXPENSE"], start=0)
 
 logger = logging.getLogger(__name__)
 
@@ -161,6 +161,8 @@ def get_job_response(job_id: str = None,
         extra_args = {}
     if textract_api == Textract_API.DETECT:
         return boto3_textract_client.get_document_text_detection(JobId=job_id, **extra_args)
+    elif textract_api == Textract_API.EXPENSE:
+        return boto3_textract_client.get_expense_analysis(JobId=job_id, **extra_args)
     else:
         return boto3_textract_client.get_document_analysis(JobId=job_id, **extra_args)
 
@@ -450,3 +452,92 @@ def call_textract_analyzeid(
     params = generate_analyzeid_request_params(document_pages=document_pages_param)
 
     return textract.analyze_id(**params)
+
+
+def call_textract_expense(input_document: Union[str, bytes],
+                          output_config: OutputConfig = None,
+                          kms_key_id: str = None,
+                          job_tag: str = None,
+                          notification_channel: NotificationChannel = None,
+                          client_request_token: str = None,
+                          return_job_id: bool = False,
+                          force_async_api: bool = False,
+                          boto3_textract_client=None,
+                          job_done_polling_interval=1) -> dict:
+    logger.debug("call_textract_expense")
+    if not boto3_textract_client:
+        textract = boto3.client("textract")
+    else:
+        textract = boto3_textract_client
+    is_s3_document: bool = False
+    s3_bucket = ""
+    s3_key = ""
+    result_value = {}
+    if isinstance(input_document, str):
+        if len(input_document) > 7 and input_document.lower().startswith("s3://"):
+            is_s3_document = True
+            s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+        ext: str = ""
+        _, ext = os.path.splitext(input_document)
+        ext = ext.lower()
+
+        is_pdf: bool = (ext != None and ext.lower() in only_async_suffixes)
+        if is_pdf and not is_s3_document:
+            raise ValueError("PDF only supported when located on S3")
+        if not is_s3_document and force_async_api:
+            raise ValueError("when forcing async, document has to be on s3")
+        if not is_s3_document and output_config:
+            raise ValueError("only can have s3_output_url for async processes with document location on s3")
+        if notification_channel and not return_job_id:
+            raise ValueError("when submitting notification_channel, has to also expect the job_id as result atm.")
+        # ASYNC
+        if is_pdf or force_async_api and is_s3_document:
+            logger.debug(f"is_pdf or force_async_api and is_s3_document")
+            params = generate_request_params(
+                document_location=DocumentLocation(s3_bucket=s3_bucket, s3_prefix=s3_key),
+                output_config=output_config,
+                notification_channel=notification_channel,
+                kms_key_id=kms_key_id,
+                client_request_token=client_request_token,
+                job_tag=job_tag,
+            )
+            textract_api = Textract_API.EXPENSE
+            submission_status = textract.start_expense_analysis(**params)
+            if submission_status["ResponseMetadata"]["HTTPStatusCode"] == 200:
+                if return_job_id:
+                    return submission_status
+                else:
+                    result_value = get_full_json(submission_status['JobId'],
+                                                 textract_api=textract_api,
+                                                 boto3_textract_client=textract,
+                                                 job_done_polling_interval=job_done_polling_interval)
+            else:
+                raise Exception(f"Got non-200 response code: {submission_status}")
+
+        elif ext in sync_suffixes:
+            # s3 file
+            if is_s3_document:
+                params = generate_request_params(document=Document(s3_bucket=s3_bucket, s3_prefix=s3_key),
+                                                 output_config=output_config,
+                                                 kms_key_id=kms_key_id,
+                                                 notification_channel=notification_channel)
+                result_value = textract.analyze_expense(**params)
+            # local file
+            else:
+                with open(input_document, 'rb') as input_file:
+                    doc_bytes: bytearray = bytearray(input_file.read())
+                    params = generate_request_params(document=Document(byte_data=doc_bytes))
+
+                    result_value = textract.analyze_expense(**params)
+
+    # got bytearray, calling sync API
+    elif isinstance(input_document, (bytes, bytearray)):
+        logger.debug("processing bytes or bytearray")
+        if force_async_api:
+            raise Exception("cannot run async for bytearray")
+        params = generate_request_params(document=Document(byte_data=input_document))
+        result_value = textract.analyze_expense(**params)
+    else:
+        raise ValueError(f"unsupported input_document type: {type(input_document)}")
+
+    return result_value

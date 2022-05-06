@@ -1,5 +1,5 @@
 from textractcaller import call_textract, call_textract_analyzeid, QueriesConfig, Query
-from textractcaller.t_call import Textract_Features
+from textractcaller.t_call import Textract_Features, call_textract_expense
 from trp import Document
 import trp.trp2 as t2
 import trp.trp2_analyzeid as t2id
@@ -144,3 +144,46 @@ def test_queries(caplog):
     page = tdoc.pages[0]
     query_answers = tdoc.get_query_answers(page=page)
     assert len(query_answers) == 3
+
+
+def test_empty_features_and_queries(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    j = call_textract(input_document="s3://amazon-textract-public-content/blogs/employeeapp20210510.png",
+                      boto3_textract_client=textract_client,
+                      features=[],
+                      queries_config={})
+    assert j
+
+
+def test_expense_get_full_json_from_file_and_bytes(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_file = os.path.join(SCRIPT_DIR, "data/employmentapp.png")
+    with open(input_file, "rb") as sample_file:
+        b = bytearray(sample_file.read())
+        j = call_textract_expense(input_document=b)
+        assert j
+
+    with open(input_file, "rb") as sample_file:
+        b = sample_file.read()
+        j = call_textract_expense(input_document=b)
+        assert j
+
+
+def test_expense_tiff_async(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    input_file = os.path.join("s3://amazon-textract-public-content/blogs/employmentapp_20210510_compressed.tiff")
+    j = call_textract_expense(input_document=input_file, force_async_api=True, boto3_textract_client=textract_client)
+    assert j
+    assert 'ExpenseDocuments' in j
+
+
+def test_expense_tiff_async_multipage(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    input_file = os.path.join("s3://amazon-textract-public-content/blogs/multipage_tiff_example_small.tiff")
+    j = call_textract_expense(input_document=input_file, force_async_api=True, boto3_textract_client=textract_client)
+    assert j
+    assert 'ExpenseDocuments' in j
