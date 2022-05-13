@@ -52,9 +52,13 @@ def get_string(textract_json: dict,
     if output_type:
         for t in output_type:
             if t == Textract_Pretty_Print.WORDS:
-                result_value += get_words_string(textract_json=textract_json, with_page_number=with_page_number)
+                result_value += get_words_string(textract_json=textract_json,
+                                                 with_page_number=with_page_number,
+                                                 with_confidence=with_confidence)
             if t == Textract_Pretty_Print.LINES:
-                result_value += get_lines_string(textract_json=textract_json, with_page_number=with_page_number)
+                result_value += get_lines_string(textract_json=textract_json,
+                                                 with_page_number=with_page_number,
+                                                 with_confidence=with_confidence)
             if t == Textract_Pretty_Print.FORMS:
                 result_value += get_forms_string(
                     textract_json=textract_json,
@@ -187,7 +191,7 @@ def get_forms_string(textract_json: dict,
     return result_value
 
 
-def get_lines_string(textract_json: dict, with_page_number: bool = False, trim: bool = False) -> str:
+def get_lines_string(textract_json: dict, with_page_number: bool = False, with_confidence=False, trim: bool = False) -> str:
     """
     returns string with lines separated by \n
     """
@@ -202,11 +206,15 @@ def get_lines_string(textract_json: dict, with_page_number: bool = False, trim: 
                 result_value += f"{line.text.strip()}\n"
             else:
                 result_value += f"{line.text}\n"
+
+            if with_confidence:
+                result_value += f", {lene.confidence}"
         i += 1
     return result_value
 
 
-def get_words_string(textract_json: dict, with_page_number: bool = False, trim: bool = False) -> str:
+
+def get_words_string(textract_json: dict, with_page_number: bool = False, with_confidence=False, trim: bool = False) -> str:
     """
     returns string with words separated by \n
     """
@@ -222,5 +230,9 @@ def get_words_string(textract_json: dict, with_page_number: bool = False, trim: 
                     result_value += f"{word.text.strip()}\n"
                 else:
                     result_value += f"{word.text}\n"
+
+                if with_confidence:
+                    result_value += f", {word.confidence}"
+                result_value += "\n"
         i += 1
     return result_value
