@@ -1,6 +1,6 @@
 from textractcaller.t_call import Textract_Features
 from textractcaller.t_call import call_textract
-from trp.trp2 import TDocument, TDocumentSchema
+from trp.trp2 import TDocumentSchema
 from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, get_tables_string
 import boto3
 import os
@@ -46,6 +46,5 @@ def test_pretty_with_queries_and_trp2():
         trp2_doc = TDocumentSchema().load(json.load(input_fp))
         assert trp2_doc
         queries_as_list = convert_queries_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
-        print(queries_as_list)
         assert len(queries_as_list) == 1
         assert len(queries_as_list[0]) == 3
