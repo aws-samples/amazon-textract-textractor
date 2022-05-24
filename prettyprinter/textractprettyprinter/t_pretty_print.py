@@ -1,4 +1,5 @@
 import trp
+from trp.trp2 import TDocument
 from typing import List, Optional
 from tabulate import tabulate
 from enum import Enum
@@ -93,6 +94,42 @@ def convert_table_to_list(trp_table: trp.Table, with_confidence: bool = False, w
             one_row = one_row + print_text
         rows_list.append(one_row)
     return rows_list
+
+
+def convert_form_to_list_trp2(trp2_doc: TDocument, ) -> List[List[List[str]]]:
+    '''return List[List[List[str]]]
+    With the first List being the Page and the second the list of form fields
+    '''
+    page_list: List[List[List[str]]] = list()
+    for idx, page_block in enumerate(trp2_doc.pages):
+        page_keys: List[List[str]] = list()
+        for key_block in trp2_doc.keys(page=page_block):
+            key_child_relationships = key_block.get_relationships_for_type()
+            if key_child_relationships:
+                key_name = trp2_doc.get_text_for_tblocks(
+                    trp2_doc.get_blocks_for_relationships(relationship=key_child_relationships))
+                key_value = trp2_doc.get_text_for_tblocks(trp2_doc.value_for_key(key=key_block))
+                page_keys.append([str(idx + 1), key_name, key_value])
+        page_list.append(page_keys)
+    return page_list
+
+
+def convert_queries_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
+    '''return List[List[List[str]]]
+    With the first List being the Page and the second the list of [page_number, alias (if exists, otherwise query), value]
+    '''
+    page_list: List[List[List[str]]] = list()
+    for idx, page_block in enumerate(trp2_doc.pages):
+        page_keys: List[List[str]] = list()
+        for answers in trp2_doc.get_query_answers(page=page_block):
+            # second item is the alias
+            if answers[1]:
+                page_keys.append([str(idx + 1), answers[1], answers[2]])
+            else:
+                # use the question, which is not ideal
+                page_keys.append([str(idx + 1), answers[0], answers[2]])
+        page_list.append(page_keys)
+    return page_list
 
 
 def convert_form_to_list(trp_form: trp.Form, with_confidence: bool = False, with_geo: bool = False) -> List:
@@ -191,7 +228,7 @@ def get_lines_string(textract_json: dict, with_page_number: bool = False, with_c
         for line in page.lines:
             result_value += f"{line.text}\n"
             if with_confidence:
-                result_value += f", {lene.confidence}"
+                result_value += f", {line.confidence}"
         i += 1
     return result_value
 
