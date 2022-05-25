@@ -1,10 +1,13 @@
-from textractcaller import call_textract, call_textract_analyzeid, DocumentPage
+from textractcaller import call_textract, call_textract_analyzeid, QueriesConfig, Query
+from textractcaller.t_call import Textract_Features, call_textract_expense, remove_none
 from trp import Document
+import trp.trp2 as t2
 import trp.trp2_analyzeid as t2id
 import pytest
 import logging
 import os
 import boto3
+import json
 
 
 def test_get_full_json_from_file_and_bytes(caplog):
@@ -106,7 +109,7 @@ def test_analyzeid(caplog):
     assert 'IdentityDocuments' in j
     assert 'IdentityDocumentFields' in j['IdentityDocuments'][0]
     assert len(j['IdentityDocuments'][0]['IdentityDocumentFields']) == 20
-    doc: t2id.TAnalyzeIdDocument = t2id.TAnalyzeIdDocumentSchema().load(j)
+    doc: t2id.TAnalyzeIdDocument = t2id.TAnalyzeIdDocumentSchema().load(j)    #type: ignore
     assert doc
 
     # photo from local disk
@@ -118,5 +121,83 @@ def test_analyzeid(caplog):
         assert 'IdentityDocuments' in j
         assert 'IdentityDocumentFields' in j['IdentityDocuments'][0]
         assert len(j['IdentityDocuments'][0]['IdentityDocumentFields']) == 20
-        doc: t2id.TAnalyzeIdDocument = t2id.TAnalyzeIdDocumentSchema().load(j)
+        doc: t2id.TAnalyzeIdDocument = t2id.TAnalyzeIdDocumentSchema().load(j)    #type: ignore
         assert doc
+
+
+def test_queries(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    queries_config = QueriesConfig(queries=[])
+    assert not queries_config.get_dict()
+    query1 = Query(text="What is the applicant full name?")
+    query2 = Query(text="What is the applicant phone number?", alias="PHONE_NUMBER")
+    query3 = Query(text="What is the applicant home address?", alias="HOME_ADDRESS", pages=["1"])
+    queries_config = QueriesConfig(queries=[query1, query2, query3])
+
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    j = call_textract(input_document="s3://amazon-textract-public-content/blogs/employeeapp20210510.png",
+                      boto3_textract_client=textract_client,
+                      features=[Textract_Features.QUERIES],
+                      queries_config=queries_config)
+    assert j
+    tdoc: t2.TDocumentSchema = t2.TDocumentSchema().load(j)    #type: ignore
+    assert tdoc
+    page = tdoc.pages[0]
+    query_answers = tdoc.get_query_answers(page=page)
+    assert len(query_answers) == 3
+
+
+def test_empty_features_and_queries(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    j = call_textract(input_document="s3://amazon-textract-public-content/blogs/employeeapp20210510.png",
+                      boto3_textract_client=textract_client,
+                      features=[],
+                      queries_config={})
+    assert j
+
+
+def test_expense_get_full_json_from_file_and_bytes(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_file = os.path.join(SCRIPT_DIR, "data/employmentapp.png")
+    with open(input_file, "rb") as sample_file:
+        b = bytearray(sample_file.read())
+        j = call_textract_expense(input_document=b)
+        assert j
+
+    with open(input_file, "rb") as sample_file:
+        b = sample_file.read()
+        j = call_textract_expense(input_document=b)
+        assert j
+
+
+def test_expense_tiff_async(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    input_file = os.path.join("s3://amazon-textract-public-content/blogs/employmentapp_20210510_compressed.tiff")
+    j = call_textract_expense(input_document=input_file, force_async_api=True, boto3_textract_client=textract_client)
+    assert j
+    assert 'ExpenseDocuments' in j
+
+
+def test_expense_tiff_async_multipage(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    input_file = os.path.join("s3://amazon-textract-public-content/blogs/multipage_tiff_example_small.tiff")
+    j = call_textract_expense(input_document=input_file, force_async_api=True, boto3_textract_client=textract_client)
+    assert j
+    assert 'ExpenseDocuments' in j
+
+
+def test_filter_out_none_from_output_config(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_file = os.path.join(SCRIPT_DIR, "data/json_from_python_repl.json")
+    j = json.load(open(input_file))
+    assert j['Blocks'][0]["BlockType"] == "PAGE"
+    assert j['Blocks'][0]["ColumnIndex"] == None
+    j = remove_none(j)
+    assert j
+    assert 'Blocks' in j and j['Blocks'][0]["BlockType"] == "PAGE"
+    assert not "ColumnIndex" in j['Blocks'][0]
