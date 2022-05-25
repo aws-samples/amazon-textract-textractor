@@ -187,6 +187,15 @@ def get_s3_output_config_keys(output_config: OutputConfig, job_id: str, s3_clien
             break
 
 
+def remove_none(obj):
+    if isinstance(obj, (list, tuple, set)):
+        return type(obj)(remove_none(x) for x in obj if x is not None)
+    elif isinstance(obj, dict):
+        return type(obj)((remove_none(k), remove_none(v)) for k, v in obj.items() if k is not None and v is not None)
+    else:
+        return obj
+
+
 def get_full_json_from_output_config(output_config: OutputConfig = None, job_id: str = None, s3_client=None) -> dict:
     if not output_config or not job_id:
         raise ValueError("no output_config or job_id")
@@ -206,6 +215,7 @@ def get_full_json_from_output_config(output_config: OutputConfig = None, job_id:
             result_value = response
     if 'NextToken' in result_value:
         del result_value['NextToken']
+    result_value = remove_none(result_value)
     return result_value
 
 
