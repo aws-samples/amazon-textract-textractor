@@ -41,7 +41,7 @@ class OutputConfig():
 
 @dataclass
 class DocumentLocation():
-    def __init__(self, s3_bucket: str, s3_prefix: str, version: str = None):
+    def __init__(self, s3_bucket: str, s3_prefix: str, version: str = ""):
         if not s3_bucket and not s3_prefix:
             raise ValueError("both s3_bucket and s3_prefix have to be specified")
         self.s3_bucket = s3_bucket
@@ -83,7 +83,7 @@ class QueriesConfig():
 
 @dataclass
 class Document():
-    def __init__(self, byte_data: bytes = None, s3_bucket: str = None, s3_prefix: str = None, version: str = None):
+    def __init__(self, byte_data: bytes = b'', s3_bucket: str = "", s3_prefix: str = "", version: str = ""):
         if byte_data and s3_bucket:
             raise ValueError("only one allowed, byte_data or s3_bucket")
         if not byte_data and not (s3_bucket and s3_prefix):
@@ -116,15 +116,15 @@ def is_tiff(filename: str) -> bool:
     return False
 
 
-def generate_request_params(document_location: DocumentLocation = None,
-                            document: Document = None,
+def generate_request_params(document_location: Optional[DocumentLocation] = None,
+                            document: Optional[Document] = None,
                             features: Optional[List[Textract_Features]] = None,
-                            queries_config: QueriesConfig = None,
-                            client_request_token: str = None,
-                            job_tag: str = None,
+                            queries_config: Optional[QueriesConfig] = None,
+                            client_request_token: str = "",
+                            job_tag: str = "",
                             notification_channel: Optional[NotificationChannel] = None,
                             output_config: Optional[OutputConfig] = None,
-                            kms_key_id: str = None) -> dict:
+                            kms_key_id: str = "") -> dict:
     params = {}
     if document_location and document:
         raise ValueError("Only one at a time, documentat_location or document")
@@ -152,7 +152,7 @@ def generate_request_params(document_location: DocumentLocation = None,
     return params
 
 
-def get_job_response(job_id: str = None,
+def get_job_response(job_id: str = "",
                      textract_api: Textract_API = Textract_API.DETECT,
                      extra_args=None,
                      boto3_textract_client=None):
@@ -225,7 +225,7 @@ def remove_none(obj):
 #     return result_value
 
 
-def get_full_json_from_output_config(output_config: OutputConfig = None, job_id: str = None, s3_client=None) -> dict:
+def get_full_json_from_output_config(output_config: OutputConfig, job_id: str, s3_client=None) -> dict:
     if not output_config or not job_id:
         raise ValueError("no output_config or job_id")
     if not output_config.s3_bucket or not output_config.s3_prefix:
@@ -253,7 +253,7 @@ def get_full_json_from_output_config(output_config: OutputConfig = None, job_id:
     return result_value
 
 
-def get_full_json(job_id: str = None,
+def get_full_json(job_id: str = "",
                   textract_api: Textract_API = Textract_API.DETECT,
                   boto3_textract_client=None,
                   job_done_polling_interval=1) -> dict:
@@ -296,13 +296,13 @@ def get_full_json(job_id: str = None,
 
 
 def call_textract(input_document: Union[str, bytes],
-                  features: List[Textract_Features] = None,
-                  queries_config: QueriesConfig = None,
-                  output_config: OutputConfig = None,
-                  kms_key_id: str = None,
-                  job_tag: str = None,
-                  notification_channel: NotificationChannel = None,
-                  client_request_token: str = None,
+                  features: Optional[List[Textract_Features]] = None,
+                  queries_config: Optional[QueriesConfig] = None,
+                  output_config: Optional[OutputConfig] = None,
+                  kms_key_id: str = "",
+                  job_tag: str = "",
+                  notification_channel: Optional[NotificationChannel] = None,
+                  client_request_token: str = "",
                   return_job_id: bool = False,
                   force_async_api: bool = False,
                   call_mode: Textract_Call_Mode = Textract_Call_Mode.DEFAULT,
@@ -437,7 +437,7 @@ def call_textract(input_document: Union[str, bytes],
 
 @dataclass
 class DocumentPage():
-    def __init__(self, byte_data: bytes = None, s3_object: DocumentLocation = None):
+    def __init__(self, byte_data: bytes = b'', s3_object: Optional[DocumentLocation] = None):
         if not byte_data and not s3_object:
             raise ValueError("Either bytes or s3_object have to be specified")
         elif byte_data and s3_object:
@@ -452,7 +452,7 @@ class DocumentPage():
             return self.s3_object.get_dict()
 
 
-def generate_analyzeid_request_params(document_pages: List[DocumentPage] = None) -> dict:
+def generate_analyzeid_request_params(document_pages: List[DocumentPage]) -> dict:
     if document_pages is None or len(document_pages) == 0:
         raise ValueError("No Document Page provided")
     params = {"DocumentPages": []}
@@ -509,11 +509,11 @@ def call_textract_analyzeid(
 
 
 def call_textract_expense(input_document: Union[str, bytes],
-                          output_config: OutputConfig = None,
-                          kms_key_id: str = None,
-                          job_tag: str = None,
-                          notification_channel: NotificationChannel = None,
-                          client_request_token: str = None,
+                          output_config: Optional[OutputConfig] = None,
+                          kms_key_id: str = "",
+                          job_tag: str = "",
+                          notification_channel: Optional[NotificationChannel] = None,
+                          client_request_token: str = "",
                           return_job_id: bool = False,
                           force_async_api: bool = False,
                           boto3_textract_client=None,
