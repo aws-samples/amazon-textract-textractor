@@ -10,6 +10,7 @@ import json
 Textract_Features = Enum('Textract_Features', ["FORMS", "TABLES", "QUERIES"], start=0)
 Textract_Types = Enum('Textract_Types', ["WORD", "LINE", "TABLE", "CELL", "KEY", "VALUE", "FORM", "QUERIES"])
 Textract_API = Enum('Textract_API', ["ANALYZE", "DETECT", "EXPENSE"], start=0)
+Textract_Call_Mode = Enum('Textract_Call_Mode', ["FORCE_SYNC", "FORCE_ASYNC", "DEFAULT"], start=0)
 
 logger = logging.getLogger(__name__)
 
@@ -196,6 +197,34 @@ def remove_none(obj):
         return obj
 
 
+# @mp.profile
+# def get_full_json_from_output_config_mem_optimized(output_config: OutputConfig = None,
+#                                                    job_id: str = None,
+#                                                    s3_client=None) -> dict:
+#     import ijson
+#     import codecs
+
+#     if not output_config or not job_id:
+#         raise ValueError("no output_config or job_id")
+#     if not output_config.s3_bucket or not output_config.s3_prefix:
+#         raise ValueError("no output_config or job_id")
+#     if not s3_client:
+#         s3_client = boto3.client("s3")
+
+#     result_value = {'Blocks': []}
+#     all_objects = []
+#     for key in get_s3_output_config_keys(output_config=output_config, job_id=job_id, s3_client=s3_client):
+#         logger.info(f"found keys: {key}")
+#         s3_object = s3_client.get_object(Bucket=output_config.s3_bucket, Key=key)
+#         body = s3_object['Body']
+#         f = codecs.getreader('utf-8')(body)
+#         objects = ijson.items(f, 'Blocks.item', use_float=True)
+#         # result_value['Blocks'].extend([o for o in objects])
+#         all_objects.append(objects)
+#         del objects
+#     return result_value
+
+
 def get_full_json_from_output_config(output_config: OutputConfig = None, job_id: str = None, s3_client=None) -> dict:
     if not output_config or not job_id:
         raise ValueError("no output_config or job_id")
@@ -205,10 +234,15 @@ def get_full_json_from_output_config(output_config: OutputConfig = None, job_id:
         s3_client = boto3.client("s3")
 
     result_value = {}
-    for key in get_s3_output_config_keys(output_config=output_config, job_id=job_id, s3_client=s3_client):
+    keys = get_s3_output_config_keys(output_config=output_config, job_id=job_id, s3_client=s3_client)
+    print(f"found len(keys) keys.")
+    for key in keys:
         logger.info(f"found keys: {key}")
-        response = json.loads(
-            s3_client.get_object(Bucket=output_config.s3_bucket, Key=key)['Body'].read().decode('utf-8'))
+        s3_object = s3_client.get_object(Bucket=output_config.s3_bucket, Key=key)
+        body = s3_object['Body']
+        body_read = body.read()
+        body_decode = body_read.decode('utf-8')
+        response = json.loads(body_decode)
         if 'Blocks' in result_value:
             result_value['Blocks'].extend(response['Blocks'])
         else:
@@ -271,6 +305,7 @@ def call_textract(input_document: Union[str, bytes],
                   client_request_token: str = None,
                   return_job_id: bool = False,
                   force_async_api: bool = False,
+                  call_mode: Textract_Call_Mode = Textract_Call_Mode.DEFAULT,
                   boto3_textract_client=None,
                   job_done_polling_interval=1) -> dict:
     """
@@ -299,6 +334,13 @@ def call_textract(input_document: Union[str, bytes],
     s3_bucket = ""
     s3_key = ""
     result_value = {}
+    force_sync_api = False
+    if call_mode == Textract_Call_Mode.FORCE_SYNC:
+        force_sync_api = True
+    elif call_mode == Textract_Call_Mode.FORCE_ASYNC:
+        force_async_api = True
+    if force_async_api and force_sync_api:
+        raise ValueError("can not force both, async and sync")
     if isinstance(input_document, str):
         if len(input_document) > 7 and input_document.lower().startswith("s3://"):
             is_s3_document = True
@@ -331,9 +373,11 @@ def call_textract(input_document: Union[str, bytes],
             )
 
             if features:
+                logger.debug(f"calling start_document_analysis with: {features}")
                 textract_api = Textract_API.ANALYZE
                 submission_status = textract.start_document_analysis(**params)
             else:
+                logger.debug(f"calling start_document_text_detection")
                 textract_api = Textract_API.DETECT
                 submission_status = textract.start_document_text_detection(**params)
             if submission_status["ResponseMetadata"]["HTTPStatusCode"] == 200:
@@ -347,7 +391,7 @@ def call_textract(input_document: Union[str, bytes],
             else:
                 raise Exception(f"Got non-200 response code: {submission_status}")
 
-        elif ext in sync_suffixes:
+        elif ext in sync_suffixes or force_sync_api:
             # s3 file
             if is_s3_document:
                 params = generate_request_params(document=Document(s3_bucket=s3_bucket, s3_prefix=s3_key),

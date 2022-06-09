@@ -95,6 +95,17 @@ def test_tiff_compressed_sync(caplog):
         assert doc
 
 
+def test_s3_sync_call(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    input_file = "s3://amazon-textract-public-content/blogs/amazon-textract-sample-text-amazon-dot-com.png"
+    j = call_textract(input_document=input_file, boto3_textract_client=textract_client)
+    assert j
+    assert 'Blocks' in j
+    doc = Document(j)
+    assert doc
+
+
 def test_analyzeid(caplog):
     caplog.set_level(logging.DEBUG, logger="textractcaller")
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
