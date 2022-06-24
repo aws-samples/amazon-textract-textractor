@@ -164,3 +164,17 @@ for page in doc.pages:
 ## License
 
 This library is licensed under the Apache 2.0 License. 
+
+## Test
+- Clone the repo and run pytest
+
+```bash
+git clone https://github.com/aws-samples/amazon-textract-textractor.git
+cd "<<submodule to be tested>>"
+python -m venv virtualenv
+virtualenv/bin/activate
+python -m pip install pytest
+python -m pip install setuptools
+python setup.py install
+pytest
+```

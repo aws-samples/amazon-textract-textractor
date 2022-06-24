@@ -4,7 +4,7 @@ import os
 from typing import List, Union
 from dataclasses import dataclass, asdict
 from PIL import Image, ImageSequence
-from PyPDF2 import PdfFileReader
+from PyPDF2 import PdfReader
 import boto3
 import io
 
@@ -26,11 +26,10 @@ def get_size_from_filestream(fs, ext) -> List[DocumentDimensions]:
     return_value: List[DocumentDimensions] = list()
     if ext in only_async_suffixes:
         # TODO: assumes the order of pages in blocks is correct, when calling Textract with bytes the block.page is empty
-        input1 = PdfFileReader(fs)
+        input1 = PdfReader(fs)
         for page in input1.pages:
-            pdf_page = page.mediaBox
-            return_value.append(
-                DocumentDimensions(doc_width=float(pdf_page.getWidth()), doc_height=float(pdf_page.getHeight())))
+            pdf_page = page.mediabox
+            return_value.append(DocumentDimensions(doc_width=float(pdf_page[2]), doc_height=float(pdf_page[3])))
     else:
         img = Image.open(fs)
         for _, page in enumerate(ImageSequence.Iterator(img)):
