@@ -9,6 +9,7 @@ def read(fname):
 
 
 class FontInstaller(install):
+
     def run(self):
         self._copy_fonts()
         install.run(self)
@@ -51,7 +52,7 @@ class FontInstaller(install):
 
 requirements = [
     'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.27', 'amazon-textract-caller>=0.0.16',
-    'amazon-textract-overlayer>=0.0.3', 'amazon-textract-prettyprinter>=0.0.10', 'Pillow>=9.0.1', 'PyPDF2==1.27.5'
+    'amazon-textract-overlayer>=0.0.3', 'amazon-textract-prettyprinter>=0.0.10', 'Pillow>=9.1.1', 'PyPDF2==2.3.1'
 ]
 
 if sys.argv[-1] == 'publish-test':

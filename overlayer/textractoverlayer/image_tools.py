@@ -9,7 +9,7 @@ if os.getenv('AWS_EXECUTION_ENV') is not None:
     sys.path.append('/opt')
 
 from PIL import Image
-from PyPDF2 import PdfFileReader
+from PyPDF2 import PdfReader
 
 pdf_suffixes = ['.pdf']
 image_suffixes = ['.png', '.jpg', '.jpeg']
@@ -21,9 +21,9 @@ def get_size_from_filestream(fs, ext) -> DocumentDimensions:
         img = Image.open(fs)
         return DocumentDimensions(doc_width=img.width, doc_height=img.height)
     else:
-        input1 = PdfFileReader(fs)
-        pdf_page = input1.getPage(0).mediaBox
-        return DocumentDimensions(doc_width=int(pdf_page.getWidth()), doc_height=int(pdf_page.getHeight()))
+        input1 = PdfReader(fs)
+        pdf_page = input1.pages[0].mediabox
+        return DocumentDimensions(doc_width=int(pdf_page[2]), doc_height=int(pdf_page[3]))
 
 
 def get_size_from_s3(s3_bucket, s3_key) -> DocumentDimensions:
