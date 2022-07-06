@@ -155,7 +155,7 @@ def convert_queries_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
                     if query.query.alias:
                         # alias is set
                         page_keys.append([
-                            str(idx + 1), query.query.alias, answer.text, "0", "0", "0", "0",
+                            str(idx + 1), query.query.alias, "1", answer.text, answer.confidence, "0", "0", "0", "0",
                             str(value_geometry.bounding_box.top),
                             str(value_geometry.bounding_box.height),
                             str(value_geometry.bounding_box.width),
@@ -164,7 +164,7 @@ def convert_queries_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
                     else:
                         # use the question, which is not ideal
                         page_keys.append([
-                            str(idx + 1), query.query.text, answer.text, "0", "0", "0", "0",
+                            str(idx + 1), query.query.text, "1", answer.text, answer.confidence, "0", "0", "0", "0",
                             str(value_geometry.bounding_box.top),
                             str(value_geometry.bounding_box.height),
                             str(value_geometry.bounding_box.width),
