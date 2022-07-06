@@ -46,5 +46,6 @@ def test_pretty_with_queries_and_trp2():
         trp2_doc = TDocumentSchema().load(json.load(input_fp))
         assert trp2_doc
         queries_as_list = convert_queries_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
+        print(queries_as_list)
         assert len(queries_as_list) == 1
         assert len(queries_as_list[0]) == 3
