@@ -1,11 +1,12 @@
 import trp
-from trp.trp2 import TDocument
+from trp.trp2 import TBlock, TBoundingBox, TDocument, TGeometry
 from typing import List, Optional
 from tabulate import tabulate
 from enum import Enum
 from io import StringIO
 import csv
 import logging
+import statistics
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +100,7 @@ def convert_table_to_list(trp_table: trp.Table, with_confidence: bool = False, w
 def convert_form_to_list_trp2(trp2_doc: TDocument, ) -> List[List[List[str]]]:
     '''return List[List[List[str]]]
     With the first List being the Page and the second the list of form fields
+    page_number, key_name, key_confidence, value_name, value_confidence, key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left
     '''
     page_list: List[List[List[str]]] = list()
     for idx, page_block in enumerate(trp2_doc.pages):
@@ -106,10 +108,33 @@ def convert_form_to_list_trp2(trp2_doc: TDocument, ) -> List[List[List[str]]]:
         for key_block in trp2_doc.keys(page=page_block):
             key_child_relationships = key_block.get_relationships_for_type()
             if key_child_relationships:
-                key_name = trp2_doc.get_text_for_tblocks(
-                    trp2_doc.get_blocks_for_relationships(relationship=key_child_relationships))
-                key_value = trp2_doc.get_text_for_tblocks(trp2_doc.value_for_key(key=key_block))
-                page_keys.append([str(idx + 1), key_name, key_value])
+                key_blocks = trp2_doc.get_blocks_for_relationships(relationship=key_child_relationships)
+                key_name = trp2_doc.get_text_for_tblocks(key_blocks)
+                key_geometry = TDocument.create_geometry_from_blocks(key_blocks)
+                value_blocks = trp2_doc.value_for_key(key=key_block)
+                key_confidence = statistics.mean([x.confidence for x in key_blocks if x.confidence])
+                if value_blocks:
+                    key_value = trp2_doc.get_text_for_tblocks(value_blocks)
+                    value_geometry = TDocument.create_geometry_from_blocks(value_blocks)
+                    value_confidence = statistics.mean([x.confidence for x in value_blocks if x.confidence])
+                else:
+                    # no value for key
+                    key_value = ""
+                    value_geometry = TGeometry(TBoundingBox(width=0, height=0, top=0, left=0), polygon=None)
+                    value_confidence = 1
+                page_keys.append([
+                    str(idx + 1), key_name,
+                    str(key_confidence), key_value,
+                    str(value_confidence),
+                    str(key_geometry.bounding_box.top),
+                    str(key_geometry.bounding_box.height),
+                    str(key_geometry.bounding_box.width),
+                    str(key_geometry.bounding_box.left),
+                    str(value_geometry.bounding_box.top),
+                    str(value_geometry.bounding_box.height),
+                    str(value_geometry.bounding_box.width),
+                    str(value_geometry.bounding_box.left)
+                ])
         page_list.append(page_keys)
     return page_list
 
@@ -117,17 +142,37 @@ def convert_form_to_list_trp2(trp2_doc: TDocument, ) -> List[List[List[str]]]:
 def convert_queries_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
     '''return List[List[List[str]]]
     With the first List being the Page and the second the list of [page_number, alias (if exists, otherwise query), value]
+    page_number, key_name, value_name, key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left
     '''
     page_list: List[List[List[str]]] = list()
     for idx, page_block in enumerate(trp2_doc.pages):
         page_keys: List[List[str]] = list()
-        for answers in trp2_doc.get_query_answers(page=page_block):
-            # second item is the alias
-            if answers[1]:
-                page_keys.append([str(idx + 1), answers[1], answers[2]])
+        for query in trp2_doc.queries(page=page_block):
+            answer_blocks: List[TBlock] = [x for x in trp2_doc.get_answers_for_query(block=query)]
+            if answer_blocks:
+                for answer in answer_blocks:
+                    value_geometry = TDocument.create_geometry_from_blocks([answer])
+                    if query.query.alias:
+                        # alias is set
+                        page_keys.append([
+                            str(idx + 1), query.query.alias, answer.text, "0", "0", "0", "0",
+                            str(value_geometry.bounding_box.top),
+                            str(value_geometry.bounding_box.height),
+                            str(value_geometry.bounding_box.width),
+                            str(value_geometry.bounding_box.left)
+                        ])
+                    else:
+                        # use the question, which is not ideal
+                        page_keys.append([
+                            str(idx + 1), query.query.text, answer.text, "0", "0", "0", "0",
+                            str(value_geometry.bounding_box.top),
+                            str(value_geometry.bounding_box.height),
+                            str(value_geometry.bounding_box.width),
+                            str(value_geometry.bounding_box.left)
+                        ])
             else:
-                # use the question, which is not ideal
-                page_keys.append([str(idx + 1), answers[0], answers[2]])
+                # no answer, just put in the query with 0's
+                page_keys.append([str(idx + 1), query.query.text, "", "0", "0", "0", "0", "0", "0", "0", "0"])
         page_list.append(page_keys)
     return page_list
 
