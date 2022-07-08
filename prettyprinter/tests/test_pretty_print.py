@@ -49,3 +49,16 @@ def test_pretty_with_queries_and_trp2():
         queries_as_list = convert_queries_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
         assert len(queries_as_list) == 1
         assert len(queries_as_list[0]) == 3
+
+
+def test_pretty_with_queries_and_trp2_one_without_answer():
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_filename = os.path.join(SCRIPT_DIR, "data/queries_one_no_answer.json")
+    with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
+        trp2_doc = TDocumentSchema().load(json.load(input_fp))
+        assert trp2_doc
+        queries_as_list = convert_queries_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
+        assert len(queries_as_list) == 1
+        assert len(queries_as_list[0]) == 9
+        assert len([x for x in queries_as_list[0] if 'PAYSTUB_PERIOD_REGULAR_HOURLY_RATE' in x]) == 1
+        assert len([x for x in queries_as_list[0] if 'PAYSTUB_PERIOD_START_DATE' in x]) == 1
