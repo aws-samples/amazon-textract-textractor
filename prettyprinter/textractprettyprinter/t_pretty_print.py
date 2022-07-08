@@ -148,31 +148,24 @@ def convert_queries_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
     for idx, page_block in enumerate(trp2_doc.pages):
         page_keys: List[List[str]] = list()
         for query in trp2_doc.queries(page=page_block):
+            if query.query.alias:
+                key = query.query.alias
+            else:
+                key = query.query.text
             answer_blocks: List[TBlock] = [x for x in trp2_doc.get_answers_for_query(block=query)]
             if answer_blocks:
                 for answer in answer_blocks:
                     value_geometry = TDocument.create_geometry_from_blocks([answer])
-                    if query.query.alias:
-                        # alias is set
-                        page_keys.append([
-                            str(idx + 1), query.query.alias, "1", answer.text, answer.confidence, "0", "0", "0", "0",
-                            str(value_geometry.bounding_box.top),
-                            str(value_geometry.bounding_box.height),
-                            str(value_geometry.bounding_box.width),
-                            str(value_geometry.bounding_box.left)
-                        ])
-                    else:
-                        # use the question, which is not ideal
-                        page_keys.append([
-                            str(idx + 1), query.query.text, "1", answer.text, answer.confidence, "0", "0", "0", "0",
-                            str(value_geometry.bounding_box.top),
-                            str(value_geometry.bounding_box.height),
-                            str(value_geometry.bounding_box.width),
-                            str(value_geometry.bounding_box.left)
-                        ])
+                    page_keys.append([
+                        str(idx + 1), key, "1", answer.text, answer.confidence, "0", "0", "0", "0",
+                        str(value_geometry.bounding_box.top),
+                        str(value_geometry.bounding_box.height),
+                        str(value_geometry.bounding_box.width),
+                        str(value_geometry.bounding_box.left)
+                    ])
             else:
-                # no answer, just put in the query with 0's
-                page_keys.append([str(idx + 1), query.query.text, "", "0", "0", "0", "0", "0", "0", "0", "0"])
+                # no answer found
+                page_keys.append([str(idx + 1), key, "1", "", "1", "0", "0", "0", "0", "0", "0", "0", "0 "])
         page_list.append(page_keys)
     return page_list
 
