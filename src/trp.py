@@ -1,6 +1,8 @@
 import json
 
+
 class BoundingBox:
+
     def __init__(self, width, height, left, top):
         self._width = width
         self._height = height
@@ -26,7 +28,9 @@ class BoundingBox:
     def top(self):
         return self._top
 
+
 class Polygon:
+
     def __init__(self, x, y):
         self._x = x
         self._y = y
@@ -42,7 +46,9 @@ class Polygon:
     def y(self):
         return self._y
 
+
 class Geometry:
+
     def __init__(self, geometry):
         boundingBox = geometry["BoundingBox"]
         polygon = geometry["Polygon"]
@@ -66,14 +72,16 @@ class Geometry:
     def polygon(self):
         return self._polygon
 
+
 class Word:
+
     def __init__(self, block, blockMap):
         self._block = block
         self._confidence = block['Confidence']
         self._geometry = Geometry(block['Geometry'])
         self._id = block['Id']
         self._text = ""
-        if(block['Text']):
+        if (block['Text']):
             self._text = block['Text']
 
     def __str__(self):
@@ -99,7 +107,9 @@ class Word:
     def block(self):
         return self._block
 
+
 class Line:
+
     def __init__(self, block, blockMap):
 
         self._block = block
@@ -108,16 +118,17 @@ class Line:
         self._id = block['Id']
 
         self._text = ""
-        if(block['Text']):
+        if (block['Text']):
             self._text = block['Text']
 
         self._words = []
-        if('Relationships' in block and block['Relationships']):
+        if ('Relationships' in block and block['Relationships']):
             for rs in block['Relationships']:
-                if(rs['Type'] == 'CHILD'):
+                if (rs['Type'] == 'CHILD'):
                     for cid in rs['Ids']:
-                        if(blockMap[cid]["BlockType"] == "WORD"):
+                        if (blockMap[cid]["BlockType"] == "WORD"):
                             self._words.append(Word(blockMap[cid], blockMap))
+
     def __str__(self):
         s = "Line\n==========\n"
         s = s + self._text + "\n"
@@ -150,7 +161,9 @@ class Line:
     def block(self):
         return self._block
 
+
 class SelectionElement:
+
     def __init__(self, block, blockMap):
         self._confidence = block['Confidence']
         self._geometry = Geometry(block['Geometry'])
@@ -173,7 +186,9 @@ class SelectionElement:
     def selectionStatus(self):
         return self._selectionStatus
 
+
 class FieldKey:
+
     def __init__(self, block, children, blockMap):
         self._block = block
         self._confidence = block['Confidence']
@@ -186,12 +201,12 @@ class FieldKey:
 
         for eid in children:
             wb = blockMap[eid]
-            if(wb['BlockType'] == "WORD"):
+            if (wb['BlockType'] == "WORD"):
                 w = Word(wb, blockMap)
                 self._content.append(w)
                 t.append(w.text)
 
-        if(t):
+        if (t):
             self._text = ' '.join(t)
 
     def __str__(self):
@@ -221,7 +236,9 @@ class FieldKey:
     def block(self):
         return self._block
 
+
 class FieldValue:
+
     def __init__(self, block, children, blockMap):
         self._block = block
         self._confidence = block['Confidence']
@@ -234,16 +251,16 @@ class FieldValue:
 
         for eid in children:
             wb = blockMap[eid]
-            if(wb['BlockType'] == "WORD"):
+            if (wb['BlockType'] == "WORD"):
                 w = Word(wb, blockMap)
                 self._content.append(w)
                 t.append(w.text)
-            elif(wb['BlockType'] == "SELECTION_ELEMENT"):
+            elif (wb['BlockType'] == "SELECTION_ELEMENT"):
                 se = SelectionElement(wb, blockMap)
                 self._content.append(se)
                 self._text = se.selectionStatus
 
-        if(t):
+        if (t):
             self._text = ' '.join(t)
 
     def __str__(self):
@@ -268,34 +285,37 @@ class FieldValue:
     @property
     def text(self):
         return self._text
-    
+
     @property
     def block(self):
         return self._block
 
+
 class Field:
+
     def __init__(self, block, blockMap):
         self._key = None
         self._value = None
 
         for item in block['Relationships']:
-            if(item["Type"] == "CHILD"):
+            if (item["Type"] == "CHILD"):
                 self._key = FieldKey(block, item['Ids'], blockMap)
-            elif(item["Type"] == "VALUE"):
+            elif (item["Type"] == "VALUE"):
                 for eid in item['Ids']:
                     vkvs = blockMap[eid]
                     if 'VALUE' in vkvs['EntityTypes']:
-                        if('Relationships' in vkvs):
+                        if ('Relationships' in vkvs):
                             for vitem in vkvs['Relationships']:
-                                if(vitem["Type"] == "CHILD"):
+                                if (vitem["Type"] == "CHILD"):
                                     self._value = FieldValue(vkvs, vitem['Ids'], blockMap)
+
     def __str__(self):
         s = "\nField\n==========\n"
         k = ""
         v = ""
-        if(self._key):
+        if (self._key):
             k = str(self._key)
-        if(self._value):
+        if (self._value):
             v = str(self._value)
         s = s + "Key: {}\nValue: {}".format(k, v)
         return s
@@ -308,7 +328,9 @@ class Field:
     def value(self):
         return self._value
 
+
 class Form:
+
     def __init__(self):
         self._fields = []
         self._fieldsMap = {}
@@ -329,17 +351,18 @@ class Form:
 
     def getFieldByKey(self, key):
         field = None
-        if(key in self._fieldsMap):
+        if (key in self._fieldsMap):
             field = self._fieldsMap[key]
         return field
-    
+
     def searchFieldsByKey(self, key):
         searchKey = key.lower()
         results = []
         for field in self._fields:
-            if(field.key and searchKey in field.key.text.lower()):
+            if (field.key and searchKey in field.key.text.lower()):
                 results.append(field)
         return results
+
 
 class Cell:
 
@@ -354,16 +377,16 @@ class Cell:
         self._id = block['Id']
         self._content = []
         self._text = ""
-        if('Relationships' in block and block['Relationships']):
+        if ('Relationships' in block and block['Relationships']):
             for rs in block['Relationships']:
-                if(rs['Type'] == 'CHILD'):
+                if (rs['Type'] == 'CHILD'):
                     for cid in rs['Ids']:
                         blockType = blockMap[cid]["BlockType"]
-                        if(blockType == "WORD"):
+                        if (blockType == "WORD"):
                             w = Word(blockMap[cid], blockMap)
                             self._content.append(w)
                             self._text = self._text + w.text + ' '
-                        elif(blockType == "SELECTION_ELEMENT"):
+                        elif (blockType == "SELECTION_ELEMENT"):
                             se = SelectionElement(blockMap[cid], blockMap)
                             self._content.append(se)
                             self._text = self._text + se.selectionStatus + ', '
@@ -411,7 +434,9 @@ class Cell:
     def block(self):
         return self._block
 
+
 class Row:
+
     def __init__(self):
         self._cells = []
 
@@ -424,6 +449,7 @@ class Row:
     @property
     def cells(self):
         return self._cells
+
 
 class Table:
 
@@ -440,17 +466,17 @@ class Table:
         ri = 1
         row = Row()
         cell = None
-        if('Relationships' in block and block['Relationships']):
+        if ('Relationships' in block and block['Relationships']):
             for rs in block['Relationships']:
-                if(rs['Type'] == 'CHILD'):
+                if (rs['Type'] == 'CHILD'):
                     for cid in rs['Ids']:
                         cell = Cell(blockMap[cid], blockMap)
-                        if(cell.rowIndex > ri):
+                        if (cell.rowIndex > ri):
                             self._rows.append(row)
                             row = Row()
                             ri = cell.rowIndex
                         row.cells.append(cell)
-                    if(row and row.cells):
+                    if (row and row.cells):
                         self._rows.append(row)
 
     def __str__(self):
@@ -480,6 +506,7 @@ class Table:
     def block(self):
         return self._block
 
+
 class Page:
 
     def __init__(self, blocks, blockMap):
@@ -489,6 +516,7 @@ class Page:
         self._form = Form()
         self._tables = []
         self._content = []
+        self._page_no = int
 
         self._parse(blockMap)
 
@@ -503,6 +531,7 @@ class Page:
             if item["BlockType"] == "PAGE":
                 self._geometry = Geometry(item['Geometry'])
                 self._id = item['Id']
+                self._page_no = item['Page']
             elif item["BlockType"] == "LINE":
                 l = Line(item, blockMap)
                 self._lines.append(l)
@@ -515,7 +544,7 @@ class Page:
             elif item["BlockType"] == "KEY_VALUE_SET":
                 if 'KEY' in item['EntityTypes']:
                     f = Field(item, blockMap)
-                    if(f.key):
+                    if (f.key):
                         self._form.addField(f)
                         self._content.append(f)
                     else:
@@ -531,38 +560,42 @@ class Page:
         columns = []
         lines = []
         for item in self._lines:
-                column_found=False
-                for index, column in enumerate(columns):
-                    bbox_left = item.geometry.boundingBox.left
-                    bbox_right = item.geometry.boundingBox.left + item.geometry.boundingBox.width
-                    bbox_centre = item.geometry.boundingBox.left + item.geometry.boundingBox.width/2
-                    bbox_top = item.geometry.boundingBox.top
-                    bbox_height = item.geometry.boundingBox.height
+            column_found = False
+            for index, column in enumerate(columns):
+                bbox_left = item.geometry.boundingBox.left
+                bbox_right = item.geometry.boundingBox.left + item.geometry.boundingBox.width
+                bbox_centre = item.geometry.boundingBox.left + item.geometry.boundingBox.width / 2
+                bbox_top = item.geometry.boundingBox.top
+                bbox_height = item.geometry.boundingBox.height
 
-                    # new logic:  
-                    # if the starting point is within starting_point_tolerance (first_condition) and 
-                    # the top location is within height_tolerance * bbox_height (second_condition), or
-                    # the new line appeared to be broken by Textract mistake and should be of the same line 
-                    # by looking at the top (third_condition) and 
-                    # the left of the new line appears right next to the right of the last line (fourth_condition)
-                    # then consider the new line as part of said column
-                    first_condition = abs(bbox_left - column['left']) < starting_point_tolerance
-                    second_condition = abs(bbox_top - column['top']) < height_tolerance * bbox_height
-                    third_condition = abs(bbox_top - column['top']) < same_line_top_tolerance # appeared to be in the same line
-                    fourth_condition = abs(bbox_left - column['right']) < same_line_spacing_tolerance * starting_point_tolerance
-                    if (first_condition and second_condition) or (third_condition and fourth_condition):
-                        #Bbox appears inside the column
-                        lines.append([index, item.text])
-                        # update the top and right with the new line added.
-                        columns[index]['top'] = bbox_top
-                        columns[index]['right'] = bbox_right
-                        column_found=True
-                        break
-                if not column_found:
-                    columns.append({'left':item.geometry.boundingBox.left, 
-                                    'right':item.geometry.boundingBox.left + item.geometry.boundingBox.width,
-                                    'top':item.geometry.boundingBox.top})
-                    lines.append([len(columns)-1, item.text])
+                # new logic:
+                # if the starting point is within starting_point_tolerance (first_condition) and
+                # the top location is within height_tolerance * bbox_height (second_condition), or
+                # the new line appeared to be broken by Textract mistake and should be of the same line
+                # by looking at the top (third_condition) and
+                # the left of the new line appears right next to the right of the last line (fourth_condition)
+                # then consider the new line as part of said column
+                first_condition = abs(bbox_left - column['left']) < starting_point_tolerance
+                second_condition = abs(bbox_top - column['top']) < height_tolerance * bbox_height
+                third_condition = abs(bbox_top -
+                                      column['top']) < same_line_top_tolerance    # appeared to be in the same line
+                fourth_condition = abs(bbox_left -
+                                       column['right']) < same_line_spacing_tolerance * starting_point_tolerance
+                if (first_condition and second_condition) or (third_condition and fourth_condition):
+                    #Bbox appears inside the column
+                    lines.append([index, item.text])
+                    # update the top and right with the new line added.
+                    columns[index]['top'] = bbox_top
+                    columns[index]['right'] = bbox_right
+                    column_found = True
+                    break
+            if not column_found:
+                columns.append({
+                    'left': item.geometry.boundingBox.left,
+                    'right': item.geometry.boundingBox.left + item.geometry.boundingBox.width,
+                    'top': item.geometry.boundingBox.top
+                })
+                lines.append([len(columns) - 1, item.text])
 
         lines.sort(key=lambda x: x[0])
         return lines
@@ -606,11 +639,12 @@ class Page:
     def id(self):
         return self._id
 
+
 class Document:
 
     def __init__(self, responsePages):
 
-        if(not isinstance(responsePages, list)):
+        if (not isinstance(responsePages, list)):
             rps = []
             rps.append(responsePages)
             responsePages = rps
@@ -634,18 +668,18 @@ class Document:
         documentPage = None
         for page in self._responsePages:
             for block in page['Blocks']:
-                if('BlockType' in block and 'Id' in block):
+                if ('BlockType' in block and 'Id' in block):
                     blockMap[block['Id']] = block
 
-                if(block['BlockType'] == 'PAGE'):
-                    if(documentPage):
-                        documentPages.append({"Blocks" : documentPage})
+                if (block['BlockType'] == 'PAGE'):
+                    if (documentPage):
+                        documentPages.append({"Blocks": documentPage})
                     documentPage = []
                     documentPage.append(block)
                 else:
                     documentPage.append(block)
-        if(documentPage):
-            documentPages.append({"Blocks" : documentPage})
+        if (documentPage):
+            documentPages.append({"Blocks": documentPage})
         return documentPages, blockMap
 
     def _parse(self):
@@ -669,7 +703,6 @@ class Document:
 
     def getBlockById(self, blockId):
         block = None
-        if(self._blockMap and blockId in self._blockMap):
+        if (self._blockMap and blockId in self._blockMap):
             block = self._blockMap[blockId]
         return block
-

@@ -42,14 +42,13 @@ Pretty_Print_Table_Format = Enum(
 )
 
 
-def get_string(
-    textract_json: dict,
-    output_type: Optional[List[Textract_Pretty_Print]] = [Textract_Pretty_Print.WORDS],
-    table_format: Pretty_Print_Table_Format = Pretty_Print_Table_Format.github,
-    with_confidence: bool = False,
-    with_geo: bool = False,
-    with_page_number: bool = False,
-):
+def get_string(textract_json: dict,
+               output_type: Optional[List[Textract_Pretty_Print]] = [Textract_Pretty_Print.WORDS],
+               table_format: Pretty_Print_Table_Format = Pretty_Print_Table_Format.github,
+               with_confidence: bool = False,
+               with_geo: bool = False,
+               with_page_number: bool = False,
+               trim: bool = False):
     """Main function to call depending on output_type the parameters for with_confidence, with_geo, with_page_number are considered."""
     result_value = ""
     if output_type:
@@ -57,31 +56,34 @@ def get_string(
             if t == Textract_Pretty_Print.WORDS:
                 result_value += get_words_string(textract_json=textract_json,
                                                  with_page_number=with_page_number,
-                                                 with_confidence=with_confidence)
+                                                 with_confidence=with_confidence,
+                                                 trim=trim)
             if t == Textract_Pretty_Print.LINES:
                 result_value += get_lines_string(textract_json=textract_json,
                                                  with_page_number=with_page_number,
-                                                 with_confidence=with_confidence)
+                                                 with_confidence=with_confidence,
+                                                 trim=trim)
             if t == Textract_Pretty_Print.FORMS:
-                result_value += get_forms_string(
-                    textract_json=textract_json,
-                    table_format=table_format,
-                    with_confidence=with_confidence,
-                    with_geo=with_geo,
-                )
+                result_value += get_forms_string(textract_json=textract_json,
+                                                 table_format=table_format,
+                                                 with_confidence=with_confidence,
+                                                 with_geo=with_geo,
+                                                 trim=trim)
             if t == Textract_Pretty_Print.TABLES:
-                result_value += get_tables_string(
-                    textract_json=textract_json,
-                    table_format=table_format,
-                    with_confidence=with_confidence,
-                    with_geo=with_geo,
-                )
+                result_value += get_tables_string(textract_json=textract_json,
+                                                  table_format=table_format,
+                                                  with_confidence=with_confidence,
+                                                  with_geo=with_geo,
+                                                  trim=trim)
     else:
         logger.error("output_type should be set otherwise not output")
     return result_value
 
 
-def convert_table_to_list(trp_table: trp.Table, with_confidence: bool = False, with_geo: bool = False) -> List:
+def convert_table_to_list(trp_table: trp.Table,
+                          with_confidence: bool = False,
+                          with_geo: bool = False,
+                          trim: bool = False) -> List:
     rows_list = list()
     for _, row in enumerate(trp_table.rows):
         one_row = list()
@@ -91,7 +93,10 @@ def convert_table_to_list(trp_table: trp.Table, with_confidence: bool = False, w
                 add_text = f"({cell.confidence:.1f})"
             if with_geo:
                 add_text = f"({cell.geometry.boundingBox})"
-            print_text = [cell.text + add_text]
+            if trim:
+                print_text = [cell.text.strip() + add_text]
+            else:
+                print_text = [cell.text + add_text]
             one_row = one_row + print_text
         rows_list.append(one_row)
     return rows_list
@@ -170,20 +175,29 @@ def convert_queries_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
     return page_list
 
 
-def convert_form_to_list(trp_form: trp.Form, with_confidence: bool = False, with_geo: bool = False) -> List:
+def convert_form_to_list(trp_form: trp.Form,
+                         with_confidence: bool = False,
+                         with_geo: bool = False,
+                         trim: bool = False) -> List:
     rows_list = list()
     rows_list.append(["Key", "Value"])
     for field in trp_form.fields:
         t_key = ""
         t_value = ""
         if field.key:
-            t_key = field.key.text
+            if trim:
+                t_key = field.key.text.strip()
+            else:
+                t_key = field.key.text
             if with_geo:
                 t_key += f" ({field.key.geometry.boundingBox}) "
             if with_confidence:
                 t_key += f" ({field.key.confidence:.1f}) "
         if field.value:
-            t_value = field.value.text
+            if trim:
+                t_value = field.value.text.strip()
+            else:
+                t_value = field.value.text
             if with_geo:
                 t_value += f" ({field.value.geometry.boundingBox}) "
             if with_confidence:
@@ -192,17 +206,17 @@ def convert_form_to_list(trp_form: trp.Form, with_confidence: bool = False, with
     return rows_list
 
 
-def get_tables_string(
-    textract_json: dict,
-    table_format: Pretty_Print_Table_Format = Pretty_Print_Table_Format.github,
-    with_confidence: bool = False,
-    with_geo: bool = False,
-) -> str:
+def get_tables_string(textract_json: dict,
+                      table_format: Pretty_Print_Table_Format = Pretty_Print_Table_Format.github,
+                      with_confidence: bool = False,
+                      with_geo: bool = False,
+                      trim: bool = False) -> str:
     """
     doc: Textract response in form of trp.Document (https://github.com/aws-samples/amazon-textract-response-parser/tree/master/src-python)
-    table_format: uses tabulate to pretty print the tabels to ascii. See https://pypi.org/project/tabulate/ for a list of table format values
+    table_format: uses tabulate to pretty print the tables to ascii. See https://pypi.org/project/tabulate/ for a list of table format values
     with_confidence: output confidence scores as well
     with_geo: output geo information as well
+    trim: removes whitespace from text
     """
     logger.debug(f"table_format: {table_format}")
     doc = trp.Document(textract_json)
@@ -210,7 +224,7 @@ def get_tables_string(
     if not table_format == Pretty_Print_Table_Format.csv:
         for page in doc.pages:
             for table in page.tables:
-                table_list = convert_table_to_list(table, with_confidence=with_confidence, with_geo=with_geo)
+                table_list = convert_table_to_list(table, with_confidence=with_confidence, with_geo=with_geo, trim=trim)
                 result_value += (tabulate(table_list, tablefmt=table_format.name) + "\n\n")
     if table_format == Pretty_Print_Table_Format.csv:
         logger.debug(f"pretty print - csv")
@@ -218,19 +232,18 @@ def get_tables_string(
         csv_writer = csv.writer(csv_output, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for page in doc.pages:
             for table in page.tables:
-                table_list = convert_table_to_list(table, with_confidence=with_confidence, with_geo=with_geo)
+                table_list = convert_table_to_list(table, with_confidence=with_confidence, with_geo=with_geo, trim=trim)
                 csv_writer.writerows(table_list)
                 csv_writer.writerow([])
         result_value = csv_output.getvalue()
     return result_value
 
 
-def get_forms_string(
-    textract_json: dict,
-    table_format: Pretty_Print_Table_Format = Pretty_Print_Table_Format.github,
-    with_confidence: bool = False,
-    with_geo: bool = False,
-) -> str:
+def get_forms_string(textract_json: dict,
+                     table_format: Pretty_Print_Table_Format = Pretty_Print_Table_Format.github,
+                     with_confidence: bool = False,
+                     with_geo: bool = False,
+                     trim: bool = False) -> str:
     """
     returns string with key-values printed out in format: key: value
     """
@@ -239,21 +252,24 @@ def get_forms_string(
     result_value = ""
     if not table_format == Pretty_Print_Table_Format.csv:
         for page in doc.pages:
-            forms_list = convert_form_to_list(page.form, with_confidence=with_confidence, with_geo=with_geo)
+            forms_list = convert_form_to_list(page.form, with_confidence=with_confidence, with_geo=with_geo, trim=trim)
             result_value += tabulate(forms_list, tablefmt=table_format.name) + "\n\n"
     if table_format == Pretty_Print_Table_Format.csv:
         logger.debug(f"pretty print - csv")
         csv_output = StringIO()
         csv_writer = csv.writer(csv_output, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
         for page in doc.pages:
-            forms_list = convert_form_to_list(page.form, with_confidence=with_confidence, with_geo=with_geo)
+            forms_list = convert_form_to_list(page.form, with_confidence=with_confidence, with_geo=with_geo, trim=trim)
             csv_writer.writerows(forms_list)
         csv_writer.writerow([])
         result_value = csv_output.getvalue()
     return result_value
 
 
-def get_lines_string(textract_json: dict, with_page_number: bool = False, with_confidence=False) -> str:
+def get_lines_string(textract_json: dict,
+                     with_page_number: bool = False,
+                     with_confidence=False,
+                     trim: bool = False) -> str:
     """
     returns string with lines separated by \n
     """
@@ -264,14 +280,21 @@ def get_lines_string(textract_json: dict, with_page_number: bool = False, with_c
         if with_page_number:
             result_value += (f"--------- page number: {i} - page ID: {page.id} --------------")
         for line in page.lines:
-            result_value += f"{line.text}\n"
+            if trim:
+                result_value += f"{line.text.strip()}\n"
+            else:
+                result_value += f"{line.text}\n"
+
             if with_confidence:
                 result_value += f", {line.confidence}"
         i += 1
     return result_value
 
 
-def get_words_string(textract_json: dict, with_page_number: bool = False, with_confidence=False) -> str:
+def get_words_string(textract_json: dict,
+                     with_page_number: bool = False,
+                     with_confidence=False,
+                     trim: bool = False) -> str:
     """
     returns string with words separated by \n
     """
@@ -283,7 +306,11 @@ def get_words_string(textract_json: dict, with_page_number: bool = False, with_c
             result_value += (f"--------- page number: {i} - page ID: {page.id} --------------")
         for line in page.lines:
             for word in line.words:
-                result_value += f"{word.text}"
+                if trim:
+                    result_value += f"{word.text.strip()}\n"
+                else:
+                    result_value += f"{word.text}\n"
+
                 if with_confidence:
                     result_value += f", {word.confidence}"
                 result_value += "\n"

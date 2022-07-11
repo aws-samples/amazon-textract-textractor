@@ -60,7 +60,7 @@ def test_tiff_async_multipage(caplog):
     j = call_textract(input_document=input_file, force_async_api=True, boto3_textract_client=textract_client)
     assert j
     assert 'Blocks' in j
-    assert len(j['Blocks']) == 260
+    assert len(j['Blocks']) == 261
     doc = Document(j)
     assert doc
 
