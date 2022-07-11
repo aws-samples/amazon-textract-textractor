@@ -5,6 +5,7 @@ import logging
 import re
 import trp
 import trp.trp2 as t2
+from warnings import warn
 
 from dataclasses import dataclass
 from enum import Enum, auto
@@ -249,7 +250,9 @@ class TGeoFinder():
                         anker: AreaSelection,
                         number_of_words_to_return: int = None,
                         text_type: str = 'word',
-                        area_selection: AreaSelection = None) -> List[TWord]:
+                        area_selection: AreaSelection = None,
+                        page_number: int = 1,
+                        exclude_ids: List[str] = None) -> List[TWord]:
         xmin = anker.top_left.x
         xmax = anker.lower_right.x
 
@@ -266,13 +269,17 @@ class TGeoFinder():
         return self.ocrdb.execute(query=query,
                                   textract_doc_uuid=self.textract_doc_uuid,
                                   params=params,
-                                  area_selection=area_selection)
+                                  area_selection=area_selection,
+                                  page_number=page_number,
+                                  exclude_ids=exclude_ids)
 
     def get_words_to_the_right(self,
                                anker: AreaSelection,
                                number_of_words_to_return: int = None,
                                text_type: str = 'word',
-                               area_selection: AreaSelection = None) -> List[TWord]:
+                               area_selection: AreaSelection = None,
+                               page_number: int = 1,
+                               exclude_ids: List[str] = None) -> List[TWord]:
         ymin_pos = anker.top_left.y - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
         ymax_pos = anker.lower_right.y + TGeoFinder.approx_line_difference
@@ -290,7 +297,9 @@ class TGeoFinder():
         return self.ocrdb.execute(query=query,
                                   textract_doc_uuid=self.textract_doc_uuid,
                                   params=params,
-                                  area_selection=area_selection)
+                                  area_selection=area_selection,
+                                  page_number=page_number,
+                                  exclude_ids=exclude_ids)
 
     def find_intersect_for_area(self, area1: AreaSelection, area2: AreaSelection) -> List[TWord]:
         if area1.page_number != area2.page_number:
@@ -309,7 +318,11 @@ class TGeoFinder():
                              word_up_plus_x: int = 0,
                              text_type: str = 'word',
                              stop_words: "list[str]" = None,
-                             area_selection: AreaSelection = None) -> "list[TWord]":
+                             area_selection: AreaSelection = None,
+                             page_number: int = 1,
+                             min_textdistance: float = 0.8,
+                             number_of_other_words_allowed: int = 0,
+                             exclude_ids: List[str] = None) -> "list[TWord]":
         """
         find intersect value by looking for the left word/phrase and the upper word/phrase and finding values where the center is in that block
         """
@@ -317,8 +330,10 @@ class TGeoFinder():
         result_tword_list: "list[TWord]" = list()
         word_left = word_left.lower()
         word_up = word_up.lower()
-        word_left_list = self.find_phrase_in_lines(word_left)
-        word_up_list = self.find_phrase_in_lines(word_up)
+        word_left_list = self.find_phrase_on_page(word_left, min_textdistance, page_number,
+                                                  number_of_other_words_allowed, area_selection, exclude_ids)
+        word_up_list = self.find_phrase_on_page(word_up, min_textdistance, page_number, number_of_other_words_allowed,
+                                                area_selection, exclude_ids)
         logger.debug(f"word_left_list: {word_left_list} \n word_up_list: {word_up_list}")
         # TODO: one query instead of loop would be better
         for tword_left in word_left_list:
@@ -337,7 +352,9 @@ class TGeoFinder():
             j = self.ocrdb.execute(query=query,
                                    params=params,
                                    area_selection=area_selection,
-                                   textract_doc_uuid=self.textract_doc_uuid)
+                                   textract_doc_uuid=self.textract_doc_uuid,
+                                   page_number=page_number,
+                                   exclude_ids=exclude_ids)
             if j and len(j) >= 1:
                 logger.debug(f"found a word_up: {j}")
                 query = ''' and ((xmin + xmax) / 2) < ?
@@ -354,7 +371,9 @@ class TGeoFinder():
                 found_intersect_word = self.ocrdb.execute(query=query,
                                                           params=params,
                                                           textract_doc_uuid=self.textract_doc_uuid,
-                                                          area_selection=area_selection)
+                                                          area_selection=area_selection,
+                                                          page_number=page_number,
+                                                          exclude_ids=exclude_ids)
                 result_tword_list.extend(found_intersect_word)
         if result_tword_list:
             logger.info(f"word_left: {word_left}, word_up: {word_up}, result_tuples: {[p for p in result_tword_list]}")
@@ -364,7 +383,9 @@ class TGeoFinder():
     def get_lines_to_right_and_above(self,
                                      current_word: TWord,
                                      below_word: TWord,
-                                     area_selection: AreaSelection = None):
+                                     area_selection: AreaSelection = None,
+                                     page_number: int = 1,
+                                     exclude_ids: List[str] = None):
         ymin_pos = current_word.ymin - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
         below_word_ymin_pos = below_word.ymin - TGeoFinder.approx_line_difference
@@ -379,7 +400,9 @@ class TGeoFinder():
         return self.ocrdb.execute(query=query,
                                   params=params,
                                   textract_doc_uuid=self.textract_doc_uuid,
-                                  area_selection=area_selection)
+                                  area_selection=area_selection,
+                                  page_number=page_number,
+                                  exclude_ids=exclude_ids)
 
     def get_lines_in_area(self,
                           area_selection: AreaSelection,
@@ -399,7 +422,9 @@ class TGeoFinder():
                                   below_word: TWord,
                                   current_word_x_offset: int = 0,
                                   below_word_x_offset: int = 0,
-                                  area_selection: AreaSelection = None):
+                                  area_selection: AreaSelection = None,
+                                  page_number: int = 1,
+                                  exclude_ids: List[str] = None):
         ymin_pos = current_word.ymin - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
         ymax_pos = current_word.ymax
@@ -420,9 +445,14 @@ class TGeoFinder():
         return self.ocrdb.execute(query=query,
                                   params=params,
                                   textract_doc_uuid=self.textract_doc_uuid,
-                                  area_selection=area_selection)
+                                  area_selection=area_selection,
+                                  page_number=page_number,
+                                  exclude_ids=exclude_ids)
 
-    def get_words_in_area(self, area_selection: AreaSelection = None, page_number: int = 1, exclude_ids=None):
+    def get_words_in_area(self,
+                          area_selection: AreaSelection = None,
+                          page_number: int = 1,
+                          exclude_ids: List[str] = None):
         query = " and text_type=? order by xmin asc "
         params = ['word']
         r = self.ocrdb.execute(query=query,
@@ -438,7 +468,9 @@ class TGeoFinder():
                                 left_word: TWord,
                                 right_word: TWord,
                                 text_type: List[str] = ['word'],
-                                area_selection: AreaSelection = None):
+                                area_selection: AreaSelection = None,
+                                page_number: int = 1,
+                                exclude_ids: List[str] = None):
         logger.debug(
             f"get_words_between_words - left_word: {left_word}, right_word: {right_word}, text_type: {text_type}")
         ymin_pos = min([left_word.ymin, right_word.ymin]) - TGeoFinder.approx_line_difference
@@ -461,7 +493,9 @@ class TGeoFinder():
         r = self.ocrdb.execute(query=query,
                                params=params,
                                textract_doc_uuid=self.textract_doc_uuid,
-                               area_selection=area_selection)
+                               area_selection=area_selection,
+                               page_number=page_number,
+                               exclude_ids=exclude_ids)
 
         logger.debug(f"result: {r}")
         return r
@@ -503,7 +537,12 @@ class TGeoFinder():
             raise NoPhraseForAreaFoundError(f"nothin found for phrase_coordinates: {phrase_coordinates}")
         return return_value
 
-    def get_next_selection_element_to_the_right(self, word: TWord, xmax: int, area_selection: AreaSelection = None):
+    def get_next_selection_element_to_the_right(self,
+                                                word: TWord,
+                                                xmax: int,
+                                                area_selection: AreaSelection = None,
+                                                page_number: int = 1,
+                                                exclude_ids: List[str] = None):
         ymin_pos = word.ymin - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
         ymax_pos = word.ymax + TGeoFinder.approx_line_difference
@@ -518,7 +557,9 @@ class TGeoFinder():
         return self.ocrdb.execute(query=query,
                                   params=params,
                                   textract_doc_uuid=self.textract_doc_uuid,
-                                  area_selection=area_selection)
+                                  area_selection=area_selection,
+                                  page_number=page_number,
+                                  exclude_ids=exclude_ids)
 
     def get_form_fields_in_area(self, area_selection: AreaSelection, exclude_ids: List[str] = None) -> List[KeyValue]:
         if not area_selection:
@@ -589,7 +630,7 @@ class TGeoFinder():
     def get_twords_in_area(self,
                            area_selection: AreaSelection,
                            text_type: List[str] = ["word"],
-                           exclude_ids=None) -> List[TWord]:
+                           exclude_ids: List[str] = None) -> List[TWord]:
         query = ""
         params = []
         if text_type:
@@ -600,12 +641,15 @@ class TGeoFinder():
                                   params=params,
                                   textract_doc_uuid=self.textract_doc_uuid,
                                   area_selection=area_selection,
+                                  page_number=area_selection.page_number,
                                   exclude_ids=exclude_ids)
 
     def get_selection_boxes_to_left(self,
                                     word: TWord,
                                     number_of_boxes_to_return: int = None,
-                                    area_selection: AreaSelection = None):
+                                    area_selection: AreaSelection = None,
+                                    page_number: int = 1,
+                                    exclude_ids: List[str] = None):
         ymin_pos = word.ymin - TGeoFinder.approx_line_difference
         ymin_pos = ymin_pos if ymin_pos >= 0 else 0
         ymax_pos = word.ymax + TGeoFinder.approx_line_difference
@@ -625,7 +669,9 @@ class TGeoFinder():
         return self.ocrdb.execute(query=query,
                                   params=params,
                                   textract_doc_uuid=self.textract_doc_uuid,
-                                  area_selection=area_selection)
+                                  area_selection=area_selection,
+                                  page_number=page_number,
+                                  exclude_ids=exclude_ids)
 
     @staticmethod
     def get_min_distance(word1: TWord, word2: TWord) -> float:
@@ -653,7 +699,7 @@ class TGeoFinder():
                           page_number: int = 1,
                           min_textdistance=0.8,
                           area_selection: AreaSelection = None,
-                          exclude_ids=None) -> List[TWord]:
+                          exclude_ids: List[str] = None) -> List[TWord]:
         query = " and text_type=? and page_number=? "
         params = ["word", page_number]
         words = self.ocrdb.execute(textract_doc_uuid=self.textract_doc_uuid,
@@ -683,7 +729,7 @@ class TGeoFinder():
                               page_number: int = 1,
                               number_of_other_words_allowed: int = 0,
                               area_selection: AreaSelection = None,
-                              exclude_ids=None) -> List[TWord]:
+                              exclude_ids: List[str] = None) -> List[TWord]:
         logger.debug(
             f"find_phrase_on_page: phrase_words: {phrase_words}, min_textdistance: {min_textdistance}, area_selection: {area_selection}"
         )
@@ -713,7 +759,8 @@ class TGeoFinder():
                 logger.debug(f"find_phrase_on_page - looking for word: {word} with current_word: {current_word}")
                 words_to_right = self.get_words_to_the_right(anker=TGeoFinder.get_area_selection_for_twords(
                     [current_word]),
-                                                             number_of_words_to_return=1)
+                                                             number_of_words_to_return=1,
+                                                             page_number=page_number)
                 logger.debug(f"find_phrase_on_page - words to the right: {words_to_right}")
                 if words_to_right and get_diff_for_alphanum_words(word1=words_to_right[0].text,
                                                                   word2=word) > min_textdistance:
@@ -840,8 +887,12 @@ class TGeoFinder():
 
     def find_phrase_in_lines(self, phrase: str, min_textdistance=0.6, page_number: int = 1) -> List[TWord]:
         """
-        phrase = words seperated by space char
+        phrase = words separated by space char
         """
+        warn(
+            'This function is deprecated and will be removed in later releases start using find_phrase_on_page. Processing of multi-page documents will result in wrong WORD list.',
+            DeprecationWarning,
+            stacklevel=2)
         # first check if we already did find this phrase and stored it in the DB
         # TODO: Problem: it will not find Current: when the phrase has current and there are other current values in the document without :
         if not phrase:

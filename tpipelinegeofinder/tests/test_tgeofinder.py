@@ -31,10 +31,22 @@ def test_words_between_words(caplog):
     input_filename = os.path.join(SCRIPT_DIR, "data/tquery_samples.json")
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
         qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=1000, doc_width=1000)
-        word_left = qdoc.find_phrase_in_lines("word_left")[0]
-        word_right = qdoc.find_phrase_in_lines("word_right")[0]
+        word_left = qdoc.find_phrase_on_page("word_left")[0]
+        word_right = qdoc.find_phrase_on_page("word_right")[0]
         r = qdoc.get_words_between_words(word_left, word_right)
         assert "text in between the words" == " ".join([w.text for w in r])
+
+
+def test_find_phrase_in_lines_old(caplog):
+    caplog.set_level(logging.DEBUG)
+    caplog.set_level(logging.DEBUG, logger='textractgeofinder')
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_filename = os.path.join(SCRIPT_DIR, "data/tquery_samples.json")
+    with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=1000, doc_width=1000)
+        word_left = qdoc.find_phrase_in_lines("word_left")
+        assert word_left
+        assert len(word_left) == 1
 
 
 def test_get_value_for_phrase_coordiante(caplog):
@@ -87,8 +99,8 @@ def test_get_keys_in_area(caplog):
     doc_width = 1000
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
         qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
-        patient_information = qdoc.find_phrase_in_lines("patient information")[0]
-        emergency_contact_1 = qdoc.find_phrase_in_lines("emergency contact 1")[0]
+        patient_information = qdoc.find_phrase_on_page("patient information")[0]
+        emergency_contact_1 = qdoc.find_phrase_on_page("emergency contact 1")[0]
         top_left = t2.TPoint(y=patient_information.ymax, x=0)
         lower_right = t2.TPoint(y=emergency_contact_1.ymin, x=doc_width)
         form_fields = qdoc.get_form_fields_in_area(
@@ -107,14 +119,81 @@ def test_get_keys_in_area_multipage(caplog):
     doc_width = 1000
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
         qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
-        patient_information = qdoc.find_phrase_in_lines("patient information")[0]
-        emergency_contact_1 = qdoc.find_phrase_in_lines("emergency contact 1")[0]
+        patient_information = qdoc.find_phrase_on_page("patient information")[0]
+        emergency_contact_1 = qdoc.find_phrase_on_page("emergency contact 1")[0]
         top_left = t2.TPoint(y=patient_information.ymax, x=0)
         lower_right = t2.TPoint(y=emergency_contact_1.ymin, x=doc_width)
         form_fields = qdoc.get_form_fields_in_area(
             area_selection=AreaSelection(top_left=top_left, lower_right=lower_right, page_number=1))
         assert form_fields
         assert len(form_fields) == 11
+
+
+def test_get_keys_in_area_multipage_2(caplog):
+    caplog.set_level(logging.DEBUG)
+    caplog.set_level(logging.DEBUG, logger='textractgeofinder')
+
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_filename = os.path.join(SCRIPT_DIR, "data/multi_page_example_file.json")
+    doc_height = 1000
+    doc_width = 1000
+    top_left = t2.TPoint(y=0, x=0)
+    lower_right = t2.TPoint(y=doc_height, x=doc_width)
+    with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
+        employment_application = qdoc.find_phrase_on_page("Employment Application",
+                                                          page_number=2,
+                                                          area_selection=AreaSelection(top_left=top_left,
+                                                                                       lower_right=lower_right,
+                                                                                       page_number=2))[0]
+        employment_history = qdoc.find_phrase_on_page("Employment History",
+                                                      page_number=2,
+                                                      area_selection=AreaSelection(top_left=top_left,
+                                                                                   lower_right=lower_right,
+                                                                                   page_number=2))[0]
+        top_left = t2.TPoint(y=employment_application.ymax, x=0)
+        lower_right = t2.TPoint(y=employment_history.ymin, x=doc_width)
+        form_fields = qdoc.get_form_fields_in_area(
+            area_selection=AreaSelection(top_left=top_left, lower_right=lower_right, page_number=2))
+        assert form_fields
+        assert len(form_fields) == 4
+
+
+def test_find_phrase_on_multi_doc_failed(caplog):
+    caplog.set_level(logging.DEBUG)
+    caplog.set_level(logging.DEBUG, logger='textractgeofinder')
+
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_filename = os.path.join(SCRIPT_DIR, "data/multi_page_example_file.json")
+    doc_height = 1000
+    doc_width = 1000
+    with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
+        employment_application = qdoc.find_phrase_on_page("Employment Application")
+        empty_list = True if employment_application == [] else False
+        assert empty_list == True
+
+
+def test_find_phrase_on_multi_doc_passed(caplog):
+    caplog.set_level(logging.DEBUG)
+    caplog.set_level(logging.DEBUG, logger='textractgeofinder')
+
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_filename = os.path.join(SCRIPT_DIR, "data/multi_page_example_file.json")
+    doc_height = 1000
+    doc_width = 1000
+    top_left = t2.TPoint(y=0, x=0)
+    lower_right = t2.TPoint(y=doc_height, x=doc_width)
+
+    with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
+        qdoc = tq.TGeoFinder(json.load(input_fp), doc_height=doc_height, doc_width=doc_width)
+        employment_application = qdoc.find_phrase_on_page("Employment Application",
+                                                          page_number=2,
+                                                          area_selection=AreaSelection(top_left=top_left,
+                                                                                       lower_right=lower_right,
+                                                                                       page_number=2))
+        assert employment_application
+        assert len(employment_application) == 1
 
 
 def test_get_selection_values_in_area(caplog):
