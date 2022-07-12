@@ -9,6 +9,7 @@ def read(fname):
 
 
 class FontInstaller(install):
+
     def run(self):
         self._copy_fonts()
         install.run(self)
@@ -46,12 +47,12 @@ class FontInstaller(install):
                     shutil.copyfile(os.path.join(_src_dir, _font_file), os.path.join(tgt_dir, _font_file))
 
         except:
-            print('WARNING: An issue occured while installing the custom fonts. Default font will be used')
+            print('WARNING: An issue occurred while installing the custom fonts. Default font will be used')
 
 
 requirements = [
     'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.27', 'amazon-textract-caller>=0.0.16',
-    'amazon-textract-overlayer>=0.0.3', 'amazon-textract-prettyprinter>=0.0.10', 'Pillow>=9.1.1', 'PyPDF2==2.4.2 '
+    'amazon-textract-overlayer>=0.0.3', 'amazon-textract-prettyprinter>=0.0.10', 'Pillow>=9.2.*', 'PyPDF2>=2.5.*'
 ]
 
 if sys.argv[-1] == 'publish-test':
