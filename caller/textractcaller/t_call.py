@@ -359,7 +359,7 @@ def call_textract(input_document: Union[str, bytes],
         if notification_channel and not return_job_id:
             raise ValueError("when submitting notification_channel, has to also expect the job_id as result atm.")
         # ASYNC
-        if is_pdf or force_async_api and is_s3_document:
+        if (is_pdf or force_async_api) and is_s3_document and not force_sync_api:
             logger.debug(f"is_pdf or force_async_api and is_s3_document")
             params = generate_request_params(
                 document_location=DocumentLocation(s3_bucket=s3_bucket, s3_prefix=s3_key),
@@ -390,7 +390,7 @@ def call_textract(input_document: Union[str, bytes],
                                                  job_done_polling_interval=job_done_polling_interval)
             else:
                 raise Exception(f"Got non-200 response code: {submission_status}")
-
+        # SYNC
         elif ext in sync_suffixes or force_sync_api:
             # s3 file
             if is_s3_document:
