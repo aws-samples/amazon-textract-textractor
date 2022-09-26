@@ -1,180 +1,88 @@
-# Textractor
+![Textractor](docs/source/textractor_cropped.png)
 
-textractor helps speed up PoCs by allowing you to quickly extract text, forms and tables from documents using Amazon Textract. It can generate output in different formats including raw JSON, JSON for each page in the document, text, text in reading order, key/values exported as CSV, tables exported as CSV. It can also generate insights or translate detected text by using Amazon Comprehend, Amazon Comprehend Medical and Amazon Translate. It takes advantage of [Textract response parser library](https://github.com/aws-samples/amazon-textract-response-parser) to easily consume JSON returned by Amazon Textract.
+[![Tests](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/tests.yml/badge.svg)](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/tests.yml) [![Documentation](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/documentation.yml/badge.svg)](https://aws-samples.github.io/amazon-textract-textractor/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## Prerequisites
+**Textractor** is a python package created to seamlessly work with [Amazon Textract](https://docs.aws.amazon.com/textract/latest/dg/what-is.html) a document intelligence service offering text recognition, table extraction, form processing, and much more. Whether you are making a one-off script or a complex distributed document processing pipeline, Textractor makes it easy to use Textract.
 
-- Python3
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
+## Installation
 
-# Overview
+Textractor is available on PyPI and can be installed with `pip install amazon-textract-textractor`. By default this will install the minimal version of textractor. The following extras can be used to add features:
 
-The project is structured a little different now.
+- `pdf` (`pip install amazon-textract-textractor[pdf]`) includes `pdf2image` and enables PDF rasterization in Textractor. Note that this is **not** necessary to call Textract with a PDF file.
+- `torch` (`pip install amazon-textract-textractor[torch]`) includes `sentence_transformers` for better word search and matching. This will work on CPU but be noticeably slower than non-machine learning based approaches.
+- `dev` (`pip install amazon-textract-textractor[dev]`) includes all the dependencies above and everything else needed to test the code.
 
-The original textractor implementation is still available under src, while the new PyPI packages for different features are setup in the following folders:
+You can pick several extras by separating the labels with commas like this `pip install amazon-textract-textractor[pdf,torch]`.
 
-* helper
-* caller
-* overlayer
-* prettyprinter
+## Documentation
 
-All packages are available on PyPI as well.
+Generated documentation for the latest released version can be accessed here: [aws-samples.github.io/amazon-textract-textractor/](https://aws-samples.github.io/amazon-textract-textractor/)
 
-## Helper
+## Examples
 
-Command line tool to easily call Textract. Essentially the command uses the caller, overlayer and prettyprinter methods.
-Usage in the README: https://github.com/aws-samples/amazon-textract-textractor/tree/master/helper
+### Setup
 
-## Caller
+These two lines are all you need to use Textract. The Textractor instance can be reused across multiple requests for both synchronous and asynchronous requests.
 
-Making it easy to call Textract and get the response, also when paginated or stored on S3 through OutputConfig
-Usage in README: https://github.com/aws-samples/amazon-textract-textractor/tree/master/caller
+```py
+from textractor import Textractor
 
-## Prettyprinter
-
-Format the Textract JSON output for easy reading or use in other systems (e. g. CSV).
-Usage in README: https://github.com/aws-samples/amazon-textract-textractor/tree/master/prettyprinter
-
-## Overlayer
-
-Generate Bounding Boxes to make it easier to draw for visualizations.
-Usage in README: https://github.com/aws-samples/amazon-textract-textractor/tree/master/overlayer
-
-
-# Original Implementation 
-
-## Setup
-
-- Download [code](./zip/textractor.zip) and unzip on your local machine.
-- run ```python -m pip install -r requirements.txt```
-
-## Usage
-
-Format:
-- python3 textractor.py --documents [file|folder|S3Object|S3Folder] --text --forms --tables --region [AWSRegion] --insights --medical-insights --translate [LanguageCode]
-
-Examples:
-- python3 textractor.py --documents mydoc.jpg --text
-- python3 textractor.py --documents ./mydocs/ --text --forms --tables
-- python3 textractor.py --documents s3://mybucket/mydoc.pdf --text --forms --tables
-- python3 textractor.py --documents s3://mybucket/myfolder/ --forms
-- python3 textractor.py --documents s3://mybucket/myfolder/ --text --forms --tables --region us-east-1 --insights --medical-insights --translate es
-
-> Path to a folder on local drive or S3 bucket must end with /
-
-> Only one of the flags (--text, --forms and --tables) is required at the minimum. You can use combination of all three.
-
-> --region is optional. us-east-1 is default for local files/folder. For documents in S3, region of S3 bucket is selected as default AWS region to call Amazon Textract.
-
-> --insights, --medical-insights and --translate are optional.
-
-## Generated Output
-
-Tool generates several files in the format below:
-
-#### Text, forms and tables related output files
-
-- document-response.json: Raw JSON response of Amazon Textract API call.
-- document-page-n-response.json: Raw JSON blocks for each page document.
-- document-page-n-text.txt: Detected text for each page in the document.
-- document-page-n-text-inreadingorder.txt: Detected text in reading order (multi-column) for each page in the document.
-- document-page-n-forms.csv: Key/Value pairs for each page in the document.
-- document-page-n-tables.csv: Tables detected for each page in the document.
-- document-page-n-table-n-tables.csv: Pretty-printed tables detected for each page in the document.
-
-#### Insights related output files
-
-- document-page-n-insights-entities.csv: Entities in detected text for each page in the document.
-- document-page-n-insights-sentiment.csv: Sentiment in detected text for each page in the document.
-- document-page-n-insights-keyPhrases.csv: Key phrases in detected text for each page in the document.
-- document-page-n-insights-syntax.csv: Syntax in detected text for each page in the document.
-- document-page-n-medical-insights-entities.csv: Medical entities in detected text for each page in the document.
-- document-page-n-medical-insights-phi.json: Phi in detected text for each page in the document.
-- document-page-n-text-translation.txt: Translation of detected text for each page in the document.
-
-## Arguments
-
-  | Argument  | Description |
-  | ------------- | ------------- |
-  | --documents  | Name of the document or local folder/S3 bucket |
-  | --text  | Extract text from the document |
-  | --forms  | Extract key/value pairs from the document |
-  | --tables | Extract tables from the document |
-  | --region  | AWS region to use for Amazon Textract API call. us-east-1 is default. |
-  | --insights  | Generate files with sentiment, entities, syntax, and key phrases. |
-  | --medical-insights  | Generate files with medical entities and phi. |
-  | --translate  | Generate file with translation. |
-
-## Source Code
-- [textractor.py](./src/textractor.py) is the entry point. It parses input arguments, and query S3 or local folder to get input documents. It then iterates over input documents and use [DocumentProcessor](./src/tdp.py) to get response from Amazon Textract APIs.
-- [OutputGenerator](./src/og.py) takes Textract response and uses [Textract response parser](https://github.com/aws-samples/amazon-textract-response-parser) to process response and generate output.
-- Example below shows how [response parser library](https://github.com/aws-samples/amazon-textract-response-parser) helps process JSON returned from Amazon Textract.
-
+extractor = Textractor(aws_profile_name="default")
 ```
 
-# Call Amazon Textract and get JSON response
-docproc = DocumentProcessor(bucketName, filePath, awsRegion, detectText, detectForms, tables)
-response = docproc.run()
+### Text recognition
 
-# Get DOM
-doc = Document(response)
-
-# Iterate over elements in the document
-for page in doc.pages:
-    # Print lines and words
-    for line in page.lines:
-        print("Line: {}--{}".format(line.text, line.confidence))
-        for word in line.words:
-            print("Word: {}--{}".format(word.text, word.confidence))
-    
-    # Print tables
-    for table in page.tables:
-        for r, row in enumerate(table.rows):
-            for c, cell in enumerate(row.cells):
-                print("Table[{}][{}] = {}-{}".format(r, c, cell.text, cell.confidence))
-
-    # Print fields
-    for field in page.form.fields:
-        print("Field: Key: {}, Value: {}".format(field.key.text, field.value.text))
-
-    # Get field by key
-    key = "Phone Number:"
-    field = page.form.getFieldByKey(key)
-    if(field):
-        print("Field: Key: {}, Value: {}".format(field.key, field.value))
-
-    # Search fields by key
-    key = "address"
-    fields = page.form.searchFieldsByKey(key)
-    for field in fields:
-        print("Field: Key: {}, Value: {}".format(field.key, field.value))
-
+```py
+# file_source can be an image, list of images, bytes or S3 path
+document = extractor.detect_document_text(file_source="tests/fixtures/single-page-1.png")
+print(document.lines)
+#[Textractor Test, Document, Page (1), Key - Values, Name of package: Textractor, Date : 08/14/2022, Table 1, Cell 1, Cell 2, Cell 4, Cell 5, Cell 6, Cell 7, Cell 8, Cell 9, Cell 10, Cell 11, Cell 12, Cell 13, Cell 14, Cell 15, Selection Element, Selected Checkbox, Un-Selected Checkbox]
 ```
 
-## Cost
-  - As you run this tool, it calls different APIs (Amazon Textract, optionally Amazon Comprehend, Amazon Comprehend Medical, Amazon Translate) in your AWS account. You will get charged for all the API calls made as part of the analysis.
-  - If you are using the free tier, the free limit is different when using only the --text flag than using also the flags --forms and --tables [check the pricing here](https://aws.amazon.com/textract/pricing/) 
+### Table extraction
 
-## Other Resources
+```py
+from textractor.data.constants import TextractFeatures
 
-- [Large scale document processing with Amazon Textract - Reference Architecture](https://github.com/aws-samples/amazon-textract-serverless-large-scale-document-processing)
-- [Batch processing tool](https://github.com/aws-samples/amazon-textract-textractor)
-- [JSON response parser](https://github.com/aws-samples/amazon-textract-response-parser)
+document = extractor.analyze_document(
+	file_source="tests/fixtures/form.png",
+	features=[TextractFeatures.TABLES]
+)
+# Saves the table in an excel document for further processing
+document.tables[0].to_excel("output.xlsx")
+```
+
+### Analyze ID
+
+```py
+document = extractor.analyze_id(file_source="tests/fixtures/fake_id.jpg")
+print(document.identity_documents[0].get("FIRST_NAME"))
+# 'FAKEID'
+```
+
+### Receipt processing (Analyze Expense)
+
+```py
+document = extractor.analyze_expense(file_source="tests/fixtures/receipt.jpg")
+print(document.expense_documents[0].get("TOTAL").text)
+# '$1810.46'
+```
+
+If your use case was not covered here or if you are looking for asynchronous usage examples, see [our collection of examples](textractor.readthedocs.org/latest/examples.html).
+
+## Try it out
+
+The `Demo.ipynb` can be used as a reference to understand some functionalities hosted by the package.
+Additionally, `docs/tests/notebooks/` have some tutorials you can try out.
+
+## Tests
+
+The package comes with tests that call the production Textract APIs. Running the tests will incur charges to your AWS account.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
-This library is licensed under the Apache 2.0 License. 
-
-## Test
-- Clone the repo and run pytest
-
-```bash
-git clone https://github.com/aws-samples/amazon-textract-textractor.git
-cd "<<submodule to be tested>>"
-python -m venv virtualenv
-virtualenv/bin/activate
-python -m pip install pytest
-python -m pip install setuptools
-python setup.py install
-pytest
-```
+This library is licensed under the Apache 2.0 License.
