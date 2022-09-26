@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document Entities &mdash; textractor 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Entity Visualization" href="textractor.visualizers.html" />
+    <link rel="prev" title="Entity Parser" href="textractor.parsers.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> textractor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="textractor.html">Textract Caller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textractor.parsers.html">Entity Parser</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Document Entities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#boundingbox">BoundingBox</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox"><code class="docutils literal notranslate"><span class="pre">BoundingBox</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox.as_denormalized_numpy"><code class="docutils literal notranslate"><span class="pre">BoundingBox.as_denormalized_numpy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox.from_normalized_dict"><code class="docutils literal notranslate"><span class="pre">BoundingBox.from_normalized_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.bbox.SpatialObject"><code class="docutils literal notranslate"><span class="pre">SpatialObject</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#documententity">DocumentEntity</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity"><code class="docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.add_children"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.add_children()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.bbox"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.bbox</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.children"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.children</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.height"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.raw_object"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.raw_object</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.width"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.width</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.x"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.x</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.y"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.y</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#word">Word</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.word.Word"><code class="docutils literal notranslate"><span class="pre">Word</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.word.Word.page"><code class="docutils literal notranslate"><span class="pre">Word.page</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.word.Word.page_id"><code class="docutils literal notranslate"><span class="pre">Word.page_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.word.Word.text"><code class="docutils literal notranslate"><span class="pre">Word.text</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.word.Word.text_type"><code class="docutils literal notranslate"><span class="pre">Word.text_type</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#line">Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#keyvalue">KeyValue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#value">Value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#selectionelement">SelectionElement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement"><code class="docutils literal notranslate"><span class="pre">SelectionElement</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement.is_selected"><code class="docutils literal notranslate"><span class="pre">SelectionElement.is_selected()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement.page"><code class="docutils literal notranslate"><span class="pre">SelectionElement.page</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement.page_id"><code class="docutils literal notranslate"><span class="pre">SelectionElement.page_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement.words"><code class="docutils literal notranslate"><span class="pre">SelectionElement.words</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#table">Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tablecell">TableCell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#page">Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#document">Document</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="textractor.visualizers.html">Entity Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textractor.data.html">Constants</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">textractor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Document Entities</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/textractor.entities.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="document-entities">
+<h1>Document Entities<a class="headerlink" href="#document-entities" title="Permalink to this heading"></a></h1>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> objects contain various entities within them. Textract document analysis APIs recognize 6 document entities namely: WORD, LINE, KEY_VALUE_SET
+, SELECTION_ELEMENT, TABLE, CELL</p>
+<p>These are structures that occur in most documents and the package provides classes to programmatically store and access the information
+produced by Textract for these entities.</p>
+<div class="section" id="boundingbox">
+<h2>BoundingBox<a class="headerlink" href="#boundingbox" title="Permalink to this heading"></a></h2>
+<p>BoundingBox class contains all the co-ordinate information for a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code>. This class is mainly useful to locate the entity
+on the image of the document page.</p>
+<span class="target" id="module-textractor.entities.bbox"></span><dl class="py class">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.bbox.</span></span><span class="sig-name descname"><span class="pre">BoundingBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_object</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpatialObject</span></code></a></p>
+<p>Represents the bounding box of an object in the format of a dataclass with (x, y, width, height).     By default <a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundingBox</span></code></a> is set to work with denormalized co-ordinates: <span class="math notranslate nohighlight">\(x \in [0, docwidth]\)</span> and <span class="math notranslate nohighlight">\(y \in [0, docheight]\)</span>.     Use the as_normalized_dict function to obtain BoundingBox with normalized co-ordinates: <span class="math notranslate nohighlight">\(x \in [0, 1]\)</span> and <span class="math notranslate nohighlight">\(y \in [0, 1]\)</span>. </p>
+<p>Create a BoundingBox like shown below: </p>
+<ul class="simple">
+<li><p>Directly:             <code class="code docutils literal notranslate"><span class="pre">bb</span> <span class="pre">=</span> <span class="pre">BoundingBox(x,</span> <span class="pre">y,</span> <span class="pre">width,</span> <span class="pre">height)</span></code> </p></li>
+<li><p>From dict:            <code class="code docutils literal notranslate"><span class="pre">bb</span> <span class="pre">=</span> <span class="pre">BoundingBox.from_dict(bb_dict)</span></code> where <code class="code docutils literal notranslate"><span class="pre">bb_dict</span> <span class="pre">=</span> <span class="pre">{'x':</span> <span class="pre">x,</span> <span class="pre">'y':</span> <span class="pre">y,</span> <span class="pre">'width':</span> <span class="pre">width,</span> <span class="pre">'height':</span> <span class="pre">height}</span></code> </p></li>
+</ul>
+<p>Use a BoundingBox like shown below: </p>
+<ul class="simple">
+<li><p>Directly:            <code class="code docutils literal notranslate"><span class="pre">print('The</span> <span class="pre">top</span> <span class="pre">left</span> <span class="pre">is:</span> <span class="pre">'</span> <span class="pre">+</span> <span class="pre">str(bb.x)</span> <span class="pre">+</span> <span class="pre">'</span> <span class="pre">'</span> <span class="pre">+</span> <span class="pre">str(bb.y))</span></code> </p></li>
+<li><p>Convert to dict:     <code class="code docutils literal notranslate"><span class="pre">bb_dict</span> <span class="pre">=</span> <span class="pre">bb.as_dict()</span></code> returns <code class="code docutils literal notranslate"><span class="pre">{'x':</span> <span class="pre">x,</span> <span class="pre">'y':</span> <span class="pre">y,</span> <span class="pre">'width':</span> <span class="pre">width,</span> <span class="pre">'height':</span> <span class="pre">height}</span></code></p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.as_denormalized_numpy">
+<span class="sig-name descname"><span class="pre">as_denormalized_numpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.as_denormalized_numpy" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns denormalized co-ordinates x, y and dimensions width, height as numpy array.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.from_normalized_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_normalized_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><span class="pre">SpatialObject</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.from_normalized_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Builds an axis aligned BoundingBox from a dictionary like <code class="code docutils literal notranslate"><span class="pre">{'x':</span> <span class="pre">x,</span> <span class="pre">'y':</span> <span class="pre">y,</span> <span class="pre">'width':</span> <span class="pre">width,</span> <span class="pre">'height':</span> <span class="pre">height}</span></code>.         The coordinates will be denormalized according to spatial_object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bbox_dict</strong> (<em>dict</em>) – Dictionary of normalized co-ordinates.</p></li>
+<li><p><strong>spatial_object</strong> (<a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><em>SpatialObject</em></a>) – Object with width and height attributes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Object with denormalized co-ordinates</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox">BoundingBox</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.entities.bbox.SpatialObject">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.bbox.</span></span><span class="sig-name descname"><span class="pre">SpatialObject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.SpatialObject" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>The <a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpatialObject</span></code></a> interface defines an object that has a width and height. This mostly used for <a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundingBox</span></code></a>     reference to be able to provide normalized coordinates.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="documententity">
+<h2>DocumentEntity<a class="headerlink" href="#documententity" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity" title="textractor.entities.document_entity.DocumentEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a> is the class that all Document entities such as <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Line</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code> etc. inherit from. This class provides methods 
+useful to all such entities.</p>
+<span class="target" id="module-textractor.entities.document_entity"></span><dl class="py class">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.document_entity.</span></span><span class="sig-name descname"><span class="pre">DocumentEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><span class="pre">BoundingBox</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>An interface for all document entities within the document body, composing the
+hierarchy of the document object model.
+The purpose of this class is to define properties common to all document entities
+i.e. unique id and bounding box.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.add_children">
+<span class="sig-name descname"><span class="pre">add_children</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">children</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.add_children" title="Permalink to this definition"></a></dt>
+<dd><p>Adds children to all entities that have parent-child relationships.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>children</strong> (<em>list</em>) – List of child entities.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.bbox">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bbox</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><span class="pre">BoundingBox</span></a></em><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.bbox" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns entire bounding box of entity</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox">BoundingBox</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.children">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">children</span></span><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.children" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns children of entity</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.height">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">height</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.height" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns height for bounding box</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.raw_object">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">raw_object</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.raw_object" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the raw dictionary object that was used to create this Python object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.width">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.width" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns width for bounding box</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.x">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.x" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns x coordinate for bounding box</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.y">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.y" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns y coordinate for bounding box</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="word">
+<h2>Word<a class="headerlink" href="#word" title="Permalink to this heading"></a></h2>
+<p>Represents a single <a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code></a> within the <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.
+This class contains the associated metadata with the <a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code></a> entity including the text transcription, 
+text type, bounding box information, page number, Page ID and confidence of detection.</p>
+<span class="target" id="module-textractor.entities.word"></span><dl class="py class">
+<dt class="sig sig-object py" id="textractor.entities.word.Word">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.word.</span></span><span class="sig-name descname"><span class="pre">Word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><span class="pre">BoundingBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.TextTypes" title="textractor.data.constants.TextTypes"><span class="pre">TextTypes</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextTypes.PRINTED</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.word.Word" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity" title="textractor.entities.document_entity.DocumentEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a></p>
+<p>To create a new <a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code></a> object we need the following:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity_id</strong> (<em>str</em>) – Unique identifier of the Word entity.</p></li>
+<li><p><strong>bbox</strong> (<a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><em>BoundingBox</em></a>) – Bounding box of the Word entity.</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Transcription of the Word object.</p></li>
+<li><p><strong>text_type</strong> (<a class="reference internal" href="textractor.data.html#textractor.data.constants.TextTypes" title="textractor.data.constants.TextTypes"><em>TextTypes</em></a>) – Enum value stating the type of text stored in the entity. Takes 2 values - PRINTED and HANDWRITING</p></li>
+<li><p><strong>confidence</strong> (<em>float</em>) – value storing the confidence of detection out of 100.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.word.Word.page">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">page</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#textractor.entities.word.Word.page" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the page number of the page the Word entity is present in.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.word.Word.page_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">page_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#textractor.entities.word.Word.page_id" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the Page ID attribute of the page which the entity belongs to.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.word.Word.text">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#textractor.entities.word.Word.text" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the text transcription of the Word entity.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.word.Word.text_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">text_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.data.html#textractor.data.constants.TextTypes" title="textractor.data.constants.TextTypes"><span class="pre">TextTypes</span></a></em><a class="headerlink" href="#textractor.entities.word.Word.text_type" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the property of <a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code></a> class that holds the text type of Word object.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="line">
+<h2>Line<a class="headerlink" href="#line" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="keyvalue">
+<h2>KeyValue<a class="headerlink" href="#keyvalue" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="value">
+<h2>Value<a class="headerlink" href="#value" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="selectionelement">
+<h2>SelectionElement<a class="headerlink" href="#selectionelement" title="Permalink to this heading"></a></h2>
+<p>Represents a single <a class="reference internal" href="#textractor.entities.selection_element.SelectionElement" title="textractor.entities.selection_element.SelectionElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionElement</span></code></a>/Checkbox/Clickable Entity within the <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.</p>
+<p>This class contains the associated metadata with the <a class="reference internal" href="#textractor.entities.selection_element.SelectionElement" title="textractor.entities.selection_element.SelectionElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionElement</span></code></a> entity including the entity ID, 
+bounding box information, selection status, page number, Page ID and confidence of detection.</p>
+<span class="target" id="module-textractor.entities.selection_element"></span><dl class="py class">
+<dt class="sig sig-object py" id="textractor.entities.selection_element.SelectionElement">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.selection_element.</span></span><span class="sig-name descname"><span class="pre">SelectionElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><span class="pre">BoundingBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SelectionStatus" title="textractor.data.constants.SelectionStatus"><span class="pre">SelectionStatus</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.selection_element.SelectionElement" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity" title="textractor.entities.document_entity.DocumentEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a></p>
+<p>To create a new <a class="reference internal" href="#textractor.entities.selection_element.SelectionElement" title="textractor.entities.selection_element.SelectionElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionElement</span></code></a> object we need the following:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity_id</strong> (<em>str</em>) – Unique identifier of the SelectionElement entity.</p></li>
+<li><p><strong>bbox</strong> (<a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><em>BoundingBox</em></a>) – Bounding box of the SelectionElement</p></li>
+<li><p><strong>status</strong> (<a class="reference internal" href="textractor.data.html#textractor.data.constants.SelectionStatus" title="textractor.data.constants.SelectionStatus"><em>SelectionStatus</em></a>) – SelectionStatus.SELECTED / SelectionStatus.NOT_SELECTED</p></li>
+<li><p><strong>confidence</strong> (<em>float</em>) – Confidence with which this entity is detected.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.selection_element.SelectionElement.is_selected">
+<span class="sig-name descname"><span class="pre">is_selected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#textractor.entities.selection_element.SelectionElement.is_selected" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns True / False depending on selection status of the SelectionElement.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.selection_element.SelectionElement.page">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">page</span></span><a class="headerlink" href="#textractor.entities.selection_element.SelectionElement.page" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the page number of the page the SelectionElement entity is present in.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.selection_element.SelectionElement.page_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">page_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#textractor.entities.selection_element.SelectionElement.page_id" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the Page ID attribute of the page which the entity belongs to.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.selection_element.SelectionElement.words">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">words</span></span><a class="headerlink" href="#textractor.entities.selection_element.SelectionElement.words" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns SELECTED/NOT_SELECTED depending on selection status of the element</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="table">
+<h2>Table<a class="headerlink" href="#table" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="tablecell">
+<h2>TableCell<a class="headerlink" href="#tablecell" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="page">
+<h2>Page<a class="headerlink" href="#page" title="Permalink to this heading"></a></h2>
+</div>
+<div class="section" id="document">
+<h2>Document<a class="headerlink" href="#document" title="Permalink to this heading"></a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="textractor.parsers.html" class="btn btn-neutral float-left" title="Entity Parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="textractor.visualizers.html" class="btn btn-neutral float-right" title="Entity Visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Amazon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

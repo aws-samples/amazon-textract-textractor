@@ -1,0 +1,469 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "737e6086-5638-4e74-b26f-845adc4dfffc",
+   "metadata": {},
+   "source": [
+    "# Export Form Data\n",
+    "Customer would like to export all key-values extracted from a list of images as a .csv file.\n",
+    "\n",
+    "## Steps to perform task\n",
+    "To accomplish this requirement, the user would have to perform the following tasks.\n",
+    "\n",
+    "1. Call Textract Async API StartDocumentAnalysis. \n",
+    "2. Parse the response JSON. \n",
+    "3. Find a way to identify KEY_VALUE_SET blocks that are related as Keys and Values.\n",
+    "4. Export in csv format"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "fac93401-7b94-4862-b87e-7d8376a29562",
+   "metadata": {},
+   "source": [
+    "## Solution with Textractor"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "84de4512-2b2e-4d1d-9199-c9a483006df3",
+   "metadata": {},
+   "source": [
+    "### Imports\n",
+    "After installation, Textractor is to be imported."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "fa86d86f-6272-4021-b4da-aa751ae2e22e",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/opt/anaconda3/envs/textractor-env/lib/python3.7/site-packages/tqdm/auto.py:22: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html\n",
+      "  from .autonotebook import tqdm as notebook_tqdm\n"
+     ]
+    }
+   ],
+   "source": [
+    "import os\n",
+    "from PIL import Image\n",
+    "from textractor import Textractor\n",
+    "from textractor.data.constants import TextractFeatures\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "65634823-cc36-418c-8882-b4a8e70a0a43",
+   "metadata": {},
+   "source": [
+    "### Initialize Textractor \n",
+    "To initialize the Textractor, the customer can pass the profile-name stored in their ~/.aws/config file to autoload credentials. These are the credentials to internally initialize the boto3 client. Additional parameters can be passed to the function to store output on the S3 bucket."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "f11cbbe8-3b07-4ebe-b16f-5af1d460d897",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "extractor = Textractor(aws_profile_name='default')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0fa4f5cb-6172-4379-9aea-ed4c1e56e761",
+   "metadata": {},
+   "source": [
+    "### Call Textract \n",
+    "To process multiple images into a single document object, we need to call an async API. All the Textractor API endpoints support local filepaths, S3 filepaths or list of PIL Images being passed to the file_source parameter.\n",
+    "Additionally, we want a clear categorization of the document entities so we call the `start_document_analysis()` function with the necessary TextractFeatures passed to the features parameter."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "3f302ac5-02c9-4193-aa64-182a54c44dd0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "image_1 = Image.open(os.path.join(os.getcwd(), 'tests/fixtures/invoice1.png'))\n",
+    "image_2 = Image.open(os.path.join(os.getcwd(), 'tests/fixtures/invoice2.png'))\n",
+    "document = extractor.start_document_analysis(file_source=[image_1, image_2], \n",
+    "                                               features=[TextractFeatures.TABLES, TextractFeatures.FORMS], \n",
+    "                                               s3_prefix='', \n",
+    "                                               client_request_token='', \n",
+    "                                               job_tag='', \n",
+    "                                               save_image=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b44d9f71-d05e-4fae-bdc9-d8c73267fea5",
+   "metadata": {},
+   "source": [
+    "### Retrieve key-values and export as csv\n",
+    "Form data/Key-values are stored at the document and page level as a property and can be accessed as shown below"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "d65a0edc-58e8-4dbd-a8f6-4883c5859c94",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[Date : 04/23/2020,\n",
+       " Phone : 615-373-6883,\n",
+       " Address : 90 OLD HICKORY BLVD,\n",
+       " Cellular : 683-426-2200,\n",
+       " Work : 726-448-6720,\n",
+       " Time : 12.30 P.M.,\n",
+       " Phone : 626-200-4890,\n",
+       " Cleaning Tech : JOHN LEWIS,\n",
+       " Customer : ELIZABETH CAMPBELL,\n",
+       " Day : Wednesday,\n",
+       " Name : ELIZABETH CAMPBELL,\n",
+       " City : NEX YORK,\n",
+       " E-Mail\" : vilcomp@gmail.com,\n",
+       " Special Instructions or Directions: : ,\n",
+       " Sales Tax : 1445.0 00,\n",
+       " Late Fee : 5.00 00,\n",
+       " TOTAL : 450 00,\n",
+       " Work Order Date: : March 20, 2020,\n",
+       " Address: : 7 Orchid street, Jacksonvilte Florida , 32034,\n",
+       " Phone Number: : (904) 634 - 2579,\n",
+       " Order No: : 0000950,\n",
+       " Name: : Davis Miranda Jane W.,\n",
+       " Total : $ 775.00-,\n",
+       " Signed: : for the 90]"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# All key-values present in the document\n",
+    "document.key_values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "71f99b33-ac67-4b33-a2ea-b675ca126105",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[Date : 04/23/2020,\n",
+       " Phone : 615-373-6883,\n",
+       " Address : 90 OLD HICKORY BLVD,\n",
+       " Cellular : 683-426-2200,\n",
+       " Work : 726-448-6720,\n",
+       " Time : 12.30 P.M.,\n",
+       " Phone : 626-200-4890,\n",
+       " Cleaning Tech : JOHN LEWIS,\n",
+       " Customer : ELIZABETH CAMPBELL,\n",
+       " Day : Wednesday,\n",
+       " Name : ELIZABETH CAMPBELL,\n",
+       " City : NEX YORK,\n",
+       " E-Mail\" : vilcomp@gmail.com,\n",
+       " Special Instructions or Directions: : ,\n",
+       " Sales Tax : 1445.0 00,\n",
+       " Late Fee : 5.00 00,\n",
+       " TOTAL : 450 00]"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Key-Values present in the first page of the document\n",
+    "document.page(0).key_values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "705ffaff-ffe6-4db1-829a-565a61981124",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Export the key-values as csv\n",
+    "document.export_kv_to_csv(include_kv=True, include_checkboxes=False, filepath= os.path.join(os.getcwd(), 'Key-Values.csv'))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "56a77862-1431-4261-b001-13cd70f87070",
+   "metadata": {},
+   "source": [
+    "### View csv as dataframe\n",
+    "To verify the contents of the file stored, we open it as a Pandas dataframe."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "72bbc1d6-71ff-42e4-ac7b-8dc8a67faaf7",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Key</th>\n",
+       "      <th>Value</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Date</td>\n",
+       "      <td>04/23/2020</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Phone</td>\n",
+       "      <td>615-373-6883</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Address</td>\n",
+       "      <td>90 OLD HICKORY BLVD</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Cellular</td>\n",
+       "      <td>683-426-2200</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Work</td>\n",
+       "      <td>726-448-6720</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>Time</td>\n",
+       "      <td>12.30 P.M.</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>Phone</td>\n",
+       "      <td>626-200-4890</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>7</th>\n",
+       "      <td>Cleaning Tech</td>\n",
+       "      <td>JOHN LEWIS</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>Customer</td>\n",
+       "      <td>ELIZABETH CAMPBELL</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>Day</td>\n",
+       "      <td>Wednesday</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>Name</td>\n",
+       "      <td>ELIZABETH CAMPBELL</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>11</th>\n",
+       "      <td>City</td>\n",
+       "      <td>NEX YORK</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12</th>\n",
+       "      <td>E-Mail\"</td>\n",
+       "      <td>vilcomp@gmail.com</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>13</th>\n",
+       "      <td>Special Instructions or Directions:</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>14</th>\n",
+       "      <td>Sales Tax</td>\n",
+       "      <td>1445.0 00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>15</th>\n",
+       "      <td>Late Fee</td>\n",
+       "      <td>5.00 00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>16</th>\n",
+       "      <td>TOTAL</td>\n",
+       "      <td>450 00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>17</th>\n",
+       "      <td>Work Order Date:</td>\n",
+       "      <td>March 20, 2020</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>18</th>\n",
+       "      <td>Address:</td>\n",
+       "      <td>7 Orchid street, Jacksonvilte Florida , 32034</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>Phone Number:</td>\n",
+       "      <td>(904) 634 - 2579</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>20</th>\n",
+       "      <td>Order No:</td>\n",
+       "      <td>0000950</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>21</th>\n",
+       "      <td>Name:</td>\n",
+       "      <td>Davis Miranda Jane W.</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>22</th>\n",
+       "      <td>Total</td>\n",
+       "      <td>$ 775.00-</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>23</th>\n",
+       "      <td>Signed:</td>\n",
+       "      <td>for the 90</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                    Key  \\\n",
+       "0                                  Date   \n",
+       "1                                 Phone   \n",
+       "2                               Address   \n",
+       "3                              Cellular   \n",
+       "4                                  Work   \n",
+       "5                                  Time   \n",
+       "6                                 Phone   \n",
+       "7                         Cleaning Tech   \n",
+       "8                              Customer   \n",
+       "9                                   Day   \n",
+       "10                                 Name   \n",
+       "11                                 City   \n",
+       "12                              E-Mail\"   \n",
+       "13  Special Instructions or Directions:   \n",
+       "14                            Sales Tax   \n",
+       "15                             Late Fee   \n",
+       "16                                TOTAL   \n",
+       "17                     Work Order Date:   \n",
+       "18                             Address:   \n",
+       "19                        Phone Number:   \n",
+       "20                            Order No:   \n",
+       "21                                Name:   \n",
+       "22                                Total   \n",
+       "23                              Signed:   \n",
+       "\n",
+       "                                            Value  \n",
+       "0                                      04/23/2020  \n",
+       "1                                    615-373-6883  \n",
+       "2                             90 OLD HICKORY BLVD  \n",
+       "3                                    683-426-2200  \n",
+       "4                                    726-448-6720  \n",
+       "5                                      12.30 P.M.  \n",
+       "6                                    626-200-4890  \n",
+       "7                                      JOHN LEWIS  \n",
+       "8                              ELIZABETH CAMPBELL  \n",
+       "9                                       Wednesday  \n",
+       "10                             ELIZABETH CAMPBELL  \n",
+       "11                                       NEX YORK  \n",
+       "12                              vilcomp@gmail.com  \n",
+       "13                                            NaN  \n",
+       "14                                      1445.0 00  \n",
+       "15                                        5.00 00  \n",
+       "16                                         450 00  \n",
+       "17                                 March 20, 2020  \n",
+       "18  7 Orchid street, Jacksonvilte Florida , 32034  \n",
+       "19                               (904) 634 - 2579  \n",
+       "20                                        0000950  \n",
+       "21                          Davis Miranda Jane W.  \n",
+       "22                                      $ 775.00-  \n",
+       "23                                     for the 90  "
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "\n",
+    "df_key_values = pd.read_csv(os.path.join(os.getcwd(), 'Key-Values.csv'))\n",
+    "df_key_values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2d1436dc-441b-46a9-8801-dff4945eb7ae",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "textractor-env",
+   "language": "python",
+   "name": "textractor-env"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

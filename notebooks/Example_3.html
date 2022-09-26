@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial : Document and Page methods &mdash; textractor 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Textract Caller" href="../textractor.html" />
+    <link rel="prev" title="Export Form Data" href="Example_2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> textractor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Example_1.html">Word Occurence within Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Example_2.html">Export Form Data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tutorial : Document and Page methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Imports">Imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Initialize-Textractor">Initialize Textractor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Input-Document">Input Document</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Call-Textract">Call Textract</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Task-1-:-Numpy-Indexing-on-Tables">Task 1 : Numpy Indexing on Tables</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Steps-to-perform-task">Steps to perform task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Retrieval-of-all-tables-in-the-document">Retrieval of all tables in the document</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Choose-desired-table-among-all-the-document-tables">Choose desired table among all the document tables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Filter-and-display-table">Filter and display table</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Task-2:-Retrieve-key-values-and-checkboxes-by-geometry-using-directional_finder()">Task 2: Retrieve key-values and checkboxes by geometry using directional_finder()</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Steps to perform task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Visualize-results">Visualize results</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Task-3-:-Identify-duplication-in-key-values-and-table-data">Task 3 : Identify duplication in key-values and table data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Visualize">Visualize</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.parsers.html">Entity Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.entities.html">Document Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.visualizers.html">Entity Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.data.html">Constants</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">textractor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../examples.html">Examples</a> &raquo;</li>
+      <li>Tutorial : Document and Page methods</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/Example_3.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.jp-RenderedHTMLCommon thead,
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+.jp-RenderedHTMLCommon th,
+div.rendered_html th {
+  font-weight: bold;
+}
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.jp-RenderedHTMLCommon tbody tr:hover,
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Tutorial-:-Document-and-Page-methods">
+<h1>Tutorial : Document and Page methods<a class="headerlink" href="#Tutorial-:-Document-and-Page-methods" title="Permalink to this heading"></a></h1>
+<p>This tutorial shows examples on how to use some methods in the <code class="docutils literal notranslate"><span class="pre">Document</span></code> and <code class="docutils literal notranslate"><span class="pre">Page</span></code> class. All methods in the <code class="docutils literal notranslate"><span class="pre">Document</span></code> class are also available at the <code class="docutils literal notranslate"><span class="pre">Page</span></code> level. <code class="docutils literal notranslate"><span class="pre">Page</span></code> is an entity of the <code class="docutils literal notranslate"><span class="pre">Document</span></code> and is.</p>
+<p>Note: This is a highly simplified tutorial and functions in this package can be used without simplifying steps each into a line of code.</p>
+<div class="section" id="Imports">
+<h2>Imports<a class="headerlink" href="#Imports" title="Permalink to this heading"></a></h2>
+<p>After installation, Textractor is to be imported.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
+<span class="kn">from</span> <span class="nn">textractor.visualizers.entitylist</span> <span class="kn">import</span> <span class="n">EntityList</span>
+<span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span><span class="p">,</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">DirectionalFinderType</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/opt/anaconda3/envs/textractor-env/lib/python3.7/site-packages/tqdm/auto.py:22: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Initialize-Textractor">
+<h2>Initialize Textractor<a class="headerlink" href="#Initialize-Textractor" title="Permalink to this heading"></a></h2>
+<p>To initialize the Textractor, the customer can pass the profile-name stored in their ~/.aws/config file to autoload credentials. These are the credentials to internally initialize the boto3 client. Additional parameters can be passed to the function to store output on the S3 bucket.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">aws_profile_name</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Input-Document">
+<h2>Input Document<a class="headerlink" href="#Input-Document" title="Permalink to this heading"></a></h2>
+<p>Here’s a look at the document we wish to run Textractor on.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;tests/fixtures/acord_form_2_05272022.png&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_Example_3_6_0.png" src="../_images/notebooks_Example_3_6_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Call-Textract">
+<h2>Call Textract<a class="headerlink" href="#Call-Textract" title="Permalink to this heading"></a></h2>
+<p>To process an image into a single document object, we need to call an sync API. All the Textractor API endpoints support local filepaths, S3 filepaths or list of PIL Images being passed to the file_source parameter. For this example, we pass an S3 location. Additionally, we want a clear categorization of the document entities so we call the <code class="docutils literal notranslate"><span class="pre">analyze_document()</span></code> function with the necessary TextractFeatures passed to the features parameter.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span><span class="n">file_source</span><span class="o">=</span><span class="s1">&#39;s3://bucket-name/acord_form_2_05272022.png&#39;</span><span class="p">,</span>
+                                        <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">TABLES</span><span class="p">,</span> <span class="n">TextractFeatures</span><span class="o">.</span><span class="n">FORMS</span><span class="p">],</span>
+                                        <span class="n">s3_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Task-1-:-Numpy-Indexing-on-Tables">
+<h3>Task 1 : Numpy Indexing on Tables<a class="headerlink" href="#Task-1-:-Numpy-Indexing-on-Tables" title="Permalink to this heading"></a></h3>
+<p>Customer might want to access a table and edit its structure for their use-case.</p>
+</div>
+</div>
+<div class="section" id="Steps-to-perform-task">
+<h2>Steps to perform task<a class="headerlink" href="#Steps-to-perform-task" title="Permalink to this heading"></a></h2>
+<p>To accomplish this task, the user would simply have to:</p>
+<ol class="arabic simple">
+<li><p>Access tables from the document object.</p></li>
+<li><p>Choose the table they wish to manipulate.</p></li>
+<li><p>Display the results of manipulation to verify format and contents.</p></li>
+<li><p>Beyond this, the customer can further manipulate the table or choose to export it.</p></li>
+</ol>
+<p>Note: This is a highly simplified tutorial and function in this package can be used without simplifying steps each into a line of code.</p>
+</div>
+<div class="section" id="Retrieval-of-all-tables-in-the-document">
+<h2>Retrieval of all tables in the document<a class="headerlink" href="#Retrieval-of-all-tables-in-the-document" title="Permalink to this heading"></a></h2>
+<p>Table data is stored at the document and page level as a property and can be accessed as shown below.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># All tables present in the document</span>
+<span class="n">tables</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">tables</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Choose-desired-table-among-all-the-document-tables">
+<h2>Choose desired table among all the document tables<a class="headerlink" href="#Choose-desired-table-among-all-the-document-tables" title="Permalink to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Choose specific table</span>
+<span class="n">chosen_table</span> <span class="o">=</span> <span class="n">tables</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>For reference, the table chosen looks as shown in the picture below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;./table_screenshot.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_Example_3_15_0.png" src="../_images/notebooks_Example_3_15_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Filter-and-display-table">
+<h2>Filter and display table<a class="headerlink" href="#Filter-and-display-table" title="Permalink to this heading"></a></h2>
+<p>To make the interface of accessing 2D data intuitive, the table filtering supports numpy indexing. Finally, to print the table contents in a structured manner, the <code class="docutils literal notranslate"><span class="pre">pretty_print()</span></code> method from EntityList class can be called upon it.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">filtered_table</span> <span class="o">=</span> <span class="n">chosen_table</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">::]</span>
+<span class="n">table_string</span> <span class="o">=</span> <span class="n">EntityList</span><span class="p">(</span><span class="n">filtered_table</span><span class="p">)</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">table_string</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+|------------------------------------------------------------------|----------------|-----------------|---------|-------|
+| NAME AND LOCATION OF AND ALL COMPANIES (Demente Operations)      | ANNUAL PAYHOLL | ANN CHOSS SALES | FORBICN | EMIT  |
+| Gary 4002 Oficul Dogwood K. Garrison Road Phoenix, AZ 85012      | 90             | 90              | 21      | 12523 |
+| Hire 3640 Jessie Melvile D. Fox Street Jackson, TN 38301         | 24             | 95              | 34      | 12334 |
+| Loabing 2289 Roberta Thompaon K. Sykes Street Whillier, CA 90802 | 24             | 67              | 34      | 34343 |
+| 2573 Jo Kanbving Stark Temple Hollow Hoad Mesiter, co 81841      | 32             | 84              | 98      | 54632 |
+| 2534 Holeking Doug P. Brown Read PA 15319                        | 98             | 78              | 34      | 23478 |
+| 4461 Karen Jessing Mesa T. Clay Drive Las Vegas, NV 89101        | 88             | 46              | 12      | 89554 |
+
+
+</pre></div></div>
+</div>
+<div class="section" id="Task-2:-Retrieve-key-values-and-checkboxes-by-geometry-using-directional_finder()">
+<h3>Task 2: Retrieve key-values and checkboxes by geometry using directional_finder()<a class="headerlink" href="#Task-2:-Retrieve-key-values-and-checkboxes-by-geometry-using-directional_finder()" title="Permalink to this heading"></a></h3>
+<p>It is possible to retrieve key-values and checkboxes present in a certain location of the document using reference words and direction of the required key-values and checkboxes with respect to them.</p>
+</div>
+</div>
+<div class="section" id="id1">
+<h2>Steps to perform task<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>First we select the page we want to perform these queries on.</p></li>
+<li><p>We identify the headers between which we want to extract these key-values or checkboxes.</p></li>
+<li><p>Prefix is optional. By not passing the paramater a value, we retrieve the entities unaltered.</p></li>
+<li><p>We visualize the results.</p></li>
+</ol>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">page</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">page</span><span class="o">.</span><span class="n">directional_finder</span><span class="p">(</span> <span class="n">word_1</span><span class="o">=</span><span class="s2">&quot;employee benefits and liability&quot;</span><span class="p">,</span> <span class="n">word_2</span><span class="o">=</span><span class="s2">&quot;primary location and subsidiaries&quot;</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+               <span class="n">direction</span><span class="o">=</span><span class="n">Direction</span><span class="o">.</span><span class="n">BELOW</span><span class="p">,</span> <span class="n">entities</span><span class="o">=</span><span class="p">[</span><span class="n">DirectionalFinderType</span><span class="o">.</span><span class="n">KEY_VALUE_SET</span><span class="p">],</span> <span class="n">edit_original</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[LIVII OF INSURANCE (Ex Employee : $ 1600.00,
+ RETHDACTIVE DATE FOR EBL : 07/18/2020,
+ NAME OF BENEMI PROCHAM : Human-Centered Design Innovation,
+ ACCIECAIE LIMII FOREBL : $ 1900.00,
+ LIMII FOREBL : $ 1850.00]
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Visualize-results">
+<h2>Visualize results<a class="headerlink" href="#Visualize-results" title="Permalink to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">key_value_result</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">directional_finder</span><span class="p">(</span> <span class="n">word_1</span><span class="o">=</span><span class="s2">&quot;employee benefits and liability&quot;</span><span class="p">,</span> <span class="n">word_2</span><span class="o">=</span><span class="s2">&quot;primary location and subsidiaries&quot;</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+               <span class="n">direction</span><span class="o">=</span><span class="n">Direction</span><span class="o">.</span><span class="n">BELOW</span><span class="p">,</span> <span class="n">entities</span><span class="o">=</span><span class="p">[</span><span class="n">DirectionalFinderType</span><span class="o">.</span><span class="n">KEY_VALUE_SET</span><span class="p">],</span> <span class="n">edit_original</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">key_value_result</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_Example_3_22_0.png" src="../_images/notebooks_Example_3_22_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">page</span><span class="o">.</span><span class="n">directional_finder</span><span class="p">(</span> <span class="n">word_1</span><span class="o">=</span><span class="s2">&quot;policy information&quot;</span><span class="p">,</span> <span class="n">word_2</span><span class="o">=</span><span class="s2">&quot;employee benefits and liability&quot;</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+               <span class="n">direction</span><span class="o">=</span><span class="n">Direction</span><span class="o">.</span><span class="n">BELOW</span><span class="p">,</span> <span class="n">entities</span><span class="o">=</span><span class="p">[</span><span class="n">DirectionalFinderType</span><span class="o">.</span><span class="n">SELECTION_ELEMENT</span><span class="p">],</span> <span class="n">edit_original</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[X] NEW,
+ [X] UMBRELLA,
+ [X] OCCUMHENCE,
+ [X] VOLUNTARY,
+ [X] MENEWAL,
+ [X] Excess,
+ [X] CLAIMS MADE,
+ [ ] HISS DEFENSE DOLLAR (Y N)]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">selection_element_result</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">directional_finder</span><span class="p">(</span> <span class="n">word_1</span><span class="o">=</span><span class="s2">&quot;policy information&quot;</span><span class="p">,</span> <span class="n">word_2</span><span class="o">=</span><span class="s2">&quot;employee benefits and liability&quot;</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+               <span class="n">direction</span><span class="o">=</span><span class="n">Direction</span><span class="o">.</span><span class="n">BELOW</span><span class="p">,</span> <span class="n">entities</span><span class="o">=</span><span class="p">[</span><span class="n">DirectionalFinderType</span><span class="o">.</span><span class="n">SELECTION_ELEMENT</span><span class="p">],</span> <span class="n">edit_original</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">selection_element_result</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_Example_3_24_0.png" src="../_images/notebooks_Example_3_24_0.png" />
+</div>
+</div>
+<div class="section" id="Task-3-:-Identify-duplication-in-key-values-and-table-data">
+<h3>Task 3 : Identify duplication in key-values and table data<a class="headerlink" href="#Task-3-:-Identify-duplication-in-key-values-and-table-data" title="Permalink to this heading"></a></h3>
+<p>This function is mainly to let the customer know that some entities exist in multiple forms in the document. With this information, they can be made aware and design their pipeline to ignore this duplication if they desire to.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">duplicates</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">return_duplicates</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Visualize">
+<h2>Visualize<a class="headerlink" href="#Visualize" title="Permalink to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;First set of duplicates: &quot;</span><span class="p">)</span>
+<span class="n">duplicates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:root:Key contains no words objects.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+First set of duplicates:
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_Example_3_28_2.png" src="../_images/notebooks_Example_3_28_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Second set of duplicates: &quot;</span><span class="p">)</span>
+<span class="n">duplicates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:root:Key contains no words objects.
+WARNING:root:Key contains no words objects.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Second set of duplicates:
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_Example_3_29_2.png" src="../_images/notebooks_Example_3_29_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Third set of duplicates: &quot;</span><span class="p">)</span>
+<span class="n">duplicates</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Third set of duplicates:
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_Example_3_30_1.png" src="../_images/notebooks_Example_3_30_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Example_2.html" class="btn btn-neutral float-left" title="Export Form Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../textractor.html" class="btn btn-neutral float-right" title="Textract Caller" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Amazon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

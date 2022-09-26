@@ -1,0 +1,38 @@
+Installation
+============
+
+.. toctree::
+   :maxdepth: 3
+
+Official package (Not available yet) 
+____________________________________
+
+To install the PyPI package run the following command -
+
+:code:`pip install textractor`
+
+From Source
+___________
+
+To install the package, clone the repository with the following command -
+
+:code:`git clone ssh://git.amazon.com/pkg/Aws-textract-textractor`
+
+Navigate into the Aws-textract-textractor directory on the terminal and run these commands.
+
+To install requirements :code:`pip install -r requirements.txt`
+
+Then install the package with :code:`pip install .`
+
+Documentation
+_____________
+
+Documentation for this project can be found on readthedocs soon!
+
+Currently hosted `here <http://textractor.aka.corp.amazon.com/>`_
+
+Try it out
+___________
+
+The :file:`Demo.ipynb` can be used as a reference to understand some functionalities hosted by the package.
+Additionally, `docs/tests/notebooks/` have some tutorials you can try out.
