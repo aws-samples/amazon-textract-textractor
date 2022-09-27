@@ -257,7 +257,7 @@ for input_document in input_documents:
         draw = ImageDraw.Draw(rgb_im)
         document_dimension: DocumentDimensions = DocumentDimensions(doc_width=image.size[0], doc_height=image.size[1])
         bounding_box_list = get_bounding_boxes(textract_json=doc,
-                                               document_dimensions=document_dimension,
+                                               document_dimensions=[document_dimension],
                                                overlay_features=overlay)
 
         suppress_line_text_overlay = False
