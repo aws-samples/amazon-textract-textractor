@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+  # TODO: Change the branch to master once merged.
+  push:
+    branches: [ 'textractor-rewrite' ]
+  pull_request:
+
+  workflow_dispatch:
+
+# Compile the docs and deploy to GitHub pages
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out the repository
+      - uses: actions/checkout@v3
+        with:
+          ref: 'textractor-rewrite'
+
+      # Upgrade pip
+      - name: Upgrade pip
+        run: |
+          # install pip=>20.1 to use "pip cache dir"
+          python3 -m pip install --upgrade pip
+
+      # Cache dependencies
+      - name: Get pip cache dir
+        id: pip-cache
+        run: echo "::set-output name=dir::$(pip cache dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/extras/docs.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Install sphinx
+      - name: Install dependencies
+        run: python3 -m pip install -r ./extras/dev.txt
+
+      # Run tests
+      - name: Test
+        run: pytest tests/
