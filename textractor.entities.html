@@ -49,7 +49,7 @@
 <li class="toctree-l1"><a class="reference internal" href="textractor.html">Textract Caller</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textractor.parsers.html">Entity Parser</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Document Entities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#boundingbox">BoundingBox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.bbox">BoundingBox</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox"><code class="docutils literal notranslate"><span class="pre">BoundingBox</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox.as_denormalized_numpy"><code class="docutils literal notranslate"><span class="pre">BoundingBox.as_denormalized_numpy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox.from_normalized_dict"><code class="docutils literal notranslate"><span class="pre">BoundingBox.from_normalized_dict()</span></code></a></li>
@@ -58,7 +58,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#textractor.entities.bbox.SpatialObject"><code class="docutils literal notranslate"><span class="pre">SpatialObject</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#documententity">DocumentEntity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.document_entity">DocumentEntity</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity"><code class="docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.add_children"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.add_children()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.bbox"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.bbox</span></code></a></li>
@@ -72,7 +72,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#word">Word</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.word">Word</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#textractor.entities.word.Word"><code class="docutils literal notranslate"><span class="pre">Word</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#textractor.entities.word.Word.page"><code class="docutils literal notranslate"><span class="pre">Word.page</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#textractor.entities.word.Word.page_id"><code class="docutils literal notranslate"><span class="pre">Word.page_id</span></code></a></li>
@@ -85,7 +85,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#line">Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#keyvalue">KeyValue</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#value">Value</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#selectionelement">SelectionElement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.selection_element">SelectionElement</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement"><code class="docutils literal notranslate"><span class="pre">SelectionElement</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement.is_selected"><code class="docutils literal notranslate"><span class="pre">SelectionElement.is_selected()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement.page"><code class="docutils literal notranslate"><span class="pre">SelectionElement.page</span></code></a></li>
@@ -159,11 +159,11 @@
 , SELECTION_ELEMENT, TABLE, CELL</p>
 <p>These are structures that occur in most documents and the package provides classes to programmatically store and access the information
 produced by Textract for these entities.</p>
-<div class="section" id="boundingbox">
-<h2>BoundingBox<a class="headerlink" href="#boundingbox" title="Permalink to this heading"></a></h2>
+<div class="section" id="module-textractor.entities.bbox">
+<span id="boundingbox"></span><h2>BoundingBox<a class="headerlink" href="#module-textractor.entities.bbox" title="Permalink to this heading"></a></h2>
 <p>BoundingBox class contains all the co-ordinate information for a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code>. This class is mainly useful to locate the entity
 on the image of the document page.</p>
-<span class="target" id="module-textractor.entities.bbox"></span><dl class="py class">
+<dl class="py class">
 <dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.bbox.</span></span><span class="sig-name descname"><span class="pre">BoundingBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_object</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpatialObject</span></code></a></p>
@@ -221,11 +221,11 @@ on the image of the document page.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="documententity">
-<h2>DocumentEntity<a class="headerlink" href="#documententity" title="Permalink to this heading"></a></h2>
+<div class="section" id="module-textractor.entities.document_entity">
+<span id="documententity"></span><h2>DocumentEntity<a class="headerlink" href="#module-textractor.entities.document_entity" title="Permalink to this heading"></a></h2>
 <p><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity" title="textractor.entities.document_entity.DocumentEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a> is the class that all Document entities such as <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Line</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code> etc. inherit from. This class provides methods 
 useful to all such entities.</p>
-<span class="target" id="module-textractor.entities.document_entity"></span><dl class="py class">
+<dl class="py class">
 <dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.document_entity.</span></span><span class="sig-name descname"><span class="pre">DocumentEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><span class="pre">BoundingBox</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
@@ -338,12 +338,12 @@ i.e. unique id and bounding box.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="word">
-<h2>Word<a class="headerlink" href="#word" title="Permalink to this heading"></a></h2>
+<div class="section" id="module-textractor.entities.word">
+<span id="word"></span><h2>Word<a class="headerlink" href="#module-textractor.entities.word" title="Permalink to this heading"></a></h2>
 <p>Represents a single <a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code></a> within the <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.
 This class contains the associated metadata with the <a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code></a> entity including the text transcription, 
 text type, bounding box information, page number, Page ID and confidence of detection.</p>
-<span class="target" id="module-textractor.entities.word"></span><dl class="py class">
+<dl class="py class">
 <dt class="sig sig-object py" id="textractor.entities.word.Word">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.word.</span></span><span class="sig-name descname"><span class="pre">Word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><span class="pre">BoundingBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.TextTypes" title="textractor.data.constants.TextTypes"><span class="pre">TextTypes</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextTypes.PRINTED</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.word.Word" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity" title="textractor.entities.document_entity.DocumentEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a></p>
@@ -423,12 +423,12 @@ text type, bounding box information, page number, Page ID and confidence of dete
 <div class="section" id="value">
 <h2>Value<a class="headerlink" href="#value" title="Permalink to this heading"></a></h2>
 </div>
-<div class="section" id="selectionelement">
-<h2>SelectionElement<a class="headerlink" href="#selectionelement" title="Permalink to this heading"></a></h2>
+<div class="section" id="module-textractor.entities.selection_element">
+<span id="selectionelement"></span><h2>SelectionElement<a class="headerlink" href="#module-textractor.entities.selection_element" title="Permalink to this heading"></a></h2>
 <p>Represents a single <a class="reference internal" href="#textractor.entities.selection_element.SelectionElement" title="textractor.entities.selection_element.SelectionElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionElement</span></code></a>/Checkbox/Clickable Entity within the <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.</p>
 <p>This class contains the associated metadata with the <a class="reference internal" href="#textractor.entities.selection_element.SelectionElement" title="textractor.entities.selection_element.SelectionElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionElement</span></code></a> entity including the entity ID, 
 bounding box information, selection status, page number, Page ID and confidence of detection.</p>
-<span class="target" id="module-textractor.entities.selection_element"></span><dl class="py class">
+<dl class="py class">
 <dt class="sig sig-object py" id="textractor.entities.selection_element.SelectionElement">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.selection_element.</span></span><span class="sig-name descname"><span class="pre">SelectionElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><span class="pre">BoundingBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SelectionStatus" title="textractor.data.constants.SelectionStatus"><span class="pre">SelectionStatus</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.selection_element.SelectionElement" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity" title="textractor.entities.document_entity.DocumentEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a></p>

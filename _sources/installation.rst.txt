@@ -16,9 +16,9 @@ ___________
 
 To install the package, clone the repository with the following command -
 
-:code:`git clone ssh://git.amazon.com/pkg/Aws-textract-textractor`
+:code:`git clone git@github.com:aws-samples/amazon-textract-textractor.git`
 
-Navigate into the Aws-textract-textractor directory on the terminal and run these commands.
+Navigate into the amazon-textract-textractor directory on the terminal and run these commands.
 
 To install requirements :code:`pip install -r requirements.txt`
 
@@ -29,7 +29,7 @@ _____________
 
 Documentation for this project can be found on readthedocs soon!
 
-Currently hosted `here <http://textractor.aka.corp.amazon.com/>`_
+Currently hosted `here <https://aws-samples.github.io/amazon-textract-textractor/>`_
 
 Try it out
 ___________
