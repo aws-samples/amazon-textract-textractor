@@ -1,14 +1,13 @@
-name: Tests
+name: Release
 
 on:
-  # TODO: Change the branch to master once merged.
-  push:
-    branches: [ 'textractor-rewrite' ]
-  pull_request:
+  workflow_run:
+    workflows: ["Main release"]
+    types: [completed]
 
   workflow_dispatch:
 
-# Run the tests
+# Package and upload the Python package
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,10 +37,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # Install sphinx
+      # Install twine
       - name: Install dependencies
-        run: python3 -m pip install -r ./extras/dev.txt
+        run: python3 -m pip install twine
 
-      # Run tests
-      - name: Test
-        run: pytest tests/
+      # Make docs
+      - name: Build sdist and wheels
+        run: |
+          python3 setup.py bdist_wheel
+          python3 setup.py sdist
+
+      # Upload to PyPI
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_KEY_TEXTRACTOR }}
