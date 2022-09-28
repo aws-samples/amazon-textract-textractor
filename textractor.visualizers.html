@@ -48,7 +48,14 @@
 <li class="toctree-l1"><a class="reference internal" href="textractor.parsers.html">Entity Parser</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textractor.entities.html">Document Entities</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Entity Visualization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#entitylist">EntityList</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.visualizers.entitylist">EntityList</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#textractor.visualizers.entitylist.EntityList"><code class="docutils literal notranslate"><span class="pre">EntityList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.visualizers.entitylist.EntityList.pretty_print"><code class="docutils literal notranslate"><span class="pre">EntityList.pretty_print()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#textractor.visualizers.entitylist.EntityList.visualize"><code class="docutils literal notranslate"><span class="pre">EntityList.visualize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="textractor.data.html">Constants</a></li>
@@ -106,8 +113,67 @@
 <h1>Entity Visualization<a class="headerlink" href="#entity-visualization" title="Permalink to this heading"></a></h1>
 <p>Most features that return <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code> objects are of <code class="xref py py-class docutils literal notranslate"><span class="pre">EntityList</span></code> type. It is an extension of the <code class="code docutils literal notranslate"><span class="pre">list</span></code> data type
 with the intention of providing visualization features to these entities.</p>
-<div class="section" id="entitylist">
-<h2>EntityList<a class="headerlink" href="#entitylist" title="Permalink to this heading"></a></h2>
+<div class="section" id="module-textractor.visualizers.entitylist">
+<span id="entitylist"></span><h2>EntityList<a class="headerlink" href="#module-textractor.visualizers.entitylist" title="Permalink to this heading"></a></h2>
+<p>The <a class="reference internal" href="#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntityList</span></code></a> is an extension of list type with custom functions to print document entities in a well formatted manner and visualize on top of the document page with their BoundingBox information.</p>
+<p>The two main functions within this class are <code class="code docutils literal notranslate"><span class="pre">pretty_print()</span></code> and <code class="code docutils literal notranslate"><span class="pre">visualize()</span></code>.
+Use <code class="code docutils literal notranslate"><span class="pre">pretty_print()</span></code> to get a string formatted output of your custom list of entities.
+Use <code class="code docutils literal notranslate"><span class="pre">visualize()</span></code> to get the bounding box visualization of the entities on the document page images.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.visualizers.entitylist.EntityList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.visualizers.entitylist.</span></span><span class="sig-name descname"><span class="pre">EntityList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.visualizers.entitylist.EntityList" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
+<p>Creates a list type object, initially empty but extended with the list passed in objs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>objs</strong> (<em>list</em>) – Custom list of objects that can be visualized with this class.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.visualizers.entitylist.EntityList.pretty_print">
+<span class="sig-name descname"><span class="pre">pretty_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.TableFormat" title="textractor.data.constants.TableFormat"><span class="pre">TableFormat</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TableFormat.GITHUB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_geo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_page_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#textractor.visualizers.entitylist.EntityList.pretty_print" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a formatted string output for each of the entities in the list according to its entity type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_format</strong> (<a class="reference internal" href="textractor.data.html#textractor.data.constants.TableFormat" title="textractor.data.constants.TableFormat"><em>TableFormat</em></a>) – Choose one of the defined TableFormat types to decorate the table output string. This is a predefined set of choices by the PyPI tabulate package. It is used only if there are KeyValues or Tables in the list of textractor.entities.</p></li>
+<li><p><strong>with_confidence</strong> (<em>bool</em>) – Flag to add the confidence of prediction to the entity string. default= False.</p></li>
+<li><p><strong>with_geo</strong> (<em>bool</em>) – Flag to add the bounding box information to the entity string. default= False.</p></li>
+<li><p><strong>with_page_number</strong> (<em>bool</em>) – Flag to add the page number to the entity string. default= False.</p></li>
+<li><p><strong>trim</strong> (<em>bool</em>) – Flag to trim text in the entity string. default= False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a formatted string output for each of the entities in the list according to its entity type.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.visualizers.entitylist.EntityList.visualize">
+<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">with_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#textractor.visualizers.entitylist.EntityList.visualize" title="Permalink to this definition"></a></dt>
+<dd><p>Returns list of PIL Images with bounding boxes drawn around the entities in the list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>with_text</strong> (<em>bool</em>) – Flag to print the OCR output of Textract on top of the text bounding box.</p></li>
+<li><p><strong>with_confidence</strong> (<em>bool</em>) – Flag to print the confidence of prediction on top of the entity bounding box.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns list of PIL Images with bounding boxes drawn around the entities in the list.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 

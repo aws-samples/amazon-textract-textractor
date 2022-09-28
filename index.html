@@ -154,9 +154,29 @@ the requirements of the customer.</p>
 <h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="textractor.html">Textract Caller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textractor.html">Textract Caller</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="textractor.html#textractor.textractor.Textractor"><code class="docutils literal notranslate"><span class="pre">Textractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="textractor.html#textractor.textractor.Textractor.analyze_document"><code class="docutils literal notranslate"><span class="pre">Textractor.analyze_document()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.html#textractor.textractor.Textractor.analyze_expense"><code class="docutils literal notranslate"><span class="pre">Textractor.analyze_expense()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.html#textractor.textractor.Textractor.analyze_id"><code class="docutils literal notranslate"><span class="pre">Textractor.analyze_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.html#textractor.textractor.Textractor.detect_document_text"><code class="docutils literal notranslate"><span class="pre">Textractor.detect_document_text()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.html#textractor.textractor.Textractor.get_result"><code class="docutils literal notranslate"><span class="pre">Textractor.get_result()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.html#textractor.textractor.Textractor.start_document_analysis"><code class="docutils literal notranslate"><span class="pre">Textractor.start_document_analysis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.html#textractor.textractor.Textractor.start_document_text_detection"><code class="docutils literal notranslate"><span class="pre">Textractor.start_document_text_detection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.html#textractor.textractor.Textractor.start_expense_analysis"><code class="docutils literal notranslate"><span class="pre">Textractor.start_expense_analysis()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="textractor.parsers.html">Entity Parser</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="textractor.parsers.html#response-parser">response_parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="textractor.parsers.html#module-textractor.parsers.response_parser">response_parser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="textractor.parsers.html#textractor.parsers.response_parser.create_expense_from_field"><code class="docutils literal notranslate"><span class="pre">create_expense_from_field()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.parsers.html#textractor.parsers.response_parser.parse"><code class="docutils literal notranslate"><span class="pre">parse()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.parsers.html#textractor.parsers.response_parser.parse_analyze_id_response"><code class="docutils literal notranslate"><span class="pre">parse_analyze_id_response()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.parsers.html#textractor.parsers.response_parser.parse_document_api_response"><code class="docutils literal notranslate"><span class="pre">parse_document_api_response()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="textractor.parsers.html#textractor.parsers.response_parser.parser_analyze_expense_response"><code class="docutils literal notranslate"><span class="pre">parser_analyze_expense_response()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="textractor.entities.html">Document Entities</a><ul>
@@ -193,9 +213,40 @@ the requirements of the customer.</p>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#line">Line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#keyvalue">KeyValue</a></li>
-<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#value">Value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#module-textractor.entities.line">Line</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="textractor.entities.html#textractor.entities.line.Line"><code class="docutils literal notranslate"><span class="pre">Line</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.line.Line.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">Line.get_words_by_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.line.Line.page"><code class="docutils literal notranslate"><span class="pre">Line.page</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.line.Line.page_id"><code class="docutils literal notranslate"><span class="pre">Line.page_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.line.Line.text"><code class="docutils literal notranslate"><span class="pre">Line.text</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#module-textractor.entities.key_value">KeyValue</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="textractor.entities.html#textractor.entities.key_value.KeyValue"><code class="docutils literal notranslate"><span class="pre">KeyValue</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.key_value.KeyValue.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">KeyValue.get_words_by_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.key_value.KeyValue.key"><code class="docutils literal notranslate"><span class="pre">KeyValue.key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.key_value.KeyValue.page"><code class="docutils literal notranslate"><span class="pre">KeyValue.page</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.key_value.KeyValue.page_id"><code class="docutils literal notranslate"><span class="pre">KeyValue.page_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.key_value.KeyValue.value"><code class="docutils literal notranslate"><span class="pre">KeyValue.value</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.key_value.KeyValue.words"><code class="docutils literal notranslate"><span class="pre">KeyValue.words</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#module-textractor.entities.value">Value</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="textractor.entities.html#textractor.entities.value.Value"><code class="docutils literal notranslate"><span class="pre">Value</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.value.Value.contains_checkbox"><code class="docutils literal notranslate"><span class="pre">Value.contains_checkbox</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.value.Value.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">Value.get_words_by_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.value.Value.key_id"><code class="docutils literal notranslate"><span class="pre">Value.key_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.value.Value.page"><code class="docutils literal notranslate"><span class="pre">Value.page</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.value.Value.page_id"><code class="docutils literal notranslate"><span class="pre">Value.page_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.value.Value.words"><code class="docutils literal notranslate"><span class="pre">Value.words</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#module-textractor.entities.selection_element">SelectionElement</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="textractor.entities.html#textractor.entities.selection_element.SelectionElement"><code class="docutils literal notranslate"><span class="pre">SelectionElement</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.selection_element.SelectionElement.is_selected"><code class="docutils literal notranslate"><span class="pre">SelectionElement.is_selected()</span></code></a></li>
@@ -206,14 +257,105 @@ the requirements of the customer.</p>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#table">Table</a></li>
-<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#tablecell">TableCell</a></li>
-<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#page">Page</a></li>
-<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#document">Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#module-textractor.entities.table">Table</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table.add_cells"><code class="docutils literal notranslate"><span class="pre">Table.add_cells()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table.export_as_excel"><code class="docutils literal notranslate"><span class="pre">Table.export_as_excel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table.get_cells_by_type"><code class="docutils literal notranslate"><span class="pre">Table.get_cells_by_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table.get_columns_by_name"><code class="docutils literal notranslate"><span class="pre">Table.get_columns_by_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table.get_table_range"><code class="docutils literal notranslate"><span class="pre">Table.get_table_range()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">Table.get_words_by_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table.page"><code class="docutils literal notranslate"><span class="pre">Table.page</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table.page_id"><code class="docutils literal notranslate"><span class="pre">Table.page_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table.strip_headers"><code class="docutils literal notranslate"><span class="pre">Table.strip_headers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table.Table.words"><code class="docutils literal notranslate"><span class="pre">Table.words</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#module-textractor.entities.table_cell">TableCell</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell"><code class="docutils literal notranslate"><span class="pre">TableCell</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell.col_index"><code class="docutils literal notranslate"><span class="pre">TableCell.col_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell.col_span"><code class="docutils literal notranslate"><span class="pre">TableCell.col_span</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">TableCell.get_words_by_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell.merge_direction"><code class="docutils literal notranslate"><span class="pre">TableCell.merge_direction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell.page"><code class="docutils literal notranslate"><span class="pre">TableCell.page</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell.page_id"><code class="docutils literal notranslate"><span class="pre">TableCell.page_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell.row_index"><code class="docutils literal notranslate"><span class="pre">TableCell.row_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell.row_span"><code class="docutils literal notranslate"><span class="pre">TableCell.row_span</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell.table_id"><code class="docutils literal notranslate"><span class="pre">TableCell.table_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.table_cell.TableCell.words"><code class="docutils literal notranslate"><span class="pre">TableCell.words</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#module-textractor.entities.page">Page</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page"><code class="docutils literal notranslate"><span class="pre">Page</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.checkboxes"><code class="docutils literal notranslate"><span class="pre">Page.checkboxes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.directional_finder"><code class="docutils literal notranslate"><span class="pre">Page.directional_finder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.expense_documents"><code class="docutils literal notranslate"><span class="pre">Page.expense_documents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.export_kv_to_csv"><code class="docutils literal notranslate"><span class="pre">Page.export_kv_to_csv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.export_kv_to_txt"><code class="docutils literal notranslate"><span class="pre">Page.export_kv_to_txt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.export_tables_to_excel"><code class="docutils literal notranslate"><span class="pre">Page.export_tables_to_excel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.filter_checkboxes"><code class="docutils literal notranslate"><span class="pre">Page.filter_checkboxes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.get_value_by_key"><code class="docutils literal notranslate"><span class="pre">Page.get_value_by_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">Page.get_words_by_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.independent_words"><code class="docutils literal notranslate"><span class="pre">Page.independent_words()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.key_values"><code class="docutils literal notranslate"><span class="pre">Page.key_values</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.keys"><code class="docutils literal notranslate"><span class="pre">Page.keys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.lines"><code class="docutils literal notranslate"><span class="pre">Page.lines</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.queries"><code class="docutils literal notranslate"><span class="pre">Page.queries</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.return_duplicates"><code class="docutils literal notranslate"><span class="pre">Page.return_duplicates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.search_line"><code class="docutils literal notranslate"><span class="pre">Page.search_line()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.search_word"><code class="docutils literal notranslate"><span class="pre">Page.search_word()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.tables"><code class="docutils literal notranslate"><span class="pre">Page.tables</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page.words"><code class="docutils literal notranslate"><span class="pre">Page.words</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="textractor.entities.html#module-textractor.entities.document">Document</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.checkboxes"><code class="docutils literal notranslate"><span class="pre">Document.checkboxes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.directional_finder"><code class="docutils literal notranslate"><span class="pre">Document.directional_finder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.expense_documents"><code class="docutils literal notranslate"><span class="pre">Document.expense_documents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.export_kv_to_csv"><code class="docutils literal notranslate"><span class="pre">Document.export_kv_to_csv()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.export_kv_to_txt"><code class="docutils literal notranslate"><span class="pre">Document.export_kv_to_txt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.export_tables_to_excel"><code class="docutils literal notranslate"><span class="pre">Document.export_tables_to_excel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.filter_checkboxes"><code class="docutils literal notranslate"><span class="pre">Document.filter_checkboxes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.get_value_by_key"><code class="docutils literal notranslate"><span class="pre">Document.get_value_by_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">Document.get_words_by_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.identity_document"><code class="docutils literal notranslate"><span class="pre">Document.identity_document</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.identity_documents"><code class="docutils literal notranslate"><span class="pre">Document.identity_documents</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.independent_words"><code class="docutils literal notranslate"><span class="pre">Document.independent_words()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.key_values"><code class="docutils literal notranslate"><span class="pre">Document.key_values</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.keys"><code class="docutils literal notranslate"><span class="pre">Document.keys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.lines"><code class="docutils literal notranslate"><span class="pre">Document.lines</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.open"><code class="docutils literal notranslate"><span class="pre">Document.open()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.page"><code class="docutils literal notranslate"><span class="pre">Document.page()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.pages"><code class="docutils literal notranslate"><span class="pre">Document.pages</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.queries"><code class="docutils literal notranslate"><span class="pre">Document.queries</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.return_duplicates"><code class="docutils literal notranslate"><span class="pre">Document.return_duplicates()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.search_line"><code class="docutils literal notranslate"><span class="pre">Document.search_line()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.search_word"><code class="docutils literal notranslate"><span class="pre">Document.search_word()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.tables"><code class="docutils literal notranslate"><span class="pre">Document.tables</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.to_trp2"><code class="docutils literal notranslate"><span class="pre">Document.to_trp2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document.words"><code class="docutils literal notranslate"><span class="pre">Document.words</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="textractor.visualizers.html">Entity Visualization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="textractor.visualizers.html#entitylist">EntityList</a></li>
+<li class="toctree-l2"><a class="reference internal" href="textractor.visualizers.html#module-textractor.visualizers.entitylist">EntityList</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList"><code class="docutils literal notranslate"><span class="pre">EntityList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList.pretty_print"><code class="docutils literal notranslate"><span class="pre">EntityList.pretty_print()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList.visualize"><code class="docutils literal notranslate"><span class="pre">EntityList.visualize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="textractor.data.html">Constants</a><ul>
