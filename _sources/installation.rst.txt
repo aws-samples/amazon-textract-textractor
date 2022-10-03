@@ -4,12 +4,16 @@ Installation
 .. toctree::
    :maxdepth: 3
 
-Official package (Not available yet) 
+Official package
 ____________________________________
 
-To install the PyPI package run the following command -
+Textractor is available on PyPI and can be installed with :code:`pip install amazon-textract-textractor`. By default this will install the minimal version of textractor. The following extras can be used to add features:
 
-:code:`pip install textractor`
+- :code:`pdf` (:code:`pip install amazon-textract-textractor[pdf]`) includes :code:`pdf2image` and enables PDF rasterization in Textractor. Note that this is **not** necessary to call Textract with a PDF file.
+- :code:`torch` (:code:`pip install amazon-textract-textractor[torch]`) includes :code:`sentence_transformers` for better word search and matching. This will work on CPU but be noticeably slower than non-machine learning based approaches.
+- :code:`dev` (:code:`pip install amazon-textract-textractor[dev]`) includes all the dependencies above and everything else needed to test the code.
+
+You can pick several extras by separating the labels with commas like this :code:`pip install amazon-textract-textractor[pdf,torch]`.
 
 From Source
 ___________
@@ -22,14 +26,7 @@ Navigate into the amazon-textract-textractor directory on the terminal and run t
 
 To install requirements :code:`pip install -r requirements.txt`
 
-Then install the package with :code:`pip install .`
-
-Documentation
-_____________
-
-Documentation for this project can be found on readthedocs soon!
-
-Currently hosted `here <https://aws-samples.github.io/amazon-textract-textractor/>`_
+Then install the package with :code:`pip install -e .`
 
 Try it out
 ___________

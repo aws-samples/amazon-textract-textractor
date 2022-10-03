@@ -15,7 +15,6 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
@@ -165,11 +164,13 @@
 </li>
       <li><a href="textractor.data.html#textractor.data.constants.AnalyzeIDFields.CLASS">CLASS (textractor.data.constants.AnalyzeIDFields attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textractor.entities.html#textractor.entities.table_cell.TableCell.col_index">col_index (textractor.entities.table_cell.TableCell property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textractor.entities.html#textractor.entities.table_cell.TableCell.col_span">col_span (textractor.entities.table_cell.TableCell property)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.table.Table.column_count">column_count (textractor.entities.table.Table property)</a>
 </li>
       <li><a href="textractor.data.html#textractor.data.constants.CellTypes.COLUMN_HEADER">COLUMN_HEADER (textractor.data.constants.CellTypes attribute)</a>
 </li>
@@ -237,11 +238,9 @@
         <li><a href="textractor.entities.html#textractor.entities.page.Page.expense_documents">(textractor.entities.page.Page property)</a>
 </li>
       </ul></li>
-      <li><a href="textractor.data.html#textractor.data.constants.AnalyzeIDFields.EXPIRATION_DATE">EXPIRATION_DATE (textractor.data.constants.AnalyzeIDFields attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="textractor.entities.html#textractor.entities.table.Table.export_as_excel">export_as_excel() (textractor.entities.table.Table method)</a>
+      <li><a href="textractor.data.html#textractor.data.constants.AnalyzeIDFields.EXPIRATION_DATE">EXPIRATION_DATE (textractor.data.constants.AnalyzeIDFields attribute)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.document.Document.export_kv_to_csv">export_kv_to_csv() (textractor.entities.document.Document method)</a>
 
@@ -618,6 +617,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textractor.data.html#textractor.data.constants.Direction.RIGHT">RIGHT (textractor.data.constants.Direction attribute)</a>
 </li>
+      <li><a href="textractor.entities.html#textractor.entities.table.Table.row_count">row_count (textractor.entities.table.Table property)</a>
+</li>
       <li><a href="textractor.entities.html#textractor.entities.table_cell.TableCell.row_index">row_index (textractor.entities.table_cell.TableCell property)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.table_cell.TableCell.row_span">row_span (textractor.entities.table_cell.TableCell property)</a>
@@ -708,9 +709,15 @@
         <li><a href="textractor.entities.html#textractor.entities.page.Page.tables">(textractor.entities.page.Page property)</a>
 </li>
       </ul></li>
-      <li><a href="textractor.entities.html#textractor.entities.line.Line.text">text (textractor.entities.line.Line property)</a>
+      <li><a href="textractor.entities.html#textractor.entities.document.Document.text">text (textractor.entities.document.Document property)</a>
 
       <ul>
+        <li><a href="textractor.entities.html#textractor.entities.line.Line.text">(textractor.entities.line.Line property)</a>
+</li>
+        <li><a href="textractor.entities.html#textractor.entities.page.Page.text">(textractor.entities.page.Page property)</a>
+</li>
+        <li><a href="textractor.entities.html#textractor.entities.table_cell.TableCell.text">(textractor.entities.table_cell.TableCell property)</a>
+</li>
         <li><a href="textractor.entities.html#textractor.entities.word.Word.text">(textractor.entities.word.Word property)</a>
 </li>
       </ul></li>
@@ -838,6 +845,12 @@
       <li><a href="textractor.data.html#textractor.data.constants.TextractType">TextractType (class in textractor.data.constants)</a>
 </li>
       <li><a href="textractor.data.html#textractor.data.constants.TextTypes">TextTypes (class in textractor.data.constants)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.table.Table.to_csv">to_csv() (textractor.entities.table.Table method)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.table.Table.to_excel">to_excel() (textractor.entities.table.Table method)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.table.Table.to_pandas">to_pandas() (textractor.entities.table.Table method)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.document.Document.to_trp2">to_trp2() (textractor.entities.document.Document method)</a>
 </li>

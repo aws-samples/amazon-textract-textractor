@@ -15,7 +15,6 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -49,171 +48,17 @@
 <li class="toctree-l1"><a class="reference internal" href="textractor.html">Textract Caller</a></li>
 <li class="toctree-l1"><a class="reference internal" href="textractor.parsers.html">Entity Parser</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Document Entities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.bbox">BoundingBox</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox"><code class="docutils literal notranslate"><span class="pre">BoundingBox</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox.as_denormalized_numpy"><code class="docutils literal notranslate"><span class="pre">BoundingBox.as_denormalized_numpy()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox.from_normalized_dict"><code class="docutils literal notranslate"><span class="pre">BoundingBox.from_normalized_dict()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.bbox.SpatialObject"><code class="docutils literal notranslate"><span class="pre">SpatialObject</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.document_entity">DocumentEntity</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity"><code class="docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.add_children"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.add_children()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.bbox"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.bbox</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.children"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.children</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.height"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.height</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.raw_object"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.raw_object</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.width"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.width</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.x"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.x</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity.y"><code class="docutils literal notranslate"><span class="pre">DocumentEntity.y</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.word">Word</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.word.Word"><code class="docutils literal notranslate"><span class="pre">Word</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.word.Word.page"><code class="docutils literal notranslate"><span class="pre">Word.page</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.word.Word.page_id"><code class="docutils literal notranslate"><span class="pre">Word.page_id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.word.Word.text"><code class="docutils literal notranslate"><span class="pre">Word.text</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.word.Word.text_type"><code class="docutils literal notranslate"><span class="pre">Word.text_type</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.line">Line</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.line.Line"><code class="docutils literal notranslate"><span class="pre">Line</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.line.Line.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">Line.get_words_by_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.line.Line.page"><code class="docutils literal notranslate"><span class="pre">Line.page</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.line.Line.page_id"><code class="docutils literal notranslate"><span class="pre">Line.page_id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.line.Line.text"><code class="docutils literal notranslate"><span class="pre">Line.text</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.key_value">KeyValue</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.key_value.KeyValue"><code class="docutils literal notranslate"><span class="pre">KeyValue</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.key_value.KeyValue.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">KeyValue.get_words_by_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.key_value.KeyValue.key"><code class="docutils literal notranslate"><span class="pre">KeyValue.key</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.key_value.KeyValue.page"><code class="docutils literal notranslate"><span class="pre">KeyValue.page</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.key_value.KeyValue.page_id"><code class="docutils literal notranslate"><span class="pre">KeyValue.page_id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.key_value.KeyValue.value"><code class="docutils literal notranslate"><span class="pre">KeyValue.value</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.key_value.KeyValue.words"><code class="docutils literal notranslate"><span class="pre">KeyValue.words</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.value">Value</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.value.Value"><code class="docutils literal notranslate"><span class="pre">Value</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.value.Value.contains_checkbox"><code class="docutils literal notranslate"><span class="pre">Value.contains_checkbox</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.value.Value.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">Value.get_words_by_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.value.Value.key_id"><code class="docutils literal notranslate"><span class="pre">Value.key_id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.value.Value.page"><code class="docutils literal notranslate"><span class="pre">Value.page</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.value.Value.page_id"><code class="docutils literal notranslate"><span class="pre">Value.page_id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.value.Value.words"><code class="docutils literal notranslate"><span class="pre">Value.words</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.selection_element">SelectionElement</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement"><code class="docutils literal notranslate"><span class="pre">SelectionElement</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement.is_selected"><code class="docutils literal notranslate"><span class="pre">SelectionElement.is_selected()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement.page"><code class="docutils literal notranslate"><span class="pre">SelectionElement.page</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement.page_id"><code class="docutils literal notranslate"><span class="pre">SelectionElement.page_id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement.words"><code class="docutils literal notranslate"><span class="pre">SelectionElement.words</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.table">Table</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.table.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table.Table.add_cells"><code class="docutils literal notranslate"><span class="pre">Table.add_cells()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table.Table.export_as_excel"><code class="docutils literal notranslate"><span class="pre">Table.export_as_excel()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table.Table.get_cells_by_type"><code class="docutils literal notranslate"><span class="pre">Table.get_cells_by_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table.Table.get_columns_by_name"><code class="docutils literal notranslate"><span class="pre">Table.get_columns_by_name()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table.Table.get_table_range"><code class="docutils literal notranslate"><span class="pre">Table.get_table_range()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table.Table.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">Table.get_words_by_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table.Table.page"><code class="docutils literal notranslate"><span class="pre">Table.page</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table.Table.page_id"><code class="docutils literal notranslate"><span class="pre">Table.page_id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table.Table.strip_headers"><code class="docutils literal notranslate"><span class="pre">Table.strip_headers()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table.Table.words"><code class="docutils literal notranslate"><span class="pre">Table.words</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.table_cell">TableCell</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.table_cell.TableCell"><code class="docutils literal notranslate"><span class="pre">TableCell</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table_cell.TableCell.col_index"><code class="docutils literal notranslate"><span class="pre">TableCell.col_index</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table_cell.TableCell.col_span"><code class="docutils literal notranslate"><span class="pre">TableCell.col_span</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table_cell.TableCell.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">TableCell.get_words_by_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table_cell.TableCell.merge_direction"><code class="docutils literal notranslate"><span class="pre">TableCell.merge_direction()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table_cell.TableCell.page"><code class="docutils literal notranslate"><span class="pre">TableCell.page</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table_cell.TableCell.page_id"><code class="docutils literal notranslate"><span class="pre">TableCell.page_id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table_cell.TableCell.row_index"><code class="docutils literal notranslate"><span class="pre">TableCell.row_index</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table_cell.TableCell.row_span"><code class="docutils literal notranslate"><span class="pre">TableCell.row_span</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table_cell.TableCell.table_id"><code class="docutils literal notranslate"><span class="pre">TableCell.table_id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.table_cell.TableCell.words"><code class="docutils literal notranslate"><span class="pre">TableCell.words</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.page">Page</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.page.Page"><code class="docutils literal notranslate"><span class="pre">Page</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.checkboxes"><code class="docutils literal notranslate"><span class="pre">Page.checkboxes</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.directional_finder"><code class="docutils literal notranslate"><span class="pre">Page.directional_finder()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.expense_documents"><code class="docutils literal notranslate"><span class="pre">Page.expense_documents</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.export_kv_to_csv"><code class="docutils literal notranslate"><span class="pre">Page.export_kv_to_csv()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.export_kv_to_txt"><code class="docutils literal notranslate"><span class="pre">Page.export_kv_to_txt()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.export_tables_to_excel"><code class="docutils literal notranslate"><span class="pre">Page.export_tables_to_excel()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.filter_checkboxes"><code class="docutils literal notranslate"><span class="pre">Page.filter_checkboxes()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.get_value_by_key"><code class="docutils literal notranslate"><span class="pre">Page.get_value_by_key()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">Page.get_words_by_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.independent_words"><code class="docutils literal notranslate"><span class="pre">Page.independent_words()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.key_values"><code class="docutils literal notranslate"><span class="pre">Page.key_values</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.keys"><code class="docutils literal notranslate"><span class="pre">Page.keys()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.lines"><code class="docutils literal notranslate"><span class="pre">Page.lines</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.queries"><code class="docutils literal notranslate"><span class="pre">Page.queries</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.return_duplicates"><code class="docutils literal notranslate"><span class="pre">Page.return_duplicates()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.search_line"><code class="docutils literal notranslate"><span class="pre">Page.search_line()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.search_word"><code class="docutils literal notranslate"><span class="pre">Page.search_word()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.tables"><code class="docutils literal notranslate"><span class="pre">Page.tables</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.page.Page.words"><code class="docutils literal notranslate"><span class="pre">Page.words</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.document">Document</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#textractor.entities.document.Document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.checkboxes"><code class="docutils literal notranslate"><span class="pre">Document.checkboxes</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.directional_finder"><code class="docutils literal notranslate"><span class="pre">Document.directional_finder()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.expense_documents"><code class="docutils literal notranslate"><span class="pre">Document.expense_documents</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.export_kv_to_csv"><code class="docutils literal notranslate"><span class="pre">Document.export_kv_to_csv()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.export_kv_to_txt"><code class="docutils literal notranslate"><span class="pre">Document.export_kv_to_txt()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.export_tables_to_excel"><code class="docutils literal notranslate"><span class="pre">Document.export_tables_to_excel()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.filter_checkboxes"><code class="docutils literal notranslate"><span class="pre">Document.filter_checkboxes()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.get_value_by_key"><code class="docutils literal notranslate"><span class="pre">Document.get_value_by_key()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.get_words_by_type"><code class="docutils literal notranslate"><span class="pre">Document.get_words_by_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.identity_document"><code class="docutils literal notranslate"><span class="pre">Document.identity_document</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.identity_documents"><code class="docutils literal notranslate"><span class="pre">Document.identity_documents</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.independent_words"><code class="docutils literal notranslate"><span class="pre">Document.independent_words()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.key_values"><code class="docutils literal notranslate"><span class="pre">Document.key_values</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.keys"><code class="docutils literal notranslate"><span class="pre">Document.keys()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.lines"><code class="docutils literal notranslate"><span class="pre">Document.lines</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.open"><code class="docutils literal notranslate"><span class="pre">Document.open()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.page"><code class="docutils literal notranslate"><span class="pre">Document.page()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.pages"><code class="docutils literal notranslate"><span class="pre">Document.pages</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.queries"><code class="docutils literal notranslate"><span class="pre">Document.queries</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.return_duplicates"><code class="docutils literal notranslate"><span class="pre">Document.return_duplicates()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.search_line"><code class="docutils literal notranslate"><span class="pre">Document.search_line()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.search_word"><code class="docutils literal notranslate"><span class="pre">Document.search_word()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.tables"><code class="docutils literal notranslate"><span class="pre">Document.tables</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.to_trp2"><code class="docutils literal notranslate"><span class="pre">Document.to_trp2()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#textractor.entities.document.Document.words"><code class="docutils literal notranslate"><span class="pre">Document.words</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.bbox">BoundingBox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.document_entity">DocumentEntity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.word">Word</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.line">Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.key_value">KeyValue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.value">Value</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.selection_element">SelectionElement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.table">Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.table_cell">TableCell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.page">Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.document">Document</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="textractor.visualizers.html">Entity Visualization</a></li>
@@ -933,26 +778,10 @@ No specific ordering is assumed since it is implicitly ordered by row and column
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="textractor.entities.table.Table.export_as_excel">
-<span class="sig-name descname"><span class="pre">export_as_excel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workbook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_workbook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.table.Table.export_as_excel" title="Permalink to this definition"></a></dt>
-<dd><p>Export the Table Entity as an excel document. Advantage of excel over csv is that it can accommodate merged cells that we see so often with Textract documents.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filepath</strong> (<em>str</em>) – Path to store the exported Excel file</p></li>
-<li><p><strong>workbook</strong> (<em>xlsxwriter.Workbook</em>) – if xlsxwriter workbook is passed to the function, the table is appended to the last sheet of that workbook.</p></li>
-<li><p><strong>save_workbook</strong> (<em>bool</em>) – Flag to save_notebook. If False, it is returned by the function.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns a workbook if save_workbook is False. Else, saves the .xlsx file in the filepath if was initialized with.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>xlsxwriter.Workbook</p>
-</dd>
-</dl>
-</dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.table.Table.column_count">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">column_count</span></span><a class="headerlink" href="#textractor.entities.table.Table.column_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.table.Table.get_cells_by_type">
@@ -1049,6 +878,11 @@ FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.table.Table.row_count">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">row_count</span></span><a class="headerlink" href="#textractor.entities.table.Table.row_count" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.table.Table.strip_headers">
 <span class="sig-name descname"><span class="pre">strip_headers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.table.Table.strip_headers" title="Permalink to this definition"></a></dt>
@@ -1059,6 +893,55 @@ FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table">Table</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.table.Table.to_csv">
+<span class="sig-name descname"><span class="pre">to_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#textractor.entities.table.Table.to_csv" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the table in the Comma-Separated-Value (CSV) format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Table as a CSV string.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.table.Table.to_excel">
+<span class="sig-name descname"><span class="pre">to_excel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workbook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_workbook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.table.Table.to_excel" title="Permalink to this definition"></a></dt>
+<dd><p>Export the Table Entity as an excel document. Advantage of excel over csv is that it can accommodate merged cells that we see so often with Textract documents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> (<em>str</em>) – Path to store the exported Excel file</p></li>
+<li><p><strong>workbook</strong> (<em>xlsxwriter.Workbook</em>) – if xlsxwriter workbook is passed to the function, the table is appended to the last sheet of that workbook.</p></li>
+<li><p><strong>save_workbook</strong> (<em>bool</em>) – Flag to save_notebook. If False, it is returned by the function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a workbook if save_workbook is False. Else, saves the .xlsx file in the filepath if was initialized with.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>xlsxwriter.Workbook</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.table.Table.to_pandas">
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#textractor.entities.table.Table.to_pandas" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the table to a pandas DataFrame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DataFrame for the table</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1231,6 +1114,20 @@ Returns 0 if row merge, 1 if column merge and 2 if both and None if there is no 
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.table_cell.TableCell.text">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#textractor.entities.table_cell.TableCell.text" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the text in the cell as one space-separated string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Text in the cell</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.table_cell.TableCell.words">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">words</span></span><a class="headerlink" href="#textractor.entities.table_cell.TableCell.words" title="Permalink to this definition"></a></dt>
 <dd><p>Returns all the Word objects present in the <a class="reference internal" href="#textractor.entities.table_cell.TableCell" title="textractor.entities.table_cell.TableCell"><code class="xref py py-class docutils literal notranslate"><span class="pre">TableCell</span></code></a>.</p>
@@ -1383,7 +1280,7 @@ This is stored on the filepath passed by the user.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.page.Page.get_value_by_key">
-<span class="sig-name descname"><span class="pre">get_value_by_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k_matches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.COSINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.key_value.KeyValue" title="textractor.entities.key_value.KeyValue"><span class="pre">KeyValue</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.page.Page.get_value_by_key" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_value_by_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k_matches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.LEVENSHTEIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.key_value.KeyValue" title="textractor.entities.key_value.KeyValue"><span class="pre">KeyValue</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.page.Page.get_value_by_key" title="Permalink to this definition"></a></dt>
 <dd><p>Return upto top_k_matches of key-value pairs for the key that is queried from the page.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1511,7 +1408,7 @@ This function is intended to let the Textract user know of duplicate objects ext
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.page.Page.search_line">
-<span class="sig-name descname"><span class="pre">search_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.COSINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.line.Line" title="textractor.entities.line.Line"><span class="pre">Line</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.page.Page.search_line" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">search_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.LEVENSHTEIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.line.Line" title="textractor.entities.line.Line"><span class="pre">Line</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.page.Page.search_line" title="Permalink to this definition"></a></dt>
 <dd><p>Return a list of top_k lines that contain the queried keyword.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1535,7 +1432,7 @@ to lowest similarity.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.page.Page.search_word">
-<span class="sig-name descname"><span class="pre">search_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.COSINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.page.Page.search_word" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">search_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.LEVENSHTEIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.page.Page.search_word" title="Permalink to this definition"></a></dt>
 <dd><p>Return a list of top_k words that match the keyword.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1566,6 +1463,20 @@ to lowest similarity.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page.Page.text">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#textractor.entities.page.Page.text" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the page text as one string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Line text seperated by line return</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1716,7 +1627,7 @@ This is stored on the filepath passed by the user.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.get_value_by_key">
-<span class="sig-name descname"><span class="pre">get_value_by_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k_matches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.COSINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document.Document.get_value_by_key" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_value_by_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k_matches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.LEVENSHTEIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document.Document.get_value_by_key" title="Permalink to this definition"></a></dt>
 <dd><p>Return upto top_k_matches of key-value pairs for the key that is queried from the document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1865,7 +1776,7 @@ This is stored on the filepath passed by the user.</p>
 <dd><p>Returns <code class="xref py py-class docutils literal notranslate"><span class="pre">Page</span></code> object/s depending on the input page_no. Follows zero-indexing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page_no</strong> (<em>int if single page</em><em>, </em><em>list</em><em> of </em><em>int if multiple pages</em>) – if int, returns single Page Object, else if list, it returns a list of
+<dd class="field-odd"><p><strong>page_no</strong> (<em>int if single page</em><em>, </em><em>list of int if multiple pages</em>) – if int, returns single Page Object, else if list, it returns a list of
 Page objects.</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1923,7 +1834,7 @@ This function is intended to let the Textract user know of duplicate objects ext
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.search_line">
-<span class="sig-name descname"><span class="pre">search_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.COSINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.line.Line" title="textractor.entities.line.Line"><span class="pre">Line</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.document.Document.search_line" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">search_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.LEVENSHTEIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.line.Line" title="textractor.entities.line.Line"><span class="pre">Line</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.document.Document.search_line" title="Permalink to this definition"></a></dt>
 <dd><p>Return a list of top_k lines that contain the queried keyword.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1947,7 +1858,7 @@ to lowest similarity.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.search_word">
-<span class="sig-name descname"><span class="pre">search_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.COSINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.document.Document.search_word" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">search_word</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.SimilarityMetric" title="textractor.data.constants.SimilarityMetric"><span class="pre">SimilarityMetric</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SimilarityMetric.LEVENSHTEIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_similarity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.document.Document.search_word" title="Permalink to this definition"></a></dt>
 <dd><p>Return a list of top_k words that match the keyword.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1979,6 +1890,20 @@ to lowest similarity.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[<a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table">Table</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.document.Document.text">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#textractor.entities.document.Document.text" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the document text as one string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Page text seperated by line return</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>

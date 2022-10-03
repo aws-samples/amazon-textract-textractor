@@ -15,7 +15,6 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -41,9 +40,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#official-package-not-available-yet">Official package (Not available yet)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#official-package">Official package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#from-source">From Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#try-it-out">Try it out</a></li>
 </ul>
 </li>
@@ -109,10 +107,15 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<div class="section" id="official-package-not-available-yet">
-<h2>Official package (Not available yet)<a class="headerlink" href="#official-package-not-available-yet" title="Permalink to this heading"></a></h2>
-<p>To install the PyPI package run the following command -</p>
-<p><code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">textractor</span></code></p>
+<div class="section" id="official-package">
+<h2>Official package<a class="headerlink" href="#official-package" title="Permalink to this heading"></a></h2>
+<p>Textractor is available on PyPI and can be installed with <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code>. By default this will install the minimal version of textractor. The following extras can be used to add features:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">pdf</span></code> (<code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>) includes <code class="code docutils literal notranslate"><span class="pre">pdf2image</span></code> and enables PDF rasterization in Textractor. Note that this is <strong>not</strong> necessary to call Textract with a PDF file.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">torch</span></code> (<code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[torch]</span></code>) includes <code class="code docutils literal notranslate"><span class="pre">sentence_transformers</span></code> for better word search and matching. This will work on CPU but be noticeably slower than non-machine learning based approaches.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">dev</span></code> (<code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[dev]</span></code>) includes all the dependencies above and everything else needed to test the code.</p></li>
+</ul>
+<p>You can pick several extras by separating the labels with commas like this <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf,torch]</span></code>.</p>
 </div>
 <div class="section" id="from-source">
 <h2>From Source<a class="headerlink" href="#from-source" title="Permalink to this heading"></a></h2>
@@ -120,12 +123,7 @@
 <p><code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">git&#64;github.com:aws-samples/amazon-textract-textractor.git</span></code></p>
 <p>Navigate into the amazon-textract-textractor directory on the terminal and run these commands.</p>
 <p>To install requirements <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code></p>
-<p>Then install the package with <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.</span></code></p>
-</div>
-<div class="section" id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h2>
-<p>Documentation for this project can be found on readthedocs soon!</p>
-<p>Currently hosted <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/">here</a></p>
+<p>Then install the package with <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code></p>
 </div>
 <div class="section" id="try-it-out">
 <h2>Try it out<a class="headerlink" href="#try-it-out" title="Permalink to this heading"></a></h2>

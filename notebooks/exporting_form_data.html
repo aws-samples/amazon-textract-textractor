@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Export Form Data &mdash; textractor 1.0.0 documentation</title>
+  <title>Exporting Form Data &mdash; textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -15,15 +15,12 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Tutorial : Document and Page methods" href="Example_3.html" />
-    <link rel="prev" title="Word Occurence within Document" href="Example_1.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,25 +38,9 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Example_1.html">Word Occurence within Document</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Export Form Data</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Steps-to-perform-task">Steps to perform task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Solution-with-Textractor">Solution with Textractor</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Imports">Imports</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Initialize-Textractor">Initialize Textractor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Call-Textract">Call Textract</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Retrieve-key-values-and-export-as-csv">Retrieve key-values and export as csv</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#View-csv-as-dataframe">View csv as dataframe</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="Example_3.html">Tutorial : Document and Page methods</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
@@ -83,10 +64,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../examples.html">Examples</a> &raquo;</li>
-      <li>Export Form Data</li>
+      <li>Exporting Form Data</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/notebooks/Example_2.ipynb.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/notebooks/exporting_form_data.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -372,25 +352,19 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Export-Form-Data">
-<h1>Export Form Data<a class="headerlink" href="#Export-Form-Data" title="Permalink to this heading"></a></h1>
-<p>Customer would like to export all key-values extracted from a list of images as a .csv file.</p>
-<div class="section" id="Steps-to-perform-task">
-<h2>Steps to perform task<a class="headerlink" href="#Steps-to-perform-task" title="Permalink to this heading"></a></h2>
-<p>To accomplish this requirement, the user would have to perform the following tasks.</p>
-<ol class="arabic simple">
-<li><p>Call Textract Async API StartDocumentAnalysis.</p></li>
-<li><p>Parse the response JSON.</p></li>
-<li><p>Find a way to identify KEY_VALUE_SET blocks that are related as Keys and Values.</p></li>
-<li><p>Export in csv format</p></li>
-</ol>
+<div class="section" id="Exporting-Form-Data">
+<h1>Exporting Form Data<a class="headerlink" href="#Exporting-Form-Data" title="Permalink to this heading"></a></h1>
+<p>We now move from Textract OCR to Textract Forms, the API to extract key-value pairs. Here we want to export all key-values extracted from an image as a .csv file.</p>
+<div class="section" id="Installation">
+<h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
+<p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
+<p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if you workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
 </div>
-<div class="section" id="Solution-with-Textractor">
-<h2>Solution with Textractor<a class="headerlink" href="#Solution-with-Textractor" title="Permalink to this heading"></a></h2>
-<div class="section" id="Imports">
-<h3>Imports<a class="headerlink" href="#Imports" title="Permalink to this heading"></a></h3>
-<p>After installation, Textractor is to be imported.</p>
-<div class="nbinput docutils container">
+<div class="section" id="Calling-Textract">
+<h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
+<p>We use the asynchronous API for this example, but as seen in the OCR example the synchronous API exposes the same methods.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -398,55 +372,27 @@ div.rendered_html tbody tr:hover {
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
 <span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span>
-<br/></pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/opt/anaconda3/envs/textractor-env/lib/python3.7/site-packages/tqdm/auto.py:22: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
-  from .autonotebook import tqdm as notebook_tqdm
-</pre></div></div>
-</div>
-</div>
-<div class="section" id="Initialize-Textractor">
-<h3>Initialize Textractor<a class="headerlink" href="#Initialize-Textractor" title="Permalink to this heading"></a></h3>
-<p>To initialize the Textractor, the customer can pass the profile-name stored in their ~/.aws/config file to autoload credentials. These are the credentials to internally initialize the boto3 client. Additional parameters can be passed to the function to store output on the S3 bucket.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">aws_profile_name</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">aws_profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">start_document_analysis</span><span class="p">(</span>
+    <span class="c1"># Here we pass a Pillow image instead of path. This changes nothing as</span>
+    <span class="c1"># Textractor supports most input types.</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/invoice1.png&quot;</span><span class="p">),</span>
+    <span class="c1"># We specify the features that we want, here, we only want keys and values</span>
+    <span class="c1"># therefore we use TextractFeatures.FORMS.</span>
+    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">FORMS</span><span class="p">],</span>
+    <span class="n">s3_upload_path</span><span class="o">=</span><span class="s2">&quot;s3://textract-ocr/temp/&quot;</span><span class="p">,</span>
+    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="Call-Textract">
-<h3>Call Textract<a class="headerlink" href="#Call-Textract" title="Permalink to this heading"></a></h3>
-<p>To process multiple images into a single document object, we need to call an async API. All the Textractor API endpoints support local filepaths, S3 filepaths or list of PIL Images being passed to the file_source parameter. Additionally, we want a clear categorization of the document entities so we call the <code class="docutils literal notranslate"><span class="pre">start_document_analysis()</span></code> function with the necessary TextractFeatures passed to the features parameter.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image_1</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;tests/fixtures/invoice1.png&#39;</span><span class="p">))</span>
-<span class="n">image_2</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;tests/fixtures/invoice2.png&#39;</span><span class="p">))</span>
-<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">start_document_analysis</span><span class="p">(</span><span class="n">file_source</span><span class="o">=</span><span class="p">[</span><span class="n">image_1</span><span class="p">,</span> <span class="n">image_2</span><span class="p">],</span>
-                                               <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">TABLES</span><span class="p">,</span> <span class="n">TextractFeatures</span><span class="o">.</span><span class="n">FORMS</span><span class="p">],</span>
-                                               <span class="n">s3_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                               <span class="n">client_request_token</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                               <span class="n">job_tag</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                               <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="Retrieve-key-values-and-export-as-csv">
-<h3>Retrieve key-values and export as csv<a class="headerlink" href="#Retrieve-key-values-and-export-as-csv" title="Permalink to this heading"></a></h3>
+<div class="section" id="Retrieving-key-values-and-exporting-as-csv">
+<h2>Retrieving key-values and exporting as csv<a class="headerlink" href="#Retrieving-key-values-and-exporting-as-csv" title="Permalink to this heading"></a></h2>
 <p>Form data/Key-values are stored at the document and page level as a property and can be accessed as shown below</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># All key-values present in the document</span>
@@ -455,97 +401,60 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 [Date : 04/23/2020,
  Phone : 615-373-6883,
- Address : 90 OLD HICKORY BLVD,
+ Address : BLVD,
  Cellular : 683-426-2200,
  Work : 726-448-6720,
- Time : 12.30 P.M.,
+ Time : P.M.,
  Phone : 626-200-4890,
- Cleaning Tech : JOHN LEWIS,
- Customer : ELIZABETH CAMPBELL,
+ Cleaning Tech : LEWIS,
+ Customer : CAMPBELL,
  Day : Wednesday,
- Name : ELIZABETH CAMPBELL,
- City : NEX YORK,
+ Name : CAMPBELL,
+ City : YORK,
  E-Mail&#34; : vilcomp@gmail.com,
  Special Instructions or Directions: : ,
- Sales Tax : 1445.0 00,
- Late Fee : 5.00 00,
- TOTAL : 450 00,
- Work Order Date: : March 20, 2020,
- Address: : 7 Orchid street, Jacksonvilte Florida , 32034,
- Phone Number: : (904) 634 - 2579,
- Order No: : 0000950,
- Name: : Davis Miranda Jane W.,
- Total : $ 775.00-,
- Signed: : for the 90]
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Key-Values present in the first page of the document</span>
-<span class="n">document</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">key_values</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-[Date : 04/23/2020,
- Phone : 615-373-6883,
- Address : 90 OLD HICKORY BLVD,
- Cellular : 683-426-2200,
- Work : 726-448-6720,
- Time : 12.30 P.M.,
- Phone : 626-200-4890,
- Cleaning Tech : JOHN LEWIS,
- Customer : ELIZABETH CAMPBELL,
- Day : Wednesday,
- Name : ELIZABETH CAMPBELL,
- City : NEX YORK,
- E-Mail&#34; : vilcomp@gmail.com,
- Special Instructions or Directions: : ,
- Sales Tax : 1445.0 00,
- Late Fee : 5.00 00,
- TOTAL : 450 00]
+ Sales Tax : 00,
+ Late Fee : 00,
+ TOTAL : 00]
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export the key-values as csv</span>
-<span class="n">document</span><span class="o">.</span><span class="n">export_kv_to_csv</span><span class="p">(</span><span class="n">include_kv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_checkboxes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;Key-Values.csv&#39;</span><span class="p">))</span>
+<span class="n">document</span><span class="o">.</span><span class="n">export_kv_to_csv</span><span class="p">(</span>
+    <span class="n">include_kv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_checkboxes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">filepath</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;kv.csv&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="View-csv-as-dataframe">
-<h3>View csv as dataframe<a class="headerlink" href="#View-csv-as-dataframe" title="Permalink to this heading"></a></h3>
+<div class="section" id="View-CSV-as-dataframe">
+<h2>View CSV as dataframe<a class="headerlink" href="#View-CSV-as-dataframe" title="Permalink to this heading"></a></h2>
 <p>To verify the contents of the file stored, we open it as a Pandas dataframe.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="n">df_key_values</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;Key-Values.csv&#39;</span><span class="p">))</span>
+<span class="n">df_key_values</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;kv.csv&quot;</span><span class="p">))</span>
 <span class="n">df_key_values</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -585,7 +494,7 @@ div.rendered_html tbody tr:hover {
     <tr>
       <th>2</th>
       <td>Address</td>
-      <td>90 OLD HICKORY BLVD</td>
+      <td>BLVD</td>
     </tr>
     <tr>
       <th>3</th>
@@ -600,7 +509,7 @@ div.rendered_html tbody tr:hover {
     <tr>
       <th>5</th>
       <td>Time</td>
-      <td>12.30 P.M.</td>
+      <td>P.M.</td>
     </tr>
     <tr>
       <th>6</th>
@@ -610,12 +519,12 @@ div.rendered_html tbody tr:hover {
     <tr>
       <th>7</th>
       <td>Cleaning Tech</td>
-      <td>JOHN LEWIS</td>
+      <td>LEWIS</td>
     </tr>
     <tr>
       <th>8</th>
       <td>Customer</td>
-      <td>ELIZABETH CAMPBELL</td>
+      <td>CAMPBELL</td>
     </tr>
     <tr>
       <th>9</th>
@@ -625,12 +534,12 @@ div.rendered_html tbody tr:hover {
     <tr>
       <th>10</th>
       <td>Name</td>
-      <td>ELIZABETH CAMPBELL</td>
+      <td>CAMPBELL</td>
     </tr>
     <tr>
       <th>11</th>
       <td>City</td>
-      <td>NEX YORK</td>
+      <td>YORK</td>
     </tr>
     <tr>
       <th>12</th>
@@ -645,57 +554,26 @@ div.rendered_html tbody tr:hover {
     <tr>
       <th>14</th>
       <td>Sales Tax</td>
-      <td>1445.0 00</td>
+      <td>00</td>
     </tr>
     <tr>
       <th>15</th>
       <td>Late Fee</td>
-      <td>5.00 00</td>
+      <td>00</td>
     </tr>
     <tr>
       <th>16</th>
       <td>TOTAL</td>
-      <td>450 00</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>Work Order Date:</td>
-      <td>March 20, 2020</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>Address:</td>
-      <td>7 Orchid street, Jacksonvilte Florida , 32034</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>Phone Number:</td>
-      <td>(904) 634 - 2579</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>Order No:</td>
-      <td>0000950</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>Name:</td>
-      <td>Davis Miranda Jane W.</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>Total</td>
-      <td>$ 775.00-</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>Signed:</td>
-      <td>for the 90</td>
+      <td>00</td>
     </tr>
   </tbody>
 </table>
 </div></div>
 </div>
+</div>
+<div class="section" id="Conclusion">
+<h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
+<p>There are many more supported APIs and usecases in Textractor, if this did not address your use case, we encourage you to look at <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/examples.html">the other examples</a>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -706,15 +584,11 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-</div>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="Example_1.html" class="btn btn-neutral float-left" title="Word Occurence within Document" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="Example_3.html" class="btn btn-neutral float-right" title="Tutorial : Document and Page methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 
