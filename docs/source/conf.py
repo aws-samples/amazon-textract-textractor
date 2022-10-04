@@ -18,13 +18,13 @@ sys.path.insert(0, os.path.abspath("../../"))
 
 # -- Project information -----------------------------------------------------
 
-project = "textractor"
+project = "amazon-textract-textractor"
 copyright = "2022, Amazon"
-author = "Srividhya Radhakrishna"
+author = "Edouard Belval"
 
 # The full version, including alpha/beta/rc tags
 release = "1.0.0"
-
+html_favicon = "favicon.ico"
 
 # -- General configuration ---------------------------------------------------
 
