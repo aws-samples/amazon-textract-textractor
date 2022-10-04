@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Table data extraction to excel &mdash; textractor 1.0.0 documentation</title>
+  <title>Interfacing with trp2 &mdash; textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -64,9 +64,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Table data extraction to excel</li>
+      <li>Interfacing with trp2</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/notebooks/table_data_extraction_to_excel.ipynb.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/notebooks/interfacing_with_trp2.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -352,9 +352,9 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Table-data-extraction-to-excel">
-<h1>Table data extraction to excel<a class="headerlink" href="#Table-data-extraction-to-excel" title="Permalink to this heading"></a></h1>
-<p>This example uses Textractor to convert an image to an Microsoft Office Excel file that can be further processed manually.</p>
+<div class="section" id="Interfacing-with-trp2">
+<h1>Interfacing with trp2<a class="headerlink" href="#Interfacing-with-trp2" title="Permalink to this heading"></a></h1>
+<p>The Textract response parser was the preferred way of handling Textract API output before the release of Textractor. If your current workflow uses the older library, you can easily reuse their functions through the compatibility API.</p>
 <div class="section" id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
@@ -364,42 +364,19 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
-<span class="kn">from</span> <span class="nn">textractor.visualizers.entitylist</span> <span class="kn">import</span> <span class="n">EntityList</span>
-<span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span><span class="p">,</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">DirectionalFinderType</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/amzn_q2.png&quot;</span><span class="p">)</span>
-<span class="n">image</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">aws_profile_name</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
 
-<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span>
-    <span class="n">file_source</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
-    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">TABLES</span><span class="p">],</span>
-    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">aws_profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="c1"># This path assumes that you are running the notebook from docs/source/notebooks</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">detect_document_text</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/invoice1.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
@@ -407,43 +384,37 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 This document holds the following data:
 Pages - 1
-Words - 564
-Lines - 318
+Words - 259
+Lines - 74
 Key-values - 0
 Checkboxes - 0
-Tables - 1
+Tables - 0
 Identity Documents - 0
 </pre></div></div>
 </div>
-<p>As expected, Textract Identified the table, let’s see how it looks.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</div>
+<div class="section" id="Getting-the-trp2-document">
+<h2>Getting the trp2 document<a class="headerlink" href="#Getting-the-trp2-document" title="Permalink to this heading"></a></h2>
+<p>All <code class="docutils literal notranslate"><span class="pre">Document</span></code> objects have a convenience function <code class="docutils literal notranslate"><span class="pre">to_trp2()</span></code> that is a shorthand for <code class="docutils literal notranslate"><span class="pre">TDocumentSchema().load(document.response)</span></code> and creates a matching trp2 document. Note that this behaves as a converter, not as a proxy so any changes done on the <code class="docutils literal notranslate"><span class="pre">TDocument</span></code> will not be passed to the <code class="docutils literal notranslate"><span class="pre">Document</span></code> object.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trp2_document</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">to_trp2</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
-<span class="ansi-green-fg">/tmp/ipykernel_7465/3775095799.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>document<span class="ansi-blue-fg">.</span>tables<span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>to_pandas<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">AttributeError</span>: &#39;Table&#39; object has no attribute &#39;to_pandas&#39;
-</pre></div></div>
-</div>
+<div class="section" id="Conclusion">
+<h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
+<p>Textractor comes with everything you need to reuse components from your current workflow with the newer caller, pretty printer or directional finder.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>

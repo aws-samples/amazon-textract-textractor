@@ -1,0 +1,125 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "f3801162",
+   "metadata": {},
+   "source": [
+    "# Interfacing with trp2\n",
+    "\n",
+    "The Textract response parser was the preferred way of handling Textract API output before the release of Textractor. If your current workflow uses the older library, you can easily reuse their functions through the compatibility API.\n",
+    "\n",
+    "## Installation\n",
+    "\n",
+    "To begin, install the `amazon-textract-textractor` package using pip.\n",
+    "\n",
+    "`pip install amazon-textract-textractor`\n",
+    "\n",
+    "There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if you workflow uses PDFs with `pip install amazon-textract-textractor[pdf]`. You can read more on extra dependencies [in the documentation](https://aws-samples.github.io/amazon-textract-textractor/installation.html)\n",
+    "\n",
+    "## Calling Textract"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "47ea794e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from textractor import Textractor\n",
+    "\n",
+    "extractor = Textractor(aws_profile_name=\"default\")\n",
+    "# This path assumes that you are running the notebook from docs/source/notebooks\n",
+    "document = extractor.detect_document_text(\"../../../tests/fixtures/invoice1.png\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "7231472c",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "This document holds the following data:\n",
+       "Pages - 1\n",
+       "Words - 259\n",
+       "Lines - 74\n",
+       "Key-values - 0\n",
+       "Checkboxes - 0\n",
+       "Tables - 0\n",
+       "Identity Documents - 0"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "document"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "14b4052c",
+   "metadata": {},
+   "source": [
+    "## Getting the trp2 document\n",
+    "\n",
+    "All `Document` objects have a convenience function `to_trp2()` that is a shorthand for `TDocumentSchema().load(document.response)` and creates a matching trp2 document. Note that this behaves as a converter, not as a proxy so any changes done on the `TDocument` will not be passed to the `Document` object."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "a9b36794",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "trp2_document = document.to_trp2()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "57e69a22",
+   "metadata": {},
+   "source": [
+    "## Conclusion\n",
+    "\n",
+    "Textractor comes with everything you need to reuse components from your current workflow with the newer caller, pretty printer or directional finder."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4729faba",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

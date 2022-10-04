@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Table data extraction to excel &mdash; textractor 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> textractor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.parsers.html">Entity Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.entities.html">Document Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.visualizers.html">Entity Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.data.html">Constants</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">textractor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Table data extraction to excel</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/table_data_to_various formats.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.jp-RenderedHTMLCommon thead,
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+.jp-RenderedHTMLCommon th,
+div.rendered_html th {
+  font-weight: bold;
+}
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.jp-RenderedHTMLCommon tbody tr:hover,
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Table-data-extraction-to-excel">
+<h1>Table data extraction to excel<a class="headerlink" href="#Table-data-extraction-to-excel" title="Permalink to this heading"></a></h1>
+<p>This example uses Textractor to convert an image to an Microsoft Office Excel file that can be further processed manually.</p>
+<div class="section" id="Installation">
+<h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
+<p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
+<p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if you workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
+</div>
+<div class="section" id="Calling-Textract">
+<h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
+<span class="kn">from</span> <span class="nn">textractor.visualizers.entitylist</span> <span class="kn">import</span> <span class="n">EntityList</span>
+<span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span><span class="p">,</span> <span class="n">Direction</span><span class="p">,</span> <span class="n">DirectionalFinderType</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/amzn_q2.png&quot;</span><span class="p">)</span>
+<span class="n">image</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_table_data_to_various_formats_2_0.png" src="../_images/notebooks_table_data_to_various_formats_2_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">aws_profile_name</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">TABLES</span><span class="p">],</span>
+    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+This document holds the following data:
+Pages - 1
+Words - 564
+Lines - 318
+Key-values - 0
+Checkboxes - 0
+Tables - 1
+Identity Documents - 0
+</pre></div></div>
+</div>
+<p>As expected, Textract Identified the table, let’s see how it looks.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Table-as-a-pandas-DataFrame">
+<h2>Table as a pandas DataFrame<a class="headerlink" href="#Table-as-a-pandas-DataFrame" title="Permalink to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td></td>
+      <td>Three Months June</td>
+      <td>30, Ended</td>
+      <td>Six Months June</td>
+      <td>Ended 30,</td>
+      <td>Twelve Months June</td>
+      <td>30, Ended</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td></td>
+      <td>2021</td>
+      <td>2022</td>
+      <td>2021</td>
+      <td>2022</td>
+      <td>2021</td>
+      <td>2022</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>CASH, PERIOD CASH EQUIVALENTS, AND RESTRICTED ...</td>
+      <td>$ 34,155</td>
+      <td>$ 36,599</td>
+      <td>$ 42,377</td>
+      <td>$ 36,477</td>
+      <td>$ 37,842</td>
+      <td>$ 40,667</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>OPERATING ACTIVITIES:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Net income (loss)</td>
+      <td>7,778</td>
+      <td>(2,028)</td>
+      <td>15,885</td>
+      <td>(5,872)</td>
+      <td>29,438</td>
+      <td>11,607</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Adjustments to reconcile net income (loss) to ...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Depreciation content costs, and operating amor...</td>
+      <td>8,038</td>
+      <td>9,594</td>
+      <td>15,546</td>
+      <td>18,572</td>
+      <td>29,687</td>
+      <td>37,322</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Stock-based compensation</td>
+      <td>3,591</td>
+      <td>5,209</td>
+      <td>5,897</td>
+      <td>8,459</td>
+      <td>10,747</td>
+      <td>15,319</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Other operating expense (income), net</td>
+      <td>18</td>
+      <td>122</td>
+      <td>48</td>
+      <td>337</td>
+      <td>(372)</td>
+      <td>426</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Other expense (income), net</td>
+      <td>(1,258)</td>
+      <td>6,104</td>
+      <td>(2,714)</td>
+      <td>14,793</td>
+      <td>(5,092)</td>
+      <td>3,201</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Deferred income taxes</td>
+      <td>701</td>
+      <td>(1,955)</td>
+      <td>2,404</td>
+      <td>(3,956)</td>
+      <td>1,063</td>
+      <td>(6,670)</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Changes in operating assets and liabilities:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Inventories</td>
+      <td>(209)</td>
+      <td>(3,890)</td>
+      <td>(513)</td>
+      <td>(6,504)</td>
+      <td>(4,082)</td>
+      <td>(15,478)</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Accounts receivable, net and other</td>
+      <td>(4,462)</td>
+      <td>(6,799)</td>
+      <td>(6,717)</td>
+      <td>(8,315)</td>
+      <td>(13,294)</td>
+      <td>(19,761)</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Accounts payable</td>
+      <td>47</td>
+      <td>3,699</td>
+      <td>(8,219)</td>
+      <td>(5,681)</td>
+      <td>8,689</td>
+      <td>6,140</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Accrued expenses and other</td>
+      <td>(1,685)</td>
+      <td>(1,412)</td>
+      <td>(5,745)</td>
+      <td>(7,315)</td>
+      <td>1,071</td>
+      <td>553</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Unearned revenue</td>
+      <td>156</td>
+      <td>321</td>
+      <td>1,056</td>
+      <td>1,657</td>
+      <td>1,467</td>
+      <td>2,915</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Net cash provided by (used in) operating activ...</td>
+      <td>12,715</td>
+      <td>8,965</td>
+      <td>16,928</td>
+      <td>6,175</td>
+      <td>59,322</td>
+      <td>35,574</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>INVESTING ACTIVITIES:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>Purchases of property and equipment</td>
+      <td>(14,288)</td>
+      <td>(15,724)</td>
+      <td>(26,370)</td>
+      <td>(30,675)</td>
+      <td>(52,256)</td>
+      <td>(65,358)</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Proceeds from property and equipment sales and...</td>
+      <td>1,300</td>
+      <td>1,626</td>
+      <td>2,195</td>
+      <td>2,835</td>
+      <td>5,080</td>
+      <td>6,297</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Acquisitions, net of cash acquired, and other</td>
+      <td>(320)</td>
+      <td>(259)</td>
+      <td>(950)</td>
+      <td>(6,600)</td>
+      <td>(3,066)</td>
+      <td>(7,635)</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Sales and maturities of marketable securities</td>
+      <td>13,213</td>
+      <td>2,608</td>
+      <td>31,039</td>
+      <td>25,361</td>
+      <td>61,512</td>
+      <td>53,706</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>Purchases of marketable securities</td>
+      <td>(21,985)</td>
+      <td>(329)</td>
+      <td>(36,660)</td>
+      <td>(2,093)</td>
+      <td>(74,929)</td>
+      <td>(25,590)</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Net cash provided by (used in) investing activ...</td>
+      <td>(22,080)</td>
+      <td>(12,078)</td>
+      <td>(30,746)</td>
+      <td>(11,172)</td>
+      <td>(63,659)</td>
+      <td>(38,580)</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>FINANCING ACTIVITIES:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Common stock repurchased</td>
+      <td>-</td>
+      <td>(3,334)</td>
+      <td>-</td>
+      <td>(6,000)</td>
+      <td>-</td>
+      <td>(6,000)</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Proceeds from short-term debt, and other</td>
+      <td>1,176</td>
+      <td>4,865</td>
+      <td>3,102</td>
+      <td>18,608</td>
+      <td>6,848</td>
+      <td>23,462</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Repayments of short-term debt, and other</td>
+      <td>(1,176)</td>
+      <td>(7,610)</td>
+      <td>(3,177)</td>
+      <td>(13,841)</td>
+      <td>(6,817)</td>
+      <td>(18,417)</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Proceeds from long-term debt</td>
+      <td>18,516</td>
+      <td>12,824</td>
+      <td>18,627</td>
+      <td>12,824</td>
+      <td>19,158</td>
+      <td>13,200</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Repayments of long-term debt</td>
+      <td>(41)</td>
+      <td>(1)</td>
+      <td>(80)</td>
+      <td>(1)</td>
+      <td>(1,392)</td>
+      <td>(1,511)</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>Principal repayments of finance leases</td>
+      <td>(2,804)</td>
+      <td>(2,059)</td>
+      <td>(6,210)</td>
+      <td>(4,836)</td>
+      <td>(11,435)</td>
+      <td>(9,789)</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>Principal repayments of financing obligations</td>
+      <td>(28)</td>
+      <td>(59)</td>
+      <td>(95)</td>
+      <td>(138)</td>
+      <td>(116)</td>
+      <td>(205)</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Net cash provided by (used in) financing activ...</td>
+      <td>15,643</td>
+      <td>4,626</td>
+      <td>12,167</td>
+      <td>6,616</td>
+      <td>6,246</td>
+      <td>740</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>Foreign currency effect on cash, cash equivale...</td>
+      <td>234</td>
+      <td>(412)</td>
+      <td>(59)</td>
+      <td>(396)</td>
+      <td>916</td>
+      <td>(701)</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>Net increase (decrease) in cash, cash equivale...</td>
+      <td>6,512</td>
+      <td>1,101</td>
+      <td>(1,710)</td>
+      <td>1,223</td>
+      <td>2,825</td>
+      <td>(2,967)</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>CASH, CASH EQUIVALENTS, AND RESTRICTED CASH, E...</td>
+      <td>$ 40,667</td>
+      <td>$ 37,700</td>
+      <td>$ 40,667</td>
+      <td>$ 37,700</td>
+      <td>$ 40,667</td>
+      <td>$ 37,700</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>SUPPLEMENTAL CASH FLOW INFORMATION:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>Cash paid for interest on debt</td>
+      <td>$ 179</td>
+      <td>$ 349</td>
+      <td>$ 455</td>
+      <td>$ 628</td>
+      <td>$ 942</td>
+      <td>$ 1,271</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>Cash paid for operating leases</td>
+      <td>1,577</td>
+      <td>2,088</td>
+      <td>3,217</td>
+      <td>4,455</td>
+      <td>5,577</td>
+      <td>7,960</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>Cash paid for interest on finance leases</td>
+      <td>129</td>
+      <td>95</td>
+      <td>286</td>
+      <td>202</td>
+      <td>569</td>
+      <td>437</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>Cash paid for interest on financing obligations</td>
+      <td>35</td>
+      <td>55</td>
+      <td>68</td>
+      <td>113</td>
+      <td>127</td>
+      <td>198</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>Cash paid for income taxes, net of refunds</td>
+      <td>1,803</td>
+      <td>3,145</td>
+      <td>2,604</td>
+      <td>3,598</td>
+      <td>3,526</td>
+      <td>4,682</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>Assets acquired under operating leases</td>
+      <td>5,578</td>
+      <td>5,101</td>
+      <td>9,114</td>
+      <td>7,276</td>
+      <td>19,576</td>
+      <td>23,531</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>Property modifications and equipment acquired ...</td>
+      <td>1,642</td>
+      <td>61</td>
+      <td>3,709</td>
+      <td>227</td>
+      <td>9,976</td>
+      <td>3,579</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>Property lease arrangements and equipment reco...</td>
+      <td>1,193</td>
+      <td>986</td>
+      <td>2,080</td>
+      <td>2,351</td>
+      <td>3,486</td>
+      <td>6,117</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td>Property lease arrangements, and equipment wit...</td>
+      <td>99</td>
+      <td>1,079</td>
+      <td>99</td>
+      <td>1,112</td>
+      <td>99</td>
+      <td>1,243</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</div>
+<div class="section" id="Table-as-CSV">
+<h2>Table as CSV<a class="headerlink" href="#Table-as-CSV" title="Permalink to this heading"></a></h2>
+<p>This is a shorthand for table.to_pandas().to_csv().</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">to_csv</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;,0,1,2,3,4,5,6\n0,,Three Months June,&#34;30, Ended&#34;,Six Months June,&#34;Ended 30,&#34;,Twelve Months June,&#34;30, Ended&#34;\n1,,2021,2022,2021,2022,2021,2022\n2,,,,,,,\n3,&#34;CASH, PERIOD CASH EQUIVALENTS, AND RESTRICTED CASH, BEGINNING OF&#34;,&#34;$ 34,155&#34;,&#34;$ 36,599&#34;,&#34;$ 42,377&#34;,&#34;$ 36,477&#34;,&#34;$ 37,842&#34;,&#34;$ 40,667&#34;\n4,OPERATING ACTIVITIES:,,,,,,\n5,Net income (loss),&#34;7,778&#34;,&#34;(2,028)&#34;,&#34;15,885&#34;,&#34;(5,872)&#34;,&#34;29,438&#34;,&#34;11,607&#34;\n6,Adjustments to reconcile net income (loss) to net cash from operating activities:,,,,,,\n7,&#34;Depreciation content costs, and operating amortization lease of assets, property and and other equipment and capitalized&#34;,&#34;8,038&#34;,&#34;9,594&#34;,&#34;15,546&#34;,&#34;18,572&#34;,&#34;29,687&#34;,&#34;37,322&#34;\n8,Stock-based compensation,&#34;3,591&#34;,&#34;5,209&#34;,&#34;5,897&#34;,&#34;8,459&#34;,&#34;10,747&#34;,&#34;15,319&#34;\n9,&#34;Other operating expense (income), net&#34;,18,122,48,337,(372),426\n10,&#34;Other expense (income), net&#34;,&#34;(1,258)&#34;,&#34;6,104&#34;,&#34;(2,714)&#34;,&#34;14,793&#34;,&#34;(5,092)&#34;,&#34;3,201&#34;\n11,Deferred income taxes,701,&#34;(1,955)&#34;,&#34;2,404&#34;,&#34;(3,956)&#34;,&#34;1,063&#34;,&#34;(6,670)&#34;\n12,Changes in operating assets and liabilities:,,,,,,\n13,Inventories,(209),&#34;(3,890)&#34;,(513),&#34;(6,504)&#34;,&#34;(4,082)&#34;,&#34;(15,478)&#34;\n14,&#34;Accounts receivable, net and other&#34;,&#34;(4,462)&#34;,&#34;(6,799)&#34;,&#34;(6,717)&#34;,&#34;(8,315)&#34;,&#34;(13,294)&#34;,&#34;(19,761)&#34;\n15,Accounts payable,47,&#34;3,699&#34;,&#34;(8,219)&#34;,&#34;(5,681)&#34;,&#34;8,689&#34;,&#34;6,140&#34;\n16,Accrued expenses and other,&#34;(1,685)&#34;,&#34;(1,412)&#34;,&#34;(5,745)&#34;,&#34;(7,315)&#34;,&#34;1,071&#34;,553\n17,Unearned revenue,156,321,&#34;1,056&#34;,&#34;1,657&#34;,&#34;1,467&#34;,&#34;2,915&#34;\n18,Net cash provided by (used in) operating activities,&#34;12,715&#34;,&#34;8,965&#34;,&#34;16,928&#34;,&#34;6,175&#34;,&#34;59,322&#34;,&#34;35,574&#34;\n19,INVESTING ACTIVITIES:,,,,,,\n20,Purchases of property and equipment,&#34;(14,288)&#34;,&#34;(15,724)&#34;,&#34;(26,370)&#34;,&#34;(30,675)&#34;,&#34;(52,256)&#34;,&#34;(65,358)&#34;\n21,Proceeds from property and equipment sales and incentives,&#34;1,300&#34;,&#34;1,626&#34;,&#34;2,195&#34;,&#34;2,835&#34;,&#34;5,080&#34;,&#34;6,297&#34;\n22,&#34;Acquisitions, net of cash acquired, and other&#34;,(320),(259),(950),&#34;(6,600)&#34;,&#34;(3,066)&#34;,&#34;(7,635)&#34;\n23,Sales and maturities of marketable securities,&#34;13,213&#34;,&#34;2,608&#34;,&#34;31,039&#34;,&#34;25,361&#34;,&#34;61,512&#34;,&#34;53,706&#34;\n24,Purchases of marketable securities,&#34;(21,985)&#34;,(329),&#34;(36,660)&#34;,&#34;(2,093)&#34;,&#34;(74,929)&#34;,&#34;(25,590)&#34;\n25,Net cash provided by (used in) investing activities,&#34;(22,080)&#34;,&#34;(12,078)&#34;,&#34;(30,746)&#34;,&#34;(11,172)&#34;,&#34;(63,659)&#34;,&#34;(38,580)&#34;\n26,FINANCING ACTIVITIES:,,,,,,\n27,Common stock repurchased,-,&#34;(3,334)&#34;,-,&#34;(6,000)&#34;,-,&#34;(6,000)&#34;\n28,&#34;Proceeds from short-term debt, and other&#34;,&#34;1,176&#34;,&#34;4,865&#34;,&#34;3,102&#34;,&#34;18,608&#34;,&#34;6,848&#34;,&#34;23,462&#34;\n29,&#34;Repayments of short-term debt, and other&#34;,&#34;(1,176)&#34;,&#34;(7,610)&#34;,&#34;(3,177)&#34;,&#34;(13,841)&#34;,&#34;(6,817)&#34;,&#34;(18,417)&#34;\n30,Proceeds from long-term debt,&#34;18,516&#34;,&#34;12,824&#34;,&#34;18,627&#34;,&#34;12,824&#34;,&#34;19,158&#34;,&#34;13,200&#34;\n31,Repayments of long-term debt,(41),(1),(80),(1),&#34;(1,392)&#34;,&#34;(1,511)&#34;\n32,Principal repayments of finance leases,&#34;(2,804)&#34;,&#34;(2,059)&#34;,&#34;(6,210)&#34;,&#34;(4,836)&#34;,&#34;(11,435)&#34;,&#34;(9,789)&#34;\n33,Principal repayments of financing obligations,(28),(59),(95),(138),(116),(205)\n34,Net cash provided by (used in) financing activities,&#34;15,643&#34;,&#34;4,626&#34;,&#34;12,167&#34;,&#34;6,616&#34;,&#34;6,246&#34;,740\n35,&#34;Foreign currency effect on cash, cash equivalents, and restricted cash&#34;,234,(412),(59),(396),916,(701)\n36,&#34;Net increase (decrease) in cash, cash equivalents, and restricted cash&#34;,&#34;6,512&#34;,&#34;1,101&#34;,&#34;(1,710)&#34;,&#34;1,223&#34;,&#34;2,825&#34;,&#34;(2,967)&#34;\n37,&#34;CASH, CASH EQUIVALENTS, AND RESTRICTED CASH, END OF PERIOD&#34;,&#34;$ 40,667&#34;,&#34;$ 37,700&#34;,&#34;$ 40,667&#34;,&#34;$ 37,700&#34;,&#34;$ 40,667&#34;,&#34;$ 37,700&#34;\n38,SUPPLEMENTAL CASH FLOW INFORMATION:,,,,,,\n39,Cash paid for interest on debt,$ 179,$ 349,$ 455,$ 628,$ 942,&#34;$ 1,271&#34;\n40,Cash paid for operating leases,&#34;1,577&#34;,&#34;2,088&#34;,&#34;3,217&#34;,&#34;4,455&#34;,&#34;5,577&#34;,&#34;7,960&#34;\n41,Cash paid for interest on finance leases,129,95,286,202,569,437\n42,Cash paid for interest on financing obligations,35,55,68,113,127,198\n43,&#34;Cash paid for income taxes, net of refunds&#34;,&#34;1,803&#34;,&#34;3,145&#34;,&#34;2,604&#34;,&#34;3,598&#34;,&#34;3,526&#34;,&#34;4,682&#34;\n44,Assets acquired under operating leases,&#34;5,578&#34;,&#34;5,101&#34;,&#34;9,114&#34;,&#34;7,276&#34;,&#34;19,576&#34;,&#34;23,531&#34;\n45,&#34;Property modifications and equipment acquired under finance leases, net of remeasurements and&#34;,&#34;1,642&#34;,61,&#34;3,709&#34;,227,&#34;9,976&#34;,&#34;3,579&#34;\n46,Property lease arrangements and equipment recognized during the construction period of build-to-suit,&#34;1,193&#34;,986,&#34;2,080&#34;,&#34;2,351&#34;,&#34;3,486&#34;,&#34;6,117&#34;\n47,&#34;Property lease arrangements, and equipment with derecognized the associated after leases the construction recognized period as operating of build-to-suit&#34;,99,&#34;1,079&#34;,99,&#34;1,112&#34;,99,&#34;1,243&#34;\n&#39;
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Table-to-Microsoft-Office-Excel">
+<h2>Table to Microsoft Office Excel<a class="headerlink" href="#Table-to-Microsoft-Office-Excel" title="Permalink to this heading"></a></h2>
+<p>The only format that supports merged cells.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="s2">&quot;out.xlsx&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Conclusion">
+<h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
+<p>Textractor makes it easy to go from one format to another and streamline your table processing workflows.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Amazon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
