@@ -1,4 +1,4 @@
-![Textractor](docs/source/textractor_cropped.png)
+![Textractor](https://raw.githubusercontent.com/aws-samples/amazon-textract-textractor/5716c52e8a39c063f43e058e1637e4984a4b2da4/docs/source/textractor_cropped.png)
 
 [![Tests](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/tests.yml/badge.svg)](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/tests.yml) [![Documentation](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/documentation.yml/badge.svg)](https://aws-samples.github.io/amazon-textract-textractor/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
@@ -19,6 +19,8 @@ You can pick several extras by separating the labels with commas like this `pip 
 Generated documentation for the latest released version can be accessed here: [aws-samples.github.io/amazon-textract-textractor/](https://aws-samples.github.io/amazon-textract-textractor/)
 
 ## Examples
+
+While a collection of simplistic examples is presented here, the documentation has a much [larger collection of examples](https://aws-samples.github.io/amazon-textract-textractor/examples.html) with specific case studies that will help you get started. 
 
 ### Setup
 
@@ -69,11 +71,6 @@ print(document.expense_documents[0].get("TOTAL").text)
 ```
 
 If your use case was not covered here or if you are looking for asynchronous usage examples, see [our collection of examples](textractor.readthedocs.org/latest/examples.html).
-
-## Try it out
-
-The `Demo.ipynb` can be used as a reference to understand some functionalities hosted by the package.
-Additionally, `docs/tests/notebooks/` have some tutorials you can try out.
 
 ## Tests
 
