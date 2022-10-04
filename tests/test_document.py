@@ -65,7 +65,7 @@ class TestDocument(unittest.TestCase):
 
         self.assertEqual(
             document.__repr__(),
-            "This document holds the following data:\nPages - 1\nWords - 51\nLines - 24\nKey-values - 5\nCheckboxes - 2\nTables - 1\nIdentity Documents - 0"
+            "This document holds the following data:\nPages - 1\nWords - 51\nLines - 24\nKey-values - 5\nCheckboxes - 2\nTables - 1\nIdentity Documents - 0\nExpense Documents - 0"
         )
 
         self.assertEqual(len(document.keys(include_checkboxes=True)), 7)
