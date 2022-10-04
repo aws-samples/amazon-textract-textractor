@@ -173,14 +173,6 @@
     "\n",
     "You can save an accelerate your development process by reusing responses. This approach is used in the Textractor unit tests."
    ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "6c8ddd95",
-   "metadata": {},
-   "outputs": [],
-   "source": []
   }
  ],
  "metadata": {

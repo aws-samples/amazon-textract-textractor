@@ -2531,14 +2531,6 @@
     "\n",
     "With Textractor, we strived to offer a tool that does most of the work, but also one that gets out of the way when you know better. If you find a Textractor object that does not have a `raw_object` property, open an issue on our official GitHub repository."
    ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "347efc30",
-   "metadata": {},
-   "outputs": [],
-   "source": []
   }
  ],
  "metadata": {
