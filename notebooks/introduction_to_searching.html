@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parsing an existing response &mdash; amazon-textract-textractor 1.0.0 documentation</title>
+  <title>Introduction to searching &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Introduction to searching" href="introduction_to_searching.html" />
-    <link rel="prev" title="Using Textract OCR" href="simple_ocr.html" /> 
+    <link rel="next" title="Word Occurence within Document" href="finding_words_within_a_document.html" />
+    <link rel="prev" title="Parsing an existing response" href="parsing_an_existing_response.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,14 +45,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="simple_ocr.html">Using Textract OCR</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Parsing an existing response</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parsing_an_existing_response.html">Parsing an existing response</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction to searching</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Installation">Installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Not-calling-Textract">Not calling Textract</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Instantiating-from-a-dictionary">Instantiating from a dictionary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calling-Textract">Calling Textract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Saving-on-costs">Saving on costs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="introduction_to_searching.html">Introduction to searching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="finding_words_within_a_document.html">Word Occurence within Document</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exporting_form_data.html">Exporting Form Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="table_data_to_various_formats.html">Table data extraction to Excel</a></li>
@@ -86,9 +86,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../examples.html">Examples</a> &raquo;</li>
-      <li>Parsing an existing response</li>
+      <li>Introduction to searching</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/notebooks/parsing_an_existing_response.ipynb.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/notebooks/introduction_to_searching.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -374,33 +374,46 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Parsing-an-existing-response">
-<h1>Parsing an existing response<a class="headerlink" href="#Parsing-an-existing-response" title="Permalink to this heading"></a></h1>
-<p>Since Amazon Textract is a paid service, it is likely that you will want to reduce your costs by developing and debugging with existing JSON responses. We offer a simple interface to do so.</p>
+<div class="section" id="Introduction-to-searching">
+<h1>Introduction to searching<a class="headerlink" href="#Introduction-to-searching" title="Permalink to this heading"></a></h1>
+<p>Textractor offers several tool to process Textract output. In this example, we will build a robust solution for extracting specific fields from a specific form (i.e. not fields explicitly supported by Amazon Textract).</p>
 <div class="section" id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
 <p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
 </div>
-<div class="section" id="Not-calling-Textract">
-<h2>Not calling Textract<a class="headerlink" href="#Not-calling-Textract" title="Permalink to this heading"></a></h2>
-<p>There are two ways to parse an existing JSON. The simplest one, reminiscent of <code class="docutils literal notranslate"><span class="pre">PIL.Image.open()</span></code> is <code class="docutils literal notranslate"><span class="pre">Document.open()</span></code> which takes either a path or file-like object and parses it automatically. The path <strong>can</strong> be an S3 path.</p>
+<div class="section" id="Calling-Textract">
+<h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor.entities.document</span> <span class="kn">import</span> <span class="n">Document</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
+<span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span>
 
-<span class="n">document</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;</span><span class="p">)</span>
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">aws_profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">start_document_analysis</span><span class="p">(</span>
+    <span class="c1"># Here we pass a Pillow image instead of path. This changes nothing as</span>
+    <span class="c1"># Textractor supports most input types.</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">),</span>
+    <span class="c1"># We specify the features that we want, here, we only want keys and values</span>
+    <span class="c1"># therefore we use TextractFeatures.FORMS.</span>
+    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">FORMS</span><span class="p">],</span>
+    <span class="n">s3_upload_path</span><span class="o">=</span><span class="s2">&quot;s3://textract-ocr/temp/&quot;</span><span class="p">,</span>
+    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<p>Let’s look at the asset.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -409,103 +422,128 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-This document holds the following data:
-Pages - 1
-Words - 51
-Lines - 24
-Key-values - 0
-Checkboxes - 0
-Tables - 1
-Identity Documents - 0
-Expense Documents - 0
-</pre></div></div>
+<img alt="../_images/notebooks_introduction_to_searching_4_0.png" src="../_images/notebooks_introduction_to_searching_4_0.png" />
 </div>
-<div class="nbinput nblast docutils container">
+</div>
+<p>Now if you are looking for the rent, here of $2000, you could use the extracted checkboxes.</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">document</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">checkboxes</span> <span class="k">if</span> <span class="s2">&quot;rent&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-This document holds the following data:
-Pages - 1
-Words - 51
-Lines - 24
-Key-values - 0
-Checkboxes - 0
-Tables - 1
-Identity Documents - 0
-Expense Documents - 0
+[[ ] Rent Room, [ ] Space Rent $, [X] Rent $ 2000]
+</pre></div></div>
+</div>
+<p>There are several results, but we really only care about what the checkboxe the customer checked.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">checkboxes</span> <span class="k">if</span> <span class="s2">&quot;rent&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()]</span>
+<span class="n">out</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[X] Rent $ 2000]
 </pre></div></div>
 </div>
 </div>
-<div class="section" id="Instantiating-from-a-dictionary">
-<h2>Instantiating from a dictionary<a class="headerlink" href="#Instantiating-from-a-dictionary" title="Permalink to this heading"></a></h2>
-<p>Another possible solution is to use the <code class="docutils literal notranslate"><span class="pre">ResponseParser</span></code> directly with a <code class="docutils literal notranslate"><span class="pre">dict</span></code> object.</p>
+<div class="section" id="Saving-on-costs">
+<h2>Saving on costs<a class="headerlink" href="#Saving-on-costs" title="Permalink to this heading"></a></h2>
+<p>As shown above, Amazon Textract is able to extract the checkbox without any issue, but what if you want to reduce the per-document processing costs and you are willing process the data a bit more. Here we will get the same result by leveraging word search.</p>
 <div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">detect_document_text</span><span class="p">(</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">textractor.parsers</span> <span class="kn">import</span> <span class="n">response_parser</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">document</span> <span class="o">=</span> <span class="n">response_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 This document holds the following data:
 Pages - 1
-Words - 51
-Lines - 24
+Words - 499
+Lines - 129
 Key-values - 0
 Checkboxes - 0
-Tables - 1
+Tables - 0
 Identity Documents - 0
 Expense Documents - 0
 </pre></div></div>
 </div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rents</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">search_lines</span><span class="p">(</span><span class="s2">&quot;Rent&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rents</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[Renters: Provide a complete signed copy of rent or lease agreement dated within the last 12 months, listing every person living,
+ in the home(s). If subsidized, provide signed Housing documents listing every person in the home, rent and utility rebate.,
+ Rent Room,
+ Rent $ 2000,
+ Subsidized Rent $,
+ Space Rent $]
+</pre></div></div>
+</div>
+<p>Now we can’t know if there was a checked checkbox next to the “Rent $ 2000” line, but maybe that’s a reasonable assumption for your use case.</p>
 </div>
 <div class="section" id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
-<p>You can save and accelerate your development process by reusing responses. This approach is used in the Textractor unit tests.</p>
+<p>Searching allows you to inject your knowledge of the data inside your workflow to improve the raw results returned by Textract. The more specific your input data is, the lower the costs as you can get away with parsing just the text output.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -513,8 +551,8 @@ Expense Documents - 0
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="simple_ocr.html" class="btn btn-neutral float-left" title="Using Textract OCR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="introduction_to_searching.html" class="btn btn-neutral float-right" title="Introduction to searching" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="parsing_an_existing_response.html" class="btn btn-neutral float-left" title="Parsing an existing response" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="finding_words_within_a_document.html" class="btn btn-neutral float-right" title="Word Occurence within Document" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

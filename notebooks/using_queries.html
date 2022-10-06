@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parsing an existing response &mdash; amazon-textract-textractor 1.0.0 documentation</title>
+  <title>Using Queries &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Introduction to searching" href="introduction_to_searching.html" />
-    <link rel="prev" title="Using Textract OCR" href="simple_ocr.html" /> 
+    <link rel="next" title="Interfacing with trp2" href="interfacing_with_trp2.html" />
+    <link rel="prev" title="Using AnalyzeID" href="using_analyze_id.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,19 +45,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="simple_ocr.html">Using Textract OCR</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Parsing an existing response</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Installation">Installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Not-calling-Textract">Not calling Textract</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Instantiating-from-a-dictionary">Instantiating from a dictionary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="parsing_an_existing_response.html">Parsing an existing response</a></li>
 <li class="toctree-l2"><a class="reference internal" href="introduction_to_searching.html">Introduction to searching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="finding_words_within_a_document.html">Word Occurence within Document</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exporting_form_data.html">Exporting Form Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="table_data_to_various_formats.html">Table data extraction to Excel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="using_analyze_id.html">Using AnalyzeID</a></li>
-<li class="toctree-l2"><a class="reference internal" href="using_queries.html">Using Queries</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Using Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Examples-of-queries">Examples of queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calling-Textract">Calling Textract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="interfacing_with_trp2.html">Interfacing with trp2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
 </ul>
@@ -86,9 +86,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../examples.html">Examples</a> &raquo;</li>
-      <li>Parsing an existing response</li>
+      <li>Using Queries</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/notebooks/parsing_an_existing_response.ipynb.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/notebooks/using_queries.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -374,138 +374,169 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Parsing-an-existing-response">
-<h1>Parsing an existing response<a class="headerlink" href="#Parsing-an-existing-response" title="Permalink to this heading"></a></h1>
-<p>Since Amazon Textract is a paid service, it is likely that you will want to reduce your costs by developing and debugging with existing JSON responses. We offer a simple interface to do so.</p>
+<div class="section" id="Using-Queries">
+<h1>Using Queries<a class="headerlink" href="#Using-Queries" title="Permalink to this heading"></a></h1>
+<p>Queries are a new user friendly way to use Textract by asking questions and getting answer.</p>
 <div class="section" id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
 <p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
 </div>
-<div class="section" id="Not-calling-Textract">
-<h2>Not calling Textract<a class="headerlink" href="#Not-calling-Textract" title="Permalink to this heading"></a></h2>
-<p>There are two ways to parse an existing JSON. The simplest one, reminiscent of <code class="docutils literal notranslate"><span class="pre">PIL.Image.open()</span></code> is <code class="docutils literal notranslate"><span class="pre">Document.open()</span></code> which takes either a path or file-like object and parses it automatically. The path <strong>can</strong> be an S3 path.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="section" id="Examples-of-queries">
+<h2>Examples of queries<a class="headerlink" href="#Examples-of-queries" title="Permalink to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor.entities.document</span> <span class="kn">import</span> <span class="n">Document</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_using_queries_1_0.png" src="../_images/notebooks_using_queries_1_0.png" />
+</div>
+</div>
+<p>This form contains several fields and the Queries API allows us to “ask” 15 questions when using the synchronous API and 30 questions when using the asynchronous API.</p>
+<p>From the above we will ask the following questions:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">queries</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;How many persons are there in the household?&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;What is the home phone number?&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Are any household members non-citizen?&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Are any household members disabled?&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Where is the household located?&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;What is the email address?&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;What is the address of the landlord?&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;What is the telephone number of the landlord&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;What is the dwelling type?&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;What is the dwelling cost?&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;How did we hear about the Energy Assistance Program?&quot;</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Calling-Textract">
+<h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
+<span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span>
 
-<span class="n">document</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;</span><span class="p">)</span>
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">aws_profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">),</span>
+    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">QUERIES</span><span class="p">],</span>
+    <span class="n">queries</span><span class="o">=</span><span class="n">queries</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-This document holds the following data:
-Pages - 1
-Words - 51
-Lines - 24
-Key-values - 0
-Checkboxes - 0
-Tables - 1
-Identity Documents - 0
-Expense Documents - 0
-</pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">document</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-This document holds the following data:
-Pages - 1
-Words - 51
-Lines - 24
-Key-values - 0
-Checkboxes - 0
-Tables - 1
-Identity Documents - 0
-Expense Documents - 0
-</pre></div></div>
-</div>
-</div>
-<div class="section" id="Instantiating-from-a-dictionary">
-<h2>Instantiating from a dictionary<a class="headerlink" href="#Instantiating-from-a-dictionary" title="Permalink to this heading"></a></h2>
-<p>Another possible solution is to use the <code class="docutils literal notranslate"><span class="pre">ResponseParser</span></code> directly with a <code class="docutils literal notranslate"><span class="pre">dict</span></code> object.</p>
-<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">textractor.parsers</span> <span class="kn">import</span> <span class="n">response_parser</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">document</span> <span class="o">=</span> <span class="n">response_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">queries</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-This document holds the following data:
-Pages - 1
-Words - 51
-Lines - 24
-Key-values - 0
-Checkboxes - 0
-Tables - 1
-Identity Documents - 0
-Expense Documents - 0
+[How many persons are there in the household?,
+ What is the home phone number? ( ) 414-2285,
+ Are any household members non-citizen? Yes,
+ Are any household members disabled? No,
+ Where is the household located? Sample Town,
+ What is the email address? johndoe@gmail.com,
+ What is the address of the landlord? 456 Landlord Town,
+ What is the telephone number of the landlord (702)486-1404,
+ What is the dwelling type? Condo/Townhome,
+ What is the dwelling cost? Rent $ 2000,
+ How did we hear about the Energy Assistance Program? Utility Company (flyer or employee)]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">queries</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">result</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">query</span><span class="si">}</span><span class="se">\n\t</span><span class="s2">Answer: </span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">answer</span><span class="si">}</span><span class="se">\n\t</span><span class="s2">Confidence: </span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">confidence</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">query</span><span class="si">}</span><span class="se">\n\t</span><span class="s2">No Answer</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+How many persons are there in the household?
+        No Answer
+
+What is the home phone number?
+        Answer: ( ) 414-2285
+        Confidence: 0.94
+
+Are any household members non-citizen?
+        Answer: Yes
+        Confidence: 0.58
+
+Are any household members disabled?
+        Answer: No
+        Confidence: 0.47
+
+Where is the household located?
+        Answer: Sample Town
+        Confidence: 0.65
+
+What is the email address?
+        Answer: johndoe@gmail.com
+        Confidence: 0.98
+
+What is the address of the landlord?
+        Answer: 456 Landlord Town
+        Confidence: 0.97
+
+What is the telephone number of the landlord
+        Answer: (702)486-1404
+        Confidence: 0.67
+
+What is the dwelling type?
+        Answer: Condo/Townhome
+        Confidence: 0.98
+
+What is the dwelling cost?
+        Answer: Rent $ 2000
+        Confidence: 0.55
+
+How did we hear about the Energy Assistance Program?
+        Answer: Utility Company (flyer or employee)
+        Confidence: 0.89
+
 </pre></div></div>
 </div>
 </div>
 <div class="section" id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
-<p>You can save and accelerate your development process by reusing responses. This approach is used in the Textractor unit tests.</p>
+<p>Queries are a powerful and inexpensive solution for processing a smaller number of keys and values. However, you can run into issues where the result is wrong either because the question requires a higher-level understanding, as with “How many people are there in the household?”. We recommend testing your workflow with some real samples and fine-tuning your queries to fit your use case.</p>
 </div>
 </div>
 
@@ -513,8 +544,8 @@ Expense Documents - 0
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="simple_ocr.html" class="btn btn-neutral float-left" title="Using Textract OCR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="introduction_to_searching.html" class="btn btn-neutral float-right" title="Introduction to searching" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="using_analyze_id.html" class="btn btn-neutral float-left" title="Using AnalyzeID" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="interfacing_with_trp2.html" class="btn btn-neutral float-right" title="Interfacing with trp2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
