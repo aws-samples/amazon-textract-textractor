@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Word Occurence within Document &mdash; amazon-textract-textractor 1.0.0 documentation</title>
+  <title>Visualizing Results &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Exporting Form Data" href="exporting_form_data.html" />
-    <link rel="prev" title="Visualizing Results" href="visualizing_results.html" /> 
+    <link rel="next" title="Word Occurence within Document" href="finding_words_within_a_document.html" />
+    <link rel="prev" title="Introduction to searching" href="introduction_to_searching.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,16 +47,15 @@
 <li class="toctree-l2"><a class="reference internal" href="simple_ocr.html">Using Textract OCR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parsing_an_existing_response.html">Parsing an existing response</a></li>
 <li class="toctree-l2"><a class="reference internal" href="introduction_to_searching.html">Introduction to searching</a></li>
-<li class="toctree-l2"><a class="reference internal" href="visualizing_results.html">Visualizing Results</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Word Occurence within Document</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Visualizing Results</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Calling-Textract">Calling Textract</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Retrieving-word-occurences">Retrieving word occurences</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Find-words-on-document-page-through-visualize()">Find words on document page through visualize()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#What-if-you-don’t-want-to-use-PyTorch?">What if you don’t want to use PyTorch?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Visualizing-the-result-of-a-search">Visualizing the result of a search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Visualizing-Tables">Visualizing Tables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="finding_words_within_a_document.html">Word Occurence within Document</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exporting_form_data.html">Exporting Form Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="table_data_to_various_formats.html">Table data extraction to Excel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="using_analyze_id.html">Using AnalyzeID</a></li>
@@ -89,9 +88,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../examples.html">Examples</a> &raquo;</li>
-      <li>Word Occurence within Document</li>
+      <li>Visualizing Results</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/notebooks/finding_words_within_a_document.ipynb.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/notebooks/visualizing_results.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -377,114 +376,161 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Word-Occurence-within-Document">
-<h1>Word Occurence within Document<a class="headerlink" href="#Word-Occurence-within-Document" title="Permalink to this heading"></a></h1>
-<p>This page will walk you through using Textractor to find all the occurrences of the word ‘Room’ in a document and visualize them overlayed on the document image.</p>
+<div class="section" id="Visualizing-Results">
+<h1>Visualizing Results<a class="headerlink" href="#Visualizing-Results" title="Permalink to this heading"></a></h1>
+<p>When debugging it’s usually helpful to be able to see what went wrong. Textractor offers simple API to see your output that can help a lot when developing heuristics.</p>
 <div class="section" id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
-<p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip. This example requires rasterizing PDFs and using word embeddings to do fuzzy search therefore you need to run:</p>
-<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[torch,pdf]</span></code></p>
-<p>There are various sets of dependencies available to tailor your installation to your use case. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
+<p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
+<p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
 </div>
 <div class="section" id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
-<p>We use the synchronous API for this example, but any all APIs would support this use case.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
+<span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span>
 
 <span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">aws_profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
-<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">detect_document_text</span><span class="p">(</span>
-    <span class="n">file_source</span><span class="o">=</span><span class="s2">&quot;../../../tests/fixtures/tutorial.pdf&quot;</span><span class="p">,</span>
-    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">),</span>
+    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">FORMS</span><span class="p">,</span> <span class="n">TextractFeatures</span><span class="o">.</span><span class="n">TABLES</span><span class="p">],</span>
+    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Retrieving-word-occurences">
-<h2>Retrieving word occurences<a class="headerlink" href="#Retrieving-word-occurences" title="Permalink to this heading"></a></h2>
-<p>Words and lines can be search at the document and page level by calling the <code class="docutils literal notranslate"><span class="pre">search_words()</span></code> and <code class="docutils literal notranslate"><span class="pre">search_lines()</span></code> methods respectively.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">word_occurences</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">search_words</span><span class="p">(</span><span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;Room&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of occurences of the word Room in the document = &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">word_occurences</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="Find-words-on-document-page-through-visualize()">
-<h2>Find words on document page through visualize()<a class="headerlink" href="#Find-words-on-document-page-through-visualize()" title="Permalink to this heading"></a></h2>
-<p>To identify the location of these words on the document, <code class="docutils literal notranslate"><span class="pre">visualize()</span></code> method can be called on the object returned by the <code class="docutils literal notranslate"><span class="pre">search_words()</span></code> call. This returns PIL Images of the document that contains these word instances along with bounding boxes around these objects.</p>
+<p>Let’s look at the asset.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">word_occurences</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_finding_words_within_a_document_5_0.png" src="../_images/notebooks_finding_words_within_a_document_5_0.png" />
+<img alt="../_images/notebooks_visualizing_results_3_0.png" src="../_images/notebooks_visualizing_results_3_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="What-if-you-don’t-want-to-use-PyTorch?">
-<h2>What if you don’t want to use PyTorch?<a class="headerlink" href="#What-if-you-don’t-want-to-use-PyTorch?" title="Permalink to this heading"></a></h2>
-<p>PyTorch gives the most accurate results, but it also uses more compute resources and might be overkill for your use case. This is why Textractor comes built-in with other string matching algorithms.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">SimilarityMetric</span>
-
-<span class="n">word_occurences</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">search_words</span><span class="p">(</span>
-    <span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;Room&quot;</span><span class="p">,</span>
-    <span class="n">top_k</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-    <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">similarity_metric</span><span class="o">=</span><span class="n">SimilarityMetric</span><span class="o">.</span><span class="n">LEVENSHTEIN</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of occurences of the word Room in the document = &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">word_occurences</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Number of occurences of the word Room in the document =  10
+This document holds the following data:
+Pages - 1
+Words - 494
+Lines - 129
+Key-values - 20
+Checkboxes - 29
+Tables - 1
+Identity Documents - 0
+Expense Documents - 0
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">word_occurences</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">checkboxes</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_finding_words_within_a_document_8_0.png" src="../_images/notebooks_finding_words_within_a_document_8_0.png" />
+<img alt="../_images/notebooks_visualizing_results_5_0.png" src="../_images/notebooks_visualizing_results_5_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">key_values</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_visualizing_results_6_0.png" src="../_images/notebooks_visualizing_results_6_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Visualizing-the-result-of-a-search">
+<h2>Visualizing the result of a search<a class="headerlink" href="#Visualizing-the-result-of-a-search" title="Permalink to this heading"></a></h2>
+<p>Here we will be looking for the word “Rent”.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">search_words</span><span class="p">(</span><span class="s2">&quot;Rent&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_visualizing_results_9_0.png" src="../_images/notebooks_visualizing_results_9_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Visualizing-Tables">
+<h2>Visualizing Tables<a class="headerlink" href="#Visualizing-Tables" title="Permalink to this heading"></a></h2>
+<p>Tables can be visualized as well (here) in purple.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_visualizing_results_11_0.png" src="../_images/notebooks_visualizing_results_11_0.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
-<p>There are many more supported APIs and usecases in Textractor, if this did not address your use case, we encourage you to look at <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/examples.html">the other examples</a>.</p>
+<p>Textractor packs visualization utilities that help you understand the Textract output to implement better heuristics.</p>
 </div>
 </div>
 
@@ -492,8 +538,8 @@ Number of occurences of the word Room in the document =  10
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="visualizing_results.html" class="btn btn-neutral float-left" title="Visualizing Results" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="exporting_form_data.html" class="btn btn-neutral float-right" title="Exporting Form Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="introduction_to_searching.html" class="btn btn-neutral float-left" title="Introduction to searching" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="finding_words_within_a_document.html" class="btn btn-neutral float-right" title="Word Occurence within Document" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

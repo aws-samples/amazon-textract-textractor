@@ -238,14 +238,6 @@
     "\n",
     "Searching allows you to inject your knowledge of the data inside your workflow to improve the raw results returned by Textract. The more specific your input data is, the lower the costs as you can get away with parsing just the text output."
    ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "fb317688",
-   "metadata": {},
-   "outputs": [],
-   "source": []
   }
  ],
  "metadata": {
