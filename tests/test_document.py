@@ -82,106 +82,96 @@ class TestDocument(unittest.TestCase):
         self.assertEqual(len(document.get_words_by_type(TextTypes.HANDWRITING)), 0)
 
         self.assertIsInstance(
-            document.search_word(
+            document.search_words(
                 keyword="Table",
                 top_k=5,
                 similarity_metric=SimilarityMetric.COSINE,
                 similarity_threshold=0.6,
-                print_similarity=True,
             ),
             EntityList
         )
         self.assertIsInstance(
-            document.search_word(
+            document.search_words(
                 keyword="Table",
                 top_k=5,
                 similarity_metric=SimilarityMetric.COSINE,
                 similarity_threshold=0.6,
-                print_similarity=False,
             )[0],
             Word
         )
         self.assertIsInstance(
-            document.search_word(
+            document.search_words(
                 keyword="Table",
                 top_k=5,
                 similarity_metric=SimilarityMetric.EUCLIDEAN,
                 similarity_threshold=0.6,
-                print_similarity=False,
             )[0],
             Word,
         )
         self.assertIsInstance(
-            document.search_word(
+            document.search_words(
                 keyword="Table",
                 top_k=5,
                 similarity_metric=SimilarityMetric.LEVENSHTEIN,
                 similarity_threshold=5,
-                print_similarity=False,
             )[0],
             Word,
         )
         self.assertEqual(
             len(
-                document.search_word(
+                document.search_words(
                     keyword="Table",
                     top_k=5,
                     similarity_metric=SimilarityMetric.COSINE,
                     similarity_threshold=0.6,
-                    print_similarity=False,
                 )
             ),
             1
         )
 
         self.assertIsInstance(
-            document.search_line(
+            document.search_lines(
                 keyword="Textractor",
                 top_k=5,
                 similarity_metric=SimilarityMetric.COSINE,
                 similarity_threshold=0.6,
-                print_similarity=True,
             ),
             EntityList,
         )
         self.assertIsInstance(
-            document.search_line(
+            document.search_lines(
                 keyword="Textractor",
                 top_k=5,
                 similarity_metric=SimilarityMetric.COSINE,
                 similarity_threshold=0.6,
-                print_similarity=False,
             )[0],
             Line,
         )
         self.assertIsInstance(
-            document.search_line(
+            document.search_lines(
                 keyword="Textractor",
                 top_k=5,
                 similarity_metric=SimilarityMetric.EUCLIDEAN,
                 similarity_threshold=0.6,
-                print_similarity=False,
             )[0],
             Line,
         )
         self.assertIsInstance(
-            document.search_line(
+            document.search_lines(
                 keyword="Textractor",
                 top_k=5,
                 similarity_metric=SimilarityMetric.LEVENSHTEIN,
                 similarity_threshold=5,
-                print_similarity=False,
             )[0],
             Line,
         )
         self.assertEqual(
             len(
-                document.search_line(
+                document.search_lines(
                     keyword="Textractor",
                     top_k=5,
                     similarity_metric=SimilarityMetric.COSINE,
                     similarity_threshold=0.6,
-                    print_similarity=False,
                 )
             ),
             2
@@ -242,7 +232,6 @@ class TestDocument(unittest.TestCase):
                 prefix = "",
                 direction=Direction.BELOW,
                 entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-                edit_original=False,
             )),
             2
         )
@@ -254,7 +243,6 @@ class TestDocument(unittest.TestCase):
                 prefix = "",
                 direction=Direction.RIGHT,
                 entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-                edit_original=False,
             )), 0)
 
         self.assertEqual(len(document.directional_finder(
@@ -264,7 +252,6 @@ class TestDocument(unittest.TestCase):
                 prefix = "",
                 direction=Direction.LEFT,
                 entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-                edit_original=False,
             )), 1)
 
         #self.assertEqual(len(document.directional_finder(
@@ -274,7 +261,6 @@ class TestDocument(unittest.TestCase):
         #        prefix = "",
         #        direction=Direction.ABOVE,
         #        entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-        #        edit_original=False,
         #    )), 1)
 
         save_file_path = os.path.join(current_directory, "Key-Values.csv")

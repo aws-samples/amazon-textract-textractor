@@ -7,7 +7,7 @@ import os
 import string
 import logging
 import xlsxwriter
-from typing import List
+from typing import List, Tuple
 from copy import deepcopy
 from collections import defaultdict
 from textractor.entities.expense_document import ExpenseDocument
@@ -287,7 +287,6 @@ class Page(SpatialObject):
 
             return EntityList(checkboxes)
 
-    # Word entity related functions
     def get_words_by_type(
         self, text_type: TextTypes = TextTypes.PRINTED
     ) -> EntityList[Word]:
@@ -312,16 +311,15 @@ class Page(SpatialObject):
         filtered_words = [word for word in self.words if word.text_type == text_type]
         return EntityList(filtered_words)
 
-    def search_word(
+    def _search_words_with_similarity(
         self,
         keyword: str,
         top_k: int = 1,
         similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
         similarity_threshold: float = 0.6,
-        print_similarity: bool = False,
-    ) -> EntityList[Word]:
+    ) -> List[Tuple[Word, float]]:
         """
-        Return a list of top_k words that match the keyword.
+        Returns a list of top_k words with their similarity to the keyword.
 
         :param keyword: Keyword that is used to query the document.
         :type keyword: str, required
@@ -331,17 +329,14 @@ class Page(SpatialObject):
         :type similarity_metric: SimilarityMetric
         :param similarity_threshold: Measure of how similar document key is to queried key. default=0.6
         :type similarity_threshold: float
-        :param print_similarity: Flag to print similarity of the entities filtered with the keyword.
-        :type print_similarity: bool
 
-        :return: Returns a list of words that match the queried key sorted from highest to lowest similarity.
-        :rtype: EntityList[Word]
+        :return: Returns a list of tuples containing similarity and Word.
+        :rtype: List[Tuple(float, Word)]]
         """
         if not isinstance(similarity_metric, SimilarityMetric):
             raise InputError(
                 "similarity_metric parameter should be of SimilarityMetric type. Find input choices from textractor.data.constants"
             )
-
         top_n_words = []
         similarity_threshold = (
             similarity_threshold
@@ -366,28 +361,51 @@ class Page(SpatialObject):
                 continue
             top_n_words = sorted(top_n_words, key=lambda x: x[0], reverse=True)
             lowest_similarity = top_n_words[-1][0]
+        
+        return top_n_words
 
-        if print_similarity:
-            print(f"Top {len(top_n_words)} words that match the queried word are -")
-            if similarity_metric == SimilarityMetric.COSINE:
-                for similarity, word in top_n_words:
-                    print(f"{word.text} (similarity= {similarity})")
-            else:
-                for similarity, word in top_n_words:
-                    print(f"{word.text} (similarity= {-similarity})")
+    def search_words(
+        self,
+        keyword: str,
+        top_k: int = 1,
+        similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
+        similarity_threshold: float = 0.6,
+    ) -> EntityList[Word]:
+        """
+        Return a list of top_k words that match the keyword.
 
-        top_n_words = EntityList([ent[1] for ent in top_n_words])
+        :param keyword: Keyword that is used to query the document.
+        :type keyword: str, required
+        :param top_k: Number of closest word objects to be returned. default=1
+        :type top_k: int, optional
+        :param similarity_metric: SimilarityMetric.COSINE, SimilarityMetric.EUCLIDEAN or SimilarityMetric.LEVENSHTEIN. SimilarityMetric.COSINE is chosen as default.
+        :type similarity_metric: SimilarityMetric
+        :param similarity_threshold: Measure of how similar document key is to queried key. default=0.6
+        :type similarity_threshold: float
+
+        :return: Returns a list of words that match the queried key sorted from highest to lowest similarity.
+        :rtype: EntityList[Word]
+        """
+
+        top_n_words = EntityList([
+            ent[1]
+            for ent in self._search_words_with_similarity(
+                keyword=keyword,
+                top_k=top_k,
+                similarity_metric=similarity_metric,
+                similarity_threshold=similarity_threshold,
+            )
+        ])
 
         return top_n_words
 
-    def search_line(
+    def _search_lines_with_similarity(
         self,
         keyword: str,
         top_k: int = 1,
         similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
         similarity_threshold: int = 0.6,
-        print_similarity: bool = False,
-    ) -> EntityList[Line]:
+    ) -> List[Tuple[Line, float]]:
         """
         Return a list of top_k lines that contain the queried keyword.
 
@@ -399,12 +417,10 @@ class Page(SpatialObject):
         :type similarity_metric: SimilarityMetric
         :param similarity_threshold: Measure of how similar page key is to queried key. default=0.6
         :type similarity_threshold: float
-        :param print_similarity: Flag to print similarity of the entities filtered with the keyword.
-        :type print_similarity: bool
 
-        :return: Returns a list of lines that contain the queried key sorted from highest
-                 to lowest similarity.
-        :rtype: EntityList[Line]
+        :return: Returns a list of tuples of lines and their similarity to the keyword that contain the queried key sorted
+                 from highest to lowest similarity.
+        :rtype: List[Tuple[Line, float]]
         """
         if not isinstance(similarity_metric, SimilarityMetric):
             raise InputError(
@@ -442,16 +458,41 @@ class Page(SpatialObject):
             top_n_lines = sorted(top_n_lines, key=lambda x: x[0], reverse=True)
             lowest_similarity = top_n_lines[-1][0]
 
-        if print_similarity:
-            print(f"Top {len(top_n_lines)} lines that match the queried word are -")
-            if similarity_metric == SimilarityMetric.EUCLIDEAN:
-                for similarity, line in top_n_lines:
-                    print(f"{line.__repr__()} (similarity= {similarity})")
-            else:
-                for similarity, line in top_n_lines:
-                    print(f"{line.__repr__()} (similarity= {-similarity})")
+        return top_n_lines
 
-        top_n_lines = EntityList([ent[1] for ent in top_n_lines])
+    def search_lines(
+        self,
+        keyword: str,
+        top_k: int = 1,
+        similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
+        similarity_threshold: int = 0.6,
+    ) -> EntityList[Line]:
+        """
+        Return a list of top_k lines that contain the queried keyword.
+
+        :param keyword: Keyword that is used to query the page.
+        :type keyword: str
+        :param top_k: Number of closest line objects to be returned
+        :type top_k: int
+        :param similarity_metric: SimilarityMetric.COSINE, SimilarityMetric.EUCLIDEAN or SimilarityMetric.LEVENSHTEIN. SimilarityMetric.COSINE is chosen as default.
+        :type similarity_metric: SimilarityMetric
+        :param similarity_threshold: Measure of how similar page key is to queried key. default=0.6
+        :type similarity_threshold: float
+
+        :return: Returns a list of lines that contain the queried key sorted
+                 from highest to lowest similarity.
+        :rtype: EntityList[Line]
+        """
+
+        top_n_lines = EntityList([
+            ent[1]
+            for ent in self._search_lines_with_similarity(
+                keyword=keyword,
+                top_k=top_k,
+                similarity_metric=similarity_metric,
+                similarity_threshold=similarity_threshold,
+            )
+        ])
 
         return top_n_lines
 
@@ -710,7 +751,6 @@ class Page(SpatialObject):
         prefix: str = "",
         direction=Direction.BELOW,
         entities=[],
-        edit_original=False,
     ):
         """
         The function returns entity types present in entities by prepending the prefix provided by te user. This helps in cases of repeating
@@ -724,8 +764,6 @@ class Page(SpatialObject):
         :type prefix: str, optional
         :param entities: List of DirectionalFinderType inputs.
         :type entities: List[DirectionalFinderType]
-        :param edit_original: Flag to indicate if original objects are to be modified and returned or copies of them.
-        :type edit_original: bool
 
         :return: Returns the EntityList of modified key-value and/or checkboxes
         :rtype: EntityList
@@ -752,26 +790,18 @@ class Page(SpatialObject):
             direction, entitylist, (x1, x2, y1, y2)
         )
 
-        if edit_original:
-            for kv in new_key_values:
-                key_words = kv.key.words
+        final_kv = []
+        for kv in new_key_values:
+            if kv.key:
+                key_words = [deepcopy(word) for word in kv.key.words]
                 key_words[0].text = prefix + key_words[0].text
+                new_kv = deepcopy(kv)
+                new_kv.key = key_words
+                final_kv.append(new_kv)
+            else:
+                final_kv.append(kv)
 
-            return EntityList(new_key_values)
-
-        else:
-            final_kv = []
-            for kv in new_key_values:
-                if kv.key:
-                    key_words = [deepcopy(word) for word in kv.key.words]
-                    key_words[0].text = prefix + key_words[0].text
-                    new_kv = deepcopy(kv)
-                    new_kv.key = key_words
-                    final_kv.append(new_kv)
-                else:
-                    final_kv.append(kv)
-
-            return EntityList(final_kv)
+        return EntityList(final_kv)
 
     def _get_kv_with_direction(self, direction, entitylist, coords):
         """Return key-values and checkboxes in entitiylist present in the direction given with respect to the coordinates."""
@@ -822,12 +852,11 @@ class Page(SpatialObject):
         Returns coordinates for the area within which to search for key-values with the directional_finder by retrieving coordinates of word_1 \
         and word_2 if it exists else end of page.
         """
-        word_1_objects = self.search_line(
+        word_1_objects = self.search_lines(
             keyword=word_1,
             top_k=5,
             similarity_metric=SimilarityMetric.COSINE,
             similarity_threshold=0.5,
-            print_similarity=False,
         )
 
         if not word_1_objects:
@@ -838,12 +867,11 @@ class Page(SpatialObject):
             x1, y1 = word_1_obj.bbox.x, word_1_obj.bbox.y
 
         if word_2:
-            word_2_objects = self.search_line(
+            word_2_objects = self.search_lines(
                 keyword=word_2,
                 top_k=5,
                 similarity_metric=SimilarityMetric.COSINE,
                 similarity_threshold=0.5,
-                print_similarity=False,
             )
 
             if not word_2_objects:

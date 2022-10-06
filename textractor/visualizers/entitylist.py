@@ -41,11 +41,8 @@ class EntityList(list, Generic[T]):
         super().__init__()
 
         if objs is None:
-            raise EntityListCreationError(
-                "EntityList could not be initialized. objs parameter received 'NoneType' input."
-            )
-
-        if not isinstance(objs, list):
+            objs = []
+        elif not isinstance(objs, list):
             objs = [objs]
 
         self.extend(objs)

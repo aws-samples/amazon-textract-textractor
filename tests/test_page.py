@@ -87,106 +87,96 @@ class TestPage(unittest.TestCase):
         self.assertEqual(len(page.get_words_by_type(TextTypes.HANDWRITING)), 0)
 
         self.assertIsInstance(
-            page.search_word(
+            page.search_words(
                 keyword="Table",
                 top_k=5,
                 similarity_metric=SimilarityMetric.COSINE,
                 similarity_threshold=0.6,
-                print_similarity=True,
             ),
             EntityList,
         )
         self.assertIsInstance(
-            page.search_word(
+            page.search_words(
                 keyword="Table",
                 top_k=5,
                 similarity_metric=SimilarityMetric.COSINE,
                 similarity_threshold=0.6,
-                print_similarity=False,
             )[0],
             Word,
         )
         self.assertIsInstance(
-            page.search_word(
+            page.search_words(
                 keyword="Table",
                 top_k=5,
                 similarity_metric=SimilarityMetric.EUCLIDEAN,
                 similarity_threshold=0.6,
-                print_similarity=False,
             )[0],
             Word,
         )
         self.assertIsInstance(
-            page.search_word(
+            page.search_words(
                 keyword="Table",
                 top_k=5,
                 similarity_metric=SimilarityMetric.LEVENSHTEIN,
                 similarity_threshold=5,
-                print_similarity=False,
             )[0],
             Word,
         )
         self.assertEqual(
             len(
-                page.search_word(
+                page.search_words(
                     keyword="Table",
                     top_k=5,
                     similarity_metric=SimilarityMetric.COSINE,
                     similarity_threshold=0.6,
-                    print_similarity=False,
                 )
             ),
             1
         )
 
         self.assertIsInstance(
-            page.search_line(
+            page.search_lines(
                 keyword="Textractor",
                 top_k=5,
                 similarity_metric=SimilarityMetric.COSINE,
                 similarity_threshold=0.6,
-                print_similarity=True,
             ),
             EntityList,
         )
         self.assertIsInstance(
-            page.search_line(
+            page.search_lines(
                 keyword="Textractor",
                 top_k=5,
                 similarity_metric=SimilarityMetric.COSINE,
                 similarity_threshold=0.6,
-                print_similarity=False,
             )[0],
             Line,
         )
         self.assertIsInstance(
-            page.search_line(
+            page.search_lines(
                 keyword="Textractor",
                 top_k=5,
                 similarity_metric=SimilarityMetric.EUCLIDEAN,
                 similarity_threshold=0.6,
-                print_similarity=False,
             )[0],
             Line,
         )
         self.assertIsInstance(
-            page.search_line(
+            page.search_lines(
                 keyword="Textractor",
                 top_k=5,
                 similarity_metric=SimilarityMetric.LEVENSHTEIN,
                 similarity_threshold=5,
-                print_similarity=False,
             )[0],
             Line,
         )
         self.assertEqual(
             len(
-                page.search_line(
+                page.search_lines(
                     keyword="Textractor",
                     top_k=5,
                     similarity_metric=SimilarityMetric.COSINE,
                     similarity_threshold=0.6,
-                    print_similarity=False,
                 )
             ),
             2
@@ -247,7 +237,6 @@ class TestPage(unittest.TestCase):
                 prefix = "",
                 direction=Direction.BELOW,
                 entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-                edit_original=False,
             )),
             2
         )
@@ -258,7 +247,6 @@ class TestPage(unittest.TestCase):
                 prefix = "",
                 direction=Direction.LEFT,
                 entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-                edit_original=False,
             )), 1)
 
         self.assertEqual(len(page.directional_finder(
@@ -267,7 +255,6 @@ class TestPage(unittest.TestCase):
                 prefix = "",
                 direction=Direction.RIGHT,
                 entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-                edit_original=False,
             )), 5)
 
         self.assertEqual(len(page.directional_finder(
@@ -276,7 +263,6 @@ class TestPage(unittest.TestCase):
                 prefix = "",
                 direction=Direction.ABOVE,
                 entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-                edit_original=False,
             )), 0)
 
         save_file_path = os.path.join(current_directory, "Key-Values.csv")
