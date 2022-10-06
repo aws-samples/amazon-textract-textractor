@@ -49,12 +49,12 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Parsing an existing response</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Not-calling-Textract">Not calling Textract</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Instanciating-from-a-dictionary">Instanciating from a dictionary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Instantiating-from-a-dictionary">Instantiating from a dictionary</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="exporting_form_data.html">Exporting Form Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="table_data_to_various_formats.html">Table data extraction to excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="table_data_to_various_formats.html">Table data extraction to Excel</a></li>
 <li class="toctree-l2"><a class="reference internal" href="using_analyze_id.html">Using AnalyzeID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="interfacing_with_trp2.html">Interfacing with trp2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
@@ -379,11 +379,11 @@ div.rendered_html tbody tr:hover {
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
-<p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if you workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
+<p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
 </div>
 <div class="section" id="Not-calling-Textract">
 <h2>Not calling Textract<a class="headerlink" href="#Not-calling-Textract" title="Permalink to this heading"></a></h2>
-<p>There are two ways to parse an existing JSON. The simplest one, reminscent of <code class="docutils literal notranslate"><span class="pre">PIL.Image.open()</span></code> is <code class="docutils literal notranslate"><span class="pre">Document.open()</span></code> which takes either a path or file-like object and parses it automatically. The path <strong>can</strong> be an S3 path.</p>
+<p>There are two ways to parse an existing JSON. The simplest one, reminiscent of <code class="docutils literal notranslate"><span class="pre">PIL.Image.open()</span></code> is <code class="docutils literal notranslate"><span class="pre">Document.open()</span></code> which takes either a path or file-like object and parses it automatically. The path <strong>can</strong> be an S3 path.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -454,8 +454,8 @@ Expense Documents - 0
 </pre></div></div>
 </div>
 </div>
-<div class="section" id="Instanciating-from-a-dictionary">
-<h2>Instanciating from a dictionary<a class="headerlink" href="#Instanciating-from-a-dictionary" title="Permalink to this heading"></a></h2>
+<div class="section" id="Instantiating-from-a-dictionary">
+<h2>Instantiating from a dictionary<a class="headerlink" href="#Instantiating-from-a-dictionary" title="Permalink to this heading"></a></h2>
 <p>Another possible solution is to use the <code class="docutils literal notranslate"><span class="pre">ResponseParser</span></code> directly with a <code class="docutils literal notranslate"><span class="pre">dict</span></code> object.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -503,7 +503,7 @@ Expense Documents - 0
 </div>
 <div class="section" id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
-<p>You can save an accelerate your development process by reusing responses. This approach is used in the Textractor unit tests.</p>
+<p>You can save and accelerate your development process by reusing responses. This approach is used in the Textractor unit tests.</p>
 </div>
 </div>
 

@@ -7,7 +7,7 @@
    "source": [
     "# Word Occurence within Document\n",
     "\n",
-    "This page will walk you through using Textractor to find all the occurences of the word 'Room' in a document and visualize them overlayed on the document image.\n",
+    "This page will walk you through using Textractor to find all the occurrences of the word 'Room' in a document and visualize them overlayed on the document image.\n",
     "\n",
     "## Installation\n",
     "\n",
@@ -45,7 +45,7 @@
    "metadata": {},
    "source": [
     "## Retrieving word occurences\n",
-    "Words and lines can be search at the document and page level by calling the `search_word()` and `search_line()` methods respectively."
+    "Words and lines can be search at the document and page level by calling the `search_words()` and `search_lines()` methods respectively."
    ]
   },
   {
@@ -55,7 +55,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "word_occurences = document.search_word(keyword=\"Room\", top_k=15, similarity_threshold=0.5)\n",
+    "word_occurences = document.search_words(keyword=\"Room\", top_k=15, similarity_threshold=0.5)\n",
     "print(\"Number of occurences of the word Room in the document = \", len(word_occurences))"
    ]
   },
@@ -65,7 +65,7 @@
    "metadata": {},
    "source": [
     "## Find words on document page through visualize()\n",
-    "To identify the location of these words on the document, `visualize()` method can be called on the object returned by the `search_word()` call. This returns PIL Images of the document that contains these word instances along with bounding boxes around these objects."
+    "To identify the location of these words on the document, `visualize()` method can be called on the object returned by the `search_words()` call. This returns PIL Images of the document that contains these word instances along with bounding boxes around these objects."
    ]
   },
   {
@@ -117,7 +117,7 @@
    "source": [
     "from textractor.data.constants import SimilarityMetric\n",
     "\n",
-    "word_occurences = document.search_word(\n",
+    "word_occurences = document.search_words(\n",
     "    keyword=\"Room\",\n",
     "    top_k=15,\n",
     "    similarity_threshold=0.5,\n",
@@ -161,7 +161,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3",
+   "display_name": "Python 3 (ipykernel)",
    "language": "python",
    "name": "python3"
   },
@@ -175,7 +175,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.7.10"
+   "version": "3.10.6"
   }
  },
  "nbformat": 4,
