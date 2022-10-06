@@ -3,7 +3,7 @@ name: Tests
 on:
   # TODO: Change the branch to master once merged.
   push:
-    branches: [ 'master' ]
+    branches: [ 'textractor-rewrite' ]
   pull_request:
 
   workflow_dispatch:
@@ -17,7 +17,7 @@ jobs:
       # Checks out the repository
       - uses: actions/checkout@v3
         with:
-          ref: 'master'
+          ref: 'textractor-rewrite'
 
       # Upgrade pip
       - name: Upgrade pip

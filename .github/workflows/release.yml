@@ -16,7 +16,7 @@ jobs:
       # Checks out the repository
       - uses: actions/checkout@v3
         with:
-          ref: 'master'
+          ref: 'textractor-rewrite'
 
       # Upgrade pip
       - name: Upgrade pip
