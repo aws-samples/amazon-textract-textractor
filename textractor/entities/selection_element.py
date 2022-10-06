@@ -6,14 +6,14 @@ bounding box information, selection status, page number, Page ID and confidence 
 """
 
 from typing import List
-
+from textractor.entities.value import Value
 from textractor.entities.word import Word
 from textractor.entities.bbox import BoundingBox
 from textractor.data.constants import SELECTED, NOT_SELECTED, SelectionStatus
 from textractor.entities.document_entity import DocumentEntity
 
 
-class SelectionElement(DocumentEntity):
+class SelectionElement(Value):
     """
     To create a new :class:`SelectionElement` object we need the following:
 

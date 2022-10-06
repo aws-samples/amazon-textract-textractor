@@ -103,4 +103,7 @@ class Query(DocumentEntity):
         :rtype: str
         """
 
-        return f"{self.query} {self.answer}"
+        if self.result:
+            return f"{self.query} {self.result.answer}"
+        else:
+            return f"{self.query}"

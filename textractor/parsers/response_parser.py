@@ -31,7 +31,6 @@ from textractor.entities.selection_element import SelectionElement
 from textractor.data.constants import (
     SelectionStatus,
     TextTypes,
-    CallMode,
     HANDWRITING,
     PRINTED,
 )
@@ -45,7 +44,6 @@ from textractor.data.constants import (
     PAGE,
     MERGED_CELL,
     QUERY,
-    QUERY_RESULT,
 )
 
 

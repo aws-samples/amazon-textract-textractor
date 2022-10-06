@@ -80,15 +80,6 @@ FORCE_ASYNC = "FORCE_ASYNC"
 DEFAULT = "DEFAULT"
 
 
-class CallMode(Enum):
-    """Textract APIs broadly fall into one of these categories. The SYNC APIs give immediate results and ASYNC APIs need to
-    be polled frequently till the results are returned."""
-
-    FORCE_SYNC = 0
-    FORCE_ASYNC = 1
-    DEFAULT = 2
-
-
 FORMS = "FORMS"
 TABLES = "TABLES"
 QUERIES = "QUERIES"

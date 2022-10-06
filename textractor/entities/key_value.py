@@ -178,6 +178,17 @@ class KeyValue(DocumentEntity):
                 [word for word in self.words if word.text_type == text_type]
             )
 
+    def is_selected(self) -> bool:
+        if self.contains_checkbox:
+            if len(self.value.children) == 1:
+                return self.value.children[0].is_selected()
+            else:
+                logging.info("is_checked() was called on a KeyValue that contains more than one checkbox. Returning first checkbox")
+                return self.value.children[0].is_selected()
+        else:
+            logging.info("is_checked() was called on a KeyValue that does not contain checkboxes. Returning False")
+            return False
+
     def __repr__(self) -> str:
         """
         :return: Returns KeyValue object as a formatted string.
