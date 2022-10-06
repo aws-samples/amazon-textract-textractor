@@ -7,6 +7,7 @@ Examples
    notebooks/simple_ocr
    notebooks/parsing_an_existing_response
    notebooks/introduction_to_searching
+   notebooks/visualizing_results
    notebooks/finding_words_within_a_document
    notebooks/exporting_form_data
    notebooks/table_data_to_various_formats
