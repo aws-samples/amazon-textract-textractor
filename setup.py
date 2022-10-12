@@ -3,10 +3,6 @@ import os
 from setuptools import find_packages, setup
 from os import path
 
-# Declare your non-python data files:
-# Files underneath configuration/ will be copied into the build preserving the
-# subdirectory structure if they exist.
-
 here = path.abspath(path.dirname(__file__))
 
 with open(path.join(here, "README.md"), encoding="utf-8") as f:
@@ -20,8 +16,8 @@ def read_requirements(path):
 setup(
     # include data files
     name="amazon-textract-textractor",
-    version="0.0.3",
-    description="A package to support the use of AWS Textract services.",
+    version="1.0.0",
+    description="A package to use AWS Textract services.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     classifiers=[
