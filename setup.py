@@ -40,6 +40,7 @@ setup(
         ],
         exclude=["docs", "tests"],
     ),
+    install_requires=read_requirements(os.path.join(here, "requirements.txt")),
     extras_require={
         f.split(".")[0]:read_requirements(os.path.join(here, "extras", f))
         for f in os.listdir(os.path.join(here, "extras"))

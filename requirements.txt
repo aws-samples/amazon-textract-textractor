@@ -6,6 +6,7 @@ boto3==1.24.0
 botocore==1.27.51
 jsonschema
 Pillow
+pandas
 tabulate==0.8.10
 XlsxWriter==3.0.3
 pyxDamerauLevenshtein==1.7.1
