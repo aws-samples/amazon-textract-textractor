@@ -5,10 +5,11 @@ from textractor import Textractor
 from textractor.data.constants import (
     TextractAPI,
     TextractFeatures,
-    CLIDisplay,
-    CLISave,
+    CLIPrint,
+    CLIOverlay,
 )
 from textractor.exceptions import InputError
+from textractor.visualizers.entitylist import EntityList
 
 STRING_DICT = {
     # Textractor parameters
@@ -33,8 +34,6 @@ STRING_DICT = {
     "GET_RESULT_API": "API used to make the request",
     # Output print
     "PRINT": "Print the output in a readable format",
-    # Output save
-    "SAVE": "Save the output to a different (additional) format",
     # Overlay
     "OVERLAY": "Save an image of the document with the words, lines, form fields, and tables overlayed on top",
 }
@@ -54,9 +53,8 @@ def textractor_cli():
     parser_detect_document_text.add_argument("output_file", type=str, help=STRING_DICT["OUTPUT_FILE"])
     parser_detect_document_text.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
     parser_detect_document_text.add_argument("--region", type=str, help=STRING_DICT["REGION"])
-    parser_detect_document_text.add_argument("--print", choices=[cd.name for cd in CLIDisplay], nargs="+", help=STRING_DICT["PRINT"])
-    parser_detect_document_text.add_argument("--save", choices=[cs.name for cs in CLISave], nargs="+", help=STRING_DICT["SAVE"])
-    parser_detect_document_text.add_argument("--overlay", choices=[cd.name for cd in CLIDisplay], nargs="+", help=STRING_DICT["OVERLAY"])
+    parser_detect_document_text.add_argument("--print", choices=[cd.name for cd in CLIPrint], nargs="+", help=STRING_DICT["PRINT"])
+    parser_detect_document_text.add_argument("--overlay", choices=[cd.name for cd in CLIOverlay], nargs="+", help=STRING_DICT["OVERLAY"])
 
     parser_start_document_text_detection = subparsers.add_parser("StartDocumentTextDetection", help=STRING_DICT["START_DOCUMENT_TEXT_DETECTION"])
     parser_start_document_text_detection.add_argument("file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"])
@@ -72,9 +70,8 @@ def textractor_cli():
     parser_analyze_document.add_argument("--queries", type=str, nargs="+", help=STRING_DICT["QUERIES"])
     parser_analyze_document.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
     parser_analyze_document.add_argument("--region", type=str, help=STRING_DICT["REGION"])
-    parser_analyze_document.add_argument("--print", choices=[cd.name for cd in CLIDisplay], nargs="+", help=STRING_DICT["PRINT"])
-    parser_analyze_document.add_argument("--save", choices=[cs.name for cs in CLISave], nargs="+", help=STRING_DICT["SAVE"])
-    parser_analyze_document.add_argument("--overlay", choices=[cd.name for cd in CLIDisplay], nargs="+", help=STRING_DICT["OVERLAY"])
+    parser_analyze_document.add_argument("--print", choices=[cd.name for cd in CLIPrint], nargs="+", help=STRING_DICT["PRINT"])
+    parser_analyze_document.add_argument("--overlay", choices=[cd.name for cd in CLIOverlay], nargs="+", help=STRING_DICT["OVERLAY"])
 
     parser_start_document_analysis = subparsers.add_parser("StartDocumentAnalysis", help=STRING_DICT["START_DOCUMENT_ANALYSIS"])
     parser_start_document_analysis.add_argument("file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"])
@@ -90,9 +87,8 @@ def textractor_cli():
     parser_analyze_expense.add_argument("output_file", type=str, help=STRING_DICT["OUTPUT_FILE"])
     parser_analyze_expense.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
     parser_analyze_expense.add_argument("--region", type=str, help=STRING_DICT["REGION"])
-    parser_analyze_expense.add_argument("--print", choices=[cd.name for cd in CLIDisplay], nargs="+", help=STRING_DICT["PRINT"])
-    parser_analyze_expense.add_argument("--save", choices=[cs.name for cs in CLISave], nargs="+", help=STRING_DICT["SAVE"])
-    parser_analyze_expense.add_argument("--overlay", choices=[cd.name for cd in CLIDisplay], nargs="+", help=STRING_DICT["OVERLAY"])
+    parser_analyze_expense.add_argument("--print", choices=[cd.name for cd in CLIPrint], nargs="+", help=STRING_DICT["PRINT"])
+    parser_analyze_expense.add_argument("--overlay", choices=[cd.name for cd in CLIOverlay], nargs="+", help=STRING_DICT["OVERLAY"])
 
     parser_start_expense_analysis = subparsers.add_parser("StartExpenseAnalysis", help=STRING_DICT["START_EXPENSE_ANALYSIS"])
     parser_start_expense_analysis.add_argument("file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"])
@@ -106,9 +102,8 @@ def textractor_cli():
     parser_analyze_id.add_argument("output_file", type=str, help=STRING_DICT["OUTPUT_FILE"])
     parser_analyze_id.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
     parser_analyze_id.add_argument("--region", type=str, help=STRING_DICT["REGION"])
-    parser_analyze_id.add_argument("--print", choices=[cd.name for cd in CLIDisplay], nargs="+", help=STRING_DICT["PRINT"])
-    parser_analyze_id.add_argument("--save", choices=[cs.name for cs in CLISave], nargs="+", help=STRING_DICT["SAVE"])
-    parser_analyze_id.add_argument("--overlay", choices=[cd.name for cd in CLIDisplay], nargs="+", help=STRING_DICT["OVERLAY"])
+    parser_analyze_id.add_argument("--print", choices=[cd.name for cd in CLIPrint], nargs="+", help=STRING_DICT["PRINT"])
+    parser_analyze_id.add_argument("--overlay", choices=[cd.name for cd in CLIOverlay], nargs="+", help=STRING_DICT["OVERLAY"])
 
     # GetResult parsers
     parser_get_result = subparsers.add_parser("GetResult", help=STRING_DICT["GET_RESULT"])
@@ -117,10 +112,7 @@ def textractor_cli():
     parser_get_result.add_argument("output_file", type=str, help=STRING_DICT["OUTPUT_FILE"])
     parser_get_result.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
     parser_get_result.add_argument("--region", type=str, help=STRING_DICT["REGION"])
-    parser_get_result.add_argument("--print", choices=[cd.name for cd in CLIDisplay], nargs="+", help=STRING_DICT["PRINT"])
-    parser_get_result.add_argument("--save", choices=[cs.name for cs in CLISave], nargs="+", help=STRING_DICT["SAVE"])
-    parser_get_result.add_argument("--overlay", choices=[cd.name for cd in CLIDisplay], nargs="+", help=STRING_DICT["OVERLAY"])
-    
+    parser_get_result.add_argument("--print", choices=[cd.name for cd in CLIPrint], nargs="+", help=STRING_DICT["PRINT"])
 
     args = parser.parse_args()
 
@@ -168,6 +160,7 @@ def textractor_cli():
             out = extractor.detect_document_text(
                 args.file_source,
                 s3_output_path=s3_output_path,
+                save_image=True,
             )
         elif args.subcommand == "AnalyzeDocument":
             out = extractor.analyze_document(
@@ -175,6 +168,7 @@ def textractor_cli():
                 features=[TextractFeatures[feat] for feat in args.features],
                 queries=args.queries,
                 s3_output_path=s3_output_path,
+                save_image=True,
             )
         elif args.subcommand == "AnalyzeExpense":
             out = extractor.analyze_expense(
@@ -191,18 +185,32 @@ def textractor_cli():
                 TextractAPI[args.api],
             )
 
-        if "ALL" in args.print or "TEXT" in args.print:
-            print(out.text)
-        if "ALL" in args.print or "TABLES" in args.print:
-            print(out.tables.pretty_print())
-        if "ALL" in args.print or "FORMS" in args.print:
-            print(out.key_values.pretty_print())
-        if "ALL" in args.print or "QUERIES" in args.print:
-            print(out.queries.pretty_print())
-        if "ALL" in args.print or "EXPENSES" in args.print:
-            print(out.expense_documents.pretty_print())
-        if "ALL" in args.print or "IDS" in args.print:
-            print(out.identity_documents.pretty_print())
+        if args.print is not None:
+            if "ALL" in args.print or "TEXT" in args.print:
+                print(out.text)
+            if "ALL" in args.print or "TABLES" in args.print:
+                print(out.tables.pretty_print())
+            if "ALL" in args.print or "FORMS" in args.print:
+                print(out.key_values.pretty_print())
+            if "ALL" in args.print or "QUERIES" in args.print:
+                print(out.queries.pretty_print())
+            if "ALL" in args.print or "EXPENSES" in args.print:
+                print(out.expense_documents.pretty_print())
+            if "ALL" in args.print or "IDS" in args.print:
+                print(out.identity_documents.pretty_print())
+
+        if args.overlay is not None:
+            entity_list = EntityList()
+            if "ALL" in args.overlay or "WORDS" in args.overlay:
+                entity_list += out.words
+            if "ALL" in args.overlay or "LINES" in args.overlay:
+                entity_list += out.lines
+            if "ALL" in args.overlay or "TABLES" in args.overlay:
+                entity_list += out.tables
+            if "ALL" in args.overlay or "FORMS" in args.overlay:
+                entity_list += out.key_values
+            image = entity_list.visualize()
+            image.save(f"{args.output_file}.png")
 
         with open(args.output_file, "w") as f:
             json.dump(out.response, f)

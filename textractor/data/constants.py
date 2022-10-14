@@ -209,7 +209,7 @@ class AnalyzeIDFields(Enum):
     # Only available in passports
     PLACE_OF_BIRTH = "PLACE_OF_BIRTH"
 
-class CLIDisplay(Enum):
+class CLIPrint(Enum):
     ALL = 0
     TEXT = 1
     TABLES = 2
@@ -218,7 +218,9 @@ class CLIDisplay(Enum):
     EXPENSES = 5
     IDS = 6
 
-class CLISave(Enum):
-    TXT = 0
-    CSV = 1
-    EXCEL = 2
+class CLIOverlay(Enum):
+    ALL = 0
+    WORDS = 1
+    LINES = 2
+    TABLES = 3
+    FORMS = 4
