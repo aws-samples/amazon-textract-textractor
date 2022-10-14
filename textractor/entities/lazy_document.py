@@ -23,7 +23,7 @@ class LazyDocument:
 
         :param num_pages: Number of pages in the input Document.
         """
-        self._job_id = job_id
+        self.job_id = job_id
         self._api = api
         self._textract_client = textract_client
         self._document = None
@@ -49,12 +49,12 @@ class LazyDocument:
         """
 
         # Prevents infinite recursion on LazyDocument properties
-        if __name in ["_job_id", "_api", "_textract_client", "_document", "_images"]:
+        if __name in ["job_id", "_api", "_textract_client", "_document", "_images"]:
             return object.__getattribute__(self, __name)
 
         if self._document is None:
             response = get_full_json(
-                self._job_id,
+                self.job_id,
                 TextractAPI.TextractAPI_to_Textract_API(self._api)
                 if isinstance(self._api, TextractAPI)
                 else self._api,

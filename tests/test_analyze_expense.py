@@ -23,7 +23,7 @@ class TestTextractorAnalyzeExpense(unittest.TestCase):
             )
         if os.environ.get("CALL_TEXTRACT"):
             self.extractor = Textractor(
-                aws_profile_name=self.profile_name, kms_key_id=""
+                profile_name=self.profile_name, kms_key_id=""
             )
 
     def test_analyze_expense_from_path(self):

@@ -64,35 +64,35 @@ class Textractor:
     """
     Initializes the customer credentials needed to make calls to Textract using boto3 package internally.
 
-    :param aws_profile_name: Customer's profile name as set in the ~/.aws/config file. This profile typically contains this format.
+    :param profile_name: Customer's profile name as set in the ~/.aws/config file. This profile typically contains this format.
                                 :code:`[default]
                                 region = us-west-2
                                 output=json`
-    :type aws_profile_name: str
+    :type profile_name: str
     :param region: If AWSCLI isn't setup, the user can pass region to let boto3 pick up credentials from the system.
     :param region: str
-    :type aws_profile_name: str, optional
+    :type profile_name: str, optional
     :param kms_key_id: Customer's AWS KMS key (cryptographic key)
     :type kms_key_id: str, optional
     """
 
     def __init__(
         self,
-        aws_profile_name: str = None,
+        profile_name: str = None,
         region: str = None,
         kms_key_id: str = "",
     ):
-        self.aws_profile_name = aws_profile_name
+        self.profile_name = profile_name
         self.region = region
         self.kms_key_id = kms_key_id
 
-        if self.aws_profile_name is not None:
-            self.session = boto3.session.Session(profile_name=self.aws_profile_name)
+        if self.profile_name is not None:
+            self.session = boto3.session.Session(profile_name=self.profile_name)
         elif self.region is not None:
             self.session = boto3.session.Session(region=self.region)
         else:
             raise InputError(
-                "Unable to initiate Textractor. Either aws_profile_name or region requires an input parameter."
+                "Unable to initiate Textractor. Either profile_name or region requires an input parameter."
             )
         self.textract_client = self.session.client("textract")
         self.s3_client = self.session.client("s3")
@@ -114,8 +114,8 @@ class Textractor:
             key = edit_filepath[edit_filepath.index("/") + 1 :]
 
             s3_client = (
-                boto3.session.Session(profile_name=self.aws_profile_name).client("s3")
-                if self.aws_profile_name is not None
+                boto3.session.Session(profile_name=self.profile_name).client("s3")
+                if self.profile_name is not None
                 else boto3.session.Session(region=self.region).client("s3")
             )
             file_obj = s3_client.get_object(Bucket=bucket, Key=key).get("Body").read()
@@ -215,7 +215,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the aws_profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
                 )
             raise exception
 
@@ -301,7 +301,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the aws_profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
                 )
             raise exception
 
@@ -431,7 +431,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the aws_profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
                 )
             raise exception
 
@@ -552,7 +552,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the aws_profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
                 )
             raise exception
 
@@ -619,7 +619,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the aws_profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
                 )
             raise exception
 
@@ -701,7 +701,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the aws_profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
                 )
             raise exception
 
@@ -789,7 +789,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the aws_profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
                 )
             raise exception
 

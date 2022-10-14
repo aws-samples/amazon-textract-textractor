@@ -106,14 +106,14 @@ class Document(SpatialObject):
         return os.linesep.join([page.text for page in self.pages])
 
     @property
-    def identity_documents(self) -> List[IdentityDocument]:
+    def identity_documents(self) -> EntityList[IdentityDocument]:
         """
         Returns all the :class:`IdentityDocument` objects present in the Document.
 
         :return: List of IdentityDocument objects, each representing an identity document within the Document.
-        :rtype: EntityList[IdentityDocumnet]
+        :rtype: EntityList[IdentityDocument]
         """
-        return self._identity_documents
+        return EntityList(self._identity_documents)
 
     @identity_documents.setter
     def identity_documents(self, identity_documents: List[IdentityDocument]):
@@ -123,12 +123,12 @@ class Document(SpatialObject):
         self._identity_documents = identity_documents
 
     @property
-    def expense_documents(self) -> List[ExpenseDocument]:
+    def expense_documents(self) -> EntityList[ExpenseDocument]:
         """
         Returns all the :class:`ExpenseDocument` objects present in the Document.
 
         :return: List of ExpenseDocument objects, each representing an expense document within the Document.
-        :rtype: EntityList[Line]
+        :rtype: EntityList[ExpenseDocument]
         """
         return EntityList(sum([page.expense_documents for page in self.pages], []))
 
@@ -183,14 +183,14 @@ class Document(SpatialObject):
         return EntityList(sum([page.queries for page in self.pages], []))
 
     @property
-    def identity_document(self) -> List[IdentityDocument]:
+    def identity_document(self) -> EntityList[IdentityDocument]:
         """
         Returns all the :class:`IdentityDocument` objects present in the Page.
 
         :return: List of IdentityDocument objects.
         :rtype: EntityList
         """
-        return self._identity_documents
+        return EntityList(self._identity_documents)
 
     @identity_document.setter
     def identity_document(self, identity_documents: List[IdentityDocument]):

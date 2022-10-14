@@ -137,6 +137,9 @@ class EntityList(list, Generic[T]):
             with_geo=with_geo,
             trim=trim,
         )
+        result_value += self._get_queries_string()
+        result_value += self._get_expense_documents_string()
+        result_value += self._get_id_documents_string()
         return result_value
 
     def _get_text_string(
@@ -359,6 +362,47 @@ class EntityList(list, Generic[T]):
                 result_value += csv_output.getvalue()
         return result_value
 
+    def _get_queries_string(self):
+        result_value = ""
+        queries = [
+            obj
+            for obj in self
+            if obj.__class__.__name__ == "Query"
+        ]
+
+        for query in queries:
+            if query.result is not None:
+                result_value += f"{query.query} => {query.result.answer}{os.linesep}"
+            else:
+                result_value += f"{query.query} => {os.linesep}"
+
+        return result_value
+
+    def _get_expense_documents_string(self):
+        result_value = ""
+        expense_documents = [
+            obj
+            for obj in self
+            if obj.__class__.__name__ == "ExpenseDocument"
+        ]
+
+        for expense_document in expense_documents:
+            result_value += f"{expense_document}{os.linesep}"
+        
+        return result_value
+
+    def _get_id_documents_string(self):
+        result_value = ""
+        id_documents = [
+            obj
+            for obj in self
+            if obj.__class__.__name__ == "IdentityDocument"
+        ]
+
+        for id_document in id_documents:
+            result_value += f"{id_document}{os.linesep}"
+        
+        return result_value
 
 def _convert_form_to_list(
     form_objects,

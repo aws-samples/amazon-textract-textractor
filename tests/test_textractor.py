@@ -72,7 +72,7 @@ class TestTextractor(unittest.TestCase):
                     "Textractor could not be initialized. Populate profile_name with a valid input in tests/test_textractor.py."
                 )
             self.extractor = Textractor(
-                aws_profile_name=self.profile_name, kms_key_id=""
+                profile_name=self.profile_name, kms_key_id=""
             )
 
     def tearDown(self) -> None:

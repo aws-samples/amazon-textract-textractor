@@ -15,3 +15,6 @@ class IdentityField:
     @property
     def confidence(self) -> float:
         return self._confidence
+    
+    def __repr__(self) -> str:
+        return self.value

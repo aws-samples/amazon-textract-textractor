@@ -208,3 +208,17 @@ class AnalyzeIDFields(Enum):
     ADDRESS = "ADDRESS"
     # Only available in passports
     PLACE_OF_BIRTH = "PLACE_OF_BIRTH"
+
+class CLIDisplay(Enum):
+    ALL = 0
+    TEXT = 1
+    TABLES = 2
+    FORMS = 3
+    QUERIES = 4
+    EXPENSES = 5
+    IDS = 6
+
+class CLISave(Enum):
+    TXT = 0
+    CSV = 1
+    EXCEL = 2

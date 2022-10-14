@@ -72,3 +72,6 @@ class IdentityDocument(SpatialObject):
         if result is None:
             return None
         return result.value
+
+    def __repr__(self):
+        return os.linesep.join([f"{str(k)}: {str(v)}" for k, v in self.fields.items()])

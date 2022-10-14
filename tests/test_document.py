@@ -28,7 +28,7 @@ class TestDocument(unittest.TestCase):
             )
 
         if os.environ.get("CALL_TEXTRACT"):
-            extractor = Textractor(aws_profile_name=profile_name, kms_key_id="")
+            extractor = Textractor(profile_name=profile_name, kms_key_id="")
             document = extractor.analyze_document(
                 file_source=os.path.join(current_directory, "fixtures/single-page-1.png"),
                 features=[TextractFeatures.TABLES, TextractFeatures.FORMS],

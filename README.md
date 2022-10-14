@@ -29,7 +29,7 @@ These two lines are all you need to use Textract. The Textractor instance can be
 ```py
 from textractor import Textractor
 
-extractor = Textractor(aws_profile_name="default")
+extractor = Textractor(profile_name="default")
 ```
 
 ### Text recognition

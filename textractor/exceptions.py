@@ -4,7 +4,7 @@
 
 
 class RegionMismatchError(Exception):
-    """Raised when region on the aws_profile_name does not match the region of the S3 bucket being accessed."""
+    """Raised when region on the profile_name does not match the region of the S3 bucket being accessed."""
 
     pass
 

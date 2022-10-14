@@ -19,7 +19,7 @@ class QueriesTests(unittest.TestCase):
             )
 
         if os.environ.get("CALL_TEXTRACT"):
-            extractor = Textractor(aws_profile_name=profile_name, kms_key_id="")
+            extractor = Textractor(profile_name=profile_name, kms_key_id="")
             document = extractor.analyze_document(
                 file_source=os.path.join(current_directory, "fixtures/single-page-1.png"),
                 features=[TextractFeatures.QUERIES],
@@ -46,7 +46,7 @@ class QueriesTests(unittest.TestCase):
             )
 
         if os.environ.get("CALL_TEXTRACT"):
-            extractor = Textractor(aws_profile_name=profile_name, kms_key_id="")
+            extractor = Textractor(profile_name=profile_name, kms_key_id="")
             document = extractor.analyze_document(
                 file_source=os.path.join(current_directory, "fixtures/single-page-1.png"),
                 features=[TextractFeatures.QUERIES],
@@ -73,7 +73,7 @@ class QueriesTests(unittest.TestCase):
                 "Textractor could not be initialized. Populate profile_name with a valid input in tests/test_table.py."
             )
 
-        extractor = Textractor(aws_profile_name=profile_name, kms_key_id="")
+        extractor = Textractor(profile_name=profile_name, kms_key_id="")
         with self.assertRaises(InputError):
             document = extractor.analyze_document(
                 file_source=os.path.join(current_directory, "fixtures/single-page-1.png"),
