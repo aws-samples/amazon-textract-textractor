@@ -55,7 +55,6 @@ Usage
    installation
    examples
 
-
 API Reference
 =============
 

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLI &mdash; amazon-textract-textractor 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> amazon-textract-textractor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="textractor.html">Textract Caller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textractor.parsers.html">Entity Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textractor.entities.html">Document Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textractor.visualizers.html">Entity Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textractor.data.html">Constants</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">amazon-textract-textractor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>CLI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/commandline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="cli">
+<h1>CLI<a class="headerlink" href="#cli" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>Textractor comes with its very own command line interface that aims to be easier to use than the default <cite>boto3</cite> interface by adding several quality of life improvements.</p>
+<p>First install the package using <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code> make sure that you Python bin directory is added to PATH otherwise it will not find the executable. If you are not using a virtual environment this will probably be the case.</p>
+<div class="section" id="available-apis">
+<h2>Available APIs<a class="headerlink" href="#available-apis" title="Permalink to this heading"></a></h2>
+<p><code class="code docutils literal notranslate"><span class="pre">Textractor</span></code> supports all Textract APIs and follow their official names as described here: <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/API_Operations.html">https://docs.aws.amazon.com/textract/latest/dg/API_Operations.html</a>. We use a single subcommand to fetch the results named <code class="code docutils literal notranslate"><span class="pre">GetResult</span></code>.</p>
+<p>Synchronous APIs:</p>
+<ul class="simple">
+<li><p>DetectDocumentText (Returns words and lines)</p></li>
+<li><p>AnalyzeDocument (Returns Forms, Tables and Query results)</p></li>
+<li><p>AnalyzeExpense (Returns standardized fields for invoices)</p></li>
+<li><p>AnalyzeID (Returns standardized fields for driver’s license and passports)</p></li>
+</ul>
+<p>Asynchronous APIs:</p>
+<ul class="simple">
+<li><p>StartDocumentTextDetection</p></li>
+<li><p>StartDocumentAnalysis</p></li>
+<li><p>StartExpenseAnalysis</p></li>
+</ul>
+</div>
+<div class="section" id="getting-document-text">
+<h2>Getting document text<a class="headerlink" href="#getting-document-text" title="Permalink to this heading"></a></h2>
+<p>Now lets say you have a file and you wish to OCR it:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">textractor</span> <span class="pre">DetectDocumentText</span> <span class="pre">your_file.png</span> <span class="pre">output.json</span></code></p>
+<p>This will call the Textract API and save the output to <code class="code docutils literal notranslate"><span class="pre">output.json</span></code>. You could use the Textractor python module to post-process those response afterwards.</p>
+</div>
+<div class="section" id="processing-a-directory-of-files">
+<h2>Processing a directory of files<a class="headerlink" href="#processing-a-directory-of-files" title="Permalink to this heading"></a></h2>
+<p>Now if instead of a file, you wished to process an entire directory of files. You could call the above on every file in the directory, but this would prove to be a very long process. Instead you can leverage Textract’s ability to scale to your workload using the asynchronous API.</p>
+<p><code class="code docutils literal notranslate"><span class="pre">ls</span> <span class="pre">your_dir/</span> <span class="pre">|</span> <span class="pre">xargs</span> <span class="pre">-I{}</span> <span class="pre">textractor</span> <span class="pre">StartDocumentTextDetection</span> <span class="pre">{}</span> <span class="pre">--s3-upload-path</span> <span class="pre">s3://your-bucket/your-prefix/{}</span></code></p>
+<p>You can also parallelize it simply by adding -P8 (for 8 concurrent processes).</p>
+<p><code class="code docutils literal notranslate"><span class="pre">ls</span> <span class="pre">your_dir/</span> <span class="pre">|</span> <span class="pre">xargs</span> <span class="pre">-P8</span> <span class="pre">-I{}</span> <span class="pre">textractor</span> <span class="pre">StartDocumentTextDetection</span> <span class="pre">{}</span> <span class="pre">--s3-upload-path</span> <span class="pre">s3://your-bucket/your-prefix/{}</span> <span class="pre">&gt;</span> <span class="pre">output.txt</span></code></p>
+<p>You will notice that all you have in output.txt are UUID like this: <code class="code docutils literal notranslate"><span class="pre">628e39089ffa1b52d62d980ec1cf4f62cb7f785c83a708b2e17ebaaf21ad0d61</span></code>. Those are JobIDs and can be used to fetch the output of asynchronous operations.</p>
+<p>Wait a few minutes (dependending on the number of files your processed) and then fetch the result  with <code class="code docutils literal notranslate"><span class="pre">GetResult</span></code>.</p>
+<p><code class="code docutils literal notranslate"><span class="pre">cat</span> <span class="pre">output.txt</span> <span class="pre">|</span> <span class="pre">xargs</span> <span class="pre">-I{}</span> <span class="pre">textractor</span> <span class="pre">GetResult</span> <span class="pre">{}</span> <span class="pre">DETECT_TEXT</span> <span class="pre">{}.json</span></code></p>
+<p>Using <code class="code docutils literal notranslate"><span class="pre">-P8</span></code> would make the above faster, but be careful not to increase the concurrent process count too much as you might run into rate limiting issues (See <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/limits.html">https://docs.aws.amazon.com/textract/latest/dg/limits.html</a> for more details).</p>
+</div>
+<div class="section" id="querying-a-file">
+<h2>Querying a file<a class="headerlink" href="#querying-a-file" title="Permalink to this heading"></a></h2>
+<p>OCR is a common use case, but what if you would like to query a file and get an answer directly in the commandline?</p>
+<p><code class="code docutils literal notranslate"><span class="pre">textractor</span> <span class="pre">AnalyzeDocument</span> <span class="pre">your_form.png</span> <span class="pre">output.json</span> <span class="pre">--features</span></code></p>
+<p>We still require that you add an output file as it prevents mistakes that would force you to run the same file twice.</p>
+</div>
+<div class="section" id="converting-an-table-image-to-an-excel-file">
+<h2>Converting an table image to an Excel file<a class="headerlink" href="#converting-an-table-image-to-an-excel-file" title="Permalink to this heading"></a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Amazon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
