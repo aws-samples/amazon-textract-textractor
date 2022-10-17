@@ -209,7 +209,12 @@ def textractor_cli():
                 entity_list += out.tables
             if "ALL" in args.overlay or "FORMS" in args.overlay:
                 entity_list += out.key_values
-            image = entity_list.visualize()
+            image = entity_list.visualize(
+                with_text=True,
+                with_word_text_only=("ALL" in args.overlay or "WORDS" in args.overlay),
+                with_confidence=True,
+                with_word_confidence_only=("ALL" in args.overlay or "WORDS" in args.overlay),
+            )
             image.save(f"{args.output_file}.png")
 
         with open(args.output_file, "w") as f:

@@ -16,7 +16,7 @@ def read_requirements(path):
 setup(
     # include data files
     name="amazon-textract-textractor",
-    version="1.0.2",
+    version="1.0.3",
     description="A package to use AWS Textract services.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -44,5 +44,10 @@ setup(
     extras_require={
         f.split(".")[0]:read_requirements(os.path.join(here, "extras", f))
         for f in os.listdir(os.path.join(here, "extras"))
-    }
+    },
+    entry_points = {
+        "console_scripts": [
+            "textractor = textractor.cli.cli:textractor_cli",
+        ],
+    },
 )

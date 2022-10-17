@@ -47,14 +47,24 @@ class EntityList(list, Generic[T]):
 
         self.extend(objs)
 
-    def visualize(self, with_text: bool = False, with_confidence: bool = False) -> List:
+    def visualize(
+        self,
+        with_text: bool = False,
+        with_word_text_only: bool = False,
+        with_confidence: bool = False,
+        with_word_confidence_only: bool = False,
+    ) -> List:
         """
         Returns list of PIL Images with bounding boxes drawn around the entities in the list.
 
         :param with_text: Flag to print the OCR output of Textract on top of the text bounding box.
         :type with_text: bool
+        :param with_word_text_only: Flag to print only the word-level OCR output of Textract on top of the text bounding box.
+        :type with_word_text_only: bool
         :param with_confidence: Flag to print the confidence of prediction on top of the entity bounding box.
         :type with_confidence: bool
+        :param with_word_confidence_only: Flag to print only the word-level confidence of Textract OCR.
+        :type with_word_confidence_only: bool
 
         :return: Returns list of PIL Images with bounding boxes drawn around the entities in the list.
         :rtype: list
@@ -71,7 +81,7 @@ class EntityList(list, Generic[T]):
 
         for page in entities_pagewise.keys():
             visualized_images[page] = _draw_bbox(
-                entities_pagewise[page], with_text, with_confidence
+                entities_pagewise[page], with_text, with_word_text_only, with_confidence, with_word_confidence_only,
             )
 
         images = list(visualized_images.values())
@@ -512,7 +522,13 @@ def _convert_table_to_list(
     return table_rows
 
 
-def _draw_bbox(entities: list, with_text: bool = False, with_confidence: bool = False):
+def _draw_bbox(
+    entities: List[DocumentEntity],
+    with_text: bool = False,
+    with_word_text_only: bool = False,
+    with_confidence: bool = False,
+    with_word_confidence_only: bool = False,
+):
     """
     Function to draw bounding boxes on all objects in entities present in a particular page.
 
@@ -520,8 +536,12 @@ def _draw_bbox(entities: list, with_text: bool = False, with_confidence: bool = 
     :type entities: list, required
     :param with_text: Flag to indicate if text is to be printed on top of the bounding box
     :type with_text: bool, optional
-    :param with_text: Flag to indicate if confidence is to be printed on top of the bounding box
-    :type with_text: bool, optional
+    :param with_word_text_only: Flag to print only the word-level OCR output of Textract on top of the text bounding box.
+    :type with_word_text_only: bool
+    :param with_confidence: Flag to print the confidence of prediction on top of the entity bounding box.
+    :type with_confidence: bool
+    :param with_word_confidence_only: Flag to print only the word-level confidence of Textract OCR.
+    :type with_word_confidence_only: bool
 
     :return: Returns PIL.Image with bounding boxes drawn for the entities passed to the function
     :rtype: PIL.Image
@@ -531,44 +551,73 @@ def _draw_bbox(entities: list, with_text: bool = False, with_confidence: bool = 
     drw = ImageDraw.Draw(image)
 
     for entity in entities:
-        final_txt = ""
         width, height = image.size
         overlayer_data = _get_overlayer_data(entity, width, height)
         drw.rectangle(
             xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
         )
-        fnt = ImageFont.truetype(os.path.join(present_path, "arial.ttf"), 5)
-
-        if with_text:
-            final_txt += overlayer_data["text"]
-
-        if with_confidence:
-            final_txt += " (" + str(overlayer_data["confidence"])[:4] + ")"
-        drw.text(
-            (overlayer_data["coords"][0], overlayer_data["coords"][1] - 5),
-            final_txt,
-            font=fnt,
-            fill=overlayer_data["text_color"],
-        )
-
-        if entity.__class__.__name__ == "KeyValue":
+        if entity.__class__.__name__ == "Table":
+            processed_cells = set()
+            for cell in entity.table_cells:
+                if cell.id in processed_cells:
+                    continue
+                if cell.siblings:
+                    for c in cell.siblings:
+                        processed_cells.add(c.id)
+                    min_x, min_y, max_x, max_y = list(zip(*[
+                        (c.bbox.x, c.bbox.y, c.bbox.x + c.bbox.width, c.bbox.y + c.bbox.height)
+                        for c in cell.siblings + [cell]
+                    ]))
+                    min_x, min_y, max_x, max_y = min(min_x), min(min_y), max(max_x), max(max_y)
+                else:
+                    processed_cells.add(cell.id)
+                    min_x, min_y, max_x, max_y = cell.bbox.x, cell.bbox.y, cell.bbox.x + cell.bbox.width, cell.bbox.y + cell.bbox.height
+                drw.rectangle(
+                    (
+                        int(min_x * width),
+                        int(min_y * height),
+                        int(max_x * width),
+                        int(max_y * height),
+                    ),
+                    outline=overlayer_data["color"],
+                    width=2,
+                )
+        else:
             final_txt = ""
-            drw.rectangle(
-                xy=overlayer_data["value_bbox"],
-                outline=ImageColor.getrgb("orange"),
-                width=2,
-            )
-            if with_text:
-                final_txt += overlayer_data["value_text"]
+            bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
+            text_height = int(bbox_height / 2)
+            fnt = ImageFont.truetype(os.path.join(present_path, "arial.ttf"), text_height)
 
-            if with_confidence:
-                final_txt += " (" + str(overlayer_data["value_conf"])[:4] + ")"
+            if with_text and (not with_word_text_only or entity.__class__.__name__ == "Word"):
+                final_txt += overlayer_data["text"]
+
+            if with_confidence and (not with_word_confidence_only or entity.__class__.__name__ == "Word"):
+                final_txt += " (" + str(overlayer_data["confidence"])[:4] + ")"
             drw.text(
-                (overlayer_data["value_bbox"][0], overlayer_data["value_bbox"][1] - 5),
+                (overlayer_data["coords"][0], overlayer_data["coords"][1] - text_height),
                 final_txt,
                 font=fnt,
                 fill=overlayer_data["text_color"],
             )
+
+            if entity.__class__.__name__ == "KeyValue":
+                final_txt = ""
+                drw.rectangle(
+                    xy=overlayer_data["value_bbox"],
+                    outline=ImageColor.getrgb("orange"),
+                    width=2,
+                )
+                if with_text:
+                    final_txt += overlayer_data["value_text"]
+
+                if with_confidence:
+                    final_txt += " (" + str(overlayer_data["value_conf"])[:4] + ")"
+                drw.text(
+                    (overlayer_data["value_bbox"][0], overlayer_data["value_bbox"][1] - text_height),
+                    final_txt,
+                    font=fnt,
+                    fill=overlayer_data["text_color"],
+                )
 
     del drw
     return image

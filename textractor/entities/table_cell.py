@@ -277,7 +277,7 @@ class TableCell(DocumentEntity):
         :return: String representation of the TableCell entity.
         :rtype: str
         """
-        if self.metadata[IS_MERGED_CELL]:
+        if self.metadata.get(IS_MERGED_CELL, False):
             entities = {
                 (cell.row_index, cell.col_index): sorted(
                     cell.words + cell.children, key=lambda x: (x.bbox.x, x.bbox.y)
@@ -307,5 +307,5 @@ class TableCell(DocumentEntity):
             entity_repr = " ".join([entity.__repr__() for entity in entities])
 
         entity_string = f"<Cell: ({self.row_index},{self.col_index}), Span: ({self.row_span}, {self.col_span}), "
-        entity_string += f"MergedCell: {self.metadata[IS_MERGED_CELL]}>  " + entity_repr
+        entity_string += f"MergedCell: {self.metadata.get(IS_MERGED_CELL, False)}>  " + entity_repr
         return entity_string
