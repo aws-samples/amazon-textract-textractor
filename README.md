@@ -84,7 +84,7 @@ If your use case was not covered here or if you are looking for asynchronous usa
 
 The package comes with tests that call the production Textract APIs. Running the tests will incur charges to your AWS account.
 
-## Aknowledgements
+## Acknowledgements
 
 This library was made possible by the work of Srividhya Radhakrishna.
 
