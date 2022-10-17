@@ -1,4 +1,4 @@
-numpy==1.22.0
+numpy==1.21.*
 awscli
 amazon-textract-caller==0.0.24
 amazon-textract-response-parser==0.1.33
