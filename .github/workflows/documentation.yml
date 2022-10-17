@@ -1,7 +1,6 @@
 name: Documentation
 
 on:
-  # TODO: Change the branch to master once merged.
   push:
     branches: [ 'textractor-rewrite' ]
   pull_request:
