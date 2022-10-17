@@ -31,7 +31,7 @@
     "\n",
     "extractor = Textractor(profile_name=\"default\")\n",
     "# This path assumes that you are running the notebook from docs/source/notebooks\n",
-    "document = extractor.detect_document_text(\"../../../tests/fixtures/form.png\")"
+    "document = extractor.detect_document_text(\"../../../tests/fixtures/invoice1.png\")"
    ]
   },
   {

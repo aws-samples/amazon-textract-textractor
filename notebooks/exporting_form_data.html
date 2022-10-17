@@ -401,7 +401,7 @@ div.rendered_html tbody tr:hover {
 <span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">start_document_analysis</span><span class="p">(</span>
     <span class="c1"># Here we pass a Pillow image instead of path. This changes nothing as</span>
     <span class="c1"># Textractor supports most input types.</span>
-    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">),</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/invoice1.png&quot;</span><span class="p">),</span>
     <span class="c1"># We specify the features that we want, here, we only want keys and values</span>
     <span class="c1"># therefore we use TextractFeatures.FORMS.</span>
     <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">FORMS</span><span class="p">],</span>
