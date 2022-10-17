@@ -4,6 +4,14 @@
 
 **Textractor** is a python package created to seamlessly work with [Amazon Textract](https://docs.aws.amazon.com/textract/latest/dg/what-is.html) a document intelligence service offering text recognition, table extraction, form processing, and much more. Whether you are making a one-off script or a complex distributed document processing pipeline, Textractor makes it easy to use Textract.
 
+If you are looking for the other amazon-textract-* packages, you can find them using the links below:
+
+- [amazon-textract-caller](https://github.com/aws-samples/amazon-textract-textractor/tree/master/caller) (to call textract without the explicit use of boto3)
+- [amazon-textract-response-parser](https://pypi.org/project/amazon-textract-response-parser/) (to parse the JSON response returned by Textract APIs)
+- [amazon-textract-overlayer](https://github.com/aws-samples/amazon-textract-textractor/tree/master/overlayer) (to draw bounding boxes around the document entities on the document image)
+- [amazon-textract-prettyprinter](https://github.com/aws-samples/amazon-textract-textractor/tree/master/prettyprinter) (to string represent document entities)
+- [amazon-textract-geofinder](https://github.com/aws-samples/amazon-textract-textractor/tree/master/tpipelinegeofinder) (to perform geometric search on the document)
+
 ## Installation
 
 Textractor is available on PyPI and can be installed with `pip install amazon-textract-textractor`. By default this will install the minimal version of textractor. The following extras can be used to add features:
@@ -75,6 +83,10 @@ If your use case was not covered here or if you are looking for asynchronous usa
 ## Tests
 
 The package comes with tests that call the production Textract APIs. Running the tests will incur charges to your AWS account.
+
+## Aknowledgements
+
+This library was made possible by the work of Srividhya Radhakrishna.
 
 ## Contributing
 

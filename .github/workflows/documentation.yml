@@ -2,7 +2,7 @@ name: Documentation
 
 on:
   push:
-    branches: [ 'textractor-rewrite' ]
+    branches: [ 'master' ]
   pull_request:
 
   workflow_dispatch:
@@ -16,7 +16,7 @@ jobs:
       # Checks out the repository
       - uses: actions/checkout@v3
         with:
-          ref: 'textractor-rewrite'
+          ref: 'master'
 
       - name: Install pandoc
         run: sudo apt-get install -y pandoc
