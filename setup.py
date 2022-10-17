@@ -16,7 +16,7 @@ def read_requirements(path):
 setup(
     # include data files
     name="amazon-textract-textractor",
-    version="1.0.3",
+    version="1.0.4",
     description="A package to use AWS Textract services.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -29,15 +29,6 @@ setup(
     ],
     keywords="amazon textract aws ocr document",
     packages=find_packages(
-        include=[
-            "textractor.*",
-            "validate.*",
-            "data.*",
-            "entities.*",
-            "parsers.*",
-            "visualizers.*",
-            "utils.*",
-        ],
         exclude=["docs", "tests"],
     ),
     install_requires=read_requirements(os.path.join(here, "requirements.txt")),
