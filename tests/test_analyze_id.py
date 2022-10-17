@@ -14,8 +14,8 @@ class TestTextractorAnalyzeID(unittest.TestCase):
         # insert credentials and filepaths here to run test
         self.profile_name = "default"
         self.current_directory = os.path.abspath(os.path.dirname(__file__))
-        self.image_path = os.path.join(self.current_directory, "fixtures/fake_id.jpg")
-        self.image = PIL.Image.open(os.path.join(self.current_directory, "fixtures/fake_id.jpg"))
+        self.image_path = os.path.join(self.current_directory, "fixtures/fake_id.png")
+        self.image = PIL.Image.open(os.path.join(self.current_directory, "fixtures/fake_id.png"))
 
         if self.profile_name is None:
             raise InvalidProfileNameError(
@@ -39,8 +39,8 @@ class TestTextractorAnalyzeID(unittest.TestCase):
         self.assertIsInstance(document, Document)
         self.assertEqual(len(document.identity_documents), 1)
         self.assertEqual(len(document.identity_documents[0].fields), 20)
-        self.assertEqual(document.identity_documents[0].get(AnalyzeIDFields.FIRST_NAME), "FAKEID")
-        self.assertEqual(document.identity_documents[0][AnalyzeIDFields.FIRST_NAME], "FAKEID")
+        self.assertEqual(document.identity_documents[0].get(AnalyzeIDFields.FIRST_NAME), "MARIA")
+        self.assertEqual(document.identity_documents[0][AnalyzeIDFields.FIRST_NAME], "MARIA")
     
     def test_analyze_id_from_image(self):
         # Testing local single image input
@@ -55,8 +55,8 @@ class TestTextractorAnalyzeID(unittest.TestCase):
         self.assertIsInstance(document, Document)
         self.assertEqual(len(document.identity_documents), 1)
         self.assertEqual(len(document.identity_documents[0].fields), 20)
-        self.assertEqual(document.identity_documents[0].get("FIRST_NAME"), "FAKEID")
-        self.assertEqual(document.identity_documents[0]["FIRST_NAME"], "FAKEID")
+        self.assertEqual(document.identity_documents[0].get("FIRST_NAME"), "MARIA")
+        self.assertEqual(document.identity_documents[0]["FIRST_NAME"], "MARIA")
 
 if __name__ == "__main__":
     test = TestTextractorAnalyzeID()

@@ -1,6 +1,6 @@
 ![Textractor](https://raw.githubusercontent.com/aws-samples/amazon-textract-textractor/5716c52e8a39c063f43e058e1637e4984a4b2da4/docs/source/textractor_cropped.png)
 
-[![Tests](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/tests.yml/badge.svg)](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/tests.yml) [![Documentation](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/documentation.yml/badge.svg)](https://aws-samples.github.io/amazon-textract-textractor/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Tests](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/tests.yml/badge.svg)](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/tests.yml) [![Documentation](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/documentation.yml/badge.svg)](https://aws-samples.github.io/amazon-textract-textractor/) [![PyPI version](https://badge.fury.io/py/amazon-textract-textractor.svg)](https://pypi.org/project/amazon-textract-textractor/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 **Textractor** is a python package created to seamlessly work with [Amazon Textract](https://docs.aws.amazon.com/textract/latest/dg/what-is.html) a document intelligence service offering text recognition, table extraction, form processing, and much more. Whether you are making a one-off script or a complex distributed document processing pipeline, Textractor makes it easy to use Textract.
 
@@ -65,9 +65,9 @@ document.tables[0].to_excel("output.xlsx")
 ### Analyze ID
 
 ```py
-document = extractor.analyze_id(file_source="tests/fixtures/fake_id.jpg")
+document = extractor.analyze_id(file_source="tests/fixtures/fake_id.png")
 print(document.identity_documents[0].get("FIRST_NAME"))
-# 'FAKEID'
+# 'MARIA'
 ```
 
 ### Receipt processing (Analyze Expense)
