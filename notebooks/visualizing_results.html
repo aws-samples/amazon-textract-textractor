@@ -388,7 +388,7 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -407,7 +407,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Let’s look at the asset.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">)</span>
@@ -415,7 +415,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -423,7 +423,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
@@ -431,7 +431,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -448,7 +448,7 @@ Expense Documents - 0
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">checkboxes</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
@@ -456,7 +456,7 @@ Expense Documents - 0
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -464,7 +464,7 @@ Expense Documents - 0
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">key_values</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
@@ -472,7 +472,7 @@ Expense Documents - 0
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -484,7 +484,7 @@ Expense Documents - 0
 <h2>Visualizing the result of a search<a class="headerlink" href="#Visualizing-the-result-of-a-search" title="Permalink to this heading"></a></h2>
 <p>Here we will be looking for the word “Rent”.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">search_words</span><span class="p">(</span><span class="s2">&quot;Rent&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -492,7 +492,7 @@ Expense Documents - 0
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">words</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
@@ -500,7 +500,7 @@ Expense Documents - 0
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -512,7 +512,7 @@ Expense Documents - 0
 <h2>Visualizing Tables<a class="headerlink" href="#Visualizing-Tables" title="Permalink to this heading"></a></h2>
 <p>Tables can be visualized as well (here) in purple.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
@@ -520,7 +520,7 @@ Expense Documents - 0
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
