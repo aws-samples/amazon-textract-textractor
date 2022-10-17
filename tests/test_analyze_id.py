@@ -14,8 +14,8 @@ class TestTextractorAnalyzeID(unittest.TestCase):
         # insert credentials and filepaths here to run test
         self.profile_name = "default"
         self.current_directory = os.path.abspath(os.path.dirname(__file__))
-        self.image_path = os.path.join(self.current_directory, "fixtures/fake_id.jpg")
-        self.image = PIL.Image.open(os.path.join(self.current_directory, "fixtures/fake_id.jpg"))
+        self.image_path = os.path.join(self.current_directory, "fixtures/fake_id.png")
+        self.image = PIL.Image.open(os.path.join(self.current_directory, "fixtures/fake_id.png"))
 
         if self.profile_name is None:
             raise InvalidProfileNameError(
