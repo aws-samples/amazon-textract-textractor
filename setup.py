@@ -16,9 +16,10 @@ def read_requirements(path):
 setup(
     # include data files
     name="amazon-textract-textractor",
-    version="1.0.10",
+    version="1.0.11",
     license="Apache 2.0",
     description="A package to use AWS Textract services.",
+    url="https://github.com/aws-samples/amazon-textract-textractor",
     long_description=long_description,
     long_description_content_type="text/markdown",
     classifiers=[
@@ -32,6 +33,7 @@ setup(
     packages=find_packages(
         exclude=["docs", "tests"],
     ),
+    include_package_data=True,
     install_requires=read_requirements(os.path.join(here, "requirements.txt")),
     extras_require={
         f.split(".")[0]:read_requirements(os.path.join(here, "extras", f))
