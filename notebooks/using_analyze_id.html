@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Using AnalyzeID &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -63,6 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../commandline.html">CLI</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
@@ -375,16 +377,16 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Using-AnalyzeID">
+<section id="Using-AnalyzeID">
 <h1>Using AnalyzeID<a class="headerlink" href="#Using-AnalyzeID" title="Permalink to this heading"></a></h1>
 <p>Textract AnalyzeID is an API dedicated to processing ID documents such as drivers’ licenses and passports. It is different than other Amazon Textract services because it does not have an asynchronous API and supports only single-page image of ID documents.</p>
-<div class="section" id="Installation">
+<section id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
 <p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if you workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
-</div>
-<div class="section" id="Calling-Textract">
+</section>
+<section id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -417,8 +419,8 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/notebooks_using_analyze_id_2_0.png" src="../_images/notebooks_using_analyze_id_2_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Parsing-the-output">
+</section>
+<section id="Parsing-the-output">
 <h2>Parsing the output<a class="headerlink" href="#Parsing-the-output" title="Permalink to this heading"></a></h2>
 <p>AnalyzeID is a simple API that is only synchronous and only returns specific keys that are predefined in the <code class="docutils literal notranslate"><span class="pre">constants.py</span></code> file.</p>
 <div class="nbinput docutils container">
@@ -513,12 +515,12 @@ div.rendered_html tbody tr:hover {
  &#39;PLACE_OF_BIRTH&#39;: &#39;&#39;}
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Conclusion">
+</section>
+<section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
 <p>AnalyzeID is an API that is very easy to use and Textractor helps you use it by providing an <code class="docutils literal notranslate"><span class="pre">Enum</span></code> of available keys and a simple <code class="docutils literal notranslate"><span class="pre">dict</span></code>-like interface.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

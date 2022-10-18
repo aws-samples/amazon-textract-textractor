@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Word Occurence within Document &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -65,6 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../commandline.html">CLI</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
@@ -377,16 +379,16 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Word-Occurence-within-Document">
+<section id="Word-Occurence-within-Document">
 <h1>Word Occurence within Document<a class="headerlink" href="#Word-Occurence-within-Document" title="Permalink to this heading"></a></h1>
 <p>This page will walk you through using Textractor to find all the occurrences of the word ‘Room’ in a document and visualize them overlayed on the document image.</p>
-<div class="section" id="Installation">
+<section id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip. This example requires rasterizing PDFs and using word embeddings to do fuzzy search therefore you need to run:</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[torch,pdf]</span></code></p>
 <p>There are various sets of dependencies available to tailor your installation to your use case. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
-</div>
-<div class="section" id="Calling-Textract">
+</section>
+<section id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <p>We use the synchronous API for this example, but any all APIs would support this use case.</p>
 <div class="nbinput nblast docutils container">
@@ -404,8 +406,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Retrieving-word-occurences">
+</section>
+<section id="Retrieving-word-occurences">
 <h2>Retrieving word occurences<a class="headerlink" href="#Retrieving-word-occurences" title="Permalink to this heading"></a></h2>
 <p>Words and lines can be search at the document and page level by calling the <code class="docutils literal notranslate"><span class="pre">search_words()</span></code> and <code class="docutils literal notranslate"><span class="pre">search_lines()</span></code> methods respectively.</p>
 <div class="nbinput nblast docutils container">
@@ -417,8 +419,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Find-words-on-document-page-through-visualize()">
+</section>
+<section id="Find-words-on-document-page-through-visualize()">
 <h2>Find words on document page through visualize()<a class="headerlink" href="#Find-words-on-document-page-through-visualize()" title="Permalink to this heading"></a></h2>
 <p>To identify the location of these words on the document, <code class="docutils literal notranslate"><span class="pre">visualize()</span></code> method can be called on the object returned by the <code class="docutils literal notranslate"><span class="pre">search_words()</span></code> call. This returns PIL Images of the document that contains these word instances along with bounding boxes around these objects.</p>
 <div class="nbinput docutils container">
@@ -437,8 +439,8 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/notebooks_finding_words_within_a_document_5_0.png" src="../_images/notebooks_finding_words_within_a_document_5_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="What-if-you-don’t-want-to-use-PyTorch?">
+</section>
+<section id="What-if-you-don’t-want-to-use-PyTorch?">
 <h2>What if you don’t want to use PyTorch?<a class="headerlink" href="#What-if-you-don’t-want-to-use-PyTorch?" title="Permalink to this heading"></a></h2>
 <p>PyTorch gives the most accurate results, but it also uses more compute resources and might be overkill for your use case. This is why Textractor comes built-in with other string matching algorithms.</p>
 <div class="nbinput docutils container">
@@ -481,12 +483,12 @@ Number of occurences of the word Room in the document =  10
 <img alt="../_images/notebooks_finding_words_within_a_document_8_0.png" src="../_images/notebooks_finding_words_within_a_document_8_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Conclusion">
+</section>
+<section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
 <p>There are many more supported APIs and usecases in Textractor, if this did not address your use case, we encourage you to look at <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/examples.html">the other examples</a>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

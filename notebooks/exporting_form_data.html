@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Exporting Form Data &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -64,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../commandline.html">CLI</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
@@ -376,16 +378,16 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Exporting-Form-Data">
+<section id="Exporting-Form-Data">
 <h1>Exporting Form Data<a class="headerlink" href="#Exporting-Form-Data" title="Permalink to this heading"></a></h1>
 <p>We now move from Textract OCR to Textract Forms, the API to extract key-value pairs. Here we want to export all key-values extracted from an image as a .csv file.</p>
-<div class="section" id="Installation">
+<section id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
 <p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
-</div>
-<div class="section" id="Calling-Textract">
+</section>
+<section id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <p>We use the asynchronous API for this example, but as seen in the OCR example the synchronous API exposes the same methods.</p>
 <div class="nbinput nblast docutils container">
@@ -411,8 +413,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Retrieving-key-values-and-exporting-as-CSV">
+</section>
+<section id="Retrieving-key-values-and-exporting-as-CSV">
 <h2>Retrieving key-values and exporting as CSV<a class="headerlink" href="#Retrieving-key-values-and-exporting-as-CSV" title="Permalink to this heading"></a></h2>
 <p>Form data/Key-values are stored at the document and page level as a property and can be accessed as shown below</p>
 <div class="nbinput docutils container">
@@ -462,8 +464,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="View-CSV-as-dataframe">
+</section>
+<section id="View-CSV-as-dataframe">
 <h2>View CSV as dataframe<a class="headerlink" href="#View-CSV-as-dataframe" title="Permalink to this heading"></a></h2>
 <p>To verify the contents of the file stored, we open it as a Pandas dataframe.</p>
 <div class="nbinput docutils container">
@@ -594,12 +596,12 @@ div.rendered_html tbody tr:hover {
 </table>
 </div></div>
 </div>
-</div>
-<div class="section" id="Conclusion">
+</section>
+<section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
 <p>There are many more supported APIs and use cases in Textractor, if this did not address your use case, we encourage you to look at <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/examples.html">the other examples</a>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Using Queries &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -63,6 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../commandline.html">CLI</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
@@ -375,16 +377,16 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Using-Queries">
+<section id="Using-Queries">
 <h1>Using Queries<a class="headerlink" href="#Using-Queries" title="Permalink to this heading"></a></h1>
 <p>Queries are a new user friendly way to use Textract by asking questions and getting answer.</p>
-<div class="section" id="Installation">
+<section id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
 <p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
-</div>
-<div class="section" id="Examples-of-queries">
+</section>
+<section id="Examples-of-queries">
 <h2>Examples of queries<a class="headerlink" href="#Examples-of-queries" title="Permalink to this heading"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -425,8 +427,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Calling-Textract">
+</section>
+<section id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -534,12 +536,12 @@ How did we hear about the Energy Assistance Program?
 
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Conclusion">
+</section>
+<section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
 <p>Queries are a powerful and inexpensive solution for processing a smaller number of keys and values. However, you can run into issues where the result is wrong either because the question requires a higher-level understanding, as with “How many people are there in the household?”. We recommend testing your workflow with some real samples and fine-tuning your queries to fit your use case.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

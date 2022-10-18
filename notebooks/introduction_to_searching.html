@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Introduction to searching &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -63,6 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../commandline.html">CLI</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
@@ -375,16 +377,16 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Introduction-to-searching">
+<section id="Introduction-to-searching">
 <h1>Introduction to searching<a class="headerlink" href="#Introduction-to-searching" title="Permalink to this heading"></a></h1>
 <p>Textractor offers several tool to process Textract output. In this example, we will build a robust solution for extracting specific fields from a specific form (i.e. not fields explicitly supported by Amazon Textract).</p>
-<div class="section" id="Installation">
+<section id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
 <p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
-</div>
-<div class="section" id="Calling-Textract">
+</section>
+<section id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -463,8 +465,8 @@ div.rendered_html tbody tr:hover {
 [[X] Rent $ 2000]
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Saving-on-costs">
+</section>
+<section id="Saving-on-costs">
 <h2>Saving on costs<a class="headerlink" href="#Saving-on-costs" title="Permalink to this heading"></a></h2>
 <p>As shown above, Amazon Textract is able to extract the checkbox without any issue, but what if you want to reduce the per-document processing costs and you are willing process the data a bit more. Here we will get the same result by leveraging word search.</p>
 <div class="nbinput nblast docutils container">
@@ -533,12 +535,12 @@ Expense Documents - 0
 </pre></div></div>
 </div>
 <p>Now we can’t know if there was a checked checkbox next to the “Rent $ 2000” line, but maybe that’s a reasonable assumption for your use case.</p>
-</div>
-<div class="section" id="Conclusion">
+</section>
+<section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
 <p>Searching allows you to inject your knowledge of the data inside your workflow to improve the raw results returned by Textract. The more specific your input data is, the lower the costs as you can get away with parsing just the text output.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Entity Parser &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -42,6 +43,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commandline.html">CLI</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="textractor.html">Textract Caller</a></li>
@@ -102,13 +104,13 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="entity-parser">
+<section id="entity-parser">
 <h1>Entity Parser<a class="headerlink" href="#entity-parser" title="Permalink to this heading"></a></h1>
 <p>The library is intended to support multiple formats for parsing with a unified underlying object representation. For the Textract customer,
 the response_parser function has been created to handle API response parsing for <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/API_DetectDocumentText.html">DetectDocumentText</a>,
 <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/API_AnalyzeDocument.html">AnalyzeDocument</a>, <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/API_StartDocumentTextDetection.html">StartDocumentTextDetection</a> and
 <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/API_StartDocumentAnalysis.html">StartDocumentAnalysis</a>.</p>
-<div class="section" id="module-textractor.parsers.response_parser">
+<section id="module-textractor.parsers.response_parser">
 <span id="response-parser"></span><h2>response_parser<a class="headerlink" href="#module-textractor.parsers.response_parser" title="Permalink to this heading"></a></h2>
 <p>Consumes Textract JSON response and converts them to a Document object format.
 This class contains all the necessary utilities to create entity objects from JSON blocks within the response.
@@ -164,8 +166,8 @@ A valid Page object must contain at least a unique name and physical dimensions.
 <span class="sig-prename descclassname"><span class="pre">textractor.parsers.response_parser.</span></span><span class="sig-name descname"><span class="pre">parser_analyze_expense_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.parsers.response_parser.parser_analyze_expense_response" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

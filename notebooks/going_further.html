@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Going further &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -22,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Textract Caller" href="../textractor.html" />
+    <link rel="next" title="CLI" href="../commandline.html" />
     <link rel="prev" title="Interfacing with trp2" href="interfacing_with_trp2.html" /> 
 </head>
 
@@ -64,6 +65,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../commandline.html">CLI</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
@@ -376,17 +378,17 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Going-further">
+<section id="Going-further">
 <h1>Going further<a class="headerlink" href="#Going-further" title="Permalink to this heading"></a></h1>
 <p>With Textractor we strive to offer a solution that comes with everything you need to build your workflow. However, we cannot realistically cover every use case and we anticipate that there will be situations when the library falls short of your expectations and there will be a need to custom solutions.</p>
 <p>To do so, every part of the <code class="docutils literal notranslate"><span class="pre">Document</span></code> object, may it be <code class="docutils literal notranslate"><span class="pre">Page</span></code>, <code class="docutils literal notranslate"><span class="pre">IdentityDocument</span></code>, <code class="docutils literal notranslate"><span class="pre">ExpenseDocument</span></code> contains the the JSON block that was used to instantiate it.</p>
-<div class="section" id="Installation">
+<section id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
 <p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
-</div>
-<div class="section" id="Calling-Textract">
+</section>
+<section id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <p>For the sake of diversity, we will use the AnalyzeExpense API for this example, however, the functions and properties showcased here are available on all document types.</p>
 <div class="nbinput nblast docutils container">
@@ -401,8 +403,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Response-dictionary">
+</section>
+<section id="Response-dictionary">
 <h2>Response dictionary<a class="headerlink" href="#Response-dictionary" title="Permalink to this heading"></a></h2>
 <p>The response dictionary is the unchanged JSON that was returned by the Textract API, if you save it as a file it will be the same as the JSON you would have gotten from using boto3.</p>
 <div class="nbinput docutils container">
@@ -1607,8 +1609,8 @@ div.rendered_html tbody tr:hover {
   &#39;RetryAttempts&#39;: 0}}
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Finer-grain-results">
+</section>
+<section id="Finer-grain-results">
 <h2>Finer-grain results<a class="headerlink" href="#Finer-grain-results" title="Permalink to this heading"></a></h2>
 <p>What if you only want a specific value in the invoice we processed?</p>
 <div class="nbinput docutils container">
@@ -2849,19 +2851,19 @@ div.rendered_html tbody tr:hover {
        &#39;PageNumber&#39;: 1}]}]}]}
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Conclusion">
+</section>
+<section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
 <p>With Textractor, we strived to offer a tool that does most of the work, but also one that gets out of the way when you know better. If you find a Textractor object that does not have a <code class="docutils literal notranslate"><span class="pre">raw_object</span></code> property, open an issue on our official GitHub repository.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="interfacing_with_trp2.html" class="btn btn-neutral float-left" title="Interfacing with trp2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../textractor.html" class="btn btn-neutral float-right" title="Textract Caller" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../commandline.html" class="btn btn-neutral float-right" title="CLI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Interfacing with trp2 &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -63,6 +64,7 @@
 <li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../commandline.html">CLI</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
@@ -375,16 +377,16 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Interfacing-with-trp2">
+<section id="Interfacing-with-trp2">
 <h1>Interfacing with trp2<a class="headerlink" href="#Interfacing-with-trp2" title="Permalink to this heading"></a></h1>
 <p>The Textract response parser was the preferred way of handling Textract API output before the release of Textractor. If your current workflow uses the older library, you can easily reuse their functions through the compatibility API.</p>
-<div class="section" id="Installation">
+<section id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
 <p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
-</div>
-<div class="section" id="Calling-Textract">
+</section>
+<section id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -422,8 +424,8 @@ Tables - 0
 Identity Documents - 0
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Getting-the-trp2-document">
+</section>
+<section id="Getting-the-trp2-document">
 <h2>Getting the trp2 document<a class="headerlink" href="#Getting-the-trp2-document" title="Permalink to this heading"></a></h2>
 <p>All <code class="docutils literal notranslate"><span class="pre">Document</span></code> objects have a convenience function <code class="docutils literal notranslate"><span class="pre">to_trp2()</span></code> that is a shorthand for <code class="docutils literal notranslate"><span class="pre">TDocumentSchema().load(document.response)</span></code> and creates a matching trp2 document. Note that this behaves as a converter, not as a proxy so any changes done on the <code class="docutils literal notranslate"><span class="pre">TDocument</span></code> will not be passed to the <code class="docutils literal notranslate"><span class="pre">Document</span></code> object.</p>
 <div class="nbinput nblast docutils container">
@@ -434,12 +436,12 @@ Identity Documents - 0
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Conclusion">
+</section>
+<section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
 <p>Textractor comes with everything you need to reuse components from your current workflow with the newer caller, pretty printer, or directional finder.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Table data extraction to Excel &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -65,6 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../commandline.html">CLI</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
@@ -377,16 +379,16 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Table-data-extraction-to-Excel">
+<section id="Table-data-extraction-to-Excel">
 <h1>Table data extraction to Excel<a class="headerlink" href="#Table-data-extraction-to-Excel" title="Permalink to this heading"></a></h1>
 <p>This example uses Textractor to convert an image to a Microsoft Office Excel file that can be further processed manually.</p>
-<div class="section" id="Installation">
+<section id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
 <p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
-</div>
-<div class="section" id="Calling-Textract">
+</section>
+<section id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
@@ -506,8 +508,8 @@ Expense Documents - 0
 <span class="ansi-red-fg">TypeError</span>: &#39;module&#39; object is not callable
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Table-as-a-pandas-DataFrame">
+</section>
+<section id="Table-as-a-pandas-DataFrame">
 <h2>Table as a pandas DataFrame<a class="headerlink" href="#Table-as-a-pandas-DataFrame" title="Permalink to this heading"></a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -1034,8 +1036,8 @@ Expense Documents - 0
 </table>
 </div></div>
 </div>
-</div>
-<div class="section" id="Table-as-CSV">
+</section>
+<section id="Table-as-CSV">
 <h2>Table as CSV<a class="headerlink" href="#Table-as-CSV" title="Permalink to this heading"></a></h2>
 <p>This is a shorthand for table.to_pandas().to_csv().</p>
 <div class="nbinput docutils container">
@@ -1055,8 +1057,8 @@ Expense Documents - 0
 &#39;,0,1,2,3,4,5,6\n0,,Three Months June,&#34;30, Ended&#34;,Six Months June,&#34;Ended 30,&#34;,Twelve Months June,&#34;30, Ended&#34;\n1,,2021,2022,2021,2022,2021,2022\n2,,,,,,,\n3,&#34;CASH, PERIOD CASH EQUIVALENTS, AND RESTRICTED CASH, BEGINNING OF&#34;,&#34;$ 34,155&#34;,&#34;$ 36,599&#34;,&#34;$ 42,377&#34;,&#34;$ 36,477&#34;,&#34;$ 37,842&#34;,&#34;$ 40,667&#34;\n4,OPERATING ACTIVITIES:,,,,,,\n5,Net income (loss),&#34;7,778&#34;,&#34;(2,028)&#34;,&#34;15,885&#34;,&#34;(5,872)&#34;,&#34;29,438&#34;,&#34;11,607&#34;\n6,Adjustments to reconcile net income (loss) to net cash from operating activities:,,,,,,\n7,&#34;Depreciation content costs, and operating amortization lease of assets, property and and other equipment and capitalized&#34;,&#34;8,038&#34;,&#34;9,594&#34;,&#34;15,546&#34;,&#34;18,572&#34;,&#34;29,687&#34;,&#34;37,322&#34;\n8,Stock-based compensation,&#34;3,591&#34;,&#34;5,209&#34;,&#34;5,897&#34;,&#34;8,459&#34;,&#34;10,747&#34;,&#34;15,319&#34;\n9,&#34;Other operating expense (income), net&#34;,18,122,48,337,(372),426\n10,&#34;Other expense (income), net&#34;,&#34;(1,258)&#34;,&#34;6,104&#34;,&#34;(2,714)&#34;,&#34;14,793&#34;,&#34;(5,092)&#34;,&#34;3,201&#34;\n11,Deferred income taxes,701,&#34;(1,955)&#34;,&#34;2,404&#34;,&#34;(3,956)&#34;,&#34;1,063&#34;,&#34;(6,670)&#34;\n12,Changes in operating assets and liabilities:,,,,,,\n13,Inventories,(209),&#34;(3,890)&#34;,(513),&#34;(6,504)&#34;,&#34;(4,082)&#34;,&#34;(15,478)&#34;\n14,&#34;Accounts receivable, net and other&#34;,&#34;(4,462)&#34;,&#34;(6,799)&#34;,&#34;(6,717)&#34;,&#34;(8,315)&#34;,&#34;(13,294)&#34;,&#34;(19,761)&#34;\n15,Accounts payable,47,&#34;3,699&#34;,&#34;(8,219)&#34;,&#34;(5,681)&#34;,&#34;8,689&#34;,&#34;6,140&#34;\n16,Accrued expenses and other,&#34;(1,685)&#34;,&#34;(1,412)&#34;,&#34;(5,745)&#34;,&#34;(7,315)&#34;,&#34;1,071&#34;,553\n17,Unearned revenue,156,321,&#34;1,056&#34;,&#34;1,657&#34;,&#34;1,467&#34;,&#34;2,915&#34;\n18,Net cash provided by (used in) operating activities,&#34;12,715&#34;,&#34;8,965&#34;,&#34;16,928&#34;,&#34;6,175&#34;,&#34;59,322&#34;,&#34;35,574&#34;\n19,INVESTING ACTIVITIES:,,,,,,\n20,Purchases of property and equipment,&#34;(14,288)&#34;,&#34;(15,724)&#34;,&#34;(26,370)&#34;,&#34;(30,675)&#34;,&#34;(52,256)&#34;,&#34;(65,358)&#34;\n21,Proceeds from property and equipment sales and incentives,&#34;1,300&#34;,&#34;1,626&#34;,&#34;2,195&#34;,&#34;2,835&#34;,&#34;5,080&#34;,&#34;6,297&#34;\n22,&#34;Acquisitions, net of cash acquired, and other&#34;,(320),(259),(950),&#34;(6,600)&#34;,&#34;(3,066)&#34;,&#34;(7,635)&#34;\n23,Sales and maturities of marketable securities,&#34;13,213&#34;,&#34;2,608&#34;,&#34;31,039&#34;,&#34;25,361&#34;,&#34;61,512&#34;,&#34;53,706&#34;\n24,Purchases of marketable securities,&#34;(21,985)&#34;,(329),&#34;(36,660)&#34;,&#34;(2,093)&#34;,&#34;(74,929)&#34;,&#34;(25,590)&#34;\n25,Net cash provided by (used in) investing activities,&#34;(22,080)&#34;,&#34;(12,078)&#34;,&#34;(30,746)&#34;,&#34;(11,172)&#34;,&#34;(63,659)&#34;,&#34;(38,580)&#34;\n26,FINANCING ACTIVITIES:,,,,,,\n27,Common stock repurchased,-,&#34;(3,334)&#34;,-,&#34;(6,000)&#34;,-,&#34;(6,000)&#34;\n28,&#34;Proceeds from short-term debt, and other&#34;,&#34;1,176&#34;,&#34;4,865&#34;,&#34;3,102&#34;,&#34;18,608&#34;,&#34;6,848&#34;,&#34;23,462&#34;\n29,&#34;Repayments of short-term debt, and other&#34;,&#34;(1,176)&#34;,&#34;(7,610)&#34;,&#34;(3,177)&#34;,&#34;(13,841)&#34;,&#34;(6,817)&#34;,&#34;(18,417)&#34;\n30,Proceeds from long-term debt,&#34;18,516&#34;,&#34;12,824&#34;,&#34;18,627&#34;,&#34;12,824&#34;,&#34;19,158&#34;,&#34;13,200&#34;\n31,Repayments of long-term debt,(41),(1),(80),(1),&#34;(1,392)&#34;,&#34;(1,511)&#34;\n32,Principal repayments of finance leases,&#34;(2,804)&#34;,&#34;(2,059)&#34;,&#34;(6,210)&#34;,&#34;(4,836)&#34;,&#34;(11,435)&#34;,&#34;(9,789)&#34;\n33,Principal repayments of financing obligations,(28),(59),(95),(138),(116),(205)\n34,Net cash provided by (used in) financing activities,&#34;15,643&#34;,&#34;4,626&#34;,&#34;12,167&#34;,&#34;6,616&#34;,&#34;6,246&#34;,740\n35,&#34;Foreign currency effect on cash, cash equivalents, and restricted cash&#34;,234,(412),(59),(396),916,(701)\n36,&#34;Net increase (decrease) in cash, cash equivalents, and restricted cash&#34;,&#34;6,512&#34;,&#34;1,101&#34;,&#34;(1,710)&#34;,&#34;1,223&#34;,&#34;2,825&#34;,&#34;(2,967)&#34;\n37,&#34;CASH, CASH EQUIVALENTS, AND RESTRICTED CASH, END OF PERIOD&#34;,&#34;$ 40,667&#34;,&#34;$ 37,700&#34;,&#34;$ 40,667&#34;,&#34;$ 37,700&#34;,&#34;$ 40,667&#34;,&#34;$ 37,700&#34;\n38,SUPPLEMENTAL CASH FLOW INFORMATION:,,,,,,\n39,Cash paid for interest on debt,$ 179,$ 349,$ 455,$ 628,$ 942,&#34;$ 1,271&#34;\n40,Cash paid for operating leases,&#34;1,577&#34;,&#34;2,088&#34;,&#34;3,217&#34;,&#34;4,455&#34;,&#34;5,577&#34;,&#34;7,960&#34;\n41,Cash paid for interest on finance leases,129,95,286,202,569,437\n42,Cash paid for interest on financing obligations,35,55,68,113,127,198\n43,&#34;Cash paid for income taxes, net of refunds&#34;,&#34;1,803&#34;,&#34;3,145&#34;,&#34;2,604&#34;,&#34;3,598&#34;,&#34;3,526&#34;,&#34;4,682&#34;\n44,Assets acquired under operating leases,&#34;5,578&#34;,&#34;5,101&#34;,&#34;9,114&#34;,&#34;7,276&#34;,&#34;19,576&#34;,&#34;23,531&#34;\n45,&#34;Property modifications and equipment acquired under finance leases, net of remeasurements and&#34;,&#34;1,642&#34;,61,&#34;3,709&#34;,227,&#34;9,976&#34;,&#34;3,579&#34;\n46,Property lease arrangements and equipment recognized during the construction period of build-to-suit,&#34;1,193&#34;,986,&#34;2,080&#34;,&#34;2,351&#34;,&#34;3,486&#34;,&#34;6,117&#34;\n47,&#34;Property lease arrangements, and equipment with derecognized the associated after leases the construction recognized period as operating of build-to-suit&#34;,99,&#34;1,079&#34;,99,&#34;1,112&#34;,99,&#34;1,243&#34;\n&#39;
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Table-to-Microsoft-Office-Excel">
+</section>
+<section id="Table-to-Microsoft-Office-Excel">
 <h2>Table to Microsoft Office Excel<a class="headerlink" href="#Table-to-Microsoft-Office-Excel" title="Permalink to this heading"></a></h2>
 <p>The only format that supports merged cells.</p>
 <div class="nbinput nblast docutils container">
@@ -1067,12 +1069,12 @@ Expense Documents - 0
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Conclusion">
+</section>
+<section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
 <p>Textractor makes it easy to go from one format to another and streamlines your table processing workflows.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

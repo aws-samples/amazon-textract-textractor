@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Entity Visualization &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -42,6 +43,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commandline.html">CLI</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="textractor.html">Textract Caller</a></li>
@@ -102,11 +104,11 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="entity-visualization">
+<section id="entity-visualization">
 <h1>Entity Visualization<a class="headerlink" href="#entity-visualization" title="Permalink to this heading"></a></h1>
 <p>Most features that return <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code> objects are of <code class="xref py py-class docutils literal notranslate"><span class="pre">EntityList</span></code> type. It is an extension of the <code class="code docutils literal notranslate"><span class="pre">list</span></code> data type
 with the intention of providing visualization features to these entities.</p>
-<div class="section" id="module-textractor.visualizers.entitylist">
+<section id="module-textractor.visualizers.entitylist">
 <span id="entitylist"></span><h2>EntityList<a class="headerlink" href="#module-textractor.visualizers.entitylist" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference internal" href="#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntityList</span></code></a> is an extension of list type with custom functions to print document entities in a well formatted manner and visualize on top of the document page with their BoundingBox information.</p>
 <p>The two main functions within this class are <code class="code docutils literal notranslate"><span class="pre">pretty_print()</span></code> and <code class="code docutils literal notranslate"><span class="pre">visualize()</span></code>.
@@ -147,7 +149,7 @@ Use <code class="code docutils literal notranslate"><span class="pre">visualize(
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.visualizers.entitylist.EntityList.visualize">
-<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">with_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_word_text_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_word_confidence_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#textractor.visualizers.entitylist.EntityList.visualize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">with_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_word_text_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_word_confidence_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_size_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#textractor.visualizers.entitylist.EntityList.visualize" title="Permalink to this definition"></a></dt>
 <dd><p>Returns list of PIL Images with bounding boxes drawn around the entities in the list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -169,8 +171,8 @@ Use <code class="code docutils literal notranslate"><span class="pre">visualize(
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

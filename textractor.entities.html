@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document Entities &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -44,6 +45,7 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commandline.html">CLI</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="textractor.html">Textract Caller</a></li>
@@ -114,13 +116,13 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="document-entities">
+<section id="document-entities">
 <h1>Document Entities<a class="headerlink" href="#document-entities" title="Permalink to this heading"></a></h1>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> objects contain various entities within them. Textract document analysis APIs recognize 6 document entities namely: WORD, LINE, KEY_VALUE_SET
 , SELECTION_ELEMENT, TABLE, CELL</p>
 <p>These are structures that occur in most documents and the package provides classes to programmatically store and access the information
 produced by Textract for these entities.</p>
-<div class="section" id="module-textractor.entities.bbox">
+<section id="module-textractor.entities.bbox">
 <span id="boundingbox"></span><h2>BoundingBox<a class="headerlink" href="#module-textractor.entities.bbox" title="Permalink to this heading"></a></h2>
 <p>BoundingBox class contains all the co-ordinate information for a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code>. This class is mainly useful to locate the entity
 on the image of the document page.</p>
@@ -181,8 +183,8 @@ on the image of the document page.</p>
 <p>The <a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpatialObject</span></code></a> interface defines an object that has a width and height. This mostly used for <a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundingBox</span></code></a>     reference to be able to provide normalized coordinates.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-textractor.entities.document_entity">
+</section>
+<section id="module-textractor.entities.document_entity">
 <span id="documententity"></span><h2>DocumentEntity<a class="headerlink" href="#module-textractor.entities.document_entity" title="Permalink to this heading"></a></h2>
 <p><a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity" title="textractor.entities.document_entity.DocumentEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a> is the class that all Document entities such as <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Line</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code> etc. inherit from. This class provides methods 
 useful to all such entities.</p>
@@ -298,8 +300,8 @@ i.e. unique id and bounding box.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-textractor.entities.word">
+</section>
+<section id="module-textractor.entities.word">
 <span id="word"></span><h2>Word<a class="headerlink" href="#module-textractor.entities.word" title="Permalink to this heading"></a></h2>
 <p>Represents a single <a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code></a> within the <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.
 This class contains the associated metadata with the <a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code></a> entity including the text transcription, 
@@ -374,8 +376,8 @@ text type, bounding box information, page number, Page ID and confidence of dete
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-textractor.entities.line">
+</section>
+<section id="module-textractor.entities.line">
 <span id="line"></span><h2>Line<a class="headerlink" href="#module-textractor.entities.line" title="Permalink to this heading"></a></h2>
 <p>Represents a single <a class="reference internal" href="#textractor.entities.line.Line" title="textractor.entities.line.Line"><code class="xref py py-class docutils literal notranslate"><span class="pre">Line</span></code></a> Entity within the <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>. 
 The Textract API response returns groups of words as LINE BlockTypes. They contain <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code> entities as children.</p>
@@ -453,8 +455,8 @@ bounding box information, child words, page number, Page ID and confidence of de
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-textractor.entities.key_value">
+</section>
+<section id="module-textractor.entities.key_value">
 <span id="keyvalue"></span><h2>KeyValue<a class="headerlink" href="#module-textractor.entities.key_value" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference internal" href="#textractor.entities.key_value.KeyValue" title="textractor.entities.key_value.KeyValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeyValue</span></code></a> entity is a document entity representing the Forms output. The key in <a class="reference internal" href="#textractor.entities.key_value.KeyValue" title="textractor.entities.key_value.KeyValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeyValue</span></code></a> are typically words 
 and the <code class="xref py py-class docutils literal notranslate"><span class="pre">Value</span></code> could be <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code> elements or <code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionElement</span></code> in case of checkboxes.</p>
@@ -566,8 +568,8 @@ bounding box information, value, existence of checkbox, page number, Page ID and
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-textractor.entities.value">
+</section>
+<section id="module-textractor.entities.value">
 <span id="value"></span><h2>Value<a class="headerlink" href="#module-textractor.entities.value" title="Permalink to this heading"></a></h2>
 <p>Represents a single <a class="reference internal" href="#textractor.entities.value.Value" title="textractor.entities.value.Value"><code class="xref py py-class docutils literal notranslate"><span class="pre">Value</span></code></a> Entity within the <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>. 
 The Textract API response returns groups of words as KEY_VALUE_SET BlockTypes. These may be of KEY
@@ -676,8 +678,8 @@ checkbox status of the Value entity.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-textractor.entities.selection_element">
+</section>
+<section id="module-textractor.entities.selection_element">
 <span id="selectionelement"></span><h2>SelectionElement<a class="headerlink" href="#module-textractor.entities.selection_element" title="Permalink to this heading"></a></h2>
 <p>Represents a single <a class="reference internal" href="#textractor.entities.selection_element.SelectionElement" title="textractor.entities.selection_element.SelectionElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionElement</span></code></a>/Checkbox/Clickable Entity within the <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.</p>
 <p>This class contains the associated metadata with the <a class="reference internal" href="#textractor.entities.selection_element.SelectionElement" title="textractor.entities.selection_element.SelectionElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionElement</span></code></a> entity including the entity ID, 
@@ -751,8 +753,8 @@ bounding box information, selection status, page number, Page ID and confidence 
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-textractor.entities.table">
+</section>
+<section id="module-textractor.entities.table">
 <span id="table"></span><h2>Table<a class="headerlink" href="#module-textractor.entities.table" title="Permalink to this heading"></a></h2>
 <p>Represents a <a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></a> entity within the document.
 Tables are hierarchical objects composed of <code class="xref py py-class docutils literal notranslate"><span class="pre">TableCell</span></code> objects, which <em>implicitly</em> form columns and rows.</p>
@@ -968,8 +970,8 @@ FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-textractor.entities.table_cell">
+</section>
+<section id="module-textractor.entities.table_cell">
 <span id="tablecell"></span><h2>TableCell<a class="headerlink" href="#module-textractor.entities.table_cell" title="Permalink to this heading"></a></h2>
 <p>Represents a single <code class="xref py py-class docutils literal notranslate"><span class="pre">TableCell:class:</span></code> object. The <a class="reference internal" href="#textractor.entities.table_cell.TableCell" title="textractor.entities.table_cell.TableCell"><code class="xref py py-class docutils literal notranslate"><span class="pre">TableCell</span></code></a> objects contains information such as:</p>
 <ul class="simple">
@@ -1149,8 +1151,8 @@ Returns 0 if row merge, 1 if column merge and 2 if both and None if there is no 
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-textractor.entities.page">
+</section>
+<section id="module-textractor.entities.page">
 <span id="page"></span><h2>Page<a class="headerlink" href="#module-textractor.entities.page" title="Permalink to this heading"></a></h2>
 <p>Represents a single <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> page, as it would appear in the Textract API output.
 The <a class="reference internal" href="#textractor.entities.page.Page" title="textractor.entities.page.Page"><code class="xref py py-class docutils literal notranslate"><span class="pre">Page</span></code></a> object also contains the metadata such as the physical dimensions of the page (width, height, in pixels), child_ids etc.</p>
@@ -1500,8 +1502,8 @@ from highest to lowest similarity.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-textractor.entities.document">
+</section>
+<section id="module-textractor.entities.document">
 <span id="document"></span><h2>Document<a class="headerlink" href="#module-textractor.entities.document" title="Permalink to this heading"></a></h2>
 <p>The Document class is defined to host all the various DocumentEntity objects within it. <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code> objects can be 
 accessed, searched and exported the functions given below.</p>
@@ -1938,8 +1940,8 @@ to lowest similarity.</p>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
