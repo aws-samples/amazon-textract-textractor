@@ -54,6 +54,7 @@ Usage
 
    installation
    examples
+   commandline
 
 API Reference
 =============

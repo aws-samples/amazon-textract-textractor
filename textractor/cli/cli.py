@@ -36,14 +36,10 @@ STRING_DICT = {
     "PRINT": "Print the output in a readable format",
     # Overlay
     "OVERLAY": "Save an image of the document with the words, lines, form fields, and tables overlayed on top",
+    "FONT_SIZE_RATIO": "Scales the text up or down, default is 0.75, which would be half the pixel height",
 }
 
-
-def textractor_cli():
-    """
-    CLI for Textractor
-    """
-
+def _build_parser():
     parser = argparse.ArgumentParser(
         description="Commandline interface for the Textractor library"
     )
@@ -61,7 +57,7 @@ def textractor_cli():
         "output_file", type=str, help=STRING_DICT["OUTPUT_FILE"]
     )
     parser_detect_document_text.add_argument(
-        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_detect_document_text.add_argument(
         "--region", type=str, help=STRING_DICT["REGION"]
@@ -78,6 +74,12 @@ def textractor_cli():
         nargs="+",
         help=STRING_DICT["OVERLAY"],
     )
+    parser_detect_document_text.add_argument(
+        "--font-size-ratio",
+        type=float,
+        help=STRING_DICT["FONT_SIZE_RATIO"],
+        default=0.75,
+    )
 
     parser_start_document_text_detection = subparsers.add_parser(
         "StartDocumentTextDetection", help=STRING_DICT["START_DOCUMENT_TEXT_DETECTION"]
@@ -89,7 +91,7 @@ def textractor_cli():
         "--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"]
     )
     parser_start_document_text_detection.add_argument(
-        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_start_document_text_detection.add_argument(
         "--region", type=str, help=STRING_DICT["REGION"]
@@ -115,7 +117,7 @@ def textractor_cli():
         "--queries", type=str, nargs="+", help=STRING_DICT["QUERIES"]
     )
     parser_analyze_document.add_argument(
-        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_analyze_document.add_argument(
         "--region", type=str, help=STRING_DICT["REGION"]
@@ -131,6 +133,12 @@ def textractor_cli():
         choices=[cd.name for cd in CLIOverlay],
         nargs="+",
         help=STRING_DICT["OVERLAY"],
+    )
+    parser_analyze_document.add_argument(
+        "--font-size-ratio",
+        type=float,
+        help=STRING_DICT["FONT_SIZE_RATIO"],
+        default=0.75,
     )
 
     parser_start_document_analysis = subparsers.add_parser(
@@ -152,7 +160,7 @@ def textractor_cli():
         "--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"]
     )
     parser_start_document_analysis.add_argument(
-        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_start_document_analysis.add_argument(
         "--region", type=str, help=STRING_DICT["REGION"]
@@ -169,7 +177,7 @@ def textractor_cli():
         "output_file", type=str, help=STRING_DICT["OUTPUT_FILE"]
     )
     parser_analyze_expense.add_argument(
-        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_analyze_expense.add_argument(
         "--region", type=str, help=STRING_DICT["REGION"]
@@ -186,6 +194,12 @@ def textractor_cli():
         nargs="+",
         help=STRING_DICT["OVERLAY"],
     )
+    parser_analyze_expense.add_argument(
+        "--font-size-ratio",
+        type=float,
+        help=STRING_DICT["FONT_SIZE_RATIO"],
+        default=0.75,
+    )
 
     parser_start_expense_analysis = subparsers.add_parser(
         "StartExpenseAnalysis", help=STRING_DICT["START_EXPENSE_ANALYSIS"]
@@ -197,7 +211,7 @@ def textractor_cli():
         "--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"]
     )
     parser_start_expense_analysis.add_argument(
-        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_start_expense_analysis.add_argument(
         "--region", type=str, help=STRING_DICT["REGION"]
@@ -214,7 +228,7 @@ def textractor_cli():
         "output_file", type=str, help=STRING_DICT["OUTPUT_FILE"]
     )
     parser_analyze_id.add_argument(
-        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_analyze_id.add_argument("--region", type=str, help=STRING_DICT["REGION"])
     parser_analyze_id.add_argument(
@@ -228,6 +242,12 @@ def textractor_cli():
         choices=[cd.name for cd in CLIOverlay],
         nargs="+",
         help=STRING_DICT["OVERLAY"],
+    )
+    parser_analyze_id.add_argument(
+        "--font-size-ratio",
+        type=float,
+        help=STRING_DICT["FONT_SIZE_RATIO"],
+        default=0.75,
     )
 
     # GetResult parsers
@@ -247,7 +267,7 @@ def textractor_cli():
         "output_file", type=str, help=STRING_DICT["OUTPUT_FILE"]
     )
     parser_get_result.add_argument(
-        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_get_result.add_argument("--region", type=str, help=STRING_DICT["REGION"])
     parser_get_result.add_argument(
@@ -256,6 +276,14 @@ def textractor_cli():
         nargs="+",
         help=STRING_DICT["PRINT"],
     )
+    return parser
+
+def textractor_cli():
+    """
+    CLI for Textractor
+    """
+
+    parser = _build_parser()
 
     args = parser.parse_args()
 
@@ -265,7 +293,7 @@ def textractor_cli():
 
     extractor = Textractor(
         profile_name=args.profile_name,
-        region=args.region,
+        region_name=args.region,
     )
 
     s3_output_path = None
@@ -357,10 +385,7 @@ def textractor_cli():
             image = entity_list.visualize(
                 with_text=True,
                 with_word_text_only=("ALL" in args.overlay or "WORDS" in args.overlay),
-                with_confidence=True,
-                with_word_confidence_only=(
-                    "ALL" in args.overlay or "WORDS" in args.overlay
-                ),
+                font_size_ratio=args.font_size_ratio,
             )
             image.save(f"{args.output_file}.png")
 

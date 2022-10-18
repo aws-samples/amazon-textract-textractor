@@ -1,1 +1,1 @@
-pdf2image==1.16.0
+pdf2image==1.16.*

@@ -34,6 +34,7 @@ html_favicon = "favicon.ico"
 extensions = [
     "sphinx.ext.autodoc",
     "nbsphinx",
+    "sphinxarg.ext",
 ]
 
 # Add any paths that contain templates here, relative to this directory.

@@ -1,1 +1,1 @@
-sentence-transformers==2.2.0
+sentence-transformers==2.2.*

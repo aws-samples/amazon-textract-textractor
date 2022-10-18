@@ -64,8 +64,32 @@ OCR is a common use case, but what if you would like to query a file and get an 
 We still require that you add an output file as it prevents mistakes that would force you to run the same file twice.
 
 
+Visualizing the output
+______________________
 
-Converting an table image to an Excel file
-__________________________________________
+The :code:`textractor` CLI allows you to overlay the output of Amazon Textract on top of an image for troubleshooting. It is only available for synchronous APIs (DetectDocumentText, AnalyzeDocument) and allows you to visualize words, lines, key and values, and tables.
 
+In this example we will overlay words and tables on top of the :code:`tests/fixtures/amzn_q2.png` file. The image will be created in the same directory as the :code:`output.json` file under the name :code:`output.json.png`.
 
+:code:`textractor AnalyzeDocument tests/fixtures/amzn_q2.png output.json --features TABLES --overlay WORDS TABLES` 
+
+This will yield the following (click to enlarge):
+
+.. image:: overlayer.png
+  :width: 600
+  :alt: Overlayer output
+
+This document has a lot of small words, making it difficult to read. You can add :code:`--font-size-ratio` to the command to increase the font size.
+
+:code:`textractor AnalyzeDocument tests/fixtures/amzn_q2.png output.json --features TABLES --overlay WORDS TABLES --font-size-ratio 1.0` (default it 0.75)
+
+.. image:: overlayer_bigger.png
+  :width: 600
+  :alt: Overlayer output bigger
+
+Reference
+_________
+
+.. argparse::
+   :ref: textractor.cli.cli._build_parser
+   :prog: textractor

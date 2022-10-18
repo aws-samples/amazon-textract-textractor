@@ -3,7 +3,7 @@ import PIL
 import unittest
 import boto3
 import uuid
-from botocore.exceptions import ClientError
+import logging
 from tests.utils import get_fixture_path
 
 from textractor import Textractor
@@ -25,8 +25,8 @@ def create_bucket(bucket_name, profile_name):
             Bucket=bucket_name,
             CreateBucketConfiguration={'LocationConstraint': 'us-west-2'}
         )
-    except ClientError as e:
-        print(e)
+    except Exception as e:
+        logging.error(f"Failed to create bucket: {e}")
         return False
     return True
 
@@ -36,8 +36,8 @@ def delete_bucket(bucket_name, profile_name):
         bucket = boto3.resource('s3').Bucket(bucket_name)
         bucket.object_versions.delete()
         bucket.delete()
-    except ClientError as e:
-        print(e)
+    except Exception as e:
+        logging.error(f"Failed to delete bucket: {e}")
         return False
     return True
 
