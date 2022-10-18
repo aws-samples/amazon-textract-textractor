@@ -1,12 +1,7 @@
 """The ExpenseDocument class is the object representation of an AnalyzeID response. It is similar to a dictionary. Despite its name it does not inherit from Document as the AnalyzeID response does not contains position information."""
 
 import os
-import string
-import logging
-import xlsxwriter
 from typing import List, Dict, Union
-from copy import deepcopy
-from collections import defaultdict
 from textractor.entities.bbox import SpatialObject
 from textractor.entities.expense_field import ExpenseField
 
@@ -46,9 +41,11 @@ class ExpenseDocument(SpatialObject):
             return {}
         elif isinstance(fields, list) and isinstance(fields[0], ExpenseField):
             return {
-                expense_field.key.text
-                if expense_field.key
-                else expense_field.type.text: expense_field
+                (
+                    expense_field.key.text
+                    if expense_field.key else
+                    expense_field.type.text
+                ): expense_field
                 for expense_field in fields
             }
         elif isinstance(fields, list) and isinstance(fields[0], dict):
@@ -93,7 +90,7 @@ class ExpenseDocument(SpatialObject):
         return result.value
 
     def keys(self) -> List[str]:
-        return self._summary_fields.keys()
+        return list(self._summary_fields.keys())
 
     def __repr__(self) -> str:
         return os.linesep.join(

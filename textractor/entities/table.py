@@ -388,7 +388,8 @@ class Table(DocumentEntity):
 
         return new_table
 
-    def to_pandas(self) -> DataFrame:
+
+    def to_pandas(self):
         """Converts the table to a pandas DataFrame
 
         :return: DataFrame for the table
