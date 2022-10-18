@@ -69,8 +69,8 @@ class Textractor:
                                 region = us-west-2
                                 output=json`
     :type profile_name: str
-    :param region: If AWSCLI isn't setup, the user can pass region to let boto3 pick up credentials from the system.
-    :param region: str
+    :param region_name: If AWSCLI isn't setup, the user can pass region to let boto3 pick up credentials from the system.
+    :param region_name: str
     :type profile_name: str, optional
     :param kms_key_id: Customer's AWS KMS key (cryptographic key)
     :type kms_key_id: str, optional
@@ -79,17 +79,17 @@ class Textractor:
     def __init__(
         self,
         profile_name: str = None,
-        region: str = None,
+        region_name: str = None,
         kms_key_id: str = "",
     ):
         self.profile_name = profile_name
-        self.region = region
+        self.region_name = region_name
         self.kms_key_id = kms_key_id
 
         if self.profile_name is not None:
             self.session = boto3.session.Session(profile_name=self.profile_name)
-        elif self.region is not None:
-            self.session = boto3.session.Session(region=self.region)
+        elif self.region_name is not None:
+            self.session = boto3.session.Session(region_name=self.region_name)
         else:
             raise InputError(
                 "Unable to initiate Textractor. Either profile_name or region requires an input parameter."
