@@ -3,7 +3,13 @@ on the image of the document page."""
 
 from abc import ABC
 from typing import Tuple
-import numpy as np
+
+try:
+    import numpy as np
+except ImportError:
+    # Used in an export_as_numpy function which won't be called if the user doesn't have numpy.
+    pass
+
 from typing import Dict
 from dataclasses import dataclass
 

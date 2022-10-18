@@ -1,4 +1,3 @@
-import numpy as np
 from typing import List
 from copy import deepcopy
 from collections.abc import Iterable

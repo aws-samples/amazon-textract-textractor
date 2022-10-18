@@ -1,14 +1,12 @@
 """
-    Consumes Textract JSON response and converts them to a Document object format.
-    This class contains all the necessary utilities to create entity objects from JSON blocks within the response.
-    Use ResponseParser's parse function to handle API response and convert them to Document objects.
+Consumes Textract JSON response and converts them to a Document object format.
+This class contains all the necessary utilities to create entity objects from JSON blocks within the response.
+Use ResponseParser's parse function to handle API response and convert them to Document objects.
 """
 
 import logging
-import numpy as np
 import uuid
-from copy import deepcopy
-from typing import List, Dict, Tuple
+from typing import Any, List, Dict, Tuple
 from collections import defaultdict
 from textractor.entities.identity_document import IdentityDocument
 from textractor.entities.expense_document import ExpenseDocument
@@ -61,7 +59,7 @@ def _create_document_object(response: dict) -> Document:
     return doc
 
 
-def _filter_block_type(response: dict, entity: str) -> List[str]:
+def _filter_block_type(response: dict, entity: str) -> List[Dict[str, Any]]:
     """
     Consumes entire JSON response, filters and returns list of blocks corresponding to the entity
     parameter from API response JSON.
@@ -77,17 +75,19 @@ def _filter_block_type(response: dict, entity: str) -> List[str]:
     return [block for block in response["Blocks"] if block["BlockType"] == entity]
 
 
-def _filter_by_entity(block_json: List[str], entity_type: str) -> List[str]:
+def _filter_by_entity(
+    block_json: List[Dict[str, Any]], entity_type: str
+) -> Dict[str, Any]:
     """
     Filters and returns dictionary of blocks corresponding to the entity_type from API response JSON.
 
     :param block_json: list of blocks belonging to a specific entity
-    :type block_json: list
+    :type block_json: List[Dict[str, Any]]
     :param entity_type: EntityType used to select/filter from list of blocks
     :type entity_type: str
 
     :return: Dictionary mapping of block ID with JSON block for entity type.
-    :rtype: dict
+    :rtype: Dict[str, Any]
     """
     return {
         block["Id"]: block
@@ -96,12 +96,12 @@ def _filter_by_entity(block_json: List[str], entity_type: str) -> List[str]:
     }
 
 
-def _get_relationship_ids(block_json: str, relationship: str) -> List[str]:
+def _get_relationship_ids(block_json: Dict[str, Any], relationship: str) -> List[str]:
     """
     Takes the JSON block corresponding to an entity and returns the Ids of the chosen Relationship if the Relationship exists.
 
     :param block_json: JSON block corresponding to an entity
-    :type block_json: str
+    :type block_json: List[Dict[str, Any]]
     :relationship: CHILD or VALUE as input
     :type relationship: str
 
@@ -122,7 +122,9 @@ def _get_relationship_ids(block_json: str, relationship: str) -> List[str]:
     return ids
 
 
-def _create_page_objects(response: dict) -> Tuple[List[Page], Dict[str, str]]:
+def _create_page_objects(
+    response: dict,
+) -> Tuple[Dict[str, Page], List[Dict[str, Any]]]:
     """
     Consumes API Response in JSON format and returns Page objects for the Document.
 
@@ -252,7 +254,7 @@ def _create_line_objects(
 
 
 def _create_selection_objects(
-    selection_ids: List[str], id_json_map: Dict[str, str], page: Page
+    selection_ids: List[str], id_json_map: Dict[str, Any], page: Page
 ) -> Dict[str, SelectionElement]:
     """
     Creates dictionary mapping of SelectionElement ID with SelectionElement objects for all ids passed in selection_ids.
@@ -298,7 +300,7 @@ def _create_selection_objects(
 
 def _create_value_objects(
     value_ids: List[str],
-    id_json_map: Dict[str, str],
+    id_json_map: Dict[str, Any],
     entity_id_map: Dict[str, list],
     page: Page,
 ) -> Dict[str, Value]:
@@ -343,7 +345,7 @@ def _create_value_objects(
                     [child_id], id_json_map, page
                 )
             else:
-                checkbox = checkboxes.get(child_id)
+                checkbox = checkboxes[child_id]
                 checkbox.value_id = val_id
                 values[val_id].add_children([checkbox])
                 values[val_id].contains_checkbox = True
@@ -424,7 +426,7 @@ def _create_query_result_objects(
 
 def _create_keyvalue_objects(
     key_value_ids: List[str],
-    id_json_map: Dict[str, str],
+    id_json_map: Dict[str, Any],
     id_entity_map: Dict[str, str],
     entity_id_map: Dict[str, list],
     page: Page,
@@ -515,11 +517,11 @@ def _create_keyvalue_objects(
 
 
 def _create_table_cell_objects(
-    page_tables: List[str],
-    id_entity_map: Dict[str, str],
+    page_tables: List[Any],
+    id_entity_map: Dict[str, List[str]],
     id_json_map: Dict[str, str],
     page: Page,
-) -> Tuple[Dict[str, TableCell], Dict[str, str]]:
+) -> Tuple[Dict[str, TableCell], Dict[str, Any]]:
     """
     Creates TableCell objects for all page_tables passed as input present on a single Page of the Document.
 
@@ -533,7 +535,7 @@ def _create_table_cell_objects(
     :type page: Page
 
     :return: Returns a dictionary containing TableCells mapped with their IDs and dictionary containing ID: CELL JSON mapping.
-    :rtype: Dict[str, TableCell], Dict[str,str]
+    :rtype: Dict[str, TableCell], Dict[str, Any]
     """
     all_table_cells_info = {}
     for table in page_tables:
@@ -565,9 +567,9 @@ def _create_table_cell_objects(
 
 def _create_table_objects(
     table_ids: List[str],
-    id_json_map: Dict[str, str],
-    id_entity_map: Dict[str, str],
-    entity_id_map: Dict[str, str],
+    id_json_map: Dict[str, Any],
+    id_entity_map: Dict[str, List[str]],
+    entity_id_map: Dict[str, List[str]],
     page: Page,
 ) -> Tuple[List[Table], List[Word]]:
     """

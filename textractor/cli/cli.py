@@ -29,7 +29,7 @@ STRING_DICT = {
     "INPUT_FILE_SYNC": "File to process, must be of type JPEG, PNG, TIFF, BMP. Can be an S3 path",
     "INPUT_FILE_ASYNC": "File to process, must be of type PDF, JPEG, PNG, TIFF, BMP. The file has to be in S3, you you can provide an S3 path with --upload-s3-path",
     "GET_RESULT_JOB_ID": "Job ID, as returned by any of the asynchronous functions",
-    "QUERIES": "List of queries, use quotes (\") to escape spaces",
+    "QUERIES": 'List of queries, use quotes (") to escape spaces',
     "S3_UPLOAD_PATH": "Path to upload the input files to, required if input_file is not an S3 path",
     "GET_RESULT_API": "API used to make the request",
     # Output print
@@ -38,81 +38,224 @@ STRING_DICT = {
     "OVERLAY": "Save an image of the document with the words, lines, form fields, and tables overlayed on top",
 }
 
+
 def textractor_cli():
     """
     CLI for Textractor
     """
 
-    parser = argparse.ArgumentParser(description="Commandline interface for the Textractor library")
-    
-    subparsers = parser.add_subparsers(help="Sub-command help", dest="subcommand")
-    
-    # DocumentText parsers
-    parser_detect_document_text = subparsers.add_parser("DetectDocumentText", help=STRING_DICT["DETECT_DOCUMENT_TEXT"])
-    parser_detect_document_text.add_argument("file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"])
-    parser_detect_document_text.add_argument("output_file", type=str, help=STRING_DICT["OUTPUT_FILE"])
-    parser_detect_document_text.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
-    parser_detect_document_text.add_argument("--region", type=str, help=STRING_DICT["REGION"])
-    parser_detect_document_text.add_argument("--print", choices=[cd.name for cd in CLIPrint], nargs="+", help=STRING_DICT["PRINT"])
-    parser_detect_document_text.add_argument("--overlay", choices=[cd.name for cd in CLIOverlay], nargs="+", help=STRING_DICT["OVERLAY"])
+    parser = argparse.ArgumentParser(
+        description="Commandline interface for the Textractor library"
+    )
 
-    parser_start_document_text_detection = subparsers.add_parser("StartDocumentTextDetection", help=STRING_DICT["START_DOCUMENT_TEXT_DETECTION"])
-    parser_start_document_text_detection.add_argument("file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"])
-    parser_start_document_text_detection.add_argument("--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"])
-    parser_start_document_text_detection.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
-    parser_start_document_text_detection.add_argument("--region", type=str, help=STRING_DICT["REGION"])
+    subparsers = parser.add_subparsers(help="Sub-command help", dest="subcommand")
+
+    # DocumentText parsers
+    parser_detect_document_text = subparsers.add_parser(
+        "DetectDocumentText", help=STRING_DICT["DETECT_DOCUMENT_TEXT"]
+    )
+    parser_detect_document_text.add_argument(
+        "file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"]
+    )
+    parser_detect_document_text.add_argument(
+        "output_file", type=str, help=STRING_DICT["OUTPUT_FILE"]
+    )
+    parser_detect_document_text.add_argument(
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+    )
+    parser_detect_document_text.add_argument(
+        "--region", type=str, help=STRING_DICT["REGION"]
+    )
+    parser_detect_document_text.add_argument(
+        "--print",
+        choices=[cd.name for cd in CLIPrint],
+        nargs="+",
+        help=STRING_DICT["PRINT"],
+    )
+    parser_detect_document_text.add_argument(
+        "--overlay",
+        choices=[cd.name for cd in CLIOverlay],
+        nargs="+",
+        help=STRING_DICT["OVERLAY"],
+    )
+
+    parser_start_document_text_detection = subparsers.add_parser(
+        "StartDocumentTextDetection", help=STRING_DICT["START_DOCUMENT_TEXT_DETECTION"]
+    )
+    parser_start_document_text_detection.add_argument(
+        "file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"]
+    )
+    parser_start_document_text_detection.add_argument(
+        "--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"]
+    )
+    parser_start_document_text_detection.add_argument(
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+    )
+    parser_start_document_text_detection.add_argument(
+        "--region", type=str, help=STRING_DICT["REGION"]
+    )
 
     # AnalyzeDocument parsers
-    parser_analyze_document = subparsers.add_parser("AnalyzeDocument", help=STRING_DICT["ANALYZE_DOCUMENT"])
-    parser_analyze_document.add_argument("file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"])
-    parser_analyze_document.add_argument("output_file", type=str, help=STRING_DICT["OUTPUT_FILE"])
-    parser_analyze_document.add_argument("--features", choices=[tf.name for tf in TextractFeatures], nargs="+", required=True)
-    parser_analyze_document.add_argument("--queries", type=str, nargs="+", help=STRING_DICT["QUERIES"])
-    parser_analyze_document.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
-    parser_analyze_document.add_argument("--region", type=str, help=STRING_DICT["REGION"])
-    parser_analyze_document.add_argument("--print", choices=[cd.name for cd in CLIPrint], nargs="+", help=STRING_DICT["PRINT"])
-    parser_analyze_document.add_argument("--overlay", choices=[cd.name for cd in CLIOverlay], nargs="+", help=STRING_DICT["OVERLAY"])
+    parser_analyze_document = subparsers.add_parser(
+        "AnalyzeDocument", help=STRING_DICT["ANALYZE_DOCUMENT"]
+    )
+    parser_analyze_document.add_argument(
+        "file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"]
+    )
+    parser_analyze_document.add_argument(
+        "output_file", type=str, help=STRING_DICT["OUTPUT_FILE"]
+    )
+    parser_analyze_document.add_argument(
+        "--features",
+        choices=[tf.name for tf in TextractFeatures],
+        nargs="+",
+        required=True,
+    )
+    parser_analyze_document.add_argument(
+        "--queries", type=str, nargs="+", help=STRING_DICT["QUERIES"]
+    )
+    parser_analyze_document.add_argument(
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+    )
+    parser_analyze_document.add_argument(
+        "--region", type=str, help=STRING_DICT["REGION"]
+    )
+    parser_analyze_document.add_argument(
+        "--print",
+        choices=[cd.name for cd in CLIPrint],
+        nargs="+",
+        help=STRING_DICT["PRINT"],
+    )
+    parser_analyze_document.add_argument(
+        "--overlay",
+        choices=[cd.name for cd in CLIOverlay],
+        nargs="+",
+        help=STRING_DICT["OVERLAY"],
+    )
 
-    parser_start_document_analysis = subparsers.add_parser("StartDocumentAnalysis", help=STRING_DICT["START_DOCUMENT_ANALYSIS"])
-    parser_start_document_analysis.add_argument("file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"])
-    parser_start_document_analysis.add_argument("--features", choices=[tf.name for tf in TextractFeatures], nargs="+", required=True)
-    parser_start_document_analysis.add_argument("--queries", type=str, nargs="+", help=STRING_DICT["QUERIES"])
-    parser_start_document_analysis.add_argument("--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"])
-    parser_start_document_analysis.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
-    parser_start_document_analysis.add_argument("--region", type=str, help=STRING_DICT["REGION"])
+    parser_start_document_analysis = subparsers.add_parser(
+        "StartDocumentAnalysis", help=STRING_DICT["START_DOCUMENT_ANALYSIS"]
+    )
+    parser_start_document_analysis.add_argument(
+        "file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"]
+    )
+    parser_start_document_analysis.add_argument(
+        "--features",
+        choices=[tf.name for tf in TextractFeatures],
+        nargs="+",
+        required=True,
+    )
+    parser_start_document_analysis.add_argument(
+        "--queries", type=str, nargs="+", help=STRING_DICT["QUERIES"]
+    )
+    parser_start_document_analysis.add_argument(
+        "--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"]
+    )
+    parser_start_document_analysis.add_argument(
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+    )
+    parser_start_document_analysis.add_argument(
+        "--region", type=str, help=STRING_DICT["REGION"]
+    )
 
     # AnalyzeExpense parsers
-    parser_analyze_expense = subparsers.add_parser("AnalyzeExpense", help=STRING_DICT["ANALYZE_EXPENSE"])
-    parser_analyze_expense.add_argument("file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"])
-    parser_analyze_expense.add_argument("output_file", type=str, help=STRING_DICT["OUTPUT_FILE"])
-    parser_analyze_expense.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
-    parser_analyze_expense.add_argument("--region", type=str, help=STRING_DICT["REGION"])
-    parser_analyze_expense.add_argument("--print", choices=[cd.name for cd in CLIPrint], nargs="+", help=STRING_DICT["PRINT"])
-    parser_analyze_expense.add_argument("--overlay", choices=[cd.name for cd in CLIOverlay], nargs="+", help=STRING_DICT["OVERLAY"])
+    parser_analyze_expense = subparsers.add_parser(
+        "AnalyzeExpense", help=STRING_DICT["ANALYZE_EXPENSE"]
+    )
+    parser_analyze_expense.add_argument(
+        "file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"]
+    )
+    parser_analyze_expense.add_argument(
+        "output_file", type=str, help=STRING_DICT["OUTPUT_FILE"]
+    )
+    parser_analyze_expense.add_argument(
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+    )
+    parser_analyze_expense.add_argument(
+        "--region", type=str, help=STRING_DICT["REGION"]
+    )
+    parser_analyze_expense.add_argument(
+        "--print",
+        choices=[cd.name for cd in CLIPrint],
+        nargs="+",
+        help=STRING_DICT["PRINT"],
+    )
+    parser_analyze_expense.add_argument(
+        "--overlay",
+        choices=[cd.name for cd in CLIOverlay],
+        nargs="+",
+        help=STRING_DICT["OVERLAY"],
+    )
 
-    parser_start_expense_analysis = subparsers.add_parser("StartExpenseAnalysis", help=STRING_DICT["START_EXPENSE_ANALYSIS"])
-    parser_start_expense_analysis.add_argument("file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"])
-    parser_start_expense_analysis.add_argument("--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"])
-    parser_start_expense_analysis.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
-    parser_start_expense_analysis.add_argument("--region", type=str, help=STRING_DICT["REGION"])
+    parser_start_expense_analysis = subparsers.add_parser(
+        "StartExpenseAnalysis", help=STRING_DICT["START_EXPENSE_ANALYSIS"]
+    )
+    parser_start_expense_analysis.add_argument(
+        "file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"]
+    )
+    parser_start_expense_analysis.add_argument(
+        "--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"]
+    )
+    parser_start_expense_analysis.add_argument(
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+    )
+    parser_start_expense_analysis.add_argument(
+        "--region", type=str, help=STRING_DICT["REGION"]
+    )
 
-    # AnalyzeID parsers 
-    parser_analyze_id = subparsers.add_parser("AnalyzeID", help=STRING_DICT["ANALYZE_ID"])
-    parser_analyze_id.add_argument("file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"])
-    parser_analyze_id.add_argument("output_file", type=str, help=STRING_DICT["OUTPUT_FILE"])
-    parser_analyze_id.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
+    # AnalyzeID parsers
+    parser_analyze_id = subparsers.add_parser(
+        "AnalyzeID", help=STRING_DICT["ANALYZE_ID"]
+    )
+    parser_analyze_id.add_argument(
+        "file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"]
+    )
+    parser_analyze_id.add_argument(
+        "output_file", type=str, help=STRING_DICT["OUTPUT_FILE"]
+    )
+    parser_analyze_id.add_argument(
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+    )
     parser_analyze_id.add_argument("--region", type=str, help=STRING_DICT["REGION"])
-    parser_analyze_id.add_argument("--print", choices=[cd.name for cd in CLIPrint], nargs="+", help=STRING_DICT["PRINT"])
-    parser_analyze_id.add_argument("--overlay", choices=[cd.name for cd in CLIOverlay], nargs="+", help=STRING_DICT["OVERLAY"])
+    parser_analyze_id.add_argument(
+        "--print",
+        choices=[cd.name for cd in CLIPrint],
+        nargs="+",
+        help=STRING_DICT["PRINT"],
+    )
+    parser_analyze_id.add_argument(
+        "--overlay",
+        choices=[cd.name for cd in CLIOverlay],
+        nargs="+",
+        help=STRING_DICT["OVERLAY"],
+    )
 
     # GetResult parsers
-    parser_get_result = subparsers.add_parser("GetResult", help=STRING_DICT["GET_RESULT"])
-    parser_get_result.add_argument("job_id", type=str, help=STRING_DICT["GET_RESULT_JOB_ID"])
-    parser_get_result.add_argument("api", type=str, choices=[ta.name for ta in TextractAPI], help=STRING_DICT["GET_RESULT_API"])
-    parser_get_result.add_argument("output_file", type=str, help=STRING_DICT["OUTPUT_FILE"])
-    parser_get_result.add_argument("--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default")
+    parser_get_result = subparsers.add_parser(
+        "GetResult", help=STRING_DICT["GET_RESULT"]
+    )
+    parser_get_result.add_argument(
+        "job_id", type=str, help=STRING_DICT["GET_RESULT_JOB_ID"]
+    )
+    parser_get_result.add_argument(
+        "api",
+        type=str,
+        choices=[ta.name for ta in TextractAPI],
+        help=STRING_DICT["GET_RESULT_API"],
+    )
+    parser_get_result.add_argument(
+        "output_file", type=str, help=STRING_DICT["OUTPUT_FILE"]
+    )
+    parser_get_result.add_argument(
+        "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"], default="default"
+    )
     parser_get_result.add_argument("--region", type=str, help=STRING_DICT["REGION"])
-    parser_get_result.add_argument("--print", choices=[cd.name for cd in CLIPrint], nargs="+", help=STRING_DICT["PRINT"])
+    parser_get_result.add_argument(
+        "--print",
+        choices=[cd.name for cd in CLIPrint],
+        nargs="+",
+        help=STRING_DICT["PRINT"],
+    )
 
     args = parser.parse_args()
 
@@ -132,7 +275,9 @@ def textractor_cli():
     # ASYNC is handled differently
     if args.subcommand.startswith("Start"):
         if not args.file_source.startswith("s3://") and args.s3_upload_path is None:
-            raise InputError("--s3-upload-path is required if file_source is not an S3 path")
+            raise InputError(
+                "--s3-upload-path is required if file_source is not an S3 path"
+            )
         if args.subcommand == "StartDocumentTextDetection":
             out = extractor.start_document_text_detection(
                 args.file_source,
@@ -213,12 +358,15 @@ def textractor_cli():
                 with_text=True,
                 with_word_text_only=("ALL" in args.overlay or "WORDS" in args.overlay),
                 with_confidence=True,
-                with_word_confidence_only=("ALL" in args.overlay or "WORDS" in args.overlay),
+                with_word_confidence_only=(
+                    "ALL" in args.overlay or "WORDS" in args.overlay
+                ),
             )
             image.save(f"{args.output_file}.png")
 
         with open(args.output_file, "w") as f:
             json.dump(out.response, f)
+
 
 if __name__ == "__main__":
     textractor_cli()

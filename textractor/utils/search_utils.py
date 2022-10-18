@@ -1,11 +1,15 @@
 """Utility functions for Document search"""
 
-import logging
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    # No need to log it here as numpy is only used if SentenceTransformers is used
+    # The latter has numpy as dependency.
+    pass
+
 from textractor.data.constants import SimilarityMetric
 from pyxdameraulevenshtein import normalized_damerau_levenshtein_distance
 from textractor.exceptions import MissingDependencyException
-
 
 
 from textractor.data.constants import (
@@ -54,7 +58,9 @@ class SearchUtils:
             cls.util = util
 
         if similarity_metric == SimilarityMetric.LEVENSHTEIN:
-            return normalized_damerau_levenshtein_distance(word_1.lower(), word_2.lower())
+            return normalized_damerau_levenshtein_distance(
+                word_1.lower(), word_2.lower()
+            )
         elif similarity_metric == SimilarityMetric.EUCLIDEAN:
             ref_word_emb = cls.model.encode([word_1])
             word_emb = cls.model.encode([word_2])
@@ -105,6 +111,3 @@ def get_metadata_attr_name(cell_atr):
         return cell_map[cell_atr]
     except:
         return ""
-
-if __name__ == "__main__":
-    print("blah")

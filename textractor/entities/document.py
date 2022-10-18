@@ -46,7 +46,7 @@ class Document(SpatialObject):
     """
 
     @classmethod
-    def open(self, fp: Union[dict, str, IO[AnyStr]]):
+    def open(cls, fp: Union[dict, str, IO[AnyStr]]):
         """Create a Document object from a JSON file path, file handle or response dictionary
 
         :param fp: _description_
@@ -297,13 +297,12 @@ class Document(SpatialObject):
         :return: Returns checkboxes that match the conditions set by the flags.
         :rtype: EntityList[KeyValue]
         """
-        
+
         checkboxes = EntityList([])
         for page in self.pages:
-            checkboxes.extend(page.filter_checkboxes(
-                selected=selected,
-                not_selected=not_selected
-            ))
+            checkboxes.extend(
+                page.filter_checkboxes(selected=selected, not_selected=not_selected)
+            )
         return checkboxes
 
     def get_words_by_type(self, text_type: TextTypes = TextTypes.PRINTED) -> List[Word]:
@@ -328,7 +327,7 @@ class Document(SpatialObject):
         self,
         keyword: str,
         top_k: int = 1,
-        similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
+        similarity_metric: SimilarityMetric = SimilarityMetric.LEVENSHTEIN,
         similarity_threshold: float = 0.6,
     ) -> List[Word]:
         """
@@ -350,12 +349,14 @@ class Document(SpatialObject):
 
         top_n_words = []
         for page in self.pages:
-            top_n_words.extend(page._search_words_with_similarity(
-                keyword=keyword,
-                top_k=top_k,
-                similarity_metric=similarity_metric,
-                similarity_threshold=similarity_threshold,
-            ))
+            top_n_words.extend(
+                page._search_words_with_similarity(
+                    keyword=keyword,
+                    top_k=top_k,
+                    similarity_metric=similarity_metric,
+                    similarity_threshold=similarity_threshold,
+                )
+            )
 
         top_n_words = sorted(top_n_words, key=lambda x: x[0], reverse=True)[:top_k]
         top_n_words = EntityList([ent[1] for ent in top_n_words])
@@ -366,7 +367,7 @@ class Document(SpatialObject):
         self,
         keyword: str,
         top_k: int = 1,
-        similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
+        similarity_metric: SimilarityMetric = SimilarityMetric.LEVENSHTEIN,
         similarity_threshold: float = 0.6,
     ) -> List[Line]:
         """
@@ -392,12 +393,14 @@ class Document(SpatialObject):
 
         top_n_lines = []
         for page in self.pages:
-            top_n_lines.extend(page._search_lines_with_similarity(
-                keyword=keyword,
-                top_k=top_k,
-                similarity_metric=similarity_metric,
-                similarity_threshold=similarity_threshold,
-            ))
+            top_n_lines.extend(
+                page._search_lines_with_similarity(
+                    keyword=keyword,
+                    top_k=top_k,
+                    similarity_metric=similarity_metric,
+                    similarity_threshold=similarity_threshold,
+                )
+            )
 
         top_n_lines = EntityList([ent[1] for ent in top_n_lines][:top_k])
 
@@ -408,7 +411,7 @@ class Document(SpatialObject):
         self,
         key: str,
         top_k_matches: int = 1,
-        similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
+        similarity_metric: SimilarityMetric = SimilarityMetric.LEVENSHTEIN,
         similarity_threshold: float = 0.6,
     ):
         """
@@ -457,7 +460,9 @@ class Document(SpatialObject):
                 for word in edited_document_key.split(" ")
             ]
             similarity.append(
-                SearchUtils.get_word_similarity(key, edited_document_key, similarity_metric)
+                SearchUtils.get_word_similarity(
+                    key, edited_document_key, similarity_metric
+                )
             )
 
             similarity = (
@@ -612,11 +617,9 @@ class Document(SpatialObject):
         :rtype: Dict[page_num, List[EntityList[DocumentEntity]]]
         """
         document_duplicates = defaultdict(list)
-        
+
         for page in self.pages:
-            document_duplicates[
-                page.page_num
-            ].extend(page.return_duplicates())
+            document_duplicates[page.page_num].extend(page.return_duplicates())
 
         return document_duplicates
 

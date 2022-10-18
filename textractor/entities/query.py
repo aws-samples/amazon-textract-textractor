@@ -6,18 +6,11 @@ This class contains the associated metadata with the :class:`KeyValue` entity in
 bounding box information, value, existence of checkbox, page number, Page ID and confidence of detection.
 """
 
-import logging
-from typing import List
+from typing import Optional
 
-from textractor.entities.line import Line
 from textractor.entities.query_result import QueryResult
-from textractor.entities.word import Word
-from textractor.entities.value import Value
-from textractor.exceptions import InputError
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
-from textractor.data.constants import PRINTED, HANDWRITING, TextTypes
-from textractor.visualizers.entitylist import EntityList
 
 
 class Query(DocumentEntity):
@@ -42,8 +35,8 @@ class Query(DocumentEntity):
         entity_id: str,
         query: str,
         alias: str,
-        query_result: QueryResult,
-        result_bbox: BoundingBox,
+        query_result: Optional[QueryResult],
+        result_bbox: Optional[BoundingBox],
     ):
         super().__init__(entity_id, result_bbox)
 

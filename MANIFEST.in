@@ -1,0 +1,3 @@
+include *.txt
+recursive-include extras *.txt
+recursive-include textractor *

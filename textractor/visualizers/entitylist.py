@@ -81,7 +81,11 @@ class EntityList(list, Generic[T]):
 
         for page in entities_pagewise.keys():
             visualized_images[page] = _draw_bbox(
-                entities_pagewise[page], with_text, with_word_text_only, with_confidence, with_word_confidence_only,
+                entities_pagewise[page],
+                with_text,
+                with_word_text_only,
+                with_confidence,
+                with_word_confidence_only,
             )
 
         images = list(visualized_images.values())
@@ -374,11 +378,7 @@ class EntityList(list, Generic[T]):
 
     def _get_queries_string(self):
         result_value = ""
-        queries = [
-            obj
-            for obj in self
-            if obj.__class__.__name__ == "Query"
-        ]
+        queries = [obj for obj in self if obj.__class__.__name__ == "Query"]
 
         for query in queries:
             if query.result is not None:
@@ -391,28 +391,25 @@ class EntityList(list, Generic[T]):
     def _get_expense_documents_string(self):
         result_value = ""
         expense_documents = [
-            obj
-            for obj in self
-            if obj.__class__.__name__ == "ExpenseDocument"
+            obj for obj in self if obj.__class__.__name__ == "ExpenseDocument"
         ]
 
         for expense_document in expense_documents:
             result_value += f"{expense_document}{os.linesep}"
-        
+
         return result_value
 
     def _get_id_documents_string(self):
         result_value = ""
         id_documents = [
-            obj
-            for obj in self
-            if obj.__class__.__name__ == "IdentityDocument"
+            obj for obj in self if obj.__class__.__name__ == "IdentityDocument"
         ]
 
         for id_document in id_documents:
             result_value += f"{id_document}{os.linesep}"
-        
+
         return result_value
+
 
 def _convert_form_to_list(
     form_objects,
@@ -564,14 +561,33 @@ def _draw_bbox(
                 if cell.siblings:
                     for c in cell.siblings:
                         processed_cells.add(c.id)
-                    min_x, min_y, max_x, max_y = list(zip(*[
-                        (c.bbox.x, c.bbox.y, c.bbox.x + c.bbox.width, c.bbox.y + c.bbox.height)
-                        for c in cell.siblings + [cell]
-                    ]))
-                    min_x, min_y, max_x, max_y = min(min_x), min(min_y), max(max_x), max(max_y)
+                    min_x, min_y, max_x, max_y = list(
+                        zip(
+                            *[
+                                (
+                                    c.bbox.x,
+                                    c.bbox.y,
+                                    c.bbox.x + c.bbox.width,
+                                    c.bbox.y + c.bbox.height,
+                                )
+                                for c in cell.siblings + [cell]
+                            ]
+                        )
+                    )
+                    min_x, min_y, max_x, max_y = (
+                        min(min_x),
+                        min(min_y),
+                        max(max_x),
+                        max(max_y),
+                    )
                 else:
                     processed_cells.add(cell.id)
-                    min_x, min_y, max_x, max_y = cell.bbox.x, cell.bbox.y, cell.bbox.x + cell.bbox.width, cell.bbox.y + cell.bbox.height
+                    min_x, min_y, max_x, max_y = (
+                        cell.bbox.x,
+                        cell.bbox.y,
+                        cell.bbox.x + cell.bbox.width,
+                        cell.bbox.y + cell.bbox.height,
+                    )
                 drw.rectangle(
                     (
                         int(min_x * width),
@@ -586,15 +602,24 @@ def _draw_bbox(
             final_txt = ""
             bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
             text_height = int(bbox_height / 2)
-            fnt = ImageFont.truetype(os.path.join(present_path, "arial.ttf"), text_height)
+            fnt = ImageFont.truetype(
+                os.path.join(present_path, "arial.ttf"), text_height
+            )
 
-            if with_text and (not with_word_text_only or entity.__class__.__name__ == "Word"):
+            if with_text and (
+                not with_word_text_only or entity.__class__.__name__ == "Word"
+            ):
                 final_txt += overlayer_data["text"]
 
-            if with_confidence and (not with_word_confidence_only or entity.__class__.__name__ == "Word"):
+            if with_confidence and (
+                not with_word_confidence_only or entity.__class__.__name__ == "Word"
+            ):
                 final_txt += " (" + str(overlayer_data["confidence"])[:4] + ")"
             drw.text(
-                (overlayer_data["coords"][0], overlayer_data["coords"][1] - text_height),
+                (
+                    overlayer_data["coords"][0],
+                    overlayer_data["coords"][1] - text_height,
+                ),
                 final_txt,
                 font=fnt,
                 fill=overlayer_data["text_color"],
@@ -613,7 +638,10 @@ def _draw_bbox(
                 if with_confidence:
                     final_txt += " (" + str(overlayer_data["value_conf"])[:4] + ")"
                 drw.text(
-                    (overlayer_data["value_bbox"][0], overlayer_data["value_bbox"][1] - text_height),
+                    (
+                        overlayer_data["value_bbox"][0],
+                        overlayer_data["value_bbox"][1] - text_height,
+                    ),
                     final_txt,
                     font=fnt,
                     fill=overlayer_data["text_color"],

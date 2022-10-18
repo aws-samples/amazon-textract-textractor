@@ -38,6 +38,7 @@ def download_from_s3(client, s3_path: str, **extra_args):
     client.download_fileobj(bucket, prefix, f)
     return f
 
+
 def upload_to_s3(
     client, s3_path: str, file_source: Union[str, bytes, Image.Image], **extra_args
 ):

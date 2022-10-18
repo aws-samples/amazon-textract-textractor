@@ -1,4 +1,3 @@
-numpy==1.21.*
 awscli
 amazon-textract-response-parser==0.1.33
 amazon-textract-caller==0.0.24
@@ -6,7 +5,6 @@ boto3==1.24.*
 botocore==1.27.90
 jsonschema
 Pillow
-pandas
 tabulate==0.8.10
 XlsxWriter==3.0.3
 pyxDamerauLevenshtein==1.7.1

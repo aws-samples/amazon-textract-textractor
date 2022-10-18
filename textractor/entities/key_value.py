@@ -183,10 +183,14 @@ class KeyValue(DocumentEntity):
             if len(self.value.children) == 1:
                 return self.value.children[0].is_selected()
             else:
-                logging.info("is_checked() was called on a KeyValue that contains more than one checkbox. Returning first checkbox")
+                logging.info(
+                    "is_checked() was called on a KeyValue that contains more than one checkbox. Returning first checkbox"
+                )
                 return self.value.children[0].is_selected()
         else:
-            logging.info("is_checked() was called on a KeyValue that does not contain checkboxes. Returning False")
+            logging.info(
+                "is_checked() was called on a KeyValue that does not contain checkboxes. Returning False"
+            )
             return False
 
     def __repr__(self) -> str:

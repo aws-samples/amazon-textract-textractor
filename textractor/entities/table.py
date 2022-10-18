@@ -9,7 +9,12 @@ page ID of the page within which it exists in the document.
 import logging
 import xlsxwriter
 from copy import deepcopy
-from pandas import DataFrame
+
+try:
+    from pandas import DataFrame
+except ImportError:
+    logging.info("pandas library is required for exporting tables to DataFrame objects")
+
 from typing import List, Dict
 
 from textractor.exceptions import InputError
@@ -396,7 +401,6 @@ class Table(DocumentEntity):
 
         return DataFrame(table)
 
-
     def to_csv(self) -> str:
         """Returns the table in the Comma-Separated-Value (CSV) format
 
@@ -423,7 +427,7 @@ class Table(DocumentEntity):
             if filepath is not None:
                 workbook = xlsxwriter.Workbook(filepath)
             else:
-                logging.error("Filepath parameter not populated to save excel file.")
+                logging.error("You need to provide a filepath or a workbook")
 
         worksheet = workbook.add_worksheet()
 

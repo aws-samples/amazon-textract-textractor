@@ -96,4 +96,6 @@ class ExpenseDocument(SpatialObject):
         return self._summary_fields.keys()
 
     def __repr__(self) -> str:
-        return os.linesep.join([f"{str(k)}: {str(v)}" for k, v in self._summary_fields.items()])
+        return os.linesep.join(
+            [f"{str(k)}: {str(v)}" for k, v in self._summary_fields.items()]
+        )

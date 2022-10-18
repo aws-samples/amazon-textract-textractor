@@ -307,5 +307,7 @@ class TableCell(DocumentEntity):
             entity_repr = " ".join([entity.__repr__() for entity in entities])
 
         entity_string = f"<Cell: ({self.row_index},{self.col_index}), Span: ({self.row_span}, {self.col_span}), "
-        entity_string += f"MergedCell: {self.metadata.get(IS_MERGED_CELL, False)}>  " + entity_repr
+        entity_string += (
+            f"MergedCell: {self.metadata.get(IS_MERGED_CELL, False)}>  " + entity_repr
+        )
         return entity_string

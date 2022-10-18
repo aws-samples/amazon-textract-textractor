@@ -16,7 +16,7 @@ def read_requirements(path):
 setup(
     # include data files
     name="amazon-textract-textractor",
-    version="1.0.5",
+    version="1.0.6",
     description="A package to use AWS Textract services.",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -315,7 +315,7 @@ class Page(SpatialObject):
         self,
         keyword: str,
         top_k: int = 1,
-        similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
+        similarity_metric: SimilarityMetric = SimilarityMetric.LEVENSHTEIN,
         similarity_threshold: float = 0.6,
     ) -> List[Tuple[Word, float]]:
         """
@@ -346,7 +346,9 @@ class Page(SpatialObject):
         lowest_similarity = similarity_threshold
 
         for word in self.words:
-            similarity = SearchUtils.get_word_similarity(keyword, word.text, similarity_metric)
+            similarity = SearchUtils.get_word_similarity(
+                keyword, word.text, similarity_metric
+            )
             similarity = (
                 similarity
                 if similarity_metric == SimilarityMetric.COSINE
@@ -361,14 +363,14 @@ class Page(SpatialObject):
                 continue
             top_n_words = sorted(top_n_words, key=lambda x: x[0], reverse=True)
             lowest_similarity = top_n_words[-1][0]
-        
+
         return top_n_words
 
     def search_words(
         self,
         keyword: str,
         top_k: int = 1,
-        similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
+        similarity_metric: SimilarityMetric = SimilarityMetric.LEVENSHTEIN,
         similarity_threshold: float = 0.6,
     ) -> EntityList[Word]:
         """
@@ -387,15 +389,17 @@ class Page(SpatialObject):
         :rtype: EntityList[Word]
         """
 
-        top_n_words = EntityList([
-            ent[1]
-            for ent in self._search_words_with_similarity(
-                keyword=keyword,
-                top_k=top_k,
-                similarity_metric=similarity_metric,
-                similarity_threshold=similarity_threshold,
-            )
-        ])
+        top_n_words = EntityList(
+            [
+                ent[1]
+                for ent in self._search_words_with_similarity(
+                    keyword=keyword,
+                    top_k=top_k,
+                    similarity_metric=similarity_metric,
+                    similarity_threshold=similarity_threshold,
+                )
+            ]
+        )
 
         return top_n_words
 
@@ -403,7 +407,7 @@ class Page(SpatialObject):
         self,
         keyword: str,
         top_k: int = 1,
-        similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
+        similarity_metric: SimilarityMetric = SimilarityMetric.LEVENSHTEIN,
         similarity_threshold: int = 0.6,
     ) -> List[Tuple[Line, float]]:
         """
@@ -441,7 +445,9 @@ class Page(SpatialObject):
                 for word in line.__repr__().split(" ")
             ]
             similarity.append(
-                SearchUtils.get_word_similarity(keyword, line.__repr__(), similarity_metric)
+                SearchUtils.get_word_similarity(
+                    keyword, line.__repr__(), similarity_metric
+                )
             )
             similarity = (
                 max(similarity)
@@ -464,7 +470,7 @@ class Page(SpatialObject):
         self,
         keyword: str,
         top_k: int = 1,
-        similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
+        similarity_metric: SimilarityMetric = SimilarityMetric.LEVENSHTEIN,
         similarity_threshold: int = 0.6,
     ) -> EntityList[Line]:
         """
@@ -484,15 +490,17 @@ class Page(SpatialObject):
         :rtype: EntityList[Line]
         """
 
-        top_n_lines = EntityList([
-            ent[1]
-            for ent in self._search_lines_with_similarity(
-                keyword=keyword,
-                top_k=top_k,
-                similarity_metric=similarity_metric,
-                similarity_threshold=similarity_threshold,
-            )
-        ])
+        top_n_lines = EntityList(
+            [
+                ent[1]
+                for ent in self._search_lines_with_similarity(
+                    keyword=keyword,
+                    top_k=top_k,
+                    similarity_metric=similarity_metric,
+                    similarity_threshold=similarity_threshold,
+                )
+            ]
+        )
 
         return top_n_lines
 
@@ -501,7 +509,7 @@ class Page(SpatialObject):
         self,
         key: str,
         top_k_matches: int = 1,
-        similarity_metric: SimilarityMetric= SimilarityMetric.LEVENSHTEIN,
+        similarity_metric: SimilarityMetric = SimilarityMetric.LEVENSHTEIN,
         similarity_threshold: float = 0.6,
     ) -> EntityList[KeyValue]:
         """
@@ -551,7 +559,9 @@ class Page(SpatialObject):
                 for word in edited_document_key.split(" ")
             ]
             similarity.append(
-                SearchUtils.get_word_similarity(key, edited_document_key, similarity_metric)
+                SearchUtils.get_word_similarity(
+                    key, edited_document_key, similarity_metric
+                )
             )
 
             similarity = (
