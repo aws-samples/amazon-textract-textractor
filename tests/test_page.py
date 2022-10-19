@@ -33,7 +33,6 @@ class TestPage(unittest.TestCase):
             document = extractor.analyze_document(
                 file_source=os.path.join(current_directory, "fixtures/single-page-1.png"),
                 features=[TextractFeatures.TABLES, TextractFeatures.FORMS],
-                            save_image=True,
             )
         else:
             document = Document.open(get_fixture_path())

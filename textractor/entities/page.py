@@ -909,3 +909,6 @@ class Page(SpatialObject):
             return -1, -1, -1, -1
 
         return x1, x2, y1, y2
+
+    def visualize(self, *args, **kwargs):
+        return EntityList(self).visualize(*args, **kwargs)

@@ -27,7 +27,6 @@ class QueriesTests(unittest.TestCase):
                     "What is the name of the package?",
                     "What is the title of the document?",
                 ],
-                            save_image=True,
             )
         else:
             document = Document.open(get_fixture_path())
@@ -54,7 +53,6 @@ class QueriesTests(unittest.TestCase):
                     "Lorem ipsum?",
                     "The quick brown fox jumps over the lazy dog?",
                 ],
-                            save_image=True,
             )
         else:
             document = Document.open(get_fixture_path())
@@ -82,5 +80,4 @@ class QueriesTests(unittest.TestCase):
                     "Lorem ipsum?",
                     "The quick brown fox jumps over the lazy dog?",
                 ],
-                save_image=True,
             )

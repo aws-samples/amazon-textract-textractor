@@ -31,6 +31,7 @@ STRING_DICT = {
     "GET_RESULT_JOB_ID": "Job ID, as returned by any of the asynchronous functions",
     "QUERIES": 'List of queries, use quotes (") to escape spaces',
     "S3_UPLOAD_PATH": "Path to upload the input files to, required if input_file is not an S3 path",
+    "S3_OUTPUT_PATH": "Path to write the response to",
     "GET_RESULT_API": "API used to make the request",
     # Output print
     "PRINT": "Print the output in a readable format",
@@ -60,7 +61,7 @@ def _build_parser():
         "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_detect_document_text.add_argument(
-        "--region", type=str, help=STRING_DICT["REGION"]
+        "--region-name", type=str, help=STRING_DICT["REGION"]
     )
     parser_detect_document_text.add_argument(
         "--print",
@@ -91,10 +92,13 @@ def _build_parser():
         "--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"]
     )
     parser_start_document_text_detection.add_argument(
+        "--s3-output-path", type=str, help=STRING_DICT["S3_OUTPUT_PATH"]
+    )
+    parser_start_document_text_detection.add_argument(
         "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_start_document_text_detection.add_argument(
-        "--region", type=str, help=STRING_DICT["REGION"]
+        "--region-name", type=str, help=STRING_DICT["REGION"]
     )
 
     # AnalyzeDocument parsers
@@ -120,7 +124,7 @@ def _build_parser():
         "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_analyze_document.add_argument(
-        "--region", type=str, help=STRING_DICT["REGION"]
+        "--region-name", type=str, help=STRING_DICT["REGION"]
     )
     parser_analyze_document.add_argument(
         "--print",
@@ -160,10 +164,13 @@ def _build_parser():
         "--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"]
     )
     parser_start_document_analysis.add_argument(
+        "--s3-output-path", type=str, help=STRING_DICT["S3_OUTPUT_PATH"]
+    )
+    parser_start_document_analysis.add_argument(
         "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_start_document_analysis.add_argument(
-        "--region", type=str, help=STRING_DICT["REGION"]
+        "--region-name", type=str, help=STRING_DICT["REGION"]
     )
 
     # AnalyzeExpense parsers
@@ -180,7 +187,7 @@ def _build_parser():
         "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_analyze_expense.add_argument(
-        "--region", type=str, help=STRING_DICT["REGION"]
+        "--region-name", type=str, help=STRING_DICT["REGION"]
     )
     parser_analyze_expense.add_argument(
         "--print",
@@ -211,10 +218,13 @@ def _build_parser():
         "--s3-upload-path", type=str, help=STRING_DICT["S3_UPLOAD_PATH"]
     )
     parser_start_expense_analysis.add_argument(
+        "--s3-output-path", type=str, help=STRING_DICT["S3_OUTPUT_PATH"]
+    )
+    parser_start_expense_analysis.add_argument(
         "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
     parser_start_expense_analysis.add_argument(
-        "--region", type=str, help=STRING_DICT["REGION"]
+        "--region-name", type=str, help=STRING_DICT["REGION"]
     )
 
     # AnalyzeID parsers
@@ -230,24 +240,12 @@ def _build_parser():
     parser_analyze_id.add_argument(
         "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
-    parser_analyze_id.add_argument("--region", type=str, help=STRING_DICT["REGION"])
+    parser_analyze_id.add_argument("--region-name", type=str, help=STRING_DICT["REGION"])
     parser_analyze_id.add_argument(
         "--print",
         choices=[cd.name for cd in CLIPrint],
         nargs="+",
         help=STRING_DICT["PRINT"],
-    )
-    parser_analyze_id.add_argument(
-        "--overlay",
-        choices=[cd.name for cd in CLIOverlay],
-        nargs="+",
-        help=STRING_DICT["OVERLAY"],
-    )
-    parser_analyze_id.add_argument(
-        "--font-size-ratio",
-        type=float,
-        help=STRING_DICT["FONT_SIZE_RATIO"],
-        default=0.75,
     )
 
     # GetResult parsers
@@ -269,7 +267,7 @@ def _build_parser():
     parser_get_result.add_argument(
         "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
-    parser_get_result.add_argument("--region", type=str, help=STRING_DICT["REGION"])
+    parser_get_result.add_argument("--region-name", type=str, help=STRING_DICT["REGION"])
     parser_get_result.add_argument(
         "--print",
         choices=[cd.name for cd in CLIPrint],
@@ -291,9 +289,12 @@ def textractor_cli():
         parser.print_help()
         return
 
+    if args.profile_name is None and args.region_name is None:
+        args.profile_name = "default"
+
     extractor = Textractor(
         profile_name=args.profile_name,
-        region_name=args.region,
+        region_name=args.region_name,
     )
 
     s3_output_path = None
@@ -309,7 +310,7 @@ def textractor_cli():
         if args.subcommand == "StartDocumentTextDetection":
             out = extractor.start_document_text_detection(
                 args.file_source,
-                s3_output_path=s3_output_path,
+                s3_output_path=args.s3_output_path,
                 s3_upload_path=args.s3_upload_path,
             )
         elif args.subcommand == "StartDocumentAnalysis":
@@ -333,7 +334,6 @@ def textractor_cli():
             out = extractor.detect_document_text(
                 args.file_source,
                 s3_output_path=s3_output_path,
-                save_image=True,
             )
         elif args.subcommand == "AnalyzeDocument":
             out = extractor.analyze_document(
@@ -341,7 +341,6 @@ def textractor_cli():
                 features=[TextractFeatures[feat] for feat in args.features],
                 queries=args.queries,
                 s3_output_path=s3_output_path,
-                save_image=True,
             )
         elif args.subcommand == "AnalyzeExpense":
             out = extractor.analyze_expense(
@@ -384,7 +383,6 @@ def textractor_cli():
                 entity_list += out.key_values
             image = entity_list.visualize(
                 with_text=True,
-                with_word_text_only=("ALL" in args.overlay or "WORDS" in args.overlay),
                 font_size_ratio=args.font_size_ratio,
             )
             image.save(f"{args.output_file}.png")

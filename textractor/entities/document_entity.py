@@ -4,6 +4,7 @@ useful to all such entities."""
 from abc import ABC
 from typing import Dict
 from textractor.entities.bbox import BoundingBox
+from textractor.visualizers.entitylist import EntityList
 
 
 class DocumentEntity(ABC):
@@ -142,3 +143,6 @@ class DocumentEntity(ABC):
         :rtype: list
         """
         return self._children
+
+    def visualize(self, *args, **kwargs):
+        return EntityList(self).visualize(*args, **kwargs)

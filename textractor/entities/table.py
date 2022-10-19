@@ -7,6 +7,7 @@ page ID of the page within which it exists in the document.
 """
 
 import logging
+import os
 import xlsxwriter
 from copy import deepcopy
 
@@ -454,6 +455,16 @@ class Table(DocumentEntity):
         else:
             return workbook
 
+    def __repr__(self):
+        return os.linesep.join(
+            [
+                "Table",
+                f"Rows - {self.row_count}",
+                f"Columns - {self.column_count}",
+                f"Cells - {len(self.table_cells)}",
+                f"Merged Cells - {len([c for c in self.table_cells if c.metadata[IS_MERGED_CELL]])}",
+            ]
+        )
 
 def _get_new_table_cells(rows, filtered_rows):
     """

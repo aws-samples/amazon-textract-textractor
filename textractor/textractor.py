@@ -133,7 +133,6 @@ class Textractor:
                     images = convert_from_path(filepath)
                 else:
                     raise MissingDependencyException("pdf2image is not installed")
-
             else:
                 images = [Image.open(open(filepath, "rb"))]
 
@@ -143,7 +142,7 @@ class Textractor:
         return images
 
     def detect_document_text(
-        self, file_source, s3_output_path: str = "", save_image: bool = False
+        self, file_source, s3_output_path: str = "", save_image: bool = True
     ) -> Document:
         """
         Make a call to the SYNC DetectDocumentText API, implicitly parses the response and produces a :class:`Document` object.
@@ -233,7 +232,7 @@ class Textractor:
         s3_upload_path: str = "",
         client_request_token: str = "",
         job_tag: str = "",
-        save_image: bool = False,
+        save_image: bool = True,
     ):
         """
         Make a call to the ASYNC StartDocumentTextDetection API.
@@ -255,6 +254,8 @@ class Textractor:
         :return: Returns a job id which can be used to fetch the results
         :rtype: str
         """
+
+        original_file_source = file_source
 
         if not (
             isinstance(file_source, str)
@@ -307,16 +308,16 @@ class Textractor:
 
         images = None
         if save_image:
-            if isinstance(file_source, Image.Image):
-                images = [file_source]
+            if isinstance(original_file_source, Image.Image):
+                images = [original_file_source]
             elif (
-                isinstance(file_source, list)
-                and len(file_source)
-                and isinstance(file_source[0], Image.Image)
+                isinstance(original_file_source, list)
+                and len(original_file_source)
+                and isinstance(original_file_source[0], Image.Image)
             ):
-                images = file_source
+                images = original_file_source
             else:
-                images = self._get_document_images_from_path(file_source)
+                images = self._get_document_images_from_path(original_file_source)
 
         return LazyDocument(
             response["JobId"],
@@ -331,7 +332,7 @@ class Textractor:
         features,
         queries: Union[QueriesConfig, List[Query], List[str]] = None,
         s3_output_path: str = "",
-        save_image: bool = False,
+        save_image: bool = True,
     ) -> Document:
         """
         Make a call to the SYNC AnalyzeDocument API, implicitly parses the response and produces a :class:`Document` object.
@@ -452,7 +453,7 @@ class Textractor:
         queries: Union[QueriesConfig, List[Query], List[str]] = None,
         client_request_token: str = "",
         job_tag: str = "",
-        save_image: bool = False,
+        save_image: bool = True,
     ) -> LazyDocument:
         """
         Make a call to the ASYNC StartDocumentAnalysis API, implicitly parses the response and produces a :class:`Document` object.
@@ -481,6 +482,8 @@ class Textractor:
                  StartDocumentAnalysis API stored within it.
         :rtype: Document
         """
+
+        original_file_source = file_source
 
         if not (
             isinstance(file_source, str)
@@ -558,16 +561,16 @@ class Textractor:
 
         images = None
         if save_image:
-            if isinstance(file_source, Image.Image):
-                images = [file_source]
+            if isinstance(original_file_source, Image.Image):
+                images = [original_file_source]
             elif (
-                isinstance(file_source, list)
-                and len(file_source)
-                and isinstance(file_source[0], Image.Image)
+                isinstance(original_file_source, list)
+                and len(original_file_source)
+                and isinstance(original_file_source[0], Image.Image)
             ):
-                images = file_source
+                images = original_file_source
             else:
-                images = self._get_document_images_from_path(file_source)
+                images = self._get_document_images_from_path(original_file_source)
 
         return LazyDocument(
             response["JobId"],
@@ -579,7 +582,7 @@ class Textractor:
     def analyze_id(
         self,
         file_source: Union[str, List[Image.Image], List[str]],
-        save_image: bool = False,
+        save_image: bool = True,
     ) -> Document:
         """AnalyzeID parses identity documents such as passports and driver's license and
         returns the result as a dictionary of standardized fields. See https://docs.aws.amazon.com/textract/latest/dg/identitydocumentfields.html
@@ -633,7 +636,7 @@ class Textractor:
         self,
         file_source: Union[str, List[Image.Image], List[str]],
         s3_output_path: str = "",
-        save_image: bool = False,
+        save_image: bool = True,
     ):
         """Make a call to the SYNC AnalyzeExpense API, implicitly parses the response and produces a :class:`Document` object.
         This function is ideal for multipage PDFs or list of images.
@@ -719,7 +722,7 @@ class Textractor:
         s3_upload_path: str = "",
         client_request_token: str = "",
         job_tag: str = "",
-        save_image: bool = False,
+        save_image: bool = True,
     ) -> LazyDocument:
         """Make a call to the ASYNC StartExpenseAnalysis API, implicitly parses the response and produces a :class:`Document` object.
         This function is ideal for multipage PDFs or list of images.
@@ -746,6 +749,9 @@ class Textractor:
         :return: Lazy-loaded Document object
         :rtype: LazyDocument
         """
+
+        original_file_source = file_source
+        
         if not (
             isinstance(file_source, str)
             or isinstance(file_source, bytes)
@@ -795,16 +801,16 @@ class Textractor:
 
         images = None
         if save_image:
-            if isinstance(file_source, Image.Image):
-                images = [file_source]
+            if isinstance(original_file_source, Image.Image):
+                images = [original_file_source]
             elif (
-                isinstance(file_source, list)
-                and len(file_source)
-                and isinstance(file_source[0], Image.Image)
+                isinstance(original_file_source, list)
+                and len(original_file_source)
+                and isinstance(original_file_source[0], Image.Image)
             ):
-                images = file_source
+                images = original_file_source
             else:
-                images = self._get_document_images_from_path(file_source)
+                images = self._get_document_images_from_path(original_file_source)
 
         return LazyDocument(
             response["JobId"],

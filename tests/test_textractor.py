@@ -86,7 +86,6 @@ class TestTextractor(unittest.TestCase):
         if os.environ.get("CALL_TEXTRACT"):
             document = self.extractor.detect_document_text(
                 file_source=os.path.join(self.current_directory, "fixtures/single-page-1.png"),
-                save_image=True,
             )
         else:
             document = Document.open(get_fixture_path())
@@ -112,7 +111,6 @@ class TestTextractor(unittest.TestCase):
         if os.environ.get("CALL_TEXTRACT"):
             document = self.extractor.detect_document_text(
                 file_source=[self.image_1],
-                            save_image=True,
             )
         else:
             document = Document.open(get_fixture_path())
@@ -125,7 +123,7 @@ class TestTextractor(unittest.TestCase):
         # Test PIL image input
         image_1 = PIL.Image.open(os.path.join(self.current_directory, "fixtures/single-page-1.png"))
         document = self.extractor.detect_document_text(
-            file_source=image_1, save_image=True
+            file_source=image_1,
         )
 
     def test_textractor_s3_image_input(self):
@@ -136,7 +134,7 @@ class TestTextractor(unittest.TestCase):
                     "S3 URI needed to run test. Populate s3_image_file with a valid input in tests/test_textractor.py."
                 )
             document = self.extractor.detect_document_text(
-                file_source=self.s3_image_file, save_image=True
+                file_source=self.s3_image_file,
             )
         else:
             document = Document.open(get_fixture_path())
@@ -161,7 +159,6 @@ class TestTextractor(unittest.TestCase):
             document = self.extractor.analyze_document(
                 file_source=os.path.join(self.current_directory, "fixtures/single-page-1.png"),
                 features=[TextractFeatures.TABLES, TextractFeatures.FORMS],
-                save_image=True,
             )
         else:
             document = Document.open(get_fixture_path())
@@ -175,7 +172,6 @@ class TestTextractor(unittest.TestCase):
             document = self.extractor.analyze_document(
                 file_source=self.image_1,
                 features=[TextractFeatures.TABLES, TextractFeatures.FORMS],
-                save_image=True,
             )
         else:
             document = Document.open(get_fixture_path())

@@ -87,7 +87,7 @@ class Document(SpatialObject):
         self.response = None
 
     @property
-    def words(self) -> List[Word]:
+    def words(self) -> EntityList[Word]:
         """
         Returns all the :class:`Word` objects present in the Document.
 
@@ -133,7 +133,7 @@ class Document(SpatialObject):
         return EntityList(sum([page.expense_documents for page in self.pages], []))
 
     @property
-    def lines(self) -> List[Line]:
+    def lines(self) -> EntityList[Line]:
         """
         Returns all the :class:`Line` objects present in the Document.
 
@@ -266,6 +266,9 @@ class Document(SpatialObject):
         if not self._trp2_document:
             self._trp2_document = TDocumentSchema().load(self.response)
         return self._trp2_document
+
+    def visualize(self, *args, **kwargs):
+        return EntityList(self.pages).visualize(*args, **kwargs)
 
     def keys(self, include_checkboxes: bool = True) -> List[str]:
         """

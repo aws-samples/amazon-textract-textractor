@@ -13,13 +13,12 @@ import logging
 from enum import Enum
 from io import StringIO
 from tabulate import tabulate
-from typing import List, Optional, TypeVar, Generic
+from typing import List, Optional, TypeVar, Generic, Any
 from collections import defaultdict
 from textractor.utils.geometry_util import get_indices
 from PIL import Image, ImageDraw, ImageColor, ImageFont
 
 from textractor.data.constants import TextractType, TableFormat
-from textractor.entities.document_entity import DocumentEntity
 from textractor.exceptions import EntityListCreationError, NoImageException
 
 logger = logging.getLogger(__name__)
@@ -49,10 +48,8 @@ class EntityList(list, Generic[T]):
 
     def visualize(
         self,
-        with_text: bool = False,
-        with_word_text_only: bool = False,
+        with_text: bool = True,
         with_confidence: bool = False,
-        with_word_confidence_only: bool = False,
         font_size_ratio: float = 0.5,
     ) -> List:
         """
@@ -60,17 +57,35 @@ class EntityList(list, Generic[T]):
 
         :param with_text: Flag to print the OCR output of Textract on top of the text bounding box.
         :type with_text: bool
-        :param with_word_text_only: Flag to print only the word-level OCR output of Textract on top of the text bounding box.
-        :type with_word_text_only: bool
         :param with_confidence: Flag to print the confidence of prediction on top of the entity bounding box.
         :type with_confidence: bool
-        :param with_word_confidence_only: Flag to print only the word-level confidence of Textract OCR.
-        :type with_word_confidence_only: bool
 
         :return: Returns list of PIL Images with bounding boxes drawn around the entities in the list.
         :rtype: list
         """
-        if len(self) > 0 and self[0].bbox.spatial_object.image is None:
+        # FIXME: This is inelegant
+        if len(self) > 0 and any([ent.__class__.__name__ == "Document" for ent in self]):
+            return EntityList(self[0].pages).visualize(
+                with_text=with_text,
+                with_confidence=with_confidence,
+                font_size_ratio=font_size_ratio,
+            )
+        elif len(self) > 0 and any([ent.__class__.__name__ == "Page" for ent in self]):
+            new_entity_list = []
+            for entity in self:
+                if entity.__class__.__name__ == "Page":
+                    new_entity_list.extend(entity.words)
+                    new_entity_list.extend(entity.lines)
+                    new_entity_list.extend(entity.tables)
+                    new_entity_list.extend(entity.tables)
+                else:
+                    new_entity_list.append(entity)
+            return EntityList(list(set(new_entity_list))).visualize(
+                with_text=with_text,
+                with_confidence=with_confidence,
+                font_size_ratio=font_size_ratio,
+            )
+        elif len(self) > 0 and self[0].bbox.spatial_object.image is None:
             raise NoImageException(
                 "Image was not saved during the Textract API call. Set save_image=True when calling the Textractor methods to use the visualize() method."
             )
@@ -79,14 +94,20 @@ class EntityList(list, Generic[T]):
         entities_pagewise = defaultdict(list)
         for obj in self:
             entities_pagewise[obj.page].append(obj)
+            try:
+                entities_pagewise[obj.page].extend(obj.words)
+            # FIXME: There should be a way to recurse through all entities
+            except AttributeError:
+                pass
+        for page in list(entities_pagewise.keys()):
+            # Deduplication
+            entities_pagewise[page] = list(set(entities_pagewise[page]))
 
         for page in entities_pagewise.keys():
             visualized_images[page] = _draw_bbox(
                 entities_pagewise[page],
                 with_text,
-                with_word_text_only,
                 with_confidence,
-                with_word_confidence_only,
                 font_size_ratio,
             )
 
@@ -412,6 +433,9 @@ class EntityList(list, Generic[T]):
 
         return result_value
 
+    def __add__(self, list2):
+        return EntityList([*self, *list2])
+
 
 def _convert_form_to_list(
     form_objects,
@@ -522,11 +546,9 @@ def _convert_table_to_list(
 
 
 def _draw_bbox(
-    entities: List[DocumentEntity],
+    entities: List[Any],
     with_text: bool = False,
-    with_word_text_only: bool = False,
     with_confidence: bool = False,
-    with_word_confidence_only: bool = False,
     font_size_ratio: float = 0.5,
 ):
     """
@@ -613,56 +635,57 @@ def _draw_bbox(
                 )
     
     # Second drawing, text
-    for entity in entities:
-        width, height = image.size
-        overlayer_data = _get_overlayer_data(entity, width, height)
+    if with_text:
+        for entity in entities:
+            if entity.__class__.__name__ != "Word":
+                continue
+            width, height = image.size
+            overlayer_data = _get_overlayer_data(entity, width, height)
 
-        final_txt = ""
-        bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
-        text_height = int(bbox_height * font_size_ratio)
-        fnt = ImageFont.truetype(
-            os.path.join(present_path, "arial.ttf"), text_height
-        )
+            final_txt = ""
+            bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
+            text_height = int(bbox_height * font_size_ratio)
+            fnt = ImageFont.truetype(
+                os.path.join(present_path, "arial.ttf"), text_height
+            )
 
-        if not with_word_text_only or entity.__class__.__name__ == "Word":
             final_txt += overlayer_data["text"]
 
-        if with_confidence and (
-            not with_word_confidence_only or entity.__class__.__name__ == "Word"
-        ):
-            final_txt += " (" + str(overlayer_data["confidence"])[:4] + ")"
-        drw.text(
-            (
-                overlayer_data["coords"][0],
-                overlayer_data["coords"][1] - text_height,
-            ),
-            final_txt,
-            font=fnt,
-            fill=overlayer_data["text_color"],
-        )
-
-        if entity.__class__.__name__ == "KeyValue":
-            final_txt = overlayer_data["value_text"]
-
             if with_confidence:
-                final_txt += " (" + str(overlayer_data["value_conf"])[:4] + ")"
-
+                final_txt += " (" + str(overlayer_data["confidence"])[:4] + ")"
+            
             drw.text(
                 (
-                    overlayer_data["value_bbox"][0],
-                    overlayer_data["value_bbox"][1] - text_height,
+                    overlayer_data["coords"][0],
+                    overlayer_data["coords"][1] - text_height,
                 ),
                 final_txt,
                 font=fnt,
                 fill=overlayer_data["text_color"],
             )
+
+            if entity.__class__.__name__ == "KeyValue":
+                final_txt = overlayer_data["value_text"]
+
+                if with_confidence:
+                    final_txt += " (" + str(overlayer_data["value_conf"])[:4] + ")"
+
+                drw.text(
+                    (
+                        overlayer_data["value_bbox"][0],
+                        overlayer_data["value_bbox"][1] - text_height,
+                    ),
+                    final_txt,
+                    font=fnt,
+                    fill=overlayer_data["text_color"],
+                )
     
 
-    del drw
-    return image
+        del drw
+        return image
 
 
-def _get_overlayer_data(entity: DocumentEntity, width: float, height: float) -> dict:
+def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
     """
     Returns a dictionary with all the necessary details to draw a bounding box for an entity depending on the information
     present in it. This includes the bounding box coordinates, color of bounding box, confidence of detection and OCR text.

@@ -31,7 +31,6 @@ class TestTextractorAnalyzeID(unittest.TestCase):
         if os.environ.get("CALL_TEXTRACT"):
             document = self.extractor.analyze_id(
                 file_source=self.image_path,
-                save_image=True,
             )
         else:
             document = Document.open(get_fixture_path())
@@ -39,15 +38,14 @@ class TestTextractorAnalyzeID(unittest.TestCase):
         self.assertIsInstance(document, Document)
         self.assertEqual(len(document.identity_documents), 1)
         self.assertEqual(len(document.identity_documents[0].fields), 20)
-        self.assertEqual(document.identity_documents[0].get(AnalyzeIDFields.FIRST_NAME), "MARIA")
-        self.assertEqual(document.identity_documents[0][AnalyzeIDFields.FIRST_NAME], "MARIA")
+        self.assertEqual(document.identity_documents[0].get(AnalyzeIDFields.FIRST_NAME), "GARCIA")
+        self.assertEqual(document.identity_documents[0][AnalyzeIDFields.FIRST_NAME], "GARCIA")
     
     def test_analyze_id_from_image(self):
         # Testing local single image input
         if os.environ.get("CALL_TEXTRACT"):
             document = self.extractor.analyze_id(
                 file_source=self.image,
-                            save_image=True,
             )
         else:
             document = Document.open(get_fixture_path())
@@ -55,8 +53,8 @@ class TestTextractorAnalyzeID(unittest.TestCase):
         self.assertIsInstance(document, Document)
         self.assertEqual(len(document.identity_documents), 1)
         self.assertEqual(len(document.identity_documents[0].fields), 20)
-        self.assertEqual(document.identity_documents[0].get("FIRST_NAME"), "MARIA")
-        self.assertEqual(document.identity_documents[0]["FIRST_NAME"], "MARIA")
+        self.assertEqual(document.identity_documents[0].get("FIRST_NAME"), "GARCIA")
+        self.assertEqual(document.identity_documents[0]["FIRST_NAME"], "GARCIA")
 
 if __name__ == "__main__":
     test = TestTextractorAnalyzeID()
