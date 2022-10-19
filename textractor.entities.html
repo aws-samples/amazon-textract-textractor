@@ -259,6 +259,11 @@ i.e. unique id and bounding box.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.visualize">
+<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.visualize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.width">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.width" title="Permalink to this definition"></a></dt>
@@ -1486,6 +1491,11 @@ from highest to lowest similarity.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.page.Page.visualize">
+<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.page.Page.visualize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.page.Page.words">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">words</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page.Page.words" title="Permalink to this definition"></a></dt>
@@ -1742,7 +1752,7 @@ This is stored on the filepath passed by the user.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.lines">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lines</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.line.Line" title="textractor.entities.line.Line"><span class="pre">Line</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.lines" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lines</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.line.Line" title="textractor.entities.line.Line"><span class="pre">Line</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.lines" title="Permalink to this definition"></a></dt>
 <dd><p>Returns all the <code class="xref py py-class docutils literal notranslate"><span class="pre">Line</span></code> objects present in the Document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1924,9 +1934,14 @@ to lowest similarity.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.document.Document.visualize">
+<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document.Document.visualize" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.words">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">words</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.words" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">words</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.words" title="Permalink to this definition"></a></dt>
 <dd><p>Returns all the <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code> objects present in the Document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>

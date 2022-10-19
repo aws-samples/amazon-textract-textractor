@@ -204,7 +204,7 @@
 <h4>DetectDocumentText<a class="headerlink" href="#DetectDocumentText" title="Permalink to this heading"></a></h4>
 <p>Synchronous API for Optical Character Recognition</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">DetectDocumentText</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                              <span class="p">[</span><span class="o">--</span><span class="n">region</span> <span class="n">REGION</span><span class="p">]</span>
+                              <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                               <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
                               <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
                               <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
@@ -228,7 +228,7 @@
 <dt><kbd>--profile-name</kbd></dt>
 <dd><p>AWS profile name to use for the request</p>
 </dd>
-<dt><kbd>--region</kbd></dt>
+<dt><kbd>--region-name</kbd></dt>
 <dd><p>AWS region to use for the request</p>
 </dd>
 <dt><kbd>--print</kbd></dt>
@@ -250,8 +250,9 @@
 <h4>StartDocumentTextDetection<a class="headerlink" href="#StartDocumentTextDetection" title="Permalink to this heading"></a></h4>
 <p>Asynchronous API for Optical Character Recognition</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">StartDocumentTextDetection</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">upload</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_UPLOAD_PATH</span><span class="p">]</span>
+                                      <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">output</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_OUTPUT_PATH</span><span class="p">]</span>
                                       <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                                      <span class="p">[</span><span class="o">--</span><span class="n">region</span> <span class="n">REGION</span><span class="p">]</span>
+                                      <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                                       <span class="n">file_source</span>
 </pre></div>
 </div>
@@ -269,10 +270,13 @@
 <dt><kbd>--s3-upload-path</kbd></dt>
 <dd><p>Path to upload the input files to, required if input_file is not an S3 path</p>
 </dd>
+<dt><kbd>--s3-output-path</kbd></dt>
+<dd><p>Path to write the response to</p>
+</dd>
 <dt><kbd>--profile-name</kbd></dt>
 <dd><p>AWS profile name to use for the request</p>
 </dd>
-<dt><kbd>--region</kbd></dt>
+<dt><kbd>--region-name</kbd></dt>
 <dd><p>AWS region to use for the request</p>
 </dd>
 </dl>
@@ -284,7 +288,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">AnalyzeDocument</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">features</span> <span class="p">{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span>
                            <span class="p">[{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span> <span class="o">...</span><span class="p">]</span>
                            <span class="p">[</span><span class="o">--</span><span class="n">queries</span> <span class="n">QUERIES</span> <span class="p">[</span><span class="n">QUERIES</span> <span class="o">...</span><span class="p">]]</span>
-                           <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">region</span> <span class="n">REGION</span><span class="p">]</span>
+                           <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                           <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                            <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
                            <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
                            <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
@@ -314,7 +319,7 @@
 <dt><kbd>--profile-name</kbd></dt>
 <dd><p>AWS profile name to use for the request</p>
 </dd>
-<dt><kbd>--region</kbd></dt>
+<dt><kbd>--region-name</kbd></dt>
 <dd><p>AWS region to use for the request</p>
 </dd>
 <dt><kbd>--print</kbd></dt>
@@ -339,8 +344,9 @@
                                  <span class="p">[{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span> <span class="o">...</span><span class="p">]</span>
                                  <span class="p">[</span><span class="o">--</span><span class="n">queries</span> <span class="n">QUERIES</span> <span class="p">[</span><span class="n">QUERIES</span> <span class="o">...</span><span class="p">]]</span>
                                  <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">upload</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_UPLOAD_PATH</span><span class="p">]</span>
+                                 <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">output</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_OUTPUT_PATH</span><span class="p">]</span>
                                  <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                                 <span class="p">[</span><span class="o">--</span><span class="n">region</span> <span class="n">REGION</span><span class="p">]</span>
+                                 <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                                  <span class="n">file_source</span>
 </pre></div>
 </div>
@@ -364,10 +370,13 @@
 <dt><kbd>--s3-upload-path</kbd></dt>
 <dd><p>Path to upload the input files to, required if input_file is not an S3 path</p>
 </dd>
+<dt><kbd>--s3-output-path</kbd></dt>
+<dd><p>Path to write the response to</p>
+</dd>
 <dt><kbd>--profile-name</kbd></dt>
 <dd><p>AWS profile name to use for the request</p>
 </dd>
-<dt><kbd>--region</kbd></dt>
+<dt><kbd>--region-name</kbd></dt>
 <dd><p>AWS region to use for the request</p>
 </dd>
 </dl>
@@ -376,7 +385,8 @@
 <section id="AnalyzeExpense">
 <h4>AnalyzeExpense<a class="headerlink" href="#AnalyzeExpense" title="Permalink to this heading"></a></h4>
 <p>Synchronous API for expense analysis</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">AnalyzeExpense</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">region</span> <span class="n">REGION</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">AnalyzeExpense</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                          <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                           <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
                           <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
                           <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
@@ -400,7 +410,7 @@
 <dt><kbd>--profile-name</kbd></dt>
 <dd><p>AWS profile name to use for the request</p>
 </dd>
-<dt><kbd>--region</kbd></dt>
+<dt><kbd>--region-name</kbd></dt>
 <dd><p>AWS region to use for the request</p>
 </dd>
 <dt><kbd>--print</kbd></dt>
@@ -422,8 +432,9 @@
 <h4>StartExpenseAnalysis<a class="headerlink" href="#StartExpenseAnalysis" title="Permalink to this heading"></a></h4>
 <p>Asynchronous API for expense analysis</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">StartExpenseAnalysis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">upload</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_UPLOAD_PATH</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">output</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_OUTPUT_PATH</span><span class="p">]</span>
                                 <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                                <span class="p">[</span><span class="o">--</span><span class="n">region</span> <span class="n">REGION</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                                 <span class="n">file_source</span>
 </pre></div>
 </div>
@@ -441,10 +452,13 @@
 <dt><kbd>--s3-upload-path</kbd></dt>
 <dd><p>Path to upload the input files to, required if input_file is not an S3 path</p>
 </dd>
+<dt><kbd>--s3-output-path</kbd></dt>
+<dd><p>Path to write the response to</p>
+</dd>
 <dt><kbd>--profile-name</kbd></dt>
 <dd><p>AWS profile name to use for the request</p>
 </dd>
-<dt><kbd>--region</kbd></dt>
+<dt><kbd>--region-name</kbd></dt>
 <dd><p>AWS region to use for the request</p>
 </dd>
 </dl>
@@ -453,10 +467,9 @@
 <section id="AnalyzeID">
 <h4>AnalyzeID<a class="headerlink" href="#AnalyzeID" title="Permalink to this heading"></a></h4>
 <p>API for identity document analysis (supports driver’s license and passports).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">AnalyzeID</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">region</span> <span class="n">REGION</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">AnalyzeID</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                     <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                      <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
-                     <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
-                     <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
                      <span class="n">file_source</span> <span class="n">output_file</span>
 </pre></div>
 </div>
@@ -477,20 +490,12 @@
 <dt><kbd>--profile-name</kbd></dt>
 <dd><p>AWS profile name to use for the request</p>
 </dd>
-<dt><kbd>--region</kbd></dt>
+<dt><kbd>--region-name</kbd></dt>
 <dd><p>AWS region to use for the request</p>
 </dd>
 <dt><kbd>--print</kbd></dt>
 <dd><p>Possible choices: ALL, TEXT, TABLES, FORMS, QUERIES, EXPENSES, IDS</p>
 <p>Print the output in a readable format</p>
-</dd>
-<dt><kbd>--overlay</kbd></dt>
-<dd><p>Possible choices: ALL, WORDS, LINES, TABLES, FORMS</p>
-<p>Save an image of the document with the words, lines, form fields, and tables overlayed on top</p>
-</dd>
-<dt><kbd>--font-size-ratio</kbd></dt>
-<dd><p>Scales the text up or down, default is 0.75, which would be half the pixel height</p>
-<p>Default: 0.75</p>
 </dd>
 </dl>
 </section>
@@ -498,7 +503,8 @@
 <section id="GetResult">
 <h4>GetResult<a class="headerlink" href="#GetResult" title="Permalink to this heading"></a></h4>
 <p>Try to fetch the result for a given job id</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">GetResult</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">region</span> <span class="n">REGION</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">GetResult</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                     <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                      <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
                      <span class="n">job_id</span> <span class="p">{</span><span class="n">DETECT_TEXT</span><span class="p">,</span><span class="n">ANALYZE</span><span class="p">,</span><span class="n">EXPENSE</span><span class="p">}</span> <span class="n">output_file</span>
 </pre></div>
@@ -524,7 +530,7 @@
 <dt><kbd>--profile-name</kbd></dt>
 <dd><p>AWS profile name to use for the request</p>
 </dd>
-<dt><kbd>--region</kbd></dt>
+<dt><kbd>--region-name</kbd></dt>
 <dd><p>AWS region to use for the request</p>
 </dd>
 <dt><kbd>--print</kbd></dt>
