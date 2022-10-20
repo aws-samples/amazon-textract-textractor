@@ -52,14 +52,14 @@
 <li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Sub-commands">Sub-commands</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#DetectDocumentText">DetectDocumentText</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#StartDocumentTextDetection">StartDocumentTextDetection</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#AnalyzeDocument">AnalyzeDocument</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#StartDocumentAnalysis">StartDocumentAnalysis</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#AnalyzeExpense">AnalyzeExpense</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#StartExpenseAnalysis">StartExpenseAnalysis</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#AnalyzeID">AnalyzeID</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#GetResult">GetResult</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#detect-document-text">detect-document-text</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-document-text-detection">start-document-text-detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analyze-document">analyze-document</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-document-analysis">start-document-analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analyze-expense">analyze-expense</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-expense-analysis">start-expense-analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analyze-id">analyze-id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-result">get-result</a></li>
 </ul>
 </li>
 </ul>
@@ -185,7 +185,7 @@
 <p><p>Commandline interface for the Textractor library</p>
 </p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">textractor</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
-                  <span class="p">{</span><span class="n">DetectDocumentText</span><span class="p">,</span><span class="n">StartDocumentTextDetection</span><span class="p">,</span><span class="n">AnalyzeDocument</span><span class="p">,</span><span class="n">StartDocumentAnalysis</span><span class="p">,</span><span class="n">AnalyzeExpense</span><span class="p">,</span><span class="n">StartExpenseAnalysis</span><span class="p">,</span><span class="n">AnalyzeID</span><span class="p">,</span><span class="n">GetResult</span><span class="p">}</span>
+                  <span class="p">{</span><span class="n">detect</span><span class="o">-</span><span class="n">document</span><span class="o">-</span><span class="n">text</span><span class="p">,</span><span class="n">start</span><span class="o">-</span><span class="n">document</span><span class="o">-</span><span class="n">text</span><span class="o">-</span><span class="n">detection</span><span class="p">,</span><span class="n">analyze</span><span class="o">-</span><span class="n">document</span><span class="p">,</span><span class="n">start</span><span class="o">-</span><span class="n">document</span><span class="o">-</span><span class="n">analysis</span><span class="p">,</span><span class="n">analyze</span><span class="o">-</span><span class="n">expense</span><span class="p">,</span><span class="n">start</span><span class="o">-</span><span class="n">expense</span><span class="o">-</span><span class="n">analysis</span><span class="p">,</span><span class="n">analyze</span><span class="o">-</span><span class="nb">id</span><span class="p">,</span><span class="n">get</span><span class="o">-</span><span class="n">result</span><span class="p">}</span>
                   <span class="o">...</span>
 </pre></div>
 </div>
@@ -193,22 +193,22 @@
 <h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this heading"></a></h3>
 <dl class="option-list">
 <dt><kbd>subcommand</kbd></dt>
-<dd><p>Possible choices: DetectDocumentText, StartDocumentTextDetection, AnalyzeDocument, StartDocumentAnalysis, AnalyzeExpense, StartExpenseAnalysis, AnalyzeID, GetResult</p>
+<dd><p>Possible choices: detect-document-text, start-document-text-detection, analyze-document, start-document-analysis, analyze-expense, start-expense-analysis, analyze-id, get-result</p>
 <p>Sub-command help</p>
 </dd>
 </dl>
 </section>
 <section id="Sub-commands">
 <h3>Sub-commands<a class="headerlink" href="#Sub-commands" title="Permalink to this heading"></a></h3>
-<section id="DetectDocumentText">
-<h4>DetectDocumentText<a class="headerlink" href="#DetectDocumentText" title="Permalink to this heading"></a></h4>
+<section id="detect-document-text">
+<h4>detect-document-text<a class="headerlink" href="#detect-document-text" title="Permalink to this heading"></a></h4>
 <p>Synchronous API for Optical Character Recognition</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">DetectDocumentText</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                              <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
-                              <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
-                              <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
-                              <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
-                              <span class="n">file_source</span> <span class="n">output_file</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">detect</span><span class="o">-</span><span class="n">document</span><span class="o">-</span><span class="n">text</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
+                                <span class="n">file_source</span> <span class="n">output_file</span>
 </pre></div>
 </div>
 <section id="Positional Arguments_repeat1">
@@ -246,14 +246,15 @@
 </dl>
 </section>
 </section>
-<section id="StartDocumentTextDetection">
-<h4>StartDocumentTextDetection<a class="headerlink" href="#StartDocumentTextDetection" title="Permalink to this heading"></a></h4>
+<section id="start-document-text-detection">
+<h4>start-document-text-detection<a class="headerlink" href="#start-document-text-detection" title="Permalink to this heading"></a></h4>
 <p>Asynchronous API for Optical Character Recognition</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">StartDocumentTextDetection</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">upload</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_UPLOAD_PATH</span><span class="p">]</span>
-                                      <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">output</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_OUTPUT_PATH</span><span class="p">]</span>
-                                      <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                                      <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
-                                      <span class="n">file_source</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">start</span><span class="o">-</span><span class="n">document</span><span class="o">-</span><span class="n">text</span><span class="o">-</span><span class="n">detection</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+                                         <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">upload</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_UPLOAD_PATH</span><span class="p">]</span>
+                                         <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">output</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_OUTPUT_PATH</span><span class="p">]</span>
+                                         <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                                         <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
+                                         <span class="n">file_source</span>
 </pre></div>
 </div>
 <section id="Positional Arguments_repeat2">
@@ -282,18 +283,18 @@
 </dl>
 </section>
 </section>
-<section id="AnalyzeDocument">
-<h4>AnalyzeDocument<a class="headerlink" href="#AnalyzeDocument" title="Permalink to this heading"></a></h4>
+<section id="analyze-document">
+<h4>analyze-document<a class="headerlink" href="#analyze-document" title="Permalink to this heading"></a></h4>
 <p>Synchronous API for document analysis (forms, tables, and queries)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">AnalyzeDocument</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">features</span> <span class="p">{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span>
-                           <span class="p">[{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span> <span class="o">...</span><span class="p">]</span>
-                           <span class="p">[</span><span class="o">--</span><span class="n">queries</span> <span class="n">QUERIES</span> <span class="p">[</span><span class="n">QUERIES</span> <span class="o">...</span><span class="p">]]</span>
-                           <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                           <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
-                           <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
-                           <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
-                           <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
-                           <span class="n">file_source</span> <span class="n">output_file</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">analyze</span><span class="o">-</span><span class="n">document</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">features</span> <span class="p">{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span>
+                            <span class="p">[{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span> <span class="o">...</span><span class="p">]</span>
+                            <span class="p">[</span><span class="o">--</span><span class="n">queries</span> <span class="n">QUERIES</span> <span class="p">[</span><span class="n">QUERIES</span> <span class="o">...</span><span class="p">]]</span>
+                            <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                            <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
+                            <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                            <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                            <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
+                            <span class="n">file_source</span> <span class="n">output_file</span>
 </pre></div>
 </div>
 <section id="Positional Arguments_repeat3">
@@ -337,17 +338,17 @@
 </dl>
 </section>
 </section>
-<section id="StartDocumentAnalysis">
-<h4>StartDocumentAnalysis<a class="headerlink" href="#StartDocumentAnalysis" title="Permalink to this heading"></a></h4>
+<section id="start-document-analysis">
+<h4>start-document-analysis<a class="headerlink" href="#start-document-analysis" title="Permalink to this heading"></a></h4>
 <p>Asynchronous API for document analysis (forms, tables, and queries)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">StartDocumentAnalysis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">features</span> <span class="p">{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span>
-                                 <span class="p">[{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span> <span class="o">...</span><span class="p">]</span>
-                                 <span class="p">[</span><span class="o">--</span><span class="n">queries</span> <span class="n">QUERIES</span> <span class="p">[</span><span class="n">QUERIES</span> <span class="o">...</span><span class="p">]]</span>
-                                 <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">upload</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_UPLOAD_PATH</span><span class="p">]</span>
-                                 <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">output</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_OUTPUT_PATH</span><span class="p">]</span>
-                                 <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                                 <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
-                                 <span class="n">file_source</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">start</span><span class="o">-</span><span class="n">document</span><span class="o">-</span><span class="n">analysis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">features</span> <span class="p">{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span>
+                                   <span class="p">[{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">}</span> <span class="o">...</span><span class="p">]</span>
+                                   <span class="p">[</span><span class="o">--</span><span class="n">queries</span> <span class="n">QUERIES</span> <span class="p">[</span><span class="n">QUERIES</span> <span class="o">...</span><span class="p">]]</span>
+                                   <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">upload</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_UPLOAD_PATH</span><span class="p">]</span>
+                                   <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">output</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_OUTPUT_PATH</span><span class="p">]</span>
+                                   <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                                   <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
+                                   <span class="n">file_source</span>
 </pre></div>
 </div>
 <section id="Positional Arguments_repeat4">
@@ -382,15 +383,15 @@
 </dl>
 </section>
 </section>
-<section id="AnalyzeExpense">
-<h4>AnalyzeExpense<a class="headerlink" href="#AnalyzeExpense" title="Permalink to this heading"></a></h4>
+<section id="analyze-expense">
+<h4>analyze-expense<a class="headerlink" href="#analyze-expense" title="Permalink to this heading"></a></h4>
 <p>Synchronous API for expense analysis</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">AnalyzeExpense</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                          <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
-                          <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
-                          <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
-                          <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
-                          <span class="n">file_source</span> <span class="n">output_file</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">analyze</span><span class="o">-</span><span class="n">expense</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                           <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
+                           <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                           <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                           <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
+                           <span class="n">file_source</span> <span class="n">output_file</span>
 </pre></div>
 </div>
 <section id="Positional Arguments_repeat5">
@@ -428,14 +429,14 @@
 </dl>
 </section>
 </section>
-<section id="StartExpenseAnalysis">
-<h4>StartExpenseAnalysis<a class="headerlink" href="#StartExpenseAnalysis" title="Permalink to this heading"></a></h4>
+<section id="start-expense-analysis">
+<h4>start-expense-analysis<a class="headerlink" href="#start-expense-analysis" title="Permalink to this heading"></a></h4>
 <p>Asynchronous API for expense analysis</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">StartExpenseAnalysis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">upload</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_UPLOAD_PATH</span><span class="p">]</span>
-                                <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">output</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_OUTPUT_PATH</span><span class="p">]</span>
-                                <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                                <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
-                                <span class="n">file_source</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">start</span><span class="o">-</span><span class="n">expense</span><span class="o">-</span><span class="n">analysis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">upload</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_UPLOAD_PATH</span><span class="p">]</span>
+                                  <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">output</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_OUTPUT_PATH</span><span class="p">]</span>
+                                  <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                                  <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
+                                  <span class="n">file_source</span>
 </pre></div>
 </div>
 <section id="Positional Arguments_repeat6">
@@ -464,13 +465,13 @@
 </dl>
 </section>
 </section>
-<section id="AnalyzeID">
-<h4>AnalyzeID<a class="headerlink" href="#AnalyzeID" title="Permalink to this heading"></a></h4>
+<section id="analyze-id">
+<h4>analyze-id<a class="headerlink" href="#analyze-id" title="Permalink to this heading"></a></h4>
 <p>API for identity document analysis (supports driver’s license and passports).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">AnalyzeID</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                     <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
-                     <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
-                     <span class="n">file_source</span> <span class="n">output_file</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">analyze</span><span class="o">-</span><span class="nb">id</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                      <span class="n">file_source</span> <span class="n">output_file</span>
 </pre></div>
 </div>
 <section id="Positional Arguments_repeat7">
@@ -500,13 +501,13 @@
 </dl>
 </section>
 </section>
-<section id="GetResult">
-<h4>GetResult<a class="headerlink" href="#GetResult" title="Permalink to this heading"></a></h4>
+<section id="get-result">
+<h4>get-result<a class="headerlink" href="#get-result" title="Permalink to this heading"></a></h4>
 <p>Try to fetch the result for a given job id</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">GetResult</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
-                     <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
-                     <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
-                     <span class="n">job_id</span> <span class="p">{</span><span class="n">DETECT_TEXT</span><span class="p">,</span><span class="n">ANALYZE</span><span class="p">,</span><span class="n">EXPENSE</span><span class="p">}</span> <span class="n">output_file</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">get</span><span class="o">-</span><span class="n">result</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                      <span class="n">job_id</span> <span class="p">{</span><span class="n">DETECT_TEXT</span><span class="p">,</span><span class="n">ANALYZE</span><span class="p">,</span><span class="n">EXPENSE</span><span class="p">}</span> <span class="n">output_file</span>
 </pre></div>
 </div>
 <section id="Positional Arguments_repeat8">
