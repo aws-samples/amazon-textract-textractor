@@ -49,7 +49,7 @@ def _build_parser():
 
     # DocumentText parsers
     parser_detect_document_text = subparsers.add_parser(
-        "DetectDocumentText", help=STRING_DICT["DETECT_DOCUMENT_TEXT"]
+        "detect-document-text", help=STRING_DICT["DETECT_DOCUMENT_TEXT"]
     )
     parser_detect_document_text.add_argument(
         "file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"]
@@ -83,7 +83,7 @@ def _build_parser():
     )
 
     parser_start_document_text_detection = subparsers.add_parser(
-        "StartDocumentTextDetection", help=STRING_DICT["START_DOCUMENT_TEXT_DETECTION"]
+        "start-document-text-detection", help=STRING_DICT["START_DOCUMENT_TEXT_DETECTION"]
     )
     parser_start_document_text_detection.add_argument(
         "file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"]
@@ -101,9 +101,9 @@ def _build_parser():
         "--region-name", type=str, help=STRING_DICT["REGION"]
     )
 
-    # AnalyzeDocument parsers
+    # analyze-document parsers
     parser_analyze_document = subparsers.add_parser(
-        "AnalyzeDocument", help=STRING_DICT["ANALYZE_DOCUMENT"]
+        "analyze-document", help=STRING_DICT["ANALYZE_DOCUMENT"]
     )
     parser_analyze_document.add_argument(
         "file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"]
@@ -146,7 +146,7 @@ def _build_parser():
     )
 
     parser_start_document_analysis = subparsers.add_parser(
-        "StartDocumentAnalysis", help=STRING_DICT["START_DOCUMENT_ANALYSIS"]
+        "start-document-analysis", help=STRING_DICT["START_DOCUMENT_ANALYSIS"]
     )
     parser_start_document_analysis.add_argument(
         "file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"]
@@ -173,9 +173,9 @@ def _build_parser():
         "--region-name", type=str, help=STRING_DICT["REGION"]
     )
 
-    # AnalyzeExpense parsers
+    # analyze-expense parsers
     parser_analyze_expense = subparsers.add_parser(
-        "AnalyzeExpense", help=STRING_DICT["ANALYZE_EXPENSE"]
+        "analyze-expense", help=STRING_DICT["ANALYZE_EXPENSE"]
     )
     parser_analyze_expense.add_argument(
         "file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"]
@@ -209,7 +209,7 @@ def _build_parser():
     )
 
     parser_start_expense_analysis = subparsers.add_parser(
-        "StartExpenseAnalysis", help=STRING_DICT["START_EXPENSE_ANALYSIS"]
+        "start-expense-analysis", help=STRING_DICT["START_EXPENSE_ANALYSIS"]
     )
     parser_start_expense_analysis.add_argument(
         "file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"]
@@ -227,9 +227,9 @@ def _build_parser():
         "--region-name", type=str, help=STRING_DICT["REGION"]
     )
 
-    # AnalyzeID parsers
+    # analyze-id parsers
     parser_analyze_id = subparsers.add_parser(
-        "AnalyzeID", help=STRING_DICT["ANALYZE_ID"]
+        "analyze-id", help=STRING_DICT["ANALYZE_ID"]
     )
     parser_analyze_id.add_argument(
         "file_source", type=str, help=STRING_DICT["INPUT_FILE_SYNC"]
@@ -248,9 +248,9 @@ def _build_parser():
         help=STRING_DICT["PRINT"],
     )
 
-    # GetResult parsers
+    # get-result parsers
     parser_get_result = subparsers.add_parser(
-        "GetResult", help=STRING_DICT["GET_RESULT"]
+        "get-result", help=STRING_DICT["GET_RESULT"]
     )
     parser_get_result.add_argument(
         "job_id", type=str, help=STRING_DICT["GET_RESULT_JOB_ID"]
@@ -302,18 +302,18 @@ def textractor_cli():
         s3_output_path = args.output_file
 
     # ASYNC is handled differently
-    if args.subcommand.startswith("Start"):
+    if args.subcommand.startswith("start"):
         if not args.file_source.startswith("s3://") and args.s3_upload_path is None:
             raise InputError(
                 "--s3-upload-path is required if file_source is not an S3 path"
             )
-        if args.subcommand == "StartDocumentTextDetection":
+        if args.subcommand == "start-document-text-detection":
             out = extractor.start_document_text_detection(
                 args.file_source,
                 s3_output_path=args.s3_output_path,
                 s3_upload_path=args.s3_upload_path,
             )
-        elif args.subcommand == "StartDocumentAnalysis":
+        elif args.subcommand == "start-document-analysis":
             out = extractor.start_document_analysis(
                 args.file_source,
                 features=[TextractFeatures[feat] for feat in args.features],
@@ -321,7 +321,7 @@ def textractor_cli():
                 s3_output_path=args.s3_output_path,
                 s3_upload_path=args.s3_upload_path,
             )
-        elif args.subcommand == "StartExpenseAnalysis":
+        elif args.subcommand == "start-expense-analysis":
             out = extractor.start_expense_analysis(
                 args.file_source,
                 s3_output_path=args.s3_output_path,
@@ -330,28 +330,28 @@ def textractor_cli():
         print(out.job_id)
     # SYNC
     else:
-        if args.subcommand == "DetectDocumentText":
+        if args.subcommand == "detect-document-text":
             out = extractor.detect_document_text(
                 args.file_source,
                 s3_output_path=s3_output_path,
             )
-        elif args.subcommand == "AnalyzeDocument":
+        elif args.subcommand == "analyze-document":
             out = extractor.analyze_document(
                 args.file_source,
                 features=[TextractFeatures[feat] for feat in args.features],
                 queries=args.queries,
                 s3_output_path=s3_output_path,
             )
-        elif args.subcommand == "AnalyzeExpense":
+        elif args.subcommand == "analyze-expense":
             out = extractor.analyze_expense(
                 args.file_source,
                 s3_output_path=s3_output_path,
             )
-        elif args.subcommand == "AnalyzeID":
+        elif args.subcommand == "analyze-id":
             out = extractor.analyze_id(
                 args.file_source,
             )
-        elif args.subcommand == "GetResult":
+        elif args.subcommand == "get-result":
             out = extractor.get_result(
                 args.job_id,
                 TextractAPI[args.api],

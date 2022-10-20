@@ -85,7 +85,7 @@ class TestTextractor(unittest.TestCase):
     def test_detect_document_text(self):
         run_command([
             "textractor",
-            "DetectDocumentText",
+            "detect-document-text",
             os.path.join(self.current_directory, "fixtures/single-page-1.png"),
             "output.json",
         ])
@@ -94,7 +94,7 @@ class TestTextractor(unittest.TestCase):
     def test_detect_document_text_single_page_pdf_input(self):
         run_command([
             "textractor",
-            "DetectDocumentText",
+            "detect-document-text",
             os.path.join(self.current_directory, "fixtures/textractor-singlepage-doc.pdf"),
             "output.json",
         ])
@@ -103,7 +103,7 @@ class TestTextractor(unittest.TestCase):
     def test_textractor_s3_image_input(self):
         run_command([
             "textractor",
-            "DetectDocumentText",
+            "detect-document-text",
             self.s3_image_file,
             "output.json",
         ])
@@ -112,7 +112,7 @@ class TestTextractor(unittest.TestCase):
     def test_textractor_start_document_text_detection(self):
         run_command([
             "textractor",
-            "StartDocumentTextDetection",
+            "start-document-text-detection",
             os.path.join(self.current_directory, "fixtures/textractor-multipage-doc.pdf"),
             "--s3-upload-path",
             self.s3_upload_path,
@@ -136,7 +136,7 @@ class TestTextractor(unittest.TestCase):
     def test_textractor_analyze_document_multipage_pdf(self):
         run_command([
             "textractor",
-            "StartDocumentAnalysis",
+            "start-document-analysis",
             os.path.join(self.current_directory, "fixtures/textractor-multipage-doc.pdf"),
             "--s3-upload-path",
             self.s3_upload_path,
@@ -151,7 +151,7 @@ class TestTextractor(unittest.TestCase):
     def test_textractor_start_document_analysis_multipage_pdf_s3(self):
         run_command([
             "textractor",
-            "StartDocumentAnalysis",
+            "start-document-analysis",
             self.s3_multipage_pdf_file,
             "--s3-upload-path",
             self.s3_upload_path,
