@@ -341,7 +341,7 @@ def _create_value_objects(
         val_child_ids = _get_relationship_ids(values_info[val_id], relationship="CHILD")
         for child_id in val_child_ids:
             if id_json_map[child_id]["BlockType"] == WORD:
-                values[val_id].words = _create_word_objects(
+                values[val_id].words += _create_word_objects(
                     [child_id], id_json_map, page
                 )
             else:
