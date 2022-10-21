@@ -182,7 +182,7 @@ class TestPage(unittest.TestCase):
         )
 
         self.assertIsInstance(
-            page.get_value_by_key(
+            page.get(
                 key="date",
                 top_k_matches=5,
                 similarity_metric=SimilarityMetric.COSINE,
@@ -191,7 +191,7 @@ class TestPage(unittest.TestCase):
             EntityList,
         )
         self.assertIsInstance(
-            page.get_value_by_key(
+            page.get(
                 key="date",
                 top_k_matches=5,
                 similarity_metric=SimilarityMetric.COSINE,
@@ -200,7 +200,7 @@ class TestPage(unittest.TestCase):
             KeyValue,
         )
         self.assertIsInstance(
-            page.get_value_by_key(
+            page.get(
                 key="date",
                 top_k_matches=5,
                 similarity_metric=SimilarityMetric.EUCLIDEAN,
@@ -209,7 +209,7 @@ class TestPage(unittest.TestCase):
             KeyValue,
         )
         self.assertIsInstance(
-            page.get_value_by_key(
+            page.get(
                 key="date",
                 top_k_matches=5,
                 similarity_metric=SimilarityMetric.LEVENSHTEIN,
@@ -219,7 +219,7 @@ class TestPage(unittest.TestCase):
         )
         self.assertEqual(
             len(
-                page.get_value_by_key(
+                page.get(
                     key="date",
                     top_k_matches=5,
                     similarity_metric=SimilarityMetric.COSINE,

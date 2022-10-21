@@ -410,7 +410,7 @@ class Document(SpatialObject):
         return top_n_lines
 
     # KeyValue entity related functions
-    def get_value_by_key(
+    def get(
         self,
         key: str,
         top_k_matches: int = 1,
@@ -486,6 +486,7 @@ class Document(SpatialObject):
             logging.warning(
                 f"Query key does not match any existing keys in the document.{os.linesep}{self.keys()}"
             )
+            return EntityList([])
 
         logging.info(f"Query key matched {len(top_n)} key-values in the document.")
 

@@ -228,7 +228,7 @@ class Page(SpatialObject):
         )
 
     def __getitem__(self, key):
-        output = self.get_value_by_key(key)
+        output = self.get(key)
         if output:
             return output
         raise KeyError(f"{key} was not found in Document")
@@ -505,7 +505,7 @@ class Page(SpatialObject):
         return top_n_lines
 
     # KeyValue entity related functions
-    def get_value_by_key(
+    def get(
         self,
         key: str,
         top_k_matches: int = 1,

@@ -175,7 +175,7 @@ class TestDocument(unittest.TestCase):
         )
 
         self.assertIsInstance(
-            document.get_value_by_key(
+            document.get(
                 key="date",
                 top_k_matches=5,
                 similarity_metric=SimilarityMetric.COSINE,
@@ -184,7 +184,7 @@ class TestDocument(unittest.TestCase):
             EntityList,
         )
         self.assertIsInstance(
-            document.get_value_by_key(
+            document.get(
                 key="date",
                 top_k_matches=5,
                 similarity_metric=SimilarityMetric.COSINE,
@@ -193,7 +193,7 @@ class TestDocument(unittest.TestCase):
             KeyValue,
         )
         self.assertIsInstance(
-            document.get_value_by_key(
+            document.get(
                 key="date",
                 top_k_matches=5,
                 similarity_metric=SimilarityMetric.EUCLIDEAN,
@@ -202,7 +202,7 @@ class TestDocument(unittest.TestCase):
             KeyValue,
         )
         self.assertIsInstance(
-            document.get_value_by_key(
+            document.get(
                 key="date",
                 top_k_matches=5,
                 similarity_metric=SimilarityMetric.LEVENSHTEIN,
@@ -212,7 +212,7 @@ class TestDocument(unittest.TestCase):
         )
         self.assertEqual(
             len(
-                document.get_value_by_key(
+                document.get(
                     key="date",
                     top_k_matches=5,
                     similarity_metric=SimilarityMetric.COSINE,

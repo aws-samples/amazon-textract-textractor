@@ -63,6 +63,20 @@ document = extractor.analyze_document(
 document.tables[0].to_excel("output.xlsx")
 ```
 
+### Form extraction
+
+```py
+from textractor.data.constants import TextractFeatures
+
+document = extractor.analyze_document(
+	file_source="tests/fixtures/form.png",
+	features=[TextractFeatures.FORMS]
+)
+# Use document.get() to search for a key with fuzzy matching
+document.get("email")
+# [E-mail Address : johndoe@gmail.com]
+```
+
 ### Analyze ID
 
 ```py
@@ -106,3 +120,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ## License
 
 This library is licensed under the Apache 2.0 License.
+
+<sub><sup>Excavator image by macrovector on Freepik</sub></sup>

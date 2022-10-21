@@ -15,7 +15,7 @@ from textractor.entities.value import Value
 from textractor.exceptions import InputError
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
-from textractor.data.constants import PRINTED, HANDWRITING, TextTypes
+from textractor.data.constants import TextTypes
 from textractor.visualizers.entitylist import EntityList
 
 
