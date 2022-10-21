@@ -134,46 +134,46 @@
 <p><code class="code docutils literal notranslate"><span class="pre">Textractor</span></code> supports all Textract APIs and follow their official names as described here: <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/API_Operations.html">https://docs.aws.amazon.com/textract/latest/dg/API_Operations.html</a>. We use a single subcommand to fetch the results named <code class="code docutils literal notranslate"><span class="pre">GetResult</span></code>.</p>
 <p>Synchronous APIs:</p>
 <ul class="simple">
-<li><p>DetectDocumentText (Returns words and lines)</p></li>
-<li><p>AnalyzeDocument (Returns Forms, Tables and Query results)</p></li>
-<li><p>AnalyzeExpense (Returns standardized fields for invoices)</p></li>
-<li><p>AnalyzeID (Returns standardized fields for driver’s license and passports)</p></li>
+<li><p>DetectDocumentText/detect-document-text (Returns words and lines)</p></li>
+<li><p>AnalyzeDocument/analyze-document (Returns Forms, Tables and Query results)</p></li>
+<li><p>AnalyzeExpense/analyze-expense (Returns standardized fields for invoices)</p></li>
+<li><p>AnalyzeID/analyze-id (Returns standardized fields for driver’s license and passports)</p></li>
 </ul>
 <p>Asynchronous APIs:</p>
 <ul class="simple">
-<li><p>StartDocumentTextDetection</p></li>
-<li><p>StartDocumentAnalysis</p></li>
-<li><p>StartExpenseAnalysis</p></li>
+<li><p>StartDocumentTextDetection/start-document-text-detection</p></li>
+<li><p>StartDocumentAnalysis/start-document-analysis</p></li>
+<li><p>StartExpenseAnalysis/start-expense-analysis</p></li>
 </ul>
 </section>
 <section id="getting-document-text">
 <h2>Getting document text<a class="headerlink" href="#getting-document-text" title="Permalink to this heading"></a></h2>
-<p>Now lets say you have a file and you wish to OCR it:</p>
-<p><code class="code docutils literal notranslate"><span class="pre">textractor</span> <span class="pre">DetectDocumentText</span> <span class="pre">your_file.png</span> <span class="pre">output.json</span></code></p>
+<p>Now lets say you have a file and you wish to run OCR on it:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">textractor</span> <span class="pre">detect-document-text</span> <span class="pre">your_file.png</span> <span class="pre">output.json</span></code></p>
 <p>This will call the Textract API and save the output to <code class="code docutils literal notranslate"><span class="pre">output.json</span></code>. You could use the Textractor python module to post-process those response afterwards.</p>
 </section>
 <section id="processing-a-directory-of-files">
 <h2>Processing a directory of files<a class="headerlink" href="#processing-a-directory-of-files" title="Permalink to this heading"></a></h2>
 <p>Now if instead of a file, you wished to process an entire directory of files. You could call the above on every file in the directory, but this would prove to be a very long process. Instead you can leverage Textract’s ability to scale to your workload using the asynchronous API.</p>
-<p><code class="code docutils literal notranslate"><span class="pre">ls</span> <span class="pre">your_dir/</span> <span class="pre">|</span> <span class="pre">xargs</span> <span class="pre">-I{}</span> <span class="pre">textractor</span> <span class="pre">StartDocumentTextDetection</span> <span class="pre">{}</span> <span class="pre">--s3-upload-path</span> <span class="pre">s3://your-bucket/your-prefix/{}</span></code></p>
+<p><code class="code docutils literal notranslate"><span class="pre">ls</span> <span class="pre">your_dir/</span> <span class="pre">|</span> <span class="pre">xargs</span> <span class="pre">-I{}</span> <span class="pre">textractor</span> <span class="pre">start-document-text-detection</span> <span class="pre">{}</span> <span class="pre">--s3-upload-path</span> <span class="pre">s3://your-bucket/your-prefix/{}</span></code></p>
 <p>You can also parallelize it simply by adding -P8 (for 8 concurrent processes).</p>
-<p><code class="code docutils literal notranslate"><span class="pre">ls</span> <span class="pre">your_dir/</span> <span class="pre">|</span> <span class="pre">xargs</span> <span class="pre">-P8</span> <span class="pre">-I{}</span> <span class="pre">textractor</span> <span class="pre">StartDocumentTextDetection</span> <span class="pre">{}</span> <span class="pre">--s3-upload-path</span> <span class="pre">s3://your-bucket/your-prefix/{}</span> <span class="pre">&gt;</span> <span class="pre">output.txt</span></code></p>
+<p><code class="code docutils literal notranslate"><span class="pre">ls</span> <span class="pre">your_dir/</span> <span class="pre">|</span> <span class="pre">xargs</span> <span class="pre">-P8</span> <span class="pre">-I{}</span> <span class="pre">textractor</span> <span class="pre">start-document-text-detection</span> <span class="pre">{}</span> <span class="pre">--s3-upload-path</span> <span class="pre">s3://your-bucket/your-prefix/{}</span> <span class="pre">&gt;</span> <span class="pre">output.txt</span></code></p>
 <p>You will notice that all you have in output.txt are UUID like this: <code class="code docutils literal notranslate"><span class="pre">628e39089ffa1b52d62d980ec1cf4f62cb7f785c83a708b2e17ebaaf21ad0d61</span></code>. Those are JobIDs and can be used to fetch the output of asynchronous operations.</p>
 <p>Wait a few minutes (dependending on the number of files your processed) and then fetch the result  with <code class="code docutils literal notranslate"><span class="pre">GetResult</span></code>.</p>
-<p><code class="code docutils literal notranslate"><span class="pre">cat</span> <span class="pre">output.txt</span> <span class="pre">|</span> <span class="pre">xargs</span> <span class="pre">-I{}</span> <span class="pre">textractor</span> <span class="pre">GetResult</span> <span class="pre">{}</span> <span class="pre">DETECT_TEXT</span> <span class="pre">{}.json</span></code></p>
+<p><code class="code docutils literal notranslate"><span class="pre">cat</span> <span class="pre">output.txt</span> <span class="pre">|</span> <span class="pre">xargs</span> <span class="pre">-I{}</span> <span class="pre">textractor</span> <span class="pre">get-result</span> <span class="pre">{}</span> <span class="pre">DETECT_TEXT</span> <span class="pre">{}.json</span></code></p>
 <p>Using <code class="code docutils literal notranslate"><span class="pre">-P8</span></code> would make the above faster, but be careful not to increase the concurrent process count too much as you might run into rate limiting issues (See <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/limits.html">https://docs.aws.amazon.com/textract/latest/dg/limits.html</a> for more details).</p>
 </section>
 <section id="querying-a-file">
 <h2>Querying a file<a class="headerlink" href="#querying-a-file" title="Permalink to this heading"></a></h2>
 <p>OCR is a common use case, but what if you would like to query a file and get an answer directly in the commandline?</p>
-<p><code class="code docutils literal notranslate"><span class="pre">textractor</span> <span class="pre">AnalyzeDocument</span> <span class="pre">your_form.png</span> <span class="pre">output.json</span> <span class="pre">--features</span></code></p>
+<p><code class="code docutils literal notranslate"><span class="pre">textractor</span> <span class="pre">analyze-document</span> <span class="pre">your_form.png</span> <span class="pre">output.json</span> <span class="pre">--features</span></code></p>
 <p>We still require that you add an output file as it prevents mistakes that would force you to run the same file twice.</p>
 </section>
 <section id="visualizing-the-output">
 <h2>Visualizing the output<a class="headerlink" href="#visualizing-the-output" title="Permalink to this heading"></a></h2>
 <p>The <code class="code docutils literal notranslate"><span class="pre">textractor</span></code> CLI allows you to overlay the output of Amazon Textract on top of an image for troubleshooting. It is only available for synchronous APIs (DetectDocumentText, AnalyzeDocument) and allows you to visualize words, lines, key and values, and tables.</p>
 <p>In this example we will overlay words and tables on top of the <code class="code docutils literal notranslate"><span class="pre">tests/fixtures/amzn_q2.png</span></code> file. The image will be created in the same directory as the <code class="code docutils literal notranslate"><span class="pre">output.json</span></code> file under the name <code class="code docutils literal notranslate"><span class="pre">output.json.png</span></code>.</p>
-<p><code class="code docutils literal notranslate"><span class="pre">textractor</span> <span class="pre">AnalyzeDocument</span> <span class="pre">tests/fixtures/amzn_q2.png</span> <span class="pre">output.json</span> <span class="pre">--features</span> <span class="pre">TABLES</span> <span class="pre">--overlay</span> <span class="pre">WORDS</span> <span class="pre">TABLES</span></code></p>
+<p><code class="code docutils literal notranslate"><span class="pre">textractor</span> <span class="pre">analyze-document</span> <span class="pre">tests/fixtures/amzn_q2.png</span> <span class="pre">output.json</span> <span class="pre">--features</span> <span class="pre">TABLES</span> <span class="pre">--overlay</span> <span class="pre">WORDS</span> <span class="pre">TABLES</span></code></p>
 <p>This will yield the following (click to enlarge):</p>
 <a class="reference internal image-reference" href="_images/overlayer.png"><img alt="Overlayer output" src="_images/overlayer.png" style="width: 600px;" /></a>
 <p>This document has a lot of small words, making it difficult to read. You can add <code class="code docutils literal notranslate"><span class="pre">--font-size-ratio</span></code> to the command to increase the font size.</p>
