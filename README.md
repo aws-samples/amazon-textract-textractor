@@ -87,7 +87,7 @@ The package comes with tests that call the production Textract APIs. Running the
 
 ## Acknowledgements
 
-This library was made possible by the work of Srividhya Radhakrishna.
+This library was made possible by the work of Srividhya Radhakrishna ([@srividh-r](https://github.com/srividh-r)).
 
 ## Contributing
 

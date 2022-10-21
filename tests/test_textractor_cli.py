@@ -15,7 +15,6 @@ from textractor.data.constants import TextractFeatures
 from textractor.exceptions import InvalidProfileNameError, S3FilePathMissing
 from textractor.utils.s3_utils import upload_to_s3, delete_from_s3
 
-from .utils import save_document_to_fixture_path
 
 def run_command(cmds: List):
     output = subprocess.run(cmds, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -24,45 +23,15 @@ def run_command(cmds: List):
         logging.error(output.stderr)
         raise Exception(output.stderr)
 
-def create_bucket(bucket_name, profile_name):
-    # Create bucket
-    try:
-        s3_client = boto3.session.Session(
-            profile_name=profile_name
-        ).client('s3', region_name="us-west-2")
-        s3_client.create_bucket(
-            Bucket=bucket_name,
-            CreateBucketConfiguration={'LocationConstraint': 'us-west-2'}
-        )
-    except Exception as e:
-        logging.error(f"Failed to create bucket: {e}")
-        return False
-    return True
-
-def delete_bucket(bucket_name, profile_name):
-    # Delete bucket
-    try:
-        bucket = boto3.resource('s3').Bucket(bucket_name)
-        bucket.object_versions.delete()
-        bucket.delete()
-    except Exception as e:
-        logging.error(f"Failed to delete bucket: {e}")
-        return False
-    return True
-
 class TestTextractor(unittest.TestCase):
     def setUp(self):
         # insert credentials and filepaths here to run test
         self.profile_name = "default"
-        self.bucket_name = str(uuid.uuid4())
+        self.bucket_name = os.environ.get("S3_BUCKET", "textractor-tests")
         if os.environ.get("CALL_TEXTRACT"):
             self.s3_client = boto3.session.Session(
                 profile_name=self.profile_name
             ).client("s3", region_name="us-west-2")
-            success = create_bucket(self.bucket_name, self.profile_name)
-
-            if not success:
-                raise Exception(f"Could not create S3 bucket {self.bucket_name}")
 
             self.current_directory = os.path.abspath(os.path.dirname(__file__))
             for asset in ["single-page-1.png", "textractor-multipage-doc.pdf"]:
@@ -74,12 +43,6 @@ class TestTextractor(unittest.TestCase):
             self.s3_upload_path = f"s3://{self.bucket_name}/upload"
             self.image_1 = PIL.Image.open(os.path.join(self.current_directory, "fixtures/single-page-1.png"))
             self.image_2 = PIL.Image.open(os.path.join(self.current_directory, "fixtures/single-page-2.png"))
-
-    def tearDown(self) -> None:
-        if os.environ.get("CALL_TEXTRACT"):
-            success = delete_bucket(self.bucket_name, self.profile_name)
-            if not success:
-                raise Exception(f"Unable to delete bucket: {self.bucket_name}")
 
     @unittest.skipIf(not os.environ.get("CALL_TEXTRACT"), "CLI tests only work with CALL_TEXTRACT enabled")
     def test_detect_document_text(self):
@@ -124,7 +87,7 @@ class TestTextractor(unittest.TestCase):
     def test_textractor_analyze_document(self):
         run_command([
             "textractor",
-            "AnalyzeDocument",
+            "analyze-document",
             os.path.join(self.current_directory, "fixtures/single-page-1.png"),
             "output.json",
             "--features",

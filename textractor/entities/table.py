@@ -455,6 +455,13 @@ class Table(DocumentEntity):
         else:
             return workbook
 
+    def to_txt(self):
+        table = [["" for _ in range(self.column_count)] for _ in range(self.row_count)]
+        for cell in self.table_cells:
+            table[cell.row_index - 1][cell.col_index - 1] = cell.text
+
+        return os.linesep.join(["\t".join(r) for r in table])
+
     def __repr__(self):
         return os.linesep.join(
             [

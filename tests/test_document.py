@@ -15,8 +15,6 @@ from textractor.exceptions import InvalidProfileNameError
 from textractor.entities.selection_element import SelectionElement
 from textractor.data.constants import TextTypes, SimilarityMetric, TextractFeatures, DirectionalFinderType, Direction
 
-from .utils import save_document_to_fixture_path
-
 class TestDocument(unittest.TestCase):
     def test_document_smoke_test(self):
         profile_name = "default"
