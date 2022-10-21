@@ -79,7 +79,17 @@ print(document.expense_documents[0].get("TOTAL").text)
 # '$1810.46'
 ```
 
-If your use case was not covered here or if you are looking for asynchronous usage examples, see [our collection of examples](textractor.readthedocs.org/latest/examples.html).
+If your use case was not covered here or if you are looking for asynchronous usage examples, see [our collection of examples](https://aws-samples.github.io/amazon-textract-textractor/examples.html).
+
+## CLI
+
+Textractor also comes with the `textractor` script, which supports calling, printing and overlaying directly in the terminal. 
+
+`textractor analyze-document tests/fixtures/amzn_q2.png output.json --features TABLES --overlay TABLES`
+
+![overlay_example](images/amzn.png)
+
+See [the documentation](https://aws-samples.github.io/amazon-textract-textractor/commandline.html) for more examples.
 
 ## Tests
 

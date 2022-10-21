@@ -123,4 +123,9 @@ MANIFEST
 env/
 env2/
 env3/
+env4/
+env5/
 *.csv
+lambda_layer/*
+textractor.zip
+python/*
