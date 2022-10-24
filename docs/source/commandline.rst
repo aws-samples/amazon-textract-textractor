@@ -54,16 +54,6 @@ Wait a few minutes (dependending on the number of files your processed) and then
 
 Using :code:`-P8` would make the above faster, but be careful not to increase the concurrent process count too much as you might run into rate limiting issues (See https://docs.aws.amazon.com/textract/latest/dg/limits.html for more details).
 
-Querying a file
-_______________
-
-OCR is a common use case, but what if you would like to query a file and get an answer directly in the commandline?
-
-:code:`textractor analyze-document your_form.png output.json --features`
-
-We still require that you add an output file as it prevents mistakes that would force you to run the same file twice.
-
-
 Visualizing the output
 ______________________
 
