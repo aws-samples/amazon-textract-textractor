@@ -47,7 +47,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#available-apis">Available APIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getting-document-text">Getting document text</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#processing-a-directory-of-files">Processing a directory of files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#querying-a-file">Querying a file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#visualizing-the-output">Visualizing the output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
@@ -162,12 +161,6 @@
 <p>Wait a few minutes (dependending on the number of files your processed) and then fetch the result  with <code class="code docutils literal notranslate"><span class="pre">GetResult</span></code>.</p>
 <p><code class="code docutils literal notranslate"><span class="pre">cat</span> <span class="pre">output.txt</span> <span class="pre">|</span> <span class="pre">xargs</span> <span class="pre">-I{}</span> <span class="pre">textractor</span> <span class="pre">get-result</span> <span class="pre">{}</span> <span class="pre">DETECT_TEXT</span> <span class="pre">{}.json</span></code></p>
 <p>Using <code class="code docutils literal notranslate"><span class="pre">-P8</span></code> would make the above faster, but be careful not to increase the concurrent process count too much as you might run into rate limiting issues (See <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/limits.html">https://docs.aws.amazon.com/textract/latest/dg/limits.html</a> for more details).</p>
-</section>
-<section id="querying-a-file">
-<h2>Querying a file<a class="headerlink" href="#querying-a-file" title="Permalink to this heading"></a></h2>
-<p>OCR is a common use case, but what if you would like to query a file and get an answer directly in the commandline?</p>
-<p><code class="code docutils literal notranslate"><span class="pre">textractor</span> <span class="pre">analyze-document</span> <span class="pre">your_form.png</span> <span class="pre">output.json</span> <span class="pre">--features</span></code></p>
-<p>We still require that you add an output file as it prevents mistakes that would force you to run the same file twice.</p>
 </section>
 <section id="visualizing-the-output">
 <h2>Visualizing the output<a class="headerlink" href="#visualizing-the-output" title="Permalink to this heading"></a></h2>
