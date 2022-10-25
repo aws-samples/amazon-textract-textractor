@@ -71,7 +71,7 @@ This will yield the following (click to enlarge):
 
 This document has a lot of small words, making it difficult to read. You can add :code:`--font-size-ratio` to the command to increase the font size.
 
-:code:`textractor AnalyzeDocument tests/fixtures/amzn_q2.png output.json --features TABLES --overlay WORDS TABLES --font-size-ratio 1.0` (default it 0.75)
+:code:`textractor analyze-document tests/fixtures/amzn_q2.png output.json --features TABLES --overlay WORDS TABLES --font-size-ratio 1.0` (default it 0.75)
 
 .. image:: overlayer_bigger.png
   :width: 600
