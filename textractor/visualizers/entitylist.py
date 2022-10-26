@@ -681,8 +681,8 @@ def _draw_bbox(
                 )
     
 
-        del drw
-        return image
+    del drw
+    return image
 
 
 def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
