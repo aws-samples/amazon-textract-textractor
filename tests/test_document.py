@@ -283,7 +283,7 @@ class TestDocument(unittest.TestCase):
         self.assertIsInstance(document.independent_words()[0], Word)
         self.assertEqual(
             document.independent_words().pretty_print(),
-            "Textractor\nPage\nDocument\nKey\n(1)\n-\nValues\nTable\nTest\n1\nSelection\nElement\n"
+            "Textractor\nTest\nDocument\n(1)\nPage\n-\nValues\nKey\n1\nTable\nElement\nSelection\n"
         )
 
         self.assertIsInstance(document.return_duplicates(), dict)

@@ -1,3 +1,4 @@
+import statistics
 from typing import List
 from copy import deepcopy
 from collections.abc import Iterable
@@ -63,3 +64,6 @@ def get_indices(numpy_indexing: str = ":", max_val=10) -> List[int]:
             indices = index_range
 
     return list(set(indices))
+
+def sort_by_position(entities: List) -> List:
+    return sorted(entities, key=lambda e: (e.bbox.y + e.bbox.height, e.bbox.x))

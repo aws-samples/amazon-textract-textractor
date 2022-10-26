@@ -58,7 +58,7 @@ class TestPage(unittest.TestCase):
         self.assertIsInstance(page.checkboxes, EntityList)
         self.assertIsInstance(page.checkboxes[0], KeyValue)
         self.assertIsInstance(page.checkboxes[0].value, Value)
-        self.assertEqual(page.checkboxes[0].value.words, "NOT_SELECTED")
+        self.assertEqual(page.checkboxes[0].value.words, "SELECTED")
         self.assertIsInstance(page.checkboxes[0].value.children[0], SelectionElement)
         self.assertEqual(len(page.checkboxes), 2)
 
@@ -286,7 +286,7 @@ class TestPage(unittest.TestCase):
         self.assertIsInstance(page.independent_words()[0], Word)
         self.assertEqual(
             page.independent_words().pretty_print(),
-            "Textractor\nPage\nDocument\nKey\n(1)\n-\nValues\nTable\nTest\n1\nSelection\nElement\n"
+            "Textractor\nTest\nDocument\n(1)\nPage\n-\nValues\nKey\n1\nTable\nElement\nSelection\n"
         )
 
         self.assertIsInstance(page.return_duplicates(), list)

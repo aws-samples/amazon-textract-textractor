@@ -23,6 +23,7 @@ from textractor.entities.bbox import SpatialObject
 from textractor.data.constants import SelectionStatus, Direction, DirectionalFinderType
 from textractor.data.constants import TextTypes, SimilarityMetric
 from textractor.entities.selection_element import SelectionElement
+from textractor.utils.geometry_util import sort_by_position
 from textractor.utils.search_utils import SearchUtils, jaccard_similarity
 from textractor.visualizers.entitylist import EntityList
 
@@ -81,9 +82,7 @@ class Page(SpatialObject):
         :type words: List[Word]
         """
         self._words = words
-        self._words = EntityList(
-            sorted(list(set(self._words)), key=lambda x: x.bbox.x + x.bbox.y)
-        )
+        self._words = EntityList(sort_by_position(list(set(self._words))))
 
     @property
     def lines(self) -> EntityList[Line]:
@@ -103,7 +102,7 @@ class Page(SpatialObject):
         :param lines: List of Line objects, each representing a line within the Page.
         :type lines: List[Line]
         """
-        self._lines = EntityList(lines)
+        self._lines = EntityList(sort_by_position(lines))
 
     @property
     def text(self) -> str:
@@ -132,7 +131,7 @@ class Page(SpatialObject):
         :param kv: List of KeyValue objects, each representing a KV area within the document page.
         :type kv: List[KeyValue]
         """
-        self._key_values = EntityList(kv)
+        self._key_values = EntityList(sort_by_position(kv))
 
     @property
     def checkboxes(self) -> EntityList[KeyValue]:
@@ -152,7 +151,7 @@ class Page(SpatialObject):
         :param checkbox: List of KeyValue objects, each representing a checkbox area within the document page.
         :type checkbox: List[KeyValue]
         """
-        self._checkboxes = EntityList(checkbox)
+        self._checkboxes = EntityList(sort_by_position(checkbox))
 
     @property
     def tables(self) -> EntityList[Table]:
