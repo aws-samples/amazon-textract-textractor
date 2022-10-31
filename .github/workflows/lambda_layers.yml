@@ -1,0 +1,34 @@
+name: lambda-layers
+on:
+  workflow_dispatch:
+jobs:
+  lambda-build-p37:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.7:latest
+    steps:
+      - name: Install and build
+        run: mkdir -p lambda_layer/python && cd lambda_layer/python && pip3 install amazon-textract-textractor --target=. && cd .. && zip -r /textractor.zip python/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p37
+          path: /textractor.zip
+  lambda-build-p38:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.8:latest
+    steps:
+      - name: Install and build
+        run: mkdir -p lambda_layer/python && cd lambda_layer/python && pip3 install amazon-textract-textractor --target=. && cd .. && zip -r /textractor.zip python/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p38
+          path: /textractor.zip
+  lambda-build-p39:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.9:latest
+    steps:
+      - name: Install and build
+        run: mkdir -p lambda_layer/python && cd lambda_layer/python && pip3 install amazon-textract-textractor --target=. && cd .. && zip -r /textractor.zip python/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p39
+          path: /textractor.zip
