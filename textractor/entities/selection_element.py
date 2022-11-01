@@ -57,7 +57,7 @@ class SelectionElement(Value):
         :return: Returns SELECTED/NOT_SELECTED depending on selection status of the element
         :rtype: str
         """
-        return [Word(self.entity_id, self.bbox, self.status.name, confidence=self.confidence)]
+        return [Word(self.id, self.bbox, self.status.name, confidence=self.confidence)]
 
     @property
     def page(self):
