@@ -40,7 +40,7 @@ class SelectionElement(Value):
         self.value_id = None
         self.status = status
         self.confidence = confidence / 100
-        self._words = SELECTED
+        self._words = []
         self._page = None
         self._page_id = None
 
@@ -57,7 +57,7 @@ class SelectionElement(Value):
         :return: Returns SELECTED/NOT_SELECTED depending on selection status of the element
         :rtype: str
         """
-        return self.status.name
+        return [Word(self.entity_id, self.bbox, self.status.name, confidence=self.confidence)]
 
     @property
     def page(self):
