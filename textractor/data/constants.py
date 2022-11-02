@@ -226,3 +226,4 @@ class CLIOverlay(Enum):
     LINES = 2
     TABLES = 3
     FORMS = 4
+    QUERIES = 5
