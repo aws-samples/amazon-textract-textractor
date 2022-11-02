@@ -371,7 +371,7 @@ def textractor_cli():
             if "ALL" in args.print or "IDS" in args.print:
                 print(out.identity_documents.pretty_print())
 
-        if args.overlay is not None:
+        if "overlay" in args and args.overlay is not None:
             entity_list = EntityList()
             if "ALL" in args.overlay or "WORDS" in args.overlay:
                 entity_list += out.words
@@ -381,6 +381,8 @@ def textractor_cli():
                 entity_list += out.tables
             if "ALL" in args.overlay or "FORMS" in args.overlay:
                 entity_list += out.key_values
+            if "ALL" in args.overlay or "QUERIES" in args.overlay:
+                entity_list += out.queries
             image = entity_list.visualize(
                 with_text=True,
                 font_size_ratio=args.font_size_ratio,
