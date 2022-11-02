@@ -575,11 +575,11 @@ def _draw_bbox(
     # First drawing, bounding boxes
     for entity in entities:
         width, height = image.size
-        overlayer_data = _get_overlayer_data(entity, width, height)
-        drw.rectangle(
-            xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
-        )
         if entity.__class__.__name__ == "Table":
+            overlayer_data = _get_overlayer_data(entity, width, height)
+            drw.rectangle(
+                xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
+            )
             processed_cells = set()
             for cell in entity.table_cells:
                 if cell.id in processed_cells:
@@ -624,7 +624,16 @@ def _draw_bbox(
                     outline=overlayer_data["color"],
                     width=2,
                 )
+        elif entity.__class__.__name__ == "Query":
+            overlayer_data = _get_overlayer_data(entity.result, width, height)
+            drw.rectangle(
+                xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
+            )
         else:
+            overlayer_data = _get_overlayer_data(entity, width, height)
+            drw.rectangle(
+                xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
+            )
             bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
 
             if entity.__class__.__name__ == "KeyValue":
@@ -637,35 +646,43 @@ def _draw_bbox(
     # Second drawing, text
     if with_text:
         for entity in entities:
-            if entity.__class__.__name__ != "Word":
-                continue
-            width, height = image.size
-            overlayer_data = _get_overlayer_data(entity, width, height)
+            if entity.__class__.__name__ == "Word":
+                width, height = image.size
+                overlayer_data = _get_overlayer_data(entity, width, height)
 
-            final_txt = ""
-            bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
-            text_height = int(bbox_height * font_size_ratio)
-            fnt = ImageFont.truetype(
-                os.path.join(present_path, "arial.ttf"), text_height
-            )
+                final_txt = ""
+                bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
+                text_height = int(bbox_height * font_size_ratio)
+                fnt = ImageFont.truetype(
+                    os.path.join(present_path, "arial.ttf"), text_height
+                )
 
-            final_txt += overlayer_data["text"]
+                final_txt += overlayer_data["text"]
 
-            if with_confidence:
-                final_txt += " (" + str(overlayer_data["confidence"])[:4] + ")"
+                if with_confidence:
+                    final_txt += " (" + str(overlayer_data["confidence"])[:4] + ")"
             
-            drw.text(
-                (
-                    overlayer_data["coords"][0],
-                    overlayer_data["coords"][1] - text_height,
-                ),
-                final_txt,
-                font=fnt,
-                fill=overlayer_data["text_color"],
-            )
+                drw.text(
+                    (
+                        overlayer_data["coords"][0],
+                        overlayer_data["coords"][1] - text_height,
+                    ),
+                    final_txt,
+                    font=fnt,
+                    fill=overlayer_data["text_color"],
+                )
 
-            if entity.__class__.__name__ == "KeyValue":
+            elif entity.__class__.__name__ == "KeyValue":
+                width, height = image.size
+                overlayer_data = _get_overlayer_data(entity, width, height)
+
                 final_txt = overlayer_data["value_text"]
+
+                bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
+                text_height = int(bbox_height * font_size_ratio)
+                fnt = ImageFont.truetype(
+                    os.path.join(present_path, "arial.ttf"), text_height
+                )
 
                 if with_confidence:
                     final_txt += " (" + str(overlayer_data["value_conf"])[:4] + ")"
@@ -679,7 +696,33 @@ def _draw_bbox(
                     font=fnt,
                     fill=overlayer_data["text_color"],
                 )
-    
+            elif entity.__class__.__name__ == "Query":
+                if entity.result is None:
+                    continue
+                
+                width, height = image.size
+                overlayer_data = _get_overlayer_data(entity.result, width, height)
+
+                final_txt = entity.query + " " + overlayer_data["text"]
+
+                bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
+                text_height = int(bbox_height * font_size_ratio)
+                fnt = ImageFont.truetype(
+                    os.path.join(present_path, "arial.ttf"), text_height
+                )
+
+                if with_confidence:
+                    final_txt += " (" + str(entity.result.confidence)[:4] + ")"
+
+                drw.text(
+                    (
+                        overlayer_data["coords"][0],
+                        overlayer_data["coords"][1] - text_height,
+                    ),
+                    final_txt,
+                    font=fnt,
+                    fill=overlayer_data["text_color"],
+                )
 
     del drw
     return image
@@ -750,6 +793,9 @@ def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
     elif entity.__class__.__name__ == "TableCell":
         data["color"] = ImageColor.getrgb("skyblue")
         data["text"] = entity.__repr__().split(">")[-1][1:]
+    elif entity.__class__.__name__ == "QueryResult":
+        data["color"] = ImageColor.getrgb("mediumturquoise")
+        data["text"] = entity.answer
     else:
         pass
     return data
