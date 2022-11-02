@@ -40,7 +40,6 @@ class SelectionElement(Value):
         self.value_id = None
         self.status = status
         self.confidence = confidence / 100
-        self._words = SELECTED
         self._page = None
         self._page_id = None
 
@@ -52,12 +51,12 @@ class SelectionElement(Value):
         return self.status == SelectionStatus.SELECTED
 
     @property
-    def words(self):
+    def words(self) -> List[Word]:
         """
-        :return: Returns SELECTED/NOT_SELECTED depending on selection status of the element
-        :rtype: str
+        :return: On SelectionElement this should always return an empty list
+        :rtype: EntityList[Word]
         """
-        return self.status.name
+        return []
 
     @property
     def page(self):
