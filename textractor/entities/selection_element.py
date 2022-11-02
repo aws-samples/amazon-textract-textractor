@@ -40,7 +40,6 @@ class SelectionElement(Value):
         self.value_id = None
         self.status = status
         self.confidence = confidence / 100
-        self._words = SELECTED
         self._page = None
         self._page_id = None
 
@@ -50,14 +49,6 @@ class SelectionElement(Value):
         :rtype: bool
         """
         return self.status == SelectionStatus.SELECTED
-
-    @property
-    def words(self):
-        """
-        :return: Returns SELECTED/NOT_SELECTED depending on selection status of the element
-        :rtype: str
-        """
-        return self.status.name
 
     @property
     def page(self):
