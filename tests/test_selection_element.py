@@ -34,7 +34,7 @@ class TestSelectionElement(unittest.TestCase):
             status=SelectionStatus.SELECTED,
             confidence=100,
         )
-        self.assertEqual(checkbox.words, SELECTED)
+        self.assertEqual(checkbox.words, [])
 
 
     def test_repr(self):

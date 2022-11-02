@@ -58,7 +58,7 @@ class TestPage(unittest.TestCase):
         self.assertIsInstance(page.checkboxes, EntityList)
         self.assertIsInstance(page.checkboxes[0], KeyValue)
         self.assertIsInstance(page.checkboxes[0].value, Value)
-        self.assertEqual(page.checkboxes[0].value.words, "SELECTED")
+        self.assertEqual(page.checkboxes[0].value.words, [])
         self.assertIsInstance(page.checkboxes[0].value.children[0], SelectionElement)
         self.assertEqual(len(page.checkboxes), 2)
 
