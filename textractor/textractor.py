@@ -123,7 +123,7 @@ class Textractor:
                 if IS_PDF2IMAGE_INSTALLED:
                     images = convert_from_bytes(bytearray(file_obj))
                 else:
-                    raise MissingDependencyException("pdf2image is not installed")
+                    raise MissingDependencyException("pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call.")
             else:
                 images = [Image.open(io.BytesIO(bytearray(file_obj)))]
 
@@ -132,7 +132,7 @@ class Textractor:
                 if IS_PDF2IMAGE_INSTALLED:
                     images = convert_from_path(filepath)
                 else:
-                    raise MissingDependencyException("pdf2image is not installed")
+                    raise MissingDependencyException("pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call.")
             else:
                 images = [Image.open(open(filepath, "rb"))]
 
@@ -788,7 +788,6 @@ class Textractor:
                 client_request_token=client_request_token,
                 return_job_id=True,
                 force_async_api=True,
-                call_mode=Textract_Call_Mode.FORCE_ASYNC,
                 boto3_textract_client=self.textract_client,
                 job_done_polling_interval=1,
             )
