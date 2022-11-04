@@ -756,7 +756,7 @@ def parse_analyze_id_response(response):
             }
         id_documents.append(IdentityDocument(fields))
         id_documents[-1].raw_object = doc
-        response["Blocks"].extend(doc["Blocks"])
+        response["Blocks"].extend(doc.get("Blocks", []))
     # FIXME: Quick fix, we need something more robust
     document = parse_document_api_response(response)
     del response["Blocks"]
@@ -799,7 +799,7 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
 
 
 def parser_analyze_expense_response(response):
-    response["Blocks"] = [b for doc in response["ExpenseDocuments"] for b in doc["Blocks"]]
+    response["Blocks"] = [b for doc in response["ExpenseDocuments"] for b in doc.get("Blocks", [])]
     document = parse_document_api_response(response)
     for doc in response["ExpenseDocuments"]:
         # FIXME

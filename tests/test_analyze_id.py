@@ -1,3 +1,4 @@
+import json
 import os
 import PIL
 import unittest
@@ -32,12 +33,14 @@ class TestTextractorAnalyzeID(unittest.TestCase):
             document = self.extractor.analyze_id(
                 file_source=self.image_path,
             )
+            with open(get_fixture_path(), "w") as f:
+                json.dump(document.response, f)
         else:
             document = Document.open(get_fixture_path())
 
         self.assertIsInstance(document, Document)
         self.assertEqual(len(document.identity_documents), 1)
-        self.assertEqual(len(document.identity_documents[0].fields), 20)
+        self.assertEqual(len(document.identity_documents[0].fields), 21)
         self.assertEqual(document.identity_documents[0].get(AnalyzeIDFields.FIRST_NAME), "GARCIA")
         self.assertEqual(document.identity_documents[0][AnalyzeIDFields.FIRST_NAME], "GARCIA")
     
@@ -47,12 +50,14 @@ class TestTextractorAnalyzeID(unittest.TestCase):
             document = self.extractor.analyze_id(
                 file_source=self.image,
             )
+            with open(get_fixture_path(), "w") as f:
+                json.dump(document.response, f)
         else:
             document = Document.open(get_fixture_path())
 
         self.assertIsInstance(document, Document)
         self.assertEqual(len(document.identity_documents), 1)
-        self.assertEqual(len(document.identity_documents[0].fields), 20)
+        self.assertEqual(len(document.identity_documents[0].fields), 21)
         self.assertEqual(document.identity_documents[0].get("FIRST_NAME"), "GARCIA")
         self.assertEqual(document.identity_documents[0]["FIRST_NAME"], "GARCIA")
 

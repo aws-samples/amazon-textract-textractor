@@ -30,6 +30,8 @@ class TestTextractorAnalyzeExpense(unittest.TestCase):
         # Testing local single image input
         if os.environ.get("CALL_TEXTRACT"):
             document = self.extractor.analyze_expense(file_source=self.image_path)
+            with open(get_fixture_path(), "w") as f:
+                json.dump(document.response, f)
         else:
             document = Document.open(get_fixture_path())
 
@@ -41,6 +43,8 @@ class TestTextractorAnalyzeExpense(unittest.TestCase):
         # Testing local single image input
         if os.environ.get("CALL_TEXTRACT"):
             document = self.extractor.analyze_expense(file_source=self.image)
+            with open(get_fixture_path(), "w") as f:
+                json.dump(document.response, f)
         else:
             document = Document.open(get_fixture_path())
 

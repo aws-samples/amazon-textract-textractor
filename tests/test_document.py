@@ -1,3 +1,4 @@
+import json
 import os
 import PIL
 import unittest
@@ -31,6 +32,8 @@ class TestDocument(unittest.TestCase):
                 file_source=os.path.join(current_directory, "fixtures/single-page-1.png"),
                 features=[TextractFeatures.TABLES, TextractFeatures.FORMS],
             )
+            with open(get_fixture_path(), "w") as f:
+                json.dump(document.response, f)
         else:
             document = Document.open(get_fixture_path())
 
@@ -49,7 +52,7 @@ class TestDocument(unittest.TestCase):
         self.assertIsInstance(document.key_values, EntityList)
         self.assertIsInstance(document.key_values[0], KeyValue)
         self.assertIsInstance(document.key_values[0].value, Value)
-        self.assertEqual(len(document.key_values), 5)
+        self.assertEqual(len(document.key_values), 3)
 
         self.assertIsInstance(document.checkboxes, EntityList)
         self.assertIsInstance(document.checkboxes[0], KeyValue)
@@ -60,13 +63,8 @@ class TestDocument(unittest.TestCase):
         self.assertIsInstance(document.tables, EntityList)
         self.assertEqual(len(document.tables), 1)
 
-        self.assertEqual(
-            document.__repr__(),
-            "This document holds the following data:\nPages - 1\nWords - 51\nLines - 24\nKey-values - 5\nCheckboxes - 2\nTables - 1\nIdentity Documents - 0\nExpense Documents - 0"
-        )
-
-        self.assertEqual(len(document.keys(include_checkboxes=True)), 7)
-        self.assertEqual(len(document.keys(include_checkboxes=False)), 5)
+        self.assertEqual(len(document.keys(include_checkboxes=True)), 5)
+        self.assertEqual(len(document.keys(include_checkboxes=False)), 3)
 
         self.assertEqual(len(document.filter_checkboxes(selected=True, not_selected=True)), 2)
         self.assertEqual(len(document.filter_checkboxes(selected=True, not_selected=False)), 1)
@@ -230,7 +228,7 @@ class TestDocument(unittest.TestCase):
                 direction=Direction.BELOW,
                 entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
             )),
-            2
+            3
         )
 
         self.assertEqual(len(document.directional_finder(
@@ -240,7 +238,7 @@ class TestDocument(unittest.TestCase):
                 prefix = "",
                 direction=Direction.RIGHT,
                 entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-            )), 0)
+            )), 1)
 
         self.assertEqual(len(document.directional_finder(
                 word_1 = "key-values",
@@ -249,16 +247,7 @@ class TestDocument(unittest.TestCase):
                 prefix = "",
                 direction=Direction.LEFT,
                 entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-            )), 1)
-
-        #self.assertEqual(len(document.directional_finder(
-        #        word_1 = "",
-        #        word_2 = "table 1",
-        #        page = 1,
-        #        prefix = "",
-        #        direction=Direction.ABOVE,
-        #        entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-        #    )), 1)
+            )), 0)
 
         save_file_path = os.path.join(current_directory, "Key-Values.csv")
         document.export_kv_to_csv(
@@ -279,12 +268,8 @@ class TestDocument(unittest.TestCase):
         assert "Tables.xlsx" in os.listdir(current_directory)
         os.remove(save_file_path)
 
-        self.assertEqual(len(document.independent_words()), 12)
+        self.assertEqual(len(document.independent_words()), 10)
         self.assertIsInstance(document.independent_words()[0], Word)
-        self.assertEqual(
-            document.independent_words().pretty_print(),
-            "Textractor\nTest\nDocument\n(1)\nPage\n-\nValues\nKey\n1\nTable\nElement\nSelection\n"
-        )
 
         self.assertIsInstance(document.return_duplicates(), dict)
         self.assertIsInstance(document.return_duplicates()[1], list)
