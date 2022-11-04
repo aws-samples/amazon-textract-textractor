@@ -629,7 +629,8 @@ class Textractor:
         document = response_parser.parse(response)
         document.response = response
         if save_image:
-            document.image = images[0]
+            for page in document.pages:
+                page.image = images[document.pages.index(page)]
         return document
 
     def analyze_expense(
