@@ -794,17 +794,13 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
 
 
 def parser_analyze_expense_response(response):
-    document = _create_document_object(response)
-
-    pages = [
-        Page(str(uuid.uuid4()), document.width, document.height, page_num=page_num + 1)
-        for page_num in range(response["DocumentMetadata"]["Pages"])
-    ]
+    response["Blocks"] = [b for doc in response["ExpenseDocuments"] for b in doc["Blocks"]]
+    document = parse_document_api_response(response)
     for doc in response["ExpenseDocuments"]:
         # FIXME
         if len(doc["SummaryFields"]) == 0:
             continue
-        page = pages[doc["SummaryFields"][0]["PageNumber"] - 1]
+        page = document.pages[doc["SummaryFields"][0]["PageNumber"] - 1]
         summary_fields = []
         for summary_field in doc["SummaryFields"]:
             summary_fields.append(create_expense_from_field(summary_field, page))
@@ -821,10 +817,11 @@ def parser_analyze_expense_response(response):
             summary_fields=summary_fields, line_item_fields=line_item_groups
         )
         expense_document.raw_object = doc
-        pages[summary_field["PageNumber"] - 1].expense_documents.append(
+        document.pages[summary_field["PageNumber"] - 1].expense_documents.append(
             expense_document
         )
-    document.pages.extend(pages)
+    del response["Blocks"]
+    document.response = response
     return document
 
 
