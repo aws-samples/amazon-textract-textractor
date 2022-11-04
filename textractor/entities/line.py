@@ -10,7 +10,7 @@ from typing import List
 
 from textractor.entities.word import Word
 from textractor.data.constants import TextTypes
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.exceptions import InputError
 from textractor.entities.document_entity import DocumentEntity
 from textractor.visualizers.entitylist import EntityList
@@ -23,7 +23,7 @@ class Line(DocumentEntity):
     :param entity_id: Unique identifier of the Line entity.
     :type entity_id: str
     :param bbox: Bounding box of the line entity.
-    :type bbox: BoundingBox
+    :type bbox: Geometry
     :param words: List of the Word entities present in the line
     :type words: list, optional
     :param confidence: confidence with which the entity was detected.
@@ -33,7 +33,7 @@ class Line(DocumentEntity):
     def __init__(
         self,
         entity_id: str,
-        bbox: BoundingBox,
+        bbox: Geometry,
         words: List[Word] = None,
         confidence: float = 0,
     ):

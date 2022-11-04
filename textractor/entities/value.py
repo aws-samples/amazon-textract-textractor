@@ -12,7 +12,7 @@ from typing import List
 
 from textractor.entities.word import Word
 from textractor.exceptions import InputError
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.entities.document_entity import DocumentEntity
 from textractor.data.constants import PRINTED, HANDWRITING, TextTypes
 from textractor.visualizers.entitylist import EntityList
@@ -25,12 +25,12 @@ class Value(DocumentEntity):
     :param entity_id: Unique identifier of the Word entity.
     :type entity_id: str
     :param bbox: Bounding box of the Word entity.
-    :type bbox: BoundingBox
+    :type bbox: Geometry
     :param confidence: value storing the confidence of detection out of 100.
     :type confidence: float
     """
 
-    def __init__(self, entity_id: str, bbox: BoundingBox, confidence: float = 0):
+    def __init__(self, entity_id: str, bbox: Geometry, confidence: float = 0):
         super().__init__(entity_id, bbox)
         self._words: List[Word] = []
         self._key_id = None

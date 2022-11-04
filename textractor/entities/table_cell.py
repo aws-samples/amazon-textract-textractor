@@ -13,7 +13,7 @@ from typing import List
 
 from textractor.entities.word import Word
 from textractor.exceptions import InputError
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.visualizers.entitylist import EntityList
 from textractor.entities.document_entity import DocumentEntity
 
@@ -44,7 +44,7 @@ class TableCell(DocumentEntity):
     def __init__(
         self,
         entity_id: str,
-        bbox: BoundingBox,
+        bbox: Geometry,
         row_index: int,
         col_index: int,
         row_span: int,

@@ -8,7 +8,7 @@ from typing import List, Dict, Union
 from copy import deepcopy
 from collections import defaultdict
 from textractor.data.constants import AnalyzeIDFields
-from textractor.entities.bbox import SpatialObject
+from textractor.entities.geometry import SpatialObject
 from textractor.entities.identity_field import IdentityField
 
 from textractor.exceptions import InputError

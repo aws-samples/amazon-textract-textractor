@@ -7,7 +7,7 @@ Document Entities
 These are structures that occur in most documents and the package provides classes to programmatically store and access the information 
 produced by Textract for these entities. 
 
-BoundingBox
+Geometry
 -------------------------------
 
 .. automodule:: textractor.entities.bbox

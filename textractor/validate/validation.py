@@ -46,7 +46,7 @@ def validate_word(json_block):
             "Geometry": {
                 "type": "object",
                 "properties": {
-                    "BoundingBox": {
+                    "Geometry": {
                         "type": "object",
                         "properties": {
                             "Width": {"type": "number"},
@@ -85,7 +85,7 @@ def validate_line(json_block):
             "Geometry": {
                 "type": "object",
                 "properties": {
-                    "BoundingBox": {
+                    "Geometry": {
                         "type": "object",
                         "properties": {
                             "Width": {"type": "number"},
@@ -132,7 +132,7 @@ def validate_kv(json_block):
             "Geometry": {
                 "type": "object",
                 "properties": {
-                    "BoundingBox": {
+                    "Geometry": {
                         "type": "object",
                         "properties": {
                             "Width": {"type": "number"},
@@ -180,7 +180,7 @@ def validate_checkbox(json_block):
             "Geometry": {
                 "type": "object",
                 "properties": {
-                    "BoundingBox": {
+                    "Geometry": {
                         "type": "object",
                         "properties": {
                             "Width": {"type": "number"},
@@ -231,7 +231,7 @@ def validate_table_cell(json_block):
             "Geometry": {
                 "type": "object",
                 "properties": {
-                    "BoundingBox": {
+                    "Geometry": {
                         "type": "object",
                         "properties": {
                             "Width": {"type": "number"},
@@ -279,7 +279,7 @@ def validate_table(json_block):
             "Geometry": {
                 "type": "object",
                 "properties": {
-                    "BoundingBox": {
+                    "Geometry": {
                         "type": "object",
                         "properties": {
                             "Width": {"type": "number"},

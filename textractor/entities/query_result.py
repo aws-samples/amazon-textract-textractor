@@ -6,7 +6,7 @@ This class contains the associated metadata with the :class:`KeyValue` entity in
 bounding box information, value, existence of checkbox, page number, Page ID and confidence of detection.
 """
 
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.entities.document_entity import DocumentEntity
 
 
@@ -18,7 +18,7 @@ class QueryResult(DocumentEntity):
     :param entity_id: Unique identifier of the Query entity.
     :type entity_id: str
     :param bbox: Bounding box of the QueryResult entity.
-    :type bbox: BoundingBox
+    :type bbox: Geometry
     :param contains_checkbox: True/False to indicate if the value is a checkbox.
     :type contains_checkbox: bool
     :param value: Value object that maps to the QueryResult entity.
@@ -31,7 +31,7 @@ class QueryResult(DocumentEntity):
         self,
         entity_id: str,
         confidence: float,
-        result_bbox: BoundingBox,
+        result_bbox: Geometry,
         answer: str,
     ):
         super().__init__(entity_id, result_bbox)

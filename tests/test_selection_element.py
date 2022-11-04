@@ -1,7 +1,7 @@
 import unittest
 
 from textractor.data.constants import SelectionStatus, SELECTED
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.entities.selection_element import SelectionElement
 
 
@@ -19,7 +19,7 @@ class TestSelectionElement(unittest.TestCase):
         """Test case to return the selection status of the checkbox"""
         checkbox = SelectionElement(
             entity_id="checkbox-id",
-            bbox=BoundingBox.from_normalized_dict(self.checkbox_bb, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.checkbox_bb, spatial_object=None),
             status=SelectionStatus.SELECTED,
             confidence=100,
         )
@@ -30,7 +30,7 @@ class TestSelectionElement(unittest.TestCase):
         """Test case to return the words of the checkbox"""
         checkbox = SelectionElement(
             entity_id="checkbox-id",
-            bbox=BoundingBox.from_normalized_dict(self.checkbox_bb, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.checkbox_bb, spatial_object=None),
             status=SelectionStatus.SELECTED,
             confidence=100,
         )
@@ -41,7 +41,7 @@ class TestSelectionElement(unittest.TestCase):
         """Test case to return the selection status of the checkbox as string"""
         checkbox = SelectionElement(
             entity_id="checkbox-id",
-            bbox=BoundingBox.from_normalized_dict(self.checkbox_bb, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.checkbox_bb, spatial_object=None),
             status=SelectionStatus.SELECTED,
             confidence=100,
         )
@@ -52,7 +52,7 @@ class TestSelectionElement(unittest.TestCase):
         """Test case setter for the page attribute"""
         checkbox = SelectionElement(
             entity_id="checkbox-id",
-            bbox=BoundingBox.from_normalized_dict(self.checkbox_bb, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.checkbox_bb, spatial_object=None),
             status=SelectionStatus.SELECTED,
             confidence=100,
         )
@@ -64,7 +64,7 @@ class TestSelectionElement(unittest.TestCase):
         """Test case setter for the page_id attribute"""
         checkbox = SelectionElement(
             entity_id="checkbox-id",
-            bbox=BoundingBox.from_normalized_dict(self.checkbox_bb, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.checkbox_bb, spatial_object=None),
             status=SelectionStatus.SELECTED,
             confidence=100,
         )

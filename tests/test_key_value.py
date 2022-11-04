@@ -6,7 +6,7 @@ from textractor.entities.key_value import KeyValue
 from textractor.entities.value import Value
 from textractor.entities.word import Word
 from textractor.entities.line import Line
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.data.constants import TextTypes
 from textractor.visualizers.entitylist import EntityList
 
@@ -45,19 +45,19 @@ class TestKeyValue(unittest.TestCase):
         }
         self.word_1 = Word(
             entity_id="word-id-1",
-            bbox=BoundingBox.from_normalized_dict(self.word_bb_1, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.word_bb_1, spatial_object=None),
             text="TEST",
             text_type=TextTypes.PRINTED,
         )
         self.word_2 = Word(
             entity_id="word-id-2",
-            bbox=BoundingBox.from_normalized_dict(self.word_bb_2, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.word_bb_2, spatial_object=None),
             text="KEY",
             text_type=TextTypes.HANDWRITING,
         )
         self.word_3 = Word(
             entity_id="word-id-3",
-            bbox=BoundingBox.from_normalized_dict(self.word_bb_3, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.word_bb_3, spatial_object=None),
             text="WORDS",
             text_type=TextTypes.PRINTED,
         )
@@ -65,11 +65,11 @@ class TestKeyValue(unittest.TestCase):
 
         self.value = Value(
             entity_id="value-id",
-            bbox=BoundingBox.from_normalized_dict(self.value_bb, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.value_bb, spatial_object=None),
         )
         self.value_word = Word(
             entity_id="value-word-id",
-            bbox=BoundingBox.from_normalized_dict(self.word_bb_1, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.word_bb_1, spatial_object=None),
             text="TEST VALUE",
             text_type=TextTypes.HANDWRITING,
         )
@@ -77,7 +77,7 @@ class TestKeyValue(unittest.TestCase):
 
         self.kv = KeyValue(
             entity_id="kv-id",
-            bbox=BoundingBox.from_normalized_dict(self.key_bb, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.key_bb, spatial_object=None),
             contains_checkbox=False,
             value=None,
         )

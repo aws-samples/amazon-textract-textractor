@@ -19,7 +19,7 @@ from textractor.exceptions import InputError
 from textractor.entities.key_value import KeyValue
 from textractor.entities.query import Query
 from textractor.entities.identity_document import IdentityDocument
-from textractor.entities.bbox import SpatialObject
+from textractor.entities.geometry import SpatialObject
 from textractor.data.constants import SelectionStatus, Direction, DirectionalFinderType
 from textractor.data.constants import TextTypes, SimilarityMetric
 from textractor.entities.selection_element import SelectionElement

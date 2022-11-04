@@ -3,7 +3,7 @@ useful to all such entities."""
 
 from abc import ABC
 from typing import Dict
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.visualizers.entitylist import EntityList
 
 
@@ -15,7 +15,7 @@ class DocumentEntity(ABC):
     i.e. unique id and bounding box.
     """
 
-    def __init__(self, entity_id: str, bbox: BoundingBox):
+    def __init__(self, entity_id: str, boundary: Geometry):
         """
         Initialize the common properties to DocumentEntities. Additionally, it contains information about
         child entities within a document entity.
@@ -24,7 +24,7 @@ class DocumentEntity(ABC):
         :param bbox: Bounding box of the entity
         """
         self.id = entity_id
-        self._bbox: BoundingBox = bbox
+        self._bbox: Geometry = boundary
         self.metadata = dict()  # Holds optional information about the entity
         self._children = list()
         self._children_type = None
@@ -129,10 +129,10 @@ class DocumentEntity(ABC):
         self._bbox.height = height
 
     @property
-    def bbox(self) -> BoundingBox:
+    def bbox(self) -> Geometry:
         """
         :return: Returns entire bounding box of entity
-        :rtype: BoundingBox
+        :rtype: Geometry
         """
         return self._bbox
 

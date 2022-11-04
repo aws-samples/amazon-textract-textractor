@@ -5,7 +5,7 @@ text type, bounding box information, page number, Page ID and confidence of dete
 """
 
 from textractor.data.constants import TextTypes
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.entities.document_entity import DocumentEntity
 
 
@@ -16,7 +16,7 @@ class Word(DocumentEntity):
     :param entity_id: Unique identifier of the Word entity.
     :type entity_id: str
     :param bbox: Bounding box of the Word entity.
-    :type bbox: BoundingBox
+    :type bbox: Geometry
     :param text: Transcription of the Word object.
     :type text: str
     :param text_type: Enum value stating the type of text stored in the entity. Takes 2 values - PRINTED and HANDWRITING
@@ -28,7 +28,7 @@ class Word(DocumentEntity):
     def __init__(
         self,
         entity_id: str,
-        bbox: BoundingBox,
+        bbox: Geometry,
         text: str = "",
         text_type: TextTypes = TextTypes.PRINTED,
         confidence: float = 0,

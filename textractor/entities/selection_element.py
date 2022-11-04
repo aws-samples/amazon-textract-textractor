@@ -8,7 +8,7 @@ bounding box information, selection status, page number, Page ID and confidence 
 from typing import List
 from textractor.entities.value import Value
 from textractor.entities.word import Word
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.data.constants import SELECTED, NOT_SELECTED, SelectionStatus
 from textractor.entities.document_entity import DocumentEntity
 
@@ -20,7 +20,7 @@ class SelectionElement(Value):
     :param entity_id: Unique identifier of the SelectionElement entity.
     :type entity_id: str
     :param bbox: Bounding box of the SelectionElement
-    :type bbox: BoundingBox
+    :type bbox: Geometry
     :param status: SelectionStatus.SELECTED / SelectionStatus.NOT_SELECTED
     :type status: SelectionStatus
     :param confidence: Confidence with which this entity is detected.
@@ -30,7 +30,7 @@ class SelectionElement(Value):
     def __init__(
         self,
         entity_id: str,
-        bbox: BoundingBox,
+        bbox: Geometry,
         status: SelectionStatus,
         confidence: float = 0,
     ):

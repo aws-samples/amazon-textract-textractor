@@ -3,7 +3,7 @@ import unittest
 from textractor.data.constants import TextTypes
 from textractor.entities.value import Value
 from textractor.entities.word import Word
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.visualizers.entitylist import EntityList
 
 class TestValue(unittest.TestCase):
@@ -35,26 +35,26 @@ class TestValue(unittest.TestCase):
 
         self.word_1 = Word(
             entity_id="word-id-1",
-            bbox=BoundingBox.from_normalized_dict(self.word_bb_1, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.word_bb_1, spatial_object=None),
             text="TEST",
             text_type=TextTypes.PRINTED,
         )
         self.word_2 = Word(
             entity_id="word-id-2",
-            bbox=BoundingBox.from_normalized_dict(self.word_bb_2, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.word_bb_2, spatial_object=None),
             text="WORDS",
             text_type=TextTypes.HANDWRITING,
         )
         self.word_3 = Word(
             entity_id="word-id-3",
-            bbox=BoundingBox.from_normalized_dict(self.word_bb_3, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.word_bb_3, spatial_object=None),
             text="ADDED",
             text_type=TextTypes.PRINTED,
         )
 
         self.value = Value(
             entity_id="value-id",
-            bbox=BoundingBox.from_normalized_dict(self.value_bb, spatial_object=None),
+            bbox=Geometry.from_normalized_dict(self.value_bb, spatial_object=None),
         )
         self.word_objs = [self.word_1, self.word_2, self.word_3]
         self.value.words = self.word_objs

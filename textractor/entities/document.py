@@ -23,7 +23,7 @@ from textractor.entities.table import Table
 from textractor.entities.query import Query
 from textractor.exceptions import InputError
 from textractor.entities.key_value import KeyValue
-from textractor.entities.bbox import SpatialObject
+from textractor.entities.geometry import SpatialObject
 from textractor.data.constants import SelectionStatus
 from textractor.utils.s3_utils import download_from_s3
 from textractor.visualizers.entitylist import EntityList

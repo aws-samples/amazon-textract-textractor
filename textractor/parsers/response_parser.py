@@ -18,7 +18,7 @@ from textractor.entities.word import Word
 from textractor.entities.line import Line
 from textractor.entities.value import Value
 from textractor.entities.table import Table
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.entities.document import Document
 from textractor.entities.key_value import KeyValue
 from textractor.entities.table_cell import TableCell
@@ -183,9 +183,7 @@ def _create_word_objects(
     for elem in word_elements:
         word = Word(
             entity_id=elem["Id"],
-            bbox=BoundingBox.from_normalized_dict(
-                elem["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=Geometry(elem["Geometry"], spatial_object=page),
             text=elem.get("Text"),
             text_type=text_type[elem.get("TextType")],
             confidence=elem["Confidence"],
@@ -237,9 +235,7 @@ def _create_line_objects(
             lines.append(
                 Line(
                     entity_id=line["Id"],
-                    bbox=BoundingBox.from_normalized_dict(
-                        line["Geometry"]["BoundingBox"], spatial_object=page
-                    ),
+                    bbox=Geometry(line["Geometry"], spatial_object=page),
                     words=line_words,
                     confidence=line["Confidence"],
                 )
@@ -283,9 +279,7 @@ def _create_selection_objects(
     for block in checkbox_elements:
         checkboxes[block["Id"]] = SelectionElement(
             entity_id=block["Id"],
-            bbox=BoundingBox.from_normalized_dict(
-                block["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=Geometry(block["Geometry"], spatial_object=page),
             status=status[block["SelectionStatus"]],
             confidence=block["Confidence"],
         )
@@ -325,9 +319,7 @@ def _create_value_objects(
     for block_id, block in values_info.items():
         values[block_id] = Value(
             entity_id=block_id,
-            bbox=BoundingBox.from_normalized_dict(
-                block["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=Geometry(block["Geometry"], spatial_object=page),
             confidence=block["Confidence"],
         )
         values[block_id].raw_object = block
@@ -410,9 +402,7 @@ def _create_query_result_objects(
         query_results[block["Id"]] = QueryResult(
             entity_id=block["Id"],
             confidence=block["Confidence"],
-            result_bbox=BoundingBox.from_normalized_dict(
-                block["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            result_bbox=Geometry(block["Geometry"], spatial_object=page),
             answer=block["Text"],
         )
         query_results[block["Id"]].raw_object = block
@@ -470,9 +460,7 @@ def _create_keyvalue_objects(
     for block in keys_info.values():
         keys[block["Id"]] = KeyValue(
             entity_id=block["Id"],
-            bbox=BoundingBox.from_normalized_dict(
-                block["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=Geometry(block["Geometry"], spatial_object=page),
             contains_checkbox=values[key_value_id_map[block["Id"]]].contains_checkbox,
             value=values[key_value_id_map[block["Id"]]],
             confidence=block["Confidence"],
@@ -548,9 +536,7 @@ def _create_table_cell_objects(
     for elem_id, elem in all_table_cells_info.items():
         table_cells[elem_id] = TableCell(
             entity_id=elem_id,
-            bbox=BoundingBox.from_normalized_dict(
-                elem["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=Geometry(elem["Geometry"], spatial_object=page),
             row_index=elem["RowIndex"],
             col_index=elem["ColumnIndex"],
             row_span=elem["RowSpan"],
@@ -602,9 +588,7 @@ def _create_table_objects(
     for val in page_tables:
         tables[val["Id"]] = Table(
             entity_id=val["Id"],
-            bbox=BoundingBox.from_normalized_dict(
-                val["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=Geometry(val["Geometry"], spatial_object=page),
         )
         tables[val["Id"]].raw_object = val
 
@@ -772,9 +756,7 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
         value_expense = Expense(
             field["ValueDetection"]["Text"],
             field["ValueDetection"]["Confidence"],
-            bbox=BoundingBox.from_normalized_dict(
-                field["ValueDetection"]["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=Geometry(field["ValueDetection"]["Geometry"], spatial_object=page),
         )
         value_expense.raw_object = field["ValueDetection"]
     else:
@@ -783,9 +765,7 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
         label_expense = Expense(
             field["LabelDetection"]["Text"],
             field["LabelDetection"]["Confidence"],
-            bbox=BoundingBox.from_normalized_dict(
-                field["LabelDetection"]["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=Geometry(field["LabelDetection"]["Geometry"], spatial_object=page),
         )
         label_expense.raw_object = field["LabelDetection"]
     else:

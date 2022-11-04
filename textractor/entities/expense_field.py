@@ -1,9 +1,9 @@
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.entities.document_entity import DocumentEntity
 
 
 class Expense(DocumentEntity):
-    def __init__(self, text: str, confidence: float, bbox: BoundingBox):
+    def __init__(self, text: str, confidence: float, bbox: Geometry):
         self._text = text
         self._confidence = confidence
         self._bbox = bbox

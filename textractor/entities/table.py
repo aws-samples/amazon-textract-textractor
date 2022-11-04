@@ -19,7 +19,7 @@ except ImportError:
 from typing import List, Dict
 
 from textractor.exceptions import InputError
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.entities.table_cell import TableCell
 from textractor.visualizers.entitylist import EntityList
 from textractor.entities.document_entity import DocumentEntity
@@ -40,7 +40,7 @@ class Table(DocumentEntity):
     :param bbox:                Bounding box of the table.
     """
 
-    def __init__(self, entity_id, bbox: BoundingBox):
+    def __init__(self, entity_id, bbox: Geometry):
         super().__init__(entity_id, bbox)
         self.table_cells: List[TableCell] = []
         self.column_headers: Dict[str, List[TableCell]] = {}

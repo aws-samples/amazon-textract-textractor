@@ -13,7 +13,7 @@ from textractor.entities.line import Line
 from textractor.entities.word import Word
 from textractor.entities.value import Value
 from textractor.exceptions import InputError
-from textractor.entities.bbox import BoundingBox
+from textractor.entities.geometry import Geometry
 from textractor.entities.document_entity import DocumentEntity
 from textractor.data.constants import TextTypes
 from textractor.visualizers.entitylist import EntityList
@@ -26,7 +26,7 @@ class KeyValue(DocumentEntity):
     :param entity_id: Unique identifier of the KeyValue entity.
     :type entity_id: str
     :param bbox: Bounding box of the KeyValue entity.
-    :type bbox: BoundingBox
+    :type bbox: Geometry
     :param contains_checkbox: True/False to indicate if the value is a checkbox.
     :type contains_checkbox: bool
     :param value: Value object that maps to the KeyValue entity.
@@ -38,7 +38,7 @@ class KeyValue(DocumentEntity):
     def __init__(
         self,
         entity_id: str,
-        bbox: BoundingBox,
+        bbox: Geometry,
         contains_checkbox: bool = False,
         value: Value = None,
         confidence: float = 0,

@@ -1,6 +1,6 @@
 """
 The :class:`EntityList` is an extension of list type with custom functions to print document entities \
-in a well formatted manner and visualize on top of the document page with their BoundingBox information. 
+in a well formatted manner and visualize on top of the document page with their Geometry information. 
 
 The two main functions within this class are :code:`pretty_print()` and :code:`visualize()`.
 Use :code:`pretty_print()` to get a string formatted output of your custom list of entities.
@@ -10,6 +10,7 @@ Use :code:`visualize()` to get the bounding box visualization of the entities on
 import os
 import csv
 import logging
+import math
 from enum import Enum
 from io import StringIO
 from tabulate import tabulate
@@ -569,7 +570,7 @@ def _draw_bbox(
     :rtype: PIL.Image
     """
     image = entities[0].bbox.spatial_object.image
-    image = image.convert("RGB")
+    image = image.convert("RGBA")
     drw = ImageDraw.Draw(image)
 
     # First drawing, bounding boxes
@@ -577,7 +578,7 @@ def _draw_bbox(
         width, height = image.size
         if entity.__class__.__name__ == "Table":
             overlayer_data = _get_overlayer_data(entity, width, height)
-            drw.rectangle(
+            drw.polygon(
                 xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
             )
             processed_cells = set()
@@ -626,18 +627,17 @@ def _draw_bbox(
                 )
         elif entity.__class__.__name__ == "Query":
             overlayer_data = _get_overlayer_data(entity.result, width, height)
-            drw.rectangle(
+            drw.polygon(
                 xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
             )
         else:
             overlayer_data = _get_overlayer_data(entity, width, height)
-            drw.rectangle(
+            drw.polygon(
                 xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
             )
-            bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
 
             if entity.__class__.__name__ == "KeyValue":
-                drw.rectangle(
+                drw.polygon(
                     xy=overlayer_data["value_bbox"],
                     outline=ImageColor.getrgb("orange"),
                     width=2,
@@ -651,7 +651,7 @@ def _draw_bbox(
                 overlayer_data = _get_overlayer_data(entity, width, height)
 
                 final_txt = ""
-                bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
+                bbox_height = min(entity.bbox.height, 0.03) * height 
                 text_height = int(bbox_height * font_size_ratio)
                 fnt = ImageFont.truetype(
                     os.path.join(present_path, "arial.ttf"), text_height
@@ -661,15 +661,33 @@ def _draw_bbox(
 
                 if with_confidence:
                     final_txt += " (" + str(overlayer_data["confidence"])[:4] + ")"
-            
-                drw.text(
+
+                text_font_width, text_font_height = fnt.getsize(final_txt)
+                text_img = Image.new("RGBA", (text_font_width, text_font_height), (255, 255, 255, 0))
+                text_img_draw = ImageDraw.Draw(text_img)
+                text_img_draw.text((0, 0), final_txt, font=fnt, fill=(0, 0, 0, 255))
+                orientation = entity.bbox.orientation()
+                text_img = text_img.rotate(entity.bbox.orientation(), expand=True)
+                text_img_draw = ImageDraw.Draw(text_img)
+                text_img_draw.rectangle((0, 0, text_img.width - 1, text_img.height - 1), outline="red")
+                text_img.save("blah.png")
+                drw.ellipse(
                     (
-                        overlayer_data["coords"][0],
-                        overlayer_data["coords"][1] - text_height,
+                        overlayer_data["coords"][0][0] - 5 - int(text_height * math.sin(math.radians(orientation))),
+                        overlayer_data["coords"][0][1] - 5 - int(text_height * math.cos(math.radians(orientation))),
+                        overlayer_data["coords"][0][0] + 5 - int(text_height * math.sin(math.radians(orientation))),
+                        overlayer_data["coords"][0][1] + 5 - int(text_height * math.cos(math.radians(orientation))),
                     ),
-                    final_txt,
-                    font=fnt,
-                    fill=overlayer_data["text_color"],
+                    fill=(255, 0, 0)
+                )
+                text_img = text_img.crop(text_img.getbbox())
+                image.paste(
+                    text_img,
+                    (
+                        int((entity.bbox.x * width)),
+                        int((entity.bbox.y * height)),
+                    ),
+                    text_img,
                 )
 
             elif entity.__class__.__name__ == "KeyValue":
@@ -678,8 +696,8 @@ def _draw_bbox(
 
                 final_txt = overlayer_data["value_text"]
 
-                bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
-                text_height = int(bbox_height * font_size_ratio)
+                bbox_height = overlayer_data["coords"][0][0] - overlayer_data["coords"][0][1]
+                text_height = min(int(bbox_height), 20) * font_size_ratio
                 fnt = ImageFont.truetype(
                     os.path.join(present_path, "arial.ttf"), text_height
                 )
@@ -744,14 +762,9 @@ def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
     :rtype: dict
     """
     data = {}
-    bbox = entity.bbox
-    x, y, w, h = (
-        bbox.x * width,
-        bbox.y * height,
-        bbox.width * width,
-        bbox.height * height,
-    )
-    data["coords"] = [x, y, x + w, y + h]
+    data["coords"] = []
+    for i, c in enumerate(entity.bbox.as_polygon()):
+        data["coords"].append((int(c[0] * width), int(c[1] * height)))
     data["confidence"] = (
         entity.confidence if not entity.__class__.__name__ == "Table" else ""
     )

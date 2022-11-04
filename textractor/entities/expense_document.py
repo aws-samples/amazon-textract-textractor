@@ -2,7 +2,7 @@
 
 import os
 from typing import List, Dict, Union
-from textractor.entities.bbox import SpatialObject
+from textractor.entities.geometry import SpatialObject
 from textractor.entities.expense_field import ExpenseField
 
 from textractor.exceptions import InputError
