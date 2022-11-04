@@ -813,7 +813,7 @@ class Textractor:
 
         return LazyDocument(
             response["JobId"],
-            TextractAPI.ANALYZE,
+            TextractAPI.EXPENSE,
             textract_client=self.textract_client,
             images=images,
         )

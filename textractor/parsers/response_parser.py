@@ -802,6 +802,8 @@ def parser_analyze_expense_response(response):
     ]
     for doc in response["ExpenseDocuments"]:
         # FIXME
+        if len(doc["SummaryFields"]) == 0:
+            continue
         page = pages[doc["SummaryFields"][0]["PageNumber"] - 1]
         summary_fields = []
         for summary_field in doc["SummaryFields"]:

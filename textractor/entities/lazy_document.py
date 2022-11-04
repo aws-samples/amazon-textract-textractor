@@ -4,7 +4,7 @@ accessed, searched and exported the functions given below."""
 from typing import Any
 
 from textractor.entities.document import Document
-from textractor.parsers.response_parser import parse_document_api_response
+from textractor.parsers.response_parser import parse
 from textractor.data.constants import TextractAPI
 from textractcaller.t_call import get_full_json
 
@@ -60,7 +60,7 @@ class LazyDocument:
                 else self._api,
                 self._textract_client,
             )
-            self._document = parse_document_api_response(response)
+            self._document = parse(response)
             if self._images is not None:
                 for i, page in enumerate(self._document.pages):
                     page.image = self._images[i]
