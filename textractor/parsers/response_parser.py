@@ -744,8 +744,8 @@ def parse_document_api_response(response: dict) -> Document:
 
 
 def parse_analyze_id_response(response):
-    document = _create_document_object(response)
     id_documents = []
+    response["Blocks"] = []
     for doc in response["IdentityDocuments"]:
         fields = {}
         for field in doc["IdentityDocumentFields"]:
@@ -756,7 +756,12 @@ def parse_analyze_id_response(response):
             }
         id_documents.append(IdentityDocument(fields))
         id_documents[-1].raw_object = doc
+        response["Blocks"].extend(doc["Blocks"])
+    # FIXME: Quick fix, we need something more robust
+    document = parse_document_api_response(response)
+    del response["Blocks"]
     document.identity_documents = id_documents
+    document.response = response
     return document
 
 
