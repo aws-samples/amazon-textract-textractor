@@ -10,11 +10,14 @@ jobs:
         with:
           ref: 'master'
       - name: Install and build
-        run: mkdir -p lambda_layer/python && cd lambda_layer/python && pip3 install ../../ --target=. && cd .. && zip -r /textractor.zip python/
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=.
       - uses: actions/upload-artifact@v3
         with:
           name: textractor-lambda-p37
-          path: /textractor.zip
+          path: lambda_layer/
   lambda-build-p38:
     runs-on: ubuntu-latest
     container: public.ecr.aws/sam/build-python3.8:latest
@@ -23,11 +26,14 @@ jobs:
         with:
           ref: 'master'
       - name: Install and build
-        run: mkdir -p lambda_layer/python && cd lambda_layer/python && pip3 install ../../ --target=. && cd .. && zip -r /textractor.zip python/
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=.
       - uses: actions/upload-artifact@v3
         with:
           name: textractor-lambda-p38
-          path: /textractor.zip
+          path: lambda_layer/
   lambda-build-p39:
     runs-on: ubuntu-latest
     container: public.ecr.aws/sam/build-python3.9:latest
@@ -36,11 +42,14 @@ jobs:
         with:
           ref: 'master'
       - name: Install and build
-        run: mkdir -p lambda_layer/python && cd lambda_layer/python && pip3 install ../../ --target=. && cd .. && zip -r /textractor.zip python/
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=.
       - uses: actions/upload-artifact@v3
         with:
           name: textractor-lambda-p39
-          path: /textractor.zip
+          path: lambda_layer/
   lambda-build-p37-pdf:
     runs-on: ubuntu-latest
     container: public.ecr.aws/sam/build-python3.7:latest
@@ -70,6 +79,7 @@ jobs:
           cp /usr/lib64/libjbig.so* lambda_layer/python/bin/
       - name: Install and build
         run: |
+          mkdir -p lambda_layer/python && \
           cd lambda_layer/python && \
           pip3 install ../../ --target=. && \
           pip3 install pdf2image --target=. && \
@@ -78,7 +88,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: textractor-lambda-p37-pdf
-          path: /textractor.zip
+          path: lambda_layer/
   lambda-build-p38-pdf:
     runs-on: ubuntu-latest
     container: public.ecr.aws/sam/build-python3.8:latest
@@ -108,15 +118,14 @@ jobs:
           cp /usr/lib64/libjbig.so* lambda_layer/python/bin/
       - name: Install and build
         run: |
+          mkdir -p lambda_layer/python && \
           cd lambda_layer/python && \
           pip3 install ../../ --target=. && \
-          pip3 install pdf2image --target=. && \
-          cd .. \
-          && zip -r /textractor.zip python/
+          pip3 install pdf2image --target=.
       - uses: actions/upload-artifact@v3
         with:
           name: textractor-lambda-p38-pdf
-          path: /textractor.zip
+          path: lambda_layer/
   lambda-build-p39-pdf:
     runs-on: ubuntu-latest
     container: public.ecr.aws/sam/build-python3.9:latest
@@ -146,6 +155,7 @@ jobs:
           cp /usr/lib64/libjbig.so* lambda_layer/python/bin/
       - name: Install and build
         run: |
+          mkdir -p lambda_layer/python && \
           cd lambda_layer/python && \
           pip3 install ../../ --target=. && \
           pip3 install pdf2image --target=. && \
@@ -154,4 +164,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: textractor-lambda-p39-pdf
-          path: /textractor.zip
+          path: lambda_layer/
