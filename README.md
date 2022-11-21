@@ -6,7 +6,7 @@
 
 If you are looking for the other amazon-textract-* packages, you can find them using the links below:
 
-- [amazon-textract-caller](https://github.com/aws-samples/amazon-textract-textractor/tree/master/caller) (to call textract without the explicit use of boto3)
+- [amazon-textract-caller](https://github.com/aws-samples/amazon-textract-textractor/tree/master/caller) (to simplify calling Amazon Textract without additional dependencies)
 - [amazon-textract-response-parser](https://pypi.org/project/amazon-textract-response-parser/) (to parse the JSON response returned by Textract APIs)
 - [amazon-textract-overlayer](https://github.com/aws-samples/amazon-textract-textractor/tree/master/overlayer) (to draw bounding boxes around the document entities on the document image)
 - [amazon-textract-prettyprinter](https://github.com/aws-samples/amazon-textract-textractor/tree/master/prettyprinter) (to string represent document entities)
