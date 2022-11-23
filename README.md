@@ -9,8 +9,8 @@ If you are looking for the other amazon-textract-* packages, you can find them u
 - [amazon-textract-caller](https://github.com/aws-samples/amazon-textract-textractor/tree/master/caller) (to simplify calling Amazon Textract without additional dependencies)
 - [amazon-textract-response-parser](https://pypi.org/project/amazon-textract-response-parser/) (to parse the JSON response returned by Textract APIs)
 - [amazon-textract-overlayer](https://github.com/aws-samples/amazon-textract-textractor/tree/master/overlayer) (to draw bounding boxes around the document entities on the document image)
-- [amazon-textract-prettyprinter](https://github.com/aws-samples/amazon-textract-textractor/tree/master/prettyprinter) (to string represent document entities)
-- [amazon-textract-geofinder](https://github.com/aws-samples/amazon-textract-textractor/tree/master/tpipelinegeofinder) (to perform geometric search on the document)
+- [amazon-textract-prettyprinter](https://github.com/aws-samples/amazon-textract-textractor/tree/master/prettyprinter) (convert Amazon Textract response to CSV, text, markdown, ...)
+- [amazon-textract-geofinder](https://github.com/aws-samples/amazon-textract-textractor/tree/master/tpipelinegeofinder) (extract specific information from document with methods that help navigate the document using geometry and relations, e. g. hierarchical key/value pairs)
 
 ## Installation
 
