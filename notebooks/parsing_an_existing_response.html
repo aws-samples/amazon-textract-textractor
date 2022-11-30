@@ -394,9 +394,9 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor.entities.document</span> <span class="kn">import</span> <span class="n">Document</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from textractor.entities.document import Document
 
-<span class="n">document</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;</span><span class="p">)</span>
+document = Document.open(&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;)
 </pre></div>
 </div>
 </div>
@@ -404,7 +404,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document
 </pre></div>
 </div>
 </div>
@@ -429,8 +429,8 @@ Expense Documents - 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">document</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with open(&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;, &quot;r&quot;) as f:
+    document = Document.open(f)
 </pre></div>
 </div>
 </div>
@@ -438,7 +438,7 @@ Expense Documents - 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document
 </pre></div>
 </div>
 </div>
@@ -467,8 +467,8 @@ Expense Documents - 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">textractor.parsers</span> <span class="kn">import</span> <span class="n">response_parser</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import json
+from textractor.parsers import response_parser
 </pre></div>
 </div>
 </div>
@@ -476,8 +476,8 @@ Expense Documents - 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">document</span> <span class="o">=</span> <span class="n">response_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>with open(&quot;../../../tests/fixtures/saved_api_responses/test_table.json&quot;, &quot;r&quot;) as f:
+    document = response_parser.parse(json.load(f))
 </pre></div>
 </div>
 </div>
@@ -485,7 +485,7 @@ Expense Documents - 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document
 </pre></div>
 </div>
 </div>

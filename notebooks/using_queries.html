@@ -393,8 +393,8 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from PIL import Image
+Image.open(&quot;../../../tests/fixtures/form.png&quot;)
 </pre></div>
 </div>
 </div>
@@ -412,19 +412,19 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">queries</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;How many persons are there in the household?&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;What is the home phone number?&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Are any household members non-citizen?&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Are any household members disabled?&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Where is the household located?&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;What is the email address?&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;What is the address of the landlord?&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;What is the telephone number of the landlord&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;What is the dwelling type?&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;What is the dwelling cost?&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;How did we hear about the Energy Assistance Program?&quot;</span>
-<span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>queries = [
+    &quot;How many persons are there in the household?&quot;,
+    &quot;What is the home phone number?&quot;,
+    &quot;Are any household members non-citizen?&quot;,
+    &quot;Are any household members disabled?&quot;,
+    &quot;Where is the household located?&quot;,
+    &quot;What is the email address?&quot;,
+    &quot;What is the address of the landlord?&quot;,
+    &quot;What is the telephone number of the landlord&quot;,
+    &quot;What is the dwelling type?&quot;,
+    &quot;What is the dwelling cost?&quot;,
+    &quot;How did we hear about the Energy Assistance Program?&quot;
+]
 </pre></div>
 </div>
 </div>
@@ -435,16 +435,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
-<span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
+from textractor import Textractor
+from textractor.data.constants import TextractFeatures
 
-<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
-<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span>
-    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">),</span>
-    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">QUERIES</span><span class="p">],</span>
-    <span class="n">queries</span><span class="o">=</span><span class="n">queries</span>
-<span class="p">)</span>
+extractor = Textractor(profile_name=&quot;default&quot;)
+document = extractor.analyze_document(
+    file_source=Image.open(&quot;../../../tests/fixtures/form.png&quot;),
+    features=[TextractFeatures.QUERIES],
+    queries=queries
+)
 </pre></div>
 </div>
 </div>
@@ -452,7 +452,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">queries</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document.queries
 </pre></div>
 </div>
 </div>
@@ -479,11 +479,11 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">queries</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">result</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">query</span><span class="si">}</span><span class="se">\n\t</span><span class="s2">Answer: </span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">answer</span><span class="si">}</span><span class="se">\n\t</span><span class="s2">Confidence: </span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">confidence</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">query</span><span class="o">.</span><span class="n">query</span><span class="si">}</span><span class="se">\n\t</span><span class="s2">No Answer</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>for query in document.queries:
+    if query.result:
+        print(f&quot;{query.query}\n\tAnswer: {query.result.answer}\n\tConfidence: {query.result.confidence}\n&quot;)
+    else:
+        print(f&quot;{query.query}\n\tNo Answer\n&quot;)
 </pre></div>
 </div>
 </div>

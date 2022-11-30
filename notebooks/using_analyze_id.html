@@ -393,14 +393,14 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from textractor import Textractor
 
-<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+extractor = Textractor(profile_name=&quot;default&quot;)
 
-<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_id</span><span class="p">(</span>
-    <span class="n">file_source</span><span class="o">=</span><span class="s2">&quot;../../../tests/fixtures/fake_id.png&quot;</span><span class="p">,</span>
-    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span>
+document = extractor.analyze_id(
+    file_source=&quot;../../../tests/fixtures/fake_id.png&quot;,
+    save_image=True,
+)
 </pre></div>
 </div>
 </div>
@@ -408,7 +408,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">image</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document.image
 </pre></div>
 </div>
 </div>
@@ -428,9 +428,9 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">AnalyzeIDFields</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from textractor.data.constants import AnalyzeIDFields
 
-<span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">AnalyzeIDFields</span><span class="p">]</span>
+[f.value for f in AnalyzeIDFields]
 </pre></div>
 </div>
 </div>
@@ -467,7 +467,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">identity_documents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;FIRST_NAME&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">document</span><span class="o">.</span><span class="n">identity_documents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;LAST_NAME&quot;</span><span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document.identity_documents[0][&quot;FIRST_NAME&quot;] + &quot; &quot; + document.identity_documents[0][&quot;LAST_NAME&quot;]
 </pre></div>
 </div>
 </div>
@@ -484,7 +484,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">value</span><span class="p">:</span><span class="n">document</span><span class="o">.</span><span class="n">identity_documents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">f</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">AnalyzeIDFields</span><span class="p">}</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>{f.value:document.identity_documents[0][f.value] for f in AnalyzeIDFields}
 </pre></div>
 </div>
 </div>
