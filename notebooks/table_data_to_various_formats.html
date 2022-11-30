@@ -507,88 +507,567 @@ table.visualize()
 <section id="Table-as-a-pandas-DataFrame">
 <h2>Table as a pandas DataFrame<a class="headerlink" href="#Table-as-a-pandas-DataFrame" title="Permalink to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>table.to_pandas()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>table[0].to_pandas()
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
 </div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
-<span class="ansi-green-fg">/tmp/ipykernel_7091/1919897604.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>table<span class="ansi-blue-fg">.</span>to_pandas<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<span class="ansi-red-fg">AttributeError</span>: &#39;EntityList&#39; object has no attribute &#39;to_pandas&#39;
-</pre></div></div>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td></td>
+      <td>Three Months June</td>
+      <td>30, Ended</td>
+      <td>Six Months June</td>
+      <td>Ended 30,</td>
+      <td>Twelve Months June</td>
+      <td>30, Ended</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td></td>
+      <td>2021</td>
+      <td>2022</td>
+      <td>2021</td>
+      <td>2022</td>
+      <td>2021</td>
+      <td>2022</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>CASH, PERIOD CASH EQUIVALENTS, AND RESTRICTED ...</td>
+      <td>$ 34,155</td>
+      <td>$ 36,599</td>
+      <td>$ 42,377</td>
+      <td>$ 36,477</td>
+      <td>$ 37,842</td>
+      <td>$ 40,667</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>OPERATING ACTIVITIES:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Net income (loss)</td>
+      <td>7,778</td>
+      <td>(2,028)</td>
+      <td>15,885</td>
+      <td>(5,872)</td>
+      <td>29,438</td>
+      <td>11,607</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Adjustments to reconcile net income (loss) to ...</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Depreciation content costs, and operating amor...</td>
+      <td>8,038</td>
+      <td>9,594</td>
+      <td>15,546</td>
+      <td>18,572</td>
+      <td>29,687</td>
+      <td>37,322</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Stock-based compensation</td>
+      <td>3,591</td>
+      <td>5,209</td>
+      <td>5,897</td>
+      <td>8,459</td>
+      <td>10,747</td>
+      <td>15,319</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Other operating expense (income), net</td>
+      <td>18</td>
+      <td>122</td>
+      <td>48</td>
+      <td>337</td>
+      <td>(372)</td>
+      <td>426</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Other expense (income), net</td>
+      <td>(1,258)</td>
+      <td>6,104</td>
+      <td>(2,714)</td>
+      <td>14,793</td>
+      <td>(5,092)</td>
+      <td>3,201</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Deferred income taxes</td>
+      <td>701</td>
+      <td>(1,955)</td>
+      <td>2,404</td>
+      <td>(3,956)</td>
+      <td>1,063</td>
+      <td>(6,670)</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Changes in operating assets and liabilities:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Inventories</td>
+      <td>(209)</td>
+      <td>(3,890)</td>
+      <td>(513)</td>
+      <td>(6,504)</td>
+      <td>(4,082)</td>
+      <td>(15,478)</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Accounts receivable, net and other</td>
+      <td>(4,462)</td>
+      <td>(6,799)</td>
+      <td>(6,717)</td>
+      <td>(8,315)</td>
+      <td>(13,294)</td>
+      <td>(19,761)</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Accounts payable</td>
+      <td>47</td>
+      <td>3,699</td>
+      <td>(8,219)</td>
+      <td>(5,681)</td>
+      <td>8,689</td>
+      <td>6,140</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Accrued expenses and other</td>
+      <td>(1,685)</td>
+      <td>(1,412)</td>
+      <td>(5,745)</td>
+      <td>(7,315)</td>
+      <td>1,071</td>
+      <td>553</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Unearned revenue</td>
+      <td>156</td>
+      <td>321</td>
+      <td>1,056</td>
+      <td>1,657</td>
+      <td>1,467</td>
+      <td>2,915</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Net cash provided by (used in) operating activ...</td>
+      <td>12,715</td>
+      <td>8,965</td>
+      <td>16,928</td>
+      <td>6,175</td>
+      <td>59,322</td>
+      <td>35,574</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>INVESTING ACTIVITIES:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>Purchases of property and equipment</td>
+      <td>(14,288)</td>
+      <td>(15,724)</td>
+      <td>(26,370)</td>
+      <td>(30,675)</td>
+      <td>(52,256)</td>
+      <td>(65,358)</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Proceeds from property and equipment sales and...</td>
+      <td>1,300</td>
+      <td>1,626</td>
+      <td>2,195</td>
+      <td>2,835</td>
+      <td>5,080</td>
+      <td>6,297</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Acquisitions, net of cash acquired, and other</td>
+      <td>(320)</td>
+      <td>(259)</td>
+      <td>(950)</td>
+      <td>(6,600)</td>
+      <td>(3,066)</td>
+      <td>(7,635)</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Sales and maturities of marketable securities</td>
+      <td>13,213</td>
+      <td>2,608</td>
+      <td>31,039</td>
+      <td>25,361</td>
+      <td>61,512</td>
+      <td>53,706</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>Purchases of marketable securities</td>
+      <td>(21,985)</td>
+      <td>(329)</td>
+      <td>(36,660)</td>
+      <td>(2,093)</td>
+      <td>(74,929)</td>
+      <td>(25,590)</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Net cash provided by (used in) investing activ...</td>
+      <td>(22,080)</td>
+      <td>(12,078)</td>
+      <td>(30,746)</td>
+      <td>(11,172)</td>
+      <td>(63,659)</td>
+      <td>(38,580)</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>FINANCING ACTIVITIES:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Common stock repurchased</td>
+      <td>-</td>
+      <td>(3,334)</td>
+      <td>-</td>
+      <td>(6,000)</td>
+      <td>-</td>
+      <td>(6,000)</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Proceeds from short-term debt. and other</td>
+      <td>1,176</td>
+      <td>4,865</td>
+      <td>3,102</td>
+      <td>18,608</td>
+      <td>6,848</td>
+      <td>23,462</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Repayments of short-term debt, and other</td>
+      <td>(1,176)</td>
+      <td>(7,610)</td>
+      <td>(3,177)</td>
+      <td>(13,841)</td>
+      <td>(6,817)</td>
+      <td>(18,417)</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Proceeds from long-term debt</td>
+      <td>18,516</td>
+      <td>12,824</td>
+      <td>18,627</td>
+      <td>12,824</td>
+      <td>19,158</td>
+      <td>13,200</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Repayments of long-term debt</td>
+      <td>(41)</td>
+      <td>(1)</td>
+      <td>(80)</td>
+      <td>(1)</td>
+      <td>(1,392)</td>
+      <td>(1,511)</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>Principal repayments of finance leases</td>
+      <td>(2,804)</td>
+      <td>(2,059)</td>
+      <td>(6,210)</td>
+      <td>(4,836)</td>
+      <td>(11,435)</td>
+      <td>(9,789)</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>Principal repayments of financing obligations</td>
+      <td>(28)</td>
+      <td>(59)</td>
+      <td>(95)</td>
+      <td>(138)</td>
+      <td>(116)</td>
+      <td>(205)</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Net cash provided by (used in) financing activ...</td>
+      <td>15,643</td>
+      <td>4,626</td>
+      <td>12,167</td>
+      <td>6,616</td>
+      <td>6,246</td>
+      <td>740</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>Foreign currency effect on cash, cash equivale...</td>
+      <td>234</td>
+      <td>(412)</td>
+      <td>(59)</td>
+      <td>(396)</td>
+      <td>916</td>
+      <td>(701)</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>Net increase (decrease) in cash, cash equivale...</td>
+      <td>6,512</td>
+      <td>1,101</td>
+      <td>(1,710)</td>
+      <td>1,223</td>
+      <td>2,825</td>
+      <td>(2,967)</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>CASH, CASH EQUIVALENTS, AND RESTRICTED CASH, E...</td>
+      <td>$ 40,667</td>
+      <td>$ 37,700</td>
+      <td>$ 40,667</td>
+      <td>$ 37,700</td>
+      <td>$ 40,667</td>
+      <td>$ 37,700</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>SUPPLEMENTAL CASH FLOW INFORMATION:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>Cash paid for interest on debt</td>
+      <td>$ 179</td>
+      <td>$ 349</td>
+      <td>$ 455</td>
+      <td>$ 628</td>
+      <td>$ 942</td>
+      <td>$ 1,271</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>Cash paid for operating leases</td>
+      <td>1,577</td>
+      <td>2,088</td>
+      <td>3,217</td>
+      <td>4,455</td>
+      <td>5,577</td>
+      <td>7,960</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>Cash paid for interest on finance leases</td>
+      <td>129</td>
+      <td>95</td>
+      <td>286</td>
+      <td>202</td>
+      <td>569</td>
+      <td>437</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>Cash paid for interest on financing obligations</td>
+      <td>35</td>
+      <td>55</td>
+      <td>68</td>
+      <td>113</td>
+      <td>127</td>
+      <td>198</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>Cash paid for income taxes, net of refunds</td>
+      <td>1,803</td>
+      <td>3,145</td>
+      <td>2,604</td>
+      <td>3,598</td>
+      <td>3,526</td>
+      <td>4,682</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>Assets acquired under operating leases</td>
+      <td>5,578</td>
+      <td>5,101</td>
+      <td>9,114</td>
+      <td>7,276</td>
+      <td>19,576</td>
+      <td>23,531</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>Property modifications and equipment acquired ...</td>
+      <td>1,642</td>
+      <td>61</td>
+      <td>3,709</td>
+      <td>227</td>
+      <td>9,976</td>
+      <td>3,579</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>Property lease arrangements and equipment reco...</td>
+      <td>1,193</td>
+      <td>986</td>
+      <td>2,080</td>
+      <td>2,351</td>
+      <td>3,486</td>
+      <td>6,117</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td>Property lease arrangements, and equipment wit...</td>
+      <td>99</td>
+      <td>1,079</td>
+      <td>99</td>
+      <td>1,112</td>
+      <td>99</td>
+      <td>1,243</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
 </div>
 </section>
 <section id="Table-as-CSV">
 <h2>Table as CSV<a class="headerlink" href="#Table-as-CSV" title="Permalink to this heading"></a></h2>
 <p>This is a shorthand for table.to_pandas().to_csv().</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>table.to_csv()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>table[0].to_csv()
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
-<span class="ansi-green-fg">/tmp/ipykernel_7091/3823065026.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>table<span class="ansi-blue-fg">.</span>to_csv<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">AttributeError</span>: &#39;EntityList&#39; object has no attribute &#39;to_csv&#39;
+&#39;,0,1,2,3,4,5,6\n0,,Three Months June,&#34;30, Ended&#34;,Six Months June,&#34;Ended 30,&#34;,Twelve Months June,&#34;30, Ended&#34;\n1,,2021,2022,2021,2022,2021,2022\n2,,,,,,,\n3,&#34;CASH, PERIOD CASH EQUIVALENTS, AND RESTRICTED CASH, BEGINNING OF&#34;,&#34;$ 34,155&#34;,&#34;$ 36,599&#34;,&#34;$ 42,377&#34;,&#34;$ 36,477&#34;,&#34;$ 37,842&#34;,&#34;$ 40,667&#34;\n4,OPERATING ACTIVITIES:,,,,,,\n5,Net income (loss),&#34;7,778&#34;,&#34;(2,028)&#34;,&#34;15,885&#34;,&#34;(5,872)&#34;,&#34;29,438&#34;,&#34;11,607&#34;\n6,Adjustments to reconcile net income (loss) to net cash from operating activities:,,,,,,\n7,&#34;Depreciation content costs, and operating amortization lease of assets, property and and other equipment and capitalized&#34;,&#34;8,038&#34;,&#34;9,594&#34;,&#34;15,546&#34;,&#34;18,572&#34;,&#34;29,687&#34;,&#34;37,322&#34;\n8,Stock-based compensation,&#34;3,591&#34;,&#34;5,209&#34;,&#34;5,897&#34;,&#34;8,459&#34;,&#34;10,747&#34;,&#34;15,319&#34;\n9,&#34;Other operating expense (income), net&#34;,18,122,48,337,(372),426\n10,&#34;Other expense (income), net&#34;,&#34;(1,258)&#34;,&#34;6,104&#34;,&#34;(2,714)&#34;,&#34;14,793&#34;,&#34;(5,092)&#34;,&#34;3,201&#34;\n11,Deferred income taxes,701,&#34;(1,955)&#34;,&#34;2,404&#34;,&#34;(3,956)&#34;,&#34;1,063&#34;,&#34;(6,670)&#34;\n12,Changes in operating assets and liabilities:,,,,,,\n13,Inventories,(209),&#34;(3,890)&#34;,(513),&#34;(6,504)&#34;,&#34;(4,082)&#34;,&#34;(15,478)&#34;\n14,&#34;Accounts receivable, net and other&#34;,&#34;(4,462)&#34;,&#34;(6,799)&#34;,&#34;(6,717)&#34;,&#34;(8,315)&#34;,&#34;(13,294)&#34;,&#34;(19,761)&#34;\n15,Accounts payable,47,&#34;3,699&#34;,&#34;(8,219)&#34;,&#34;(5,681)&#34;,&#34;8,689&#34;,&#34;6,140&#34;\n16,Accrued expenses and other,&#34;(1,685)&#34;,&#34;(1,412)&#34;,&#34;(5,745)&#34;,&#34;(7,315)&#34;,&#34;1,071&#34;,553\n17,Unearned revenue,156,321,&#34;1,056&#34;,&#34;1,657&#34;,&#34;1,467&#34;,&#34;2,915&#34;\n18,Net cash provided by (used in) operating activities,&#34;12,715&#34;,&#34;8,965&#34;,&#34;16,928&#34;,&#34;6,175&#34;,&#34;59,322&#34;,&#34;35,574&#34;\n19,INVESTING ACTIVITIES:,,,,,,\n20,Purchases of property and equipment,&#34;(14,288)&#34;,&#34;(15,724)&#34;,&#34;(26,370)&#34;,&#34;(30,675)&#34;,&#34;(52,256)&#34;,&#34;(65,358)&#34;\n21,Proceeds from property and equipment sales and incentives,&#34;1,300&#34;,&#34;1,626&#34;,&#34;2,195&#34;,&#34;2,835&#34;,&#34;5,080&#34;,&#34;6,297&#34;\n22,&#34;Acquisitions, net of cash acquired, and other&#34;,(320),(259),(950),&#34;(6,600)&#34;,&#34;(3,066)&#34;,&#34;(7,635)&#34;\n23,Sales and maturities of marketable securities,&#34;13,213&#34;,&#34;2,608&#34;,&#34;31,039&#34;,&#34;25,361&#34;,&#34;61,512&#34;,&#34;53,706&#34;\n24,Purchases of marketable securities,&#34;(21,985)&#34;,(329),&#34;(36,660)&#34;,&#34;(2,093)&#34;,&#34;(74,929)&#34;,&#34;(25,590)&#34;\n25,Net cash provided by (used in) investing activities,&#34;(22,080)&#34;,&#34;(12,078)&#34;,&#34;(30,746)&#34;,&#34;(11,172)&#34;,&#34;(63,659)&#34;,&#34;(38,580)&#34;\n26,FINANCING ACTIVITIES:,,,,,,\n27,Common stock repurchased,-,&#34;(3,334)&#34;,-,&#34;(6,000)&#34;,-,&#34;(6,000)&#34;\n28,Proceeds from short-term debt. and other,&#34;1,176&#34;,&#34;4,865&#34;,&#34;3,102&#34;,&#34;18,608&#34;,&#34;6,848&#34;,&#34;23,462&#34;\n29,&#34;Repayments of short-term debt, and other&#34;,&#34;(1,176)&#34;,&#34;(7,610)&#34;,&#34;(3,177)&#34;,&#34;(13,841)&#34;,&#34;(6,817)&#34;,&#34;(18,417)&#34;\n30,Proceeds from long-term debt,&#34;18,516&#34;,&#34;12,824&#34;,&#34;18,627&#34;,&#34;12,824&#34;,&#34;19,158&#34;,&#34;13,200&#34;\n31,Repayments of long-term debt,(41),(1),(80),(1),&#34;(1,392)&#34;,&#34;(1,511)&#34;\n32,Principal repayments of finance leases,&#34;(2,804)&#34;,&#34;(2,059)&#34;,&#34;(6,210)&#34;,&#34;(4,836)&#34;,&#34;(11,435)&#34;,&#34;(9,789)&#34;\n33,Principal repayments of financing obligations,(28),(59),(95),(138),(116),(205)\n34,Net cash provided by (used in) financing activities,&#34;15,643&#34;,&#34;4,626&#34;,&#34;12,167&#34;,&#34;6,616&#34;,&#34;6,246&#34;,740\n35,&#34;Foreign currency effect on cash, cash equivalents, and restricted cash&#34;,234,(412),(59),(396),916,(701)\n36,&#34;Net increase (decrease) in cash, cash equivalents, and restricted cash&#34;,&#34;6,512&#34;,&#34;1,101&#34;,&#34;(1,710)&#34;,&#34;1,223&#34;,&#34;2,825&#34;,&#34;(2,967)&#34;\n37,&#34;CASH, CASH EQUIVALENTS, AND RESTRICTED CASH, END OF PERIOD&#34;,&#34;$ 40,667&#34;,&#34;$ 37,700&#34;,&#34;$ 40,667&#34;,&#34;$ 37,700&#34;,&#34;$ 40,667&#34;,&#34;$ 37,700&#34;\n38,SUPPLEMENTAL CASH FLOW INFORMATION:,,,,,,\n39,Cash paid for interest on debt,$ 179,$ 349,$ 455,$ 628,$ 942,&#34;$ 1,271&#34;\n40,Cash paid for operating leases,&#34;1,577&#34;,&#34;2,088&#34;,&#34;3,217&#34;,&#34;4,455&#34;,&#34;5,577&#34;,&#34;7,960&#34;\n41,Cash paid for interest on finance leases,129,95,286,202,569,437\n42,Cash paid for interest on financing obligations,35,55,68,113,127,198\n43,&#34;Cash paid for income taxes, net of refunds&#34;,&#34;1,803&#34;,&#34;3,145&#34;,&#34;2,604&#34;,&#34;3,598&#34;,&#34;3,526&#34;,&#34;4,682&#34;\n44,Assets acquired under operating leases,&#34;5,578&#34;,&#34;5,101&#34;,&#34;9,114&#34;,&#34;7,276&#34;,&#34;19,576&#34;,&#34;23,531&#34;\n45,&#34;Property modifications and equipment acquired under finance leases, net of remeasurements and&#34;,&#34;1,642&#34;,61,&#34;3,709&#34;,227,&#34;9,976&#34;,&#34;3,579&#34;\n46,Property lease arrangements and equipment recognized during the construction period of build-to-suit,&#34;1,193&#34;,986,&#34;2,080&#34;,&#34;2,351&#34;,&#34;3,486&#34;,&#34;6,117&#34;\n47,&#34;Property lease arrangements, and equipment with derecognized the associated after leases the construction recognized period as operating of build-to-suit&#34;,99,&#34;1,079&#34;,99,&#34;1,112&#34;,99,&#34;1,243&#34;\n&#39;
 </pre></div></div>
 </div>
 </section>
 <section id="Table-to-Microsoft-Office-Excel">
 <h2>Table to Microsoft Office Excel<a class="headerlink" href="#Table-to-Microsoft-Office-Excel" title="Permalink to this heading"></a></h2>
 <p>The only format that supports merged cells.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>table.to_excel(&quot;out.xlsx&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>table[0].to_excel(&quot;out.xlsx&quot;)
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
-<span class="ansi-green-fg">/tmp/ipykernel_7091/4287898866.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>table<span class="ansi-blue-fg">.</span>to_excel<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;out.xlsx&#34;</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">AttributeError</span>: &#39;EntityList&#39; object has no attribute &#39;to_excel&#39;
-</pre></div></div>
 </div>
 </section>
 <section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
 <p>Textractor makes it easy to go from one format to another and streamlines your table processing workflows.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
-</div>
 </section>
 </section>
 
