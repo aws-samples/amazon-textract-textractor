@@ -11,6 +11,7 @@ import io
 from typing import List, IO, Union, AnyStr
 from copy import deepcopy
 from collections import defaultdict
+from PIL import Image
 
 from trp.trp2 import TDocument, TDocumentSchema
 
@@ -201,6 +202,16 @@ class Document(SpatialObject):
         :type identity_documents: list
         """
         self._identity_document = identity_documents
+
+    @property
+    def images(self) -> List[Image.Image]:
+        """
+        Returns all the page images in the Document.
+
+        :return: List of PIL Image objects.
+        :rtype: PIL.Image
+        """
+        return [page.image for page in self._pages]
 
     @property
     def pages(self) -> List[Page]:
