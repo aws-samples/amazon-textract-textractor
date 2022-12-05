@@ -1,5 +1,5 @@
-from textractcaller import call_textract, call_textract_analyzeid, QueriesConfig, Query
-from textractcaller.t_call import Textract_Features, call_textract_expense, remove_none
+from textractcaller import call_textract, call_textract_analyzeid, QueriesConfig, Query, get_full_json_from_output_config, get_full_json
+from textractcaller.t_call import OutputConfig, Textract_Features, call_textract_expense, remove_none
 from trp import Document
 import trp.trp2 as t2
 import trp.trp2_analyzeid as t2id
@@ -60,9 +60,29 @@ def test_tiff_async_multipage(caplog):
     j = call_textract(input_document=input_file, force_async_api=True, boto3_textract_client=textract_client)
     assert j
     assert 'Blocks' in j
-    assert len(j['Blocks']) == 261
+    assert len(j['Blocks']) == 260
     doc = Document(j)
     assert doc
+
+
+def test_tiff_async_multipage_with_output_config(caplog):    #
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    input_file = os.path.join("s3://amazon-textract-public-content/blogs/multipage_tiff_example_small.tiff")
+    output_config = OutputConfig(s3_bucket="sdx-objects-us-east-2", s3_prefix="test/outputconfig")
+    print(output_config.get_dict())
+    j = call_textract(input_document=input_file,
+                      force_async_api=True,
+                      output_config=output_config,
+                      boto3_textract_client=textract_client,
+                      return_job_id=True)
+    print(j['JobId'])
+    # this is just to wait for the job to finish
+    get_full_json(job_id=j['JobId'], boto3_textract_client=textract_client)
+
+    textract_json = get_full_json_from_output_config(output_config=output_config, job_id=j['JobId'])
+
+    assert textract_json
 
 
 # multipage not supported on sync
@@ -119,7 +139,7 @@ def test_analyzeid(caplog):
     assert 'DocumentMetadata' in j
     assert 'IdentityDocuments' in j
     assert 'IdentityDocumentFields' in j['IdentityDocuments'][0]
-    assert len(j['IdentityDocuments'][0]['IdentityDocumentFields']) == 20
+    assert len(j['IdentityDocuments'][0]['IdentityDocumentFields']) == 21
     doc: t2id.TAnalyzeIdDocument = t2id.TAnalyzeIdDocumentSchema().load(j)    #type: ignore
     assert doc
 
@@ -131,7 +151,7 @@ def test_analyzeid(caplog):
         assert 'DocumentMetadata' in j
         assert 'IdentityDocuments' in j
         assert 'IdentityDocumentFields' in j['IdentityDocuments'][0]
-        assert len(j['IdentityDocuments'][0]['IdentityDocumentFields']) == 20
+        assert len(j['IdentityDocuments'][0]['IdentityDocumentFields']) == 21
         doc: t2id.TAnalyzeIdDocument = t2id.TAnalyzeIdDocumentSchema().load(j)    #type: ignore
         assert doc
 
