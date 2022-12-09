@@ -7,16 +7,36 @@ import time
 import logging
 import json
 
-Textract_Features = Enum('Textract_Features', ["FORMS", "TABLES", "QUERIES"], start=0)
+
+class Textract_Features(Enum):
+    FORMS = 1
+    TABLES = 2
+    QUERIES = 3
+    SIGNATURES = 4
+
+
 Textract_Types = Enum('Textract_Types', ["WORD", "LINE", "TABLE", "CELL", "KEY", "VALUE", "FORM", "QUERIES"])
-Textract_API = Enum('Textract_API', ["ANALYZE", "DETECT", "EXPENSE"], start=0)
-Textract_Call_Mode = Enum('Textract_Call_Mode', ["FORCE_SYNC", "FORCE_ASYNC", "DEFAULT"], start=0)
+
+
+class Textract_API(Enum):
+    ANALYZE = 1
+    DETECT = 2
+    EXPENSE = 3
+    LENDING = 4
+
+
+class Textract_Call_Mode(Enum):
+    FORCE_SYNC = 1
+    FORCE_ASYNC = 2
+    DEFAULT = 3
+
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class NotificationChannel():
+
     def __init__(self, role_arn: str, sns_topic_arn: str):
         if not role_arn and not sns_topic_arn:
             raise ValueError("both role_arn and sns_topic_arn have to be specified")
@@ -29,6 +49,7 @@ class NotificationChannel():
 
 @dataclass
 class OutputConfig():
+
     def __init__(self, s3_bucket: str, s3_prefix: str):
         if not s3_bucket and not s3_prefix:
             raise ValueError("both s3_bucket and s3_prefix have to be specified")
@@ -41,6 +62,7 @@ class OutputConfig():
 
 @dataclass
 class DocumentLocation():
+
     def __init__(self, s3_bucket: str, s3_prefix: str, version: str = ""):
         if not s3_bucket and not s3_prefix:
             raise ValueError("both s3_bucket and s3_prefix have to be specified")
@@ -83,6 +105,7 @@ class QueriesConfig():
 
 @dataclass
 class Document():
+
     def __init__(self, byte_data: bytes = b'', s3_bucket: str = "", s3_prefix: str = "", version: str = ""):
         if byte_data and s3_bucket:
             raise ValueError("only one allowed, byte_data or s3_bucket")
@@ -169,12 +192,21 @@ def get_job_response(job_id: str = "",
 
 
 # TODO would like to use a package for that functionality
-def get_s3_output_config_keys(output_config: OutputConfig, job_id: str, s3_client):
+def get_s3_output_config_keys(output_config: OutputConfig, job_id: str, s3_client, subfolder=None):
     if not output_config or not job_id:
         raise ValueError("no output_config or job_id")
     if not s3_client:
         s3_client = boto3.client("s3")
-    params = {'Bucket': output_config.s3_bucket.strip('/'), 'Prefix': output_config.s3_prefix.strip('/') + "/" + job_id}
+    if subfolder:
+        params = {
+            'Bucket': output_config.s3_bucket.strip('/'),
+            'Prefix': output_config.s3_prefix.strip('/') + "/" + job_id + "/" + subfolder
+        }
+    else:
+        params = {
+            'Bucket': output_config.s3_bucket.strip('/'),
+            'Prefix': output_config.s3_prefix.strip('/') + "/" + job_id
+        }
     logger.info(f"s3-params {params}")
 
     while True:
@@ -233,16 +265,15 @@ def get_full_json_from_output_config(output_config: OutputConfig, job_id: str, s
     if not s3_client:
         s3_client = boto3.client("s3")
 
-    result_value = {}
+    result_value = dict()
     keys = get_s3_output_config_keys(output_config=output_config, job_id=job_id, s3_client=s3_client)
-    print(f"found len(keys) keys.")
     for key in keys:
         logger.info(f"found keys: {key}")
         s3_object = s3_client.get_object(Bucket=output_config.s3_bucket, Key=key)
         body = s3_object['Body']
         body_read = body.read()
         body_decode = body_read.decode('utf-8')
-        response = json.loads(body_decode)
+        response = dict(json.loads(body_decode))
         if 'Blocks' in result_value:
             result_value['Blocks'].extend(response['Blocks'])
         else:
@@ -251,6 +282,70 @@ def get_full_json_from_output_config(output_config: OutputConfig, job_id: str, s
         del result_value['NextToken']
     result_value = remove_none(result_value)
     return result_value
+
+
+def get_full_json_lending_from_output_config(output_config: OutputConfig,
+                                             job_id: str,
+                                             s3_client=None,
+                                             subfolder="detailedResponse") -> dict:
+    if not output_config or not job_id:
+        raise ValueError("no output_config or job_id")
+    if not output_config.s3_bucket or not output_config.s3_prefix:
+        raise ValueError("no output_config or job_id")
+    if not s3_client:
+        s3_client = boto3.client("s3")
+
+    result_value = dict()
+    keys = get_s3_output_config_keys(output_config=output_config,
+                                     job_id=job_id,
+                                     s3_client=s3_client,
+                                     subfolder=subfolder)
+    for key in keys:
+        logger.info(f"found keys: {key}")
+        s3_object = s3_client.get_object(Bucket=output_config.s3_bucket, Key=key)
+        body = s3_object['Body']
+        body_read = body.read()
+        body_decode = body_read.decode('utf-8')
+        response = dict(json.loads(body_decode))
+        if 'Results' in result_value:
+            result_value['Results'].extend(response['Results'])
+        else:
+            result_value = response
+    if 'NextToken' in result_value:
+        del result_value['NextToken']
+    result_value = remove_none(result_value)
+    return result_value
+
+
+def get_full_json_lending(job_id: str, boto3_textract_client, job_done_polling_interval=1) -> dict:
+    """returns full json for call, even when response is chunked"""
+    logger.debug(f"get_full_json: job_id: {job_id}")
+    job_response = boto3_textract_client.get_lending_analysis(JobId=job_id)
+    logger.debug(f"job_response for job_id: {job_id}\n{job_response}")
+    while job_response['JobStatus'] == "IN_PROGRESS":
+        job_response = boto3_textract_client.get_lending_analysis(JobId=job_id)
+        time.sleep(job_done_polling_interval)
+    if job_response['JobStatus'] == 'SUCCEEDED':
+        result_value = job_response
+        extra_args = {}
+        if 'NextToken' in result_value:
+            extra_args['NextToken'] = job_response['NextToken']
+            del result_value['NextToken']
+        while extra_args:
+            job_response = boto3_textract_client.get_lending_analysis(JobId=job_id, **extra_args)
+            if 'Results' in result_value:
+                result_value['Results'].extend(job_response['Results'])
+            if 'NextToken' in job_response:
+                logger.debug(f"got next token {job_response['NextToken']}")
+                extra_args['NextToken'] = job_response['NextToken']
+            else:
+                break
+        return result_value
+    else:
+        logger.error(f"{job_response}")
+        raise Exception(
+            f"job_status not SUCCEEDED. job_status: {job_response['JobStatus']}, message: {job_response['StatusMessage']}"
+        )
 
 
 def get_full_json(job_id: str = "",
@@ -293,6 +388,42 @@ def get_full_json(job_id: str = "",
     else:
         logger.error(f"{job_response}")
         raise Exception(f"job_status not SUCCEEDED. job_status: {job_status}, message: {job_response['StatusMessage']}")
+
+
+def call_textract_lending(input_document: str,
+                          client_request_token: str = "",
+                          job_tag: str = "",
+                          notification_channel: Optional[NotificationChannel] = None,
+                          output_config: Optional[OutputConfig] = None,
+                          kms_key_id: str = "",
+                          return_job_id: bool = False,
+                          job_done_polling_interval=1,
+                          boto3_textract_client=None):
+    if len(input_document) > 7 and input_document.lower().startswith("s3://"):
+        s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+    else:
+        raise Exception("input_document needs to be an S3 URL.")
+
+    if not boto3_textract_client:
+        textract = boto3.client("textract")
+    else:
+        textract = boto3_textract_client
+    params = generate_request_params(
+        document_location=DocumentLocation(s3_bucket=s3_bucket, s3_prefix=s3_key),
+        output_config=output_config,
+        notification_channel=notification_channel,
+        kms_key_id=kms_key_id,
+        client_request_token=client_request_token,
+        job_tag=job_tag,
+    )
+
+    submission_status = textract.start_lending_analysis(**params)
+    if return_job_id:
+        return submission_status
+    else:
+        return get_full_json_lending(submission_status['JobId'],
+                                     boto3_textract_client=textract,
+                                     job_done_polling_interval=job_done_polling_interval)
 
 
 def call_textract(input_document: Union[str, bytes],
@@ -437,6 +568,7 @@ def call_textract(input_document: Union[str, bytes],
 
 @dataclass
 class DocumentPage():
+
     def __init__(self, byte_data: bytes = b'', s3_object: Optional[DocumentLocation] = None):
         if not byte_data and not s3_object:
             raise ValueError("Either bytes or s3_object have to be specified")
