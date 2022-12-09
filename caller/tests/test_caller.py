@@ -1,4 +1,4 @@
-from textractcaller import call_textract, call_textract_analyzeid, QueriesConfig, Query, get_full_json_from_output_config, get_full_json
+from textractcaller import call_textract, call_textract_analyzeid, QueriesConfig, Query, get_full_json_from_output_config, get_full_json, call_textract_lending, get_full_json_lending
 from textractcaller.t_call import OutputConfig, Textract_Features, call_textract_expense, remove_none
 from trp import Document
 import trp.trp2 as t2
@@ -171,7 +171,7 @@ def test_queries(caplog):
                       features=[Textract_Features.QUERIES],
                       queries_config=queries_config)
     assert j
-    tdoc: t2.TDocumentSchema = t2.TDocumentSchema().load(j)    #type: ignore
+    tdoc: t2.TDocument = t2.TDocumentSchema().load(j)    #type: ignore
     assert tdoc
     page = tdoc.pages[0]
     query_answers = tdoc.get_query_answers(page=page)
@@ -183,8 +183,7 @@ def test_empty_features_and_queries(caplog):
     textract_client = boto3.client('textract', region_name='us-east-2')
     j = call_textract(input_document="s3://amazon-textract-public-content/blogs/employeeapp20210510.png",
                       boto3_textract_client=textract_client,
-                      features=[],
-                      queries_config={})
+                      features=[])
     assert j
 
 
@@ -225,10 +224,41 @@ def test_filter_out_none_from_output_config(caplog):
     caplog.set_level(logging.DEBUG, logger="textractcaller")
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     input_file = os.path.join(SCRIPT_DIR, "data/json_from_python_repl.json")
-    j = json.load(open(input_file))
+    j = dict(json.load(open(input_file)))
     assert j['Blocks'][0]["BlockType"] == "PAGE"
     assert j['Blocks'][0]["ColumnIndex"] == None
     j = remove_none(j)
     assert j
     assert 'Blocks' in j and j['Blocks'][0]["BlockType"] == "PAGE"
     assert not "ColumnIndex" in j['Blocks'][0]
+
+
+def test_lending(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    input_file = "s3://sdx-textract-us-east-1/lending-package.pdf"
+    textract_client = boto3.client('textract', region_name='us-east-1')
+    j = call_textract_lending(input_document=input_file, boto3_textract_client=textract_client, return_job_id=True)
+    assert j
+    textract_json = get_full_json_lending(job_id=j['JobId'], boto3_textract_client=textract_client)
+    assert textract_json
+
+
+# def test_lending_output_config(caplog):
+#     caplog.set_level(logging.DEBUG, logger="textractcaller")
+#     input_file = "s3://sdx-textract-us-east-1/lending-package.pdf"
+#     output_config = OutputConfig(s3_bucket="sdx-objects-us-east-1", s3_prefix="test/outputconfig")
+#     textract_client = boto3.client('textract', region_name='us-east-1')
+#     s3_client = boto3.client('s3', region_name='us-east-1')
+#     j = call_textract_lending(input_document=input_file,
+#                               boto3_textract_client=textract_client,
+#                               output_config=output_config,
+#                               return_job_id=True)
+#     assert j
+#     # this is just to wait till objects are in S3
+#     textract_json = get_full_json_lending(job_id=j['JobId'], boto3_textract_client=textract_client)
+
+#     textract_json = get_full_json_lending_from_output_config(output_config=output_config,
+#                                                              job_id=j['JobId'],
+#                                                              s3_client=s3_client)
+#     assert textract_json
+#     json.dump(textract_json, open("lending-doc-output_from_output_config.json", "w"))

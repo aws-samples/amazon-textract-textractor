@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'amazon-textract-response-parser>=0.1.27']
+requirements = ['boto3>=1.26.23', 'botocore', 'amazon-textract-response-parser>=0.1.27']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
@@ -29,7 +29,7 @@ setup(name='amazon-textract-caller',
       packages=find_packages(exclude=['tests']),
       include_package_data=True,
       exclude_package_data={"": ["test_*.py", "__pycache__"]},
-      version='0.0.25',
+      version='0.0.26',
       description='Amazon Textract Caller tools',
       install_requires=requirements,
       extras_require={'testing': ['amazon-textract-response-parser', 'pytest']},
