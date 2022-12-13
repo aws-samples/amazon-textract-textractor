@@ -6,6 +6,7 @@ This class contains the associated metadata with the :class:`Line` entity includ
 bounding box information, child words, page number, Page ID and confidence of detection.
 """
 
+import logging
 from typing import List
 
 from textractor.entities.word import Word

@@ -16,6 +16,7 @@ PAGE = "PAGE"
 MERGED_CELL = "MERGED_CELL"
 QUERY = "QUERY"
 QUERY_RESULT = "QUERY_RESULT"
+SIGNATURE = "SIGNATURE"
 
 # cell type attributes
 IS_COLUMN_HEAD = "isColumnHead"
@@ -91,6 +92,7 @@ class TextractFeatures(Enum):
     FORMS = 0
     TABLES = 1
     QUERIES = 2
+    SIGNATURES = 3
 
 
 class TextractType(Enum):

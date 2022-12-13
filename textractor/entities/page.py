@@ -15,6 +15,7 @@ from textractor.entities.expense_document import ExpenseDocument
 from textractor.entities.word import Word
 from textractor.entities.line import Line
 from textractor.entities.table import Table
+from textractor.entities.signature import Signature
 from textractor.exceptions import InputError
 from textractor.entities.key_value import KeyValue
 from textractor.entities.query import Query
@@ -186,12 +187,32 @@ class Page(SpatialObject):
     @queries.setter
     def queries(self, queries: List[Query]):
         """
-        Add Query objects to the Page.
+        Add Signature objects to the Page.
 
-        :param queries: List of Query objects.
-        :type queries: list
+        :param signatures: List of Signature objects.
+        :type signatures: list
         """
         self._queries = EntityList(queries)
+
+    @property
+    def signatures(self) -> EntityList[Signature]:
+        """
+        Returns all the :class:`Signature` objects present in the Page.
+
+        :return: List of Signature objects.
+        :rtype: EntityList
+        """
+        return self._signatures
+
+    @signatures.setter
+    def signatures(self, signatures: List[Signature]):
+        """
+        Add Signature objects to the Page.
+
+        :param signatures: List of Signature objects.
+        :type signatures: list
+        """
+        self._signatures = EntityList(signatures)
 
     @property
     def expense_documents(self) -> EntityList[ExpenseDocument]:
@@ -222,6 +243,8 @@ class Page(SpatialObject):
                 f"Key-values - {len(self.key_values)}",
                 f"Checkboxes - {len(self.checkboxes)}",
                 f"Tables - {len(self.tables)}",
+                f"Queries - {len(self.queries)}",
+                f"Signatures - {len(self.signatures)}",
                 f"Expense documents - {len(self.expense_documents)}",
             ]
         )
