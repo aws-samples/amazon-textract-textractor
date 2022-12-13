@@ -1,3 +1,5 @@
+*Main change is a queries_full attribute which you can iterate through to get all query results (when one query has multiple results).*
+
 ![Textractor](https://raw.githubusercontent.com/aws-samples/amazon-textract-textractor/5716c52e8a39c063f43e058e1637e4984a4b2da4/docs/source/textractor_cropped.png)
 
 [![Tests](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/tests.yml/badge.svg)](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/tests.yml) [![Documentation](https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/documentation.yml/badge.svg)](https://aws-samples.github.io/amazon-textract-textractor/) [![PyPI version](https://badge.fury.io/py/amazon-textract-textractor.svg)](https://pypi.org/project/amazon-textract-textractor/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

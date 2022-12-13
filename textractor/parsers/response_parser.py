@@ -5,6 +5,7 @@ Use ResponseParser's parse function to handle API response and convert them to D
 """
 
 import logging
+from itertools import chain
 import uuid
 from typing import Any, List, Dict, Tuple
 from collections import defaultdict
@@ -516,6 +517,77 @@ def _create_keyvalue_objects(
     return key_values, kv_words
 
 
+
+def _create_query_objects_full(
+    query_ids: List[str],
+    id_json_map: Dict[str, str],
+    entity_id_map: Dict[str, list],
+    page: Page,
+) -> List[Query]:
+    """Returns all queries rather than just first query"""
+    page_queries = []
+    for query_id in query_ids:
+        if query_id in page.child_ids:
+            validate_entity_schema(id_json_map[query_id], entity="QUERY")
+            page_queries.append(id_json_map[query_id])
+
+    query_result_id_map = {}
+    for block in page_queries:
+        answer = _get_relationship_ids(block, relationship="ANSWER")
+        query_result_id_map[block["Id"]] = answer#[0] if answer else None
+
+    query_result_ids = list(chain(*query_result_id_map.values()))
+    query_results = _create_query_result_objects(
+        query_result_ids, id_json_map, entity_id_map, page
+    )
+    print(query_results)
+    queries = []
+    for query in page_queries:
+        for q in query_result_id_map[query["Id"]]:
+            query_result = query_results.get(q)
+            query_obj = Query(
+                query["Id"],
+                query["Query"]["Text"],
+                query["Query"].get("Alias"),
+                query_result,
+                query_result.bbox if query_result is not None else None,
+            )
+            query_obj.raw_object = query
+            queries.append(query_obj)
+    return queries
+
+def _create_query_result_objects_full(
+    query_result_ids: List[str],
+    id_json_map: Dict[str, str],
+    entity_id_map: Dict[str, list],
+    page: Page,
+) -> Dict[str, QueryResult]:
+    """Returns all query results instead of just first query result"""
+    page_query_results = []
+    for query_result_id in query_result_ids:
+        if query_result_id in page.child_ids:
+            validate_entity_schema(id_json_map[query_result_id], entity=QueryResult)
+            page_query_results.append(id_json_map[query_result_id])
+
+    query_results = {}
+    for block in page_query_results:
+        query_results[block["Id"]] = QueryResult(
+            entity_id=block["Id"],
+            confidence=block["Confidence"],
+            result_bbox=BoundingBox.from_normalized_dict(
+                block["Geometry"]["BoundingBox"], spatial_object=page
+            ),
+            answer=block["Text"],
+        )
+        query_results[block["Id"]].raw_object = block
+
+    for query_result_id, query_result in query_results.items():
+        query_result.page = page.page_num
+        query_result.page_id = page.id
+
+    return query_results
+
+
 def _create_table_cell_objects(
     page_tables: List[Any],
     id_entity_map: Dict[str, List[str]],
@@ -737,7 +809,12 @@ def parse_document_api_response(response: dict) -> Document:
             entity_id_map[QUERY], id_json_map, entity_id_map, page
         )
 
+        queries_full = _create_query_objects_full(
+            entity_id_map[QUERY], id_json_map, entity_id_map, page
+        )
+
         page.queries = queries
+        page.queries_full = queries_full
 
     document.pages = sorted(list(pages.values()), key=lambda x: x.page_num)
     return document
