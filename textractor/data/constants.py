@@ -160,6 +160,7 @@ class TextractAPI(Enum):
     DETECT_TEXT = 0
     ANALYZE = 1
     EXPENSE = 2
+    LENDING = 3
 
     @classmethod
     def TextractAPI_to_Textract_API(cls, api):
@@ -169,6 +170,8 @@ class TextractAPI(Enum):
             return Textract_API.ANALYZE
         elif api == TextractAPI.EXPENSE:
             return Textract_API.EXPENSE
+        elif api == TextractAPI.LENDING:
+            return Textract_API.LENDING
         else:
             raise InputError()
 
@@ -180,6 +183,8 @@ class TextractAPI(Enum):
             return TextractAPI.ANALYZE
         elif api == Textract_API.EXPENSE:
             return TextractAPI.EXPENSE
+        elif api == Textract_API.LENDING:
+            return TextractAPI.LENDING
         else:
             raise InputError()
 
