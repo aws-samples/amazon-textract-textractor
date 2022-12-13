@@ -452,7 +452,7 @@ def _create_signature_objects(
         signature.page = page.page_num
         signature.page_id = page.id
 
-    return signatures
+    return list(signatures.values())
 
 def _create_keyvalue_objects(
     key_value_ids: List[str],
