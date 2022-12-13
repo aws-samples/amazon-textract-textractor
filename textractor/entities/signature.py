@@ -73,10 +73,3 @@ class Signature(DocumentEntity):
         :type page_id: str
         """
         self._page_id = page_id
-
-    def __repr__(self):
-        """
-        :return: String representation of the Signature entity.
-        :rtype: str
-        """
-        return "Signature"
