@@ -57,7 +57,6 @@ class Table(DocumentEntity):
         """
 
         all_words = sum([cell.words for cell in self.table_cells], [])
-        all_words = sorted(all_words, key=lambda x: x.bbox.x + x.bbox.y)
 
         if not all_words:
             logging.info("Table contains no word entities.")

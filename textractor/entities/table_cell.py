@@ -174,7 +174,7 @@ class TableCell(DocumentEntity):
         :param words: List of Word objects, each representing a word within the TableCell. No specific ordering is assumed as it is ordered internally.
         :type words: list
         """
-        self._words = sorted(words, key=lambda x: x.bbox.x + x.bbox.y)
+        self._words = words
 
     @property
     def text(self) -> str:
@@ -301,9 +301,7 @@ class TableCell(DocumentEntity):
             entity_repr = "".join(entity_repr)
 
         else:
-            entities = sorted(
-                self.words + self.children, key=lambda x: (x.bbox.x, x.bbox.y)
-            )
+            entities = self.words + self.children
             entity_repr = " ".join([entity.__repr__() for entity in entities])
 
         entity_string = f"<Cell: ({self.row_index},{self.col_index}), Span: ({self.row_span}, {self.col_span}), "
