@@ -14,6 +14,7 @@ from textractor.entities.expense_field import Expense, ExpenseField
 
 from textractor.entities.page import Page
 from textractor.entities.query_result import QueryResult
+from textractor.entities.signature import Signature
 from textractor.entities.word import Word
 from textractor.entities.line import Line
 from textractor.entities.value import Value
@@ -42,6 +43,7 @@ from textractor.data.constants import (
     PAGE,
     MERGED_CELL,
     QUERY,
+    SIGNATURE,
 )
 
 
@@ -423,6 +425,34 @@ def _create_query_result_objects(
 
     return query_results
 
+def _create_signature_objects(
+    signature_ids: List[str],
+    id_json_map: Dict[str, str],
+    entity_id_map: Dict[str, list],
+    page: Page,
+) -> Dict[str, Signature]:
+    page_signatures = []
+    for signature_id in signature_ids:
+        if signature_id in page.child_ids:
+            validate_entity_schema(id_json_map[signature_id], entity=Signature)
+            page_signatures.append(id_json_map[signature_id])
+
+    signatures = {}
+    for block in page_signatures:
+        signatures[block["Id"]] = Signature(
+            entity_id=block["Id"],
+            confidence=block["Confidence"],
+            bbox=BoundingBox.from_normalized_dict(
+                block["Geometry"]["BoundingBox"], spatial_object=page
+            ),
+        )
+        signatures[block["Id"]].raw_object = block
+
+    for signature_id, signature in signatures.items():
+        signature.page = page.page_num
+        signature.page_id = page.id
+
+    return list(signatures.values())
 
 def _create_keyvalue_objects(
     key_value_ids: List[str],
@@ -736,8 +766,12 @@ def parse_document_api_response(response: dict) -> Document:
         queries = _create_query_objects(
             entity_id_map[QUERY], id_json_map, entity_id_map, page
         )
-
         page.queries = queries
+
+        signatures = _create_signature_objects(
+            entity_id_map[SIGNATURE], id_json_map, entity_id_map, page
+        )
+        page.signatures = signatures
 
     document.pages = sorted(list(pages.values()), key=lambda x: x.page_num)
     return document

@@ -22,6 +22,7 @@ from textractor.entities.line import Line
 from textractor.entities.page import Page
 from textractor.entities.table import Table
 from textractor.entities.query import Query
+from textractor.entities.signature import Signature
 from textractor.exceptions import InputError
 from textractor.entities.key_value import KeyValue
 from textractor.entities.bbox import SpatialObject
@@ -184,6 +185,16 @@ class Document(SpatialObject):
         return EntityList(sum([page.queries for page in self.pages], []))
 
     @property
+    def signatures(self) -> List[Signature]:
+        """
+        Returns all the :class:`Signature` objects present in the Document.
+
+        :return: List of Signature objects.
+        :rtype: EntityList[Signature]
+        """
+        return EntityList(sum([page.signatures for page in self.pages], []))
+
+    @property
     def identity_document(self) -> EntityList[IdentityDocument]:
         """
         Returns all the :class:`IdentityDocument` objects present in the Page.
@@ -262,6 +273,8 @@ class Document(SpatialObject):
                 f"Key-values - {len(self.key_values)}",
                 f"Checkboxes - {len(self.checkboxes)}",
                 f"Tables - {len(self.tables)}",
+                f"Queries - {len(self.queries)}",
+                f"Signatures - {len(self.signatures)}",
                 f"Identity Documents - {len(self.identity_documents)}",
                 f"Expense Documents - {len(self.expense_documents)}",
             ]

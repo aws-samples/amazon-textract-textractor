@@ -796,6 +796,8 @@ def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
     elif entity.__class__.__name__ == "QueryResult":
         data["color"] = ImageColor.getrgb("mediumturquoise")
         data["text"] = entity.answer
+    elif entity.__class__.__name__ == "Signature":
+        data["color"] = ImageColor.getrgb("coral")
     else:
         pass
     return data
