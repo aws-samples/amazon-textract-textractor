@@ -142,26 +142,7 @@ class Textractor:
 
         return images
 
-    def detect_document_text(
-        self, file_source, s3_output_path: str = "", save_image: bool = True
-    ) -> Document:
-        """
-        Make a call to the SYNC DetectDocumentText API, implicitly parses the response and produces a :class:`Document` object.
-        This function is ideal for single page PDFs or single images.
-
-        :param file_source: Path to a file stored locally, on an S3 bucket or PIL Image
-        :type file_source: str or PIL.Image, required
-        :param s3_output_path: S3 path to store the output.
-        :type s3_output_path: str, optional
-        :param save_image: Flag to indicate if document images are to be stored within the Document object. This is optional
-                            and necessary only if the customer wants to visualize bounding boxes for their document entities.
-        :type save_image: bool
-
-        :return: Returns a Document object containing all the entities, relationships and metadata extracted by the Textract
-                 DetectDocumentText API stored within it.
-        :rtype: Document
-        """
-
+    def _parse_file_source_for_sync(self, file_source):
         if isinstance(file_source, list) and len(file_source) > 1:
             raise IncorrectMethodException(
                 "List contains more than 1 image. Call start_document_text_detection instead."
@@ -189,6 +170,29 @@ class Textractor:
         else:
             images = []
             raise InputError("Input file_source format not supported.")
+        return file_source, images
+
+    def detect_document_text(
+        self, file_source, s3_output_path: str = "", save_image: bool = True
+    ) -> Document:
+        """
+        Make a call to the SYNC DetectDocumentText API, implicitly parses the response and produces a :class:`Document` object.
+        This function is ideal for single page PDFs or single images.
+
+        :param file_source: Path to a file stored locally, on an S3 bucket or PIL Image
+        :type file_source: str or PIL.Image, required
+        :param s3_output_path: S3 path to store the output.
+        :type s3_output_path: str, optional
+        :param save_image: Flag to indicate if document images are to be stored within the Document object. This is optional
+                            and necessary only if the customer wants to visualize bounding boxes for their document entities.
+        :type save_image: bool
+
+        :return: Returns a Document object containing all the entities, relationships and metadata extracted by the Textract
+                 DetectDocumentText API stored within it.
+        :rtype: Document
+        """
+
+        file_source, images = self._parse_file_source_for_sync(file_source)
 
         if not s3_output_path:
             output_config = None
@@ -355,33 +359,8 @@ class Textractor:
                  AnalyzeDocument API stored within it.
         :rtype: Document
         """
-        if isinstance(file_source, list) and len(file_source) > 1:
-            raise IncorrectMethodException(
-                "List contains more than 1 image. Call start_document_analysis() instead."
-            )
-
-        elif isinstance(file_source, str):
-            logging.debug("Filepath given.")
-            images = self._get_document_images_from_path(file_source)
-            if len(images) > 1:
-                raise IncorrectMethodException(
-                    "Input contains more than 1 page. Call start_document_analysis() instead."
-                )
-            file_source = _image_to_byte_array(images[0])
-
-        elif isinstance(file_source, Image.Image):
-            logging.debug("PIL Image given.")
-            images = [file_source]
-            file_source = _image_to_byte_array(file_source)
-
-        elif isinstance(file_source, list) and isinstance(file_source[0], Image.Image):
-            logging.debug("List of PIL Image given.")
-            images = deepcopy(file_source)
-            file_source = _image_to_byte_array(images[0])
-
-        else:
-            images = []
-            raise InputError("Input file_source format not supported.")
+        
+        file_source, images = self._parse_file_source_for_sync(file_source)
 
         if not s3_output_path:
             output_config = None
@@ -820,79 +799,10 @@ class Textractor:
             images=images,
         )
 
-    def analyze_lending(
-        self,
-        file_source: Union[str, List[Image.Image], List[str]],
-        s3_output_path: str = "",
-        save_image: bool = True,
-    ) -> Document:
-        if isinstance(file_source, list) and len(file_source) > 1:
-            raise IncorrectMethodException(
-                "List contains more than 1 image. Call start_expense_analysis instead."
-            )
-
-        elif isinstance(file_source, str):
-            logging.debug("Filepath given.")
-            images = self._get_document_images_from_path(file_source)
-            if len(images) > 1:
-                raise IncorrectMethodException(
-                    "Input contains more than 1 page. Call start_expense_analysis instead."
-                )
-            file_source = _image_to_byte_array(images[0])
-
-        elif isinstance(file_source, Image.Image):
-            logging.debug("PIL Image given.")
-            images = [file_source.copy()]
-            file_source = _image_to_byte_array(file_source)
-
-        elif isinstance(file_source, list) and isinstance(file_source[0], Image.Image):
-            logging.debug("List of PIL Image given.")
-            images = deepcopy(file_source)
-            file_source = _image_to_byte_array(images[0])
-
-        else:
-            images = []
-            raise InputError("Input file_source format not supported.")
-
-        if not s3_output_path:
-            output_config = None
-        else:
-            bucket, prefix = s3_path_to_bucket_and_prefix(s3_output_path)
-            output_config = OutputConfig(s3_bucket=bucket, s3_prefix=prefix)
-
-        try:
-            response = call_textract_lending(
-                input_document=file_source,
-                output_config=output_config,
-                kms_key_id=self.kms_key_id,
-                job_tag="",
-                notification_channel=None,
-                client_request_token="",
-                return_job_id=False,
-                force_async_api=False,
-                boto3_textract_client=self.textract_client,
-                job_done_polling_interval=0,
-            )
-        except Exception as exception:
-            if exception.__class__.__name__ == "InvalidS3ObjectException":
-                raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
-                )
-            raise exception
-
-        document = response_parser.parse(response)
-        document.response = response
-        if save_image:
-            for page in document.pages:
-                page.image = images[document.pages.index(page)]
-        return document
-
     def start_lending_analysis(self,
         file_source: Union[str, bytes, Image.Image],
         s3_output_path: str = "",
         s3_upload_path: str = "",
-        client_request_token: str = "",
-        job_tag: str = "",
         save_image: bool = True,
     ) -> LazyDocument:
         original_file_source = file_source
@@ -931,8 +841,7 @@ class Textractor:
                 job_tag="",
                 notification_channel=None,
                 client_request_token="",
-                return_job_id=False,
-                force_async_api=False,
+                return_job_id=True,
                 boto3_textract_client=self.textract_client,
                 job_done_polling_interval=0,
             )
