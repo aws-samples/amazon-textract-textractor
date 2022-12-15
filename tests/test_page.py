@@ -72,7 +72,7 @@ class TestPage(unittest.TestCase):
 
         self.assertEqual(
             page.__repr__(),
-            "This Page (1) holds the following data:\nWords - 51\nLines - 24\nKey-values - 3\nCheckboxes - 2\nTables - 1\nQueries - 0\nSignatures - 1\nExpense documents - 0"
+            "This Page (1) holds the following data:\nWords - 51\nLines - 24\nKey-values - 3\nCheckboxes - 2\nTables - 1\nQueries - 0\nSignatures - 0\nExpense documents - 0"
         )
 
         self.assertEqual(len(page.keys(include_checkboxes=True)), 5)
