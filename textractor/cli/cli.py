@@ -18,8 +18,8 @@ STRING_DICT = {
     # Subcommand decriptions
     "DETECT_DOCUMENT_TEXT": "Synchronous API for Optical Character Recognition",
     "START_DOCUMENT_TEXT_DETECTION": "Asynchronous API for Optical Character Recognition",
-    "ANALYZE_DOCUMENT": "Synchronous API for document analysis (forms, tables, and queries)",
-    "START_DOCUMENT_ANALYSIS": "Asynchronous API for document analysis (forms, tables, and queries)",
+    "ANALYZE_DOCUMENT": "Synchronous API for document analysis (forms, tables, queries, and signatures)",
+    "START_DOCUMENT_ANALYSIS": "Asynchronous API for document analysis (forms, tables, queries, and signatures)",
     "ANALYZE_EXPENSE": "Synchronous API for expense analysis",
     "START_EXPENSE_ANALYSIS": "Asynchronous API for expense analysis",
     "ANALYZE_ID": "API for identity document analysis (supports driver's license and passports).",
