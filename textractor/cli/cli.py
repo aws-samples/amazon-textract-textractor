@@ -368,6 +368,8 @@ def textractor_cli():
                 print(out.queries.pretty_print())
             if "ALL" in args.print or "EXPENSES" in args.print:
                 print(out.expense_documents.pretty_print())
+            if "ALL" in args.print or "SIGNATURES" in args.print:
+                print(out.signatures.pretty_print())
             if "ALL" in args.print or "IDS" in args.print:
                 print(out.identity_documents.pretty_print())
 
@@ -383,6 +385,8 @@ def textractor_cli():
                 entity_list += out.key_values
             if "ALL" in args.overlay or "QUERIES" in args.overlay:
                 entity_list += out.queries
+            if "ALL" in args.overlay or "SIGNATURES" in args.overlay:
+                entity_list += out.signatures
             image = entity_list.visualize(
                 with_text=True,
                 font_size_ratio=args.font_size_ratio,

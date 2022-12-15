@@ -219,7 +219,8 @@ class CLIPrint(Enum):
     FORMS = 3
     QUERIES = 4
     EXPENSES = 5
-    IDS = 6
+    SIGNATURES = 6
+    IDS = 7
 
 
 class CLIOverlay(Enum):
@@ -229,3 +230,4 @@ class CLIOverlay(Enum):
     TABLES = 3
     FORMS = 4
     QUERIES = 5
+    SIGNATURE = 6
