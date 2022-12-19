@@ -1,17 +1,10 @@
 numpy==1.21.*
-amazon-textract-caller==0.0.24
-amazon-textract-response-parser==0.1.33
-boto3==1.24.*
 jsonschema
 jupyterlab
 pandas
 pdf2image==1.16.0
-Pillow
 pytest
 sphinx-rtd-theme==1.0.0
-tabulate==0.8.10
-XlsxWriter==3.0.3
-pyxDamerauLevenshtein==1.7.*
 Sphinx==5.1.*
 nbsphinx==0.8.*
 sphinx-rtd-theme==1.0.*

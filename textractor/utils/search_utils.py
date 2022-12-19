@@ -7,8 +7,9 @@ except ImportError:
     # The latter has numpy as dependency.
     pass
 
+import math
+import editdistance
 from textractor.data.constants import SimilarityMetric
-from pyxdameraulevenshtein import normalized_damerau_levenshtein_distance
 from textractor.exceptions import MissingDependencyException
 
 
@@ -58,7 +59,7 @@ class SearchUtils:
             cls.util = util
 
         if similarity_metric == SimilarityMetric.LEVENSHTEIN:
-            return normalized_damerau_levenshtein_distance(
+            return normalized_edit_distance(
                 word_1.lower(), word_2.lower()
             )
         elif similarity_metric == SimilarityMetric.EUCLIDEAN:
@@ -111,3 +112,16 @@ def get_metadata_attr_name(cell_atr):
         return cell_map[cell_atr]
     except:
         return ""
+
+def normalized_edit_distance(s1: str, s2: str):
+    """
+    Returns the normalized edit distance from Lopresti et al.
+
+    :param s1: First string
+    :type s1: str
+    :param s2: Second string
+    :type s2: str
+    """
+
+    dist = editdistance.eval(s1, s2) 
+    return 1.0 / math.exp(dist / (min(len(s1), len(s2)) - dist))
