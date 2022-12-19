@@ -38,7 +38,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # Install sphinx
+      # Install base dependencies
+      - name: Install dependencies
+        run: python3 -m pip install -r requirements.txt
+
+      # Install dev dependencies
       - name: Install dependencies
         run: python3 -m pip install -r ./extras/dev.txt
 

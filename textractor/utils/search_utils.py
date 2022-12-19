@@ -124,4 +124,6 @@ def normalized_edit_distance(s1: str, s2: str):
     """
 
     dist = editdistance.eval(s1, s2) 
+    if min(len(s1), len(s2)) - dist == 0:
+        return 0.0
     return 1.0 / math.exp(dist / (min(len(s1), len(s2)) - dist))
