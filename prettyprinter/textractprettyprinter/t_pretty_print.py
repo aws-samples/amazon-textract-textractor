@@ -1,5 +1,9 @@
 import trp
-from trp.trp2 import TBlock, TBoundingBox, TDocument, TGeometry
+from trp.trp2 import TBlock, TBoundingBox, TDocument, TGeometry, TPoint
+from trp.trp2_analyzeid import TIdentityDocument
+from trp.trp2_expense import TExpenseField, TFieldType
+from trp.trp2_lending import TFullLendingDocument
+import trp.trp2_lending as tl
 from typing import List, Optional
 from tabulate import tabulate
 from enum import Enum
@@ -10,36 +14,39 @@ import statistics
 
 logger = logging.getLogger(__name__)
 
-Textract_Pretty_Print = Enum('Textract_Pretty_Print', ["WORDS", "LINES", "FORMS", "TABLES"], start=0)
-Pretty_Print_Table_Format = Enum(
-    'Pretty_Print_Table_Format',
-    [
-        "csv",
-        "plain",
-        "simple",
-        "github",
-        "grid",
-        "fancy_grid",
-        "pipe",
-        "orgtbl",
-        "jira",
-        "presto",
-        "pretty",
-        "psql",
-        "rst",
-        "mediawiki",
-        "moinmoin",
-        "youtrack",
-        "html",
-        "unsafehtml",
-        "latex",
-        "latex_raw",
-        "latex_booktabs",
-        "latex_longtable",
-        "textile",
-        "tsv",
-    ],
-)
+
+class Textract_Pretty_Print(Enum):
+    WORDS = 1
+    LINES = 2
+    FORMS = 3
+    TABLES = 4
+
+
+class Pretty_Print_Table_Format(Enum):
+    csv = 1
+    plain = 2
+    simple = 3
+    github = 4
+    grid = 5
+    fancy_grid = 6
+    pipe = 7
+    orgtbl = 8
+    jira = 9
+    presto = 10
+    pretty = 11
+    psql = 12
+    rst = 13
+    mediawiki = 14
+    moinmoin = 15
+    youtrack = 16
+    html = 17
+    unsafehtml = 18
+    latex = 19
+    latex_raw = 20
+    latex_booktabs = 21
+    latex_longtable = 22
+    textile = 23
+    tsv = 24
 
 
 def get_string(textract_json: dict,
@@ -125,7 +132,7 @@ def convert_form_to_list_trp2(trp2_doc: TDocument, ) -> List[List[List[str]]]:
                 else:
                     # no value for key
                     key_value = ""
-                    value_geometry = TGeometry(TBoundingBox(width=0, height=0, top=0, left=0), polygon=None)
+                    value_geometry = TGeometry(TBoundingBox(width=0, height=0, top=0, left=0), polygon=[TPoint(0, 0)])
                     value_confidence = 1
                 page_keys.append([
                     str(idx + 1), key_name,
@@ -162,7 +169,8 @@ def convert_queries_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
                 for answer in answer_blocks:
                     value_geometry = TDocument.create_geometry_from_blocks([answer])
                     page_keys.append([
-                        str(idx + 1), key, "1", answer.text, answer.confidence, "0", "0", "0", "0",
+                        str(idx + 1), key, "1", answer.text,
+                        str(answer.confidence), "0", "0", "0", "0",
                         str(value_geometry.bounding_box.top),
                         str(value_geometry.bounding_box.height),
                         str(value_geometry.bounding_box.width),
@@ -316,3 +324,177 @@ def get_words_string(textract_json: dict,
                 result_value += "\n"
         i += 1
     return result_value
+
+
+def convert_geometry_from_trp2(geometry: TGeometry) -> List[str]:
+    """Converts a TGeometry object to strings [top, height, width, left]
+    if any value is None or empty, will be set to 0
+    """
+    return [
+        str(geometry.bounding_box.top if geometry and geometry.bounding_box else str(0)),
+        str(geometry.bounding_box.height if geometry and geometry.bounding_box else str(0)),
+        str(geometry.bounding_box.width if geometry and geometry.bounding_box else str(0)),
+        str(geometry.bounding_box.left if geometry and geometry.bounding_box else str(0)),
+    ]
+
+
+def convert_lending_document_from_trp2(trp2_lending: tl.TLendingDocument) -> List[List[str]]:
+    """
+    returns: a list of ['key-name', 'confidence-score-for-key-name', 'value', 'confidence-score-for-value', key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left]
+    """
+    lending_document_value_list: List[List[str]] = list()
+
+    if trp2_lending:
+        # Iterate through all lending fields
+        for lending_field in trp2_lending.lending_fields:
+            # type OTHER means we could not map to a normalized key and used the key from FORMS
+            if lending_field.field_type != 'OTHER':
+                if lending_field.value_detections:
+                    for value_detection in lending_field.value_detections:
+                        value_text = value_detection.selection_status if value_detection.selection_status else value_detection.text
+                        lending_document_value_list.append([
+                            lending_field.field_type, "1", value_text,
+                            str(value_detection.confidence), "0", "0", "0", "0"
+                        ] + convert_geometry_from_trp2(value_detection.geometry))
+                else:
+                    # no values detected, set all float to 0 and confidence to 1
+                    lending_document_value_list.append(
+                        [lending_field.field_type, "1", "", "1", "0", "0", "0", "0", "0", "0", "0", "0"])
+            else:
+                # OTHER has key detections, so need those
+                if lending_field.value_detections:
+                    for value_detection in lending_field.value_detections:
+                        value_text = value_detection.selection_status if value_detection.selection_status else value_detection.text
+
+                        lending_document_value_list.append([
+                            lending_field.key_detection.text,
+                            str(lending_field.key_detection.confidence), value_text,
+                            str(value_detection.confidence)
+                        ] + convert_geometry_from_trp2(lending_field.key_detection.geometry) +
+                                                           convert_geometry_from_trp2(value_detection.geometry))
+                else:
+                    # no value detections, so just add the key
+                    lending_document_value_list.append([
+                        lending_field.key_detection.text,
+                        str(lending_field.key_detection.confidence), "", "1",
+                        str(lending_field.key_detection.geometry.bounding_box.top),
+                        str(lending_field.key_detection.geometry.bounding_box.height),
+                        str(lending_field.key_detection.geometry.bounding_box.width),
+                        str(lending_field.key_detection.geometry.bounding_box.left), "0", "0", "0", "0"
+                    ])
+
+        for signature in trp2_lending.signature_detections:
+            lending_document_value_list.append([
+                "SIGNATURE",
+                "1",
+                "SIGNATURE_PRESENT",
+                str(signature.confidence),
+                "0",
+                "0",
+                "0",
+                "0",
+                str(signature.geometry.bounding_box.
+                    top if signature and signature.geometry and signature.geometry.bounding_box else str(0)),
+                str(signature.geometry.bounding_box.
+                    height if signature and signature.geometry and signature.geometry.bounding_box else str(0)),
+                str(signature.geometry.bounding_box.
+                    width if signature and signature.geometry and signature.geometry.bounding_box else str(0)),
+                str(signature.geometry.bounding_box.
+                    left if signature and signature.geometry and signature.geometry.bounding_box else str(0)),
+            ])
+    return lending_document_value_list
+
+
+def convert_expense_from_trp2(trp2_expense: tl.TExpense) -> List[List[str]]:
+    """
+    returns: a list of ['key-name', 'confidence-score-for-key-name', 'value', 'confidence-score-for-value', key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left]
+    If there is a Type, use that text as the first part of the key
+    If there is a LabelDetection, append that text to the key
+    If there is a GroupProperty with a GroupType, prepend that to the key
+    If there is a currency, add it to the value?
+    """
+    if not trp2_expense:
+        return list()
+    expense_value_list: List[List[str]] = list()
+    for summary_field in trp2_expense.summaryfields:
+        key_text: str = ""
+        key_confidence_list: List[float] = list()
+        key_geometry: TGeometry = None    #type: ignore
+        value_text: str = ""
+        value_confidence_list: List[float] = list()
+        value_geometry: TGeometry = None    #type: ignore
+        if summary_field.ftype:
+            if summary_field.ftype.text:
+                key_text = summary_field.ftype.text
+            if summary_field.ftype.confidence:
+                key_confidence_list.append(summary_field.ftype.confidence)
+        if summary_field.group_properties and summary_field.group_properties[0].types:
+            #just take the first one if there is a group_property
+            key_text = summary_field.group_properties[0].types[0] + "_" + key_text
+
+        if summary_field.labeldetection:
+            if summary_field.labeldetection.text:
+                key_text = summary_field.labeldetection.text + "_" + key_text
+            if summary_field.labeldetection.confidence:
+                key_confidence_list.append(summary_field.ftype.confidence)
+            if summary_field.labeldetection.geometry:
+                key_geometry = summary_field.labeldetection.geometry
+
+        if summary_field.valuedetection:
+            if summary_field.valuedetection.geometry:
+                value_geometry = summary_field.valuedetection.geometry
+            if summary_field.valuedetection.text:
+                value_text = summary_field.valuedetection.text
+            if summary_field.valuedetection.confidence:
+                value_confidence_list.append(summary_field.valuedetection.confidence)
+
+        expense_value_list.append(
+            [key_text,
+             statistics.mean(key_confidence_list), value_text,
+             statistics.mean(value_confidence_list)] + convert_geometry_from_trp2(key_geometry) +
+            convert_geometry_from_trp2(value_geometry))
+    return expense_value_list
+
+
+def convert_idenitity_from_trp2(trp2_identity: TIdentityDocument) -> List[List[str]]:
+    """
+    returns: a list of ['key-name', 'confidence-score-for-key-name', 'value', 'confidence-score-for-value', key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left]
+    Will not have entries for normalized values
+    """
+    if not trp2_identity:
+        return list()
+    identity_value_list: List[List[str]] = list()
+    for field in trp2_identity.identity_document_fields:
+        identity_value_list.append([
+            field.type.text if field.type else "",
+            str(1), field.value_detection.text if field.value_detection else "",
+            str(field.value_detection.confidence) if field.value_detection.confidence else "", "0", "0", "0", "0", "0",
+            "0", "0", "0"
+        ])
+    return identity_value_list
+
+
+def convert_lending_from_trp2(trp2_doc: TFullLendingDocument) -> List[List[str]]:
+    '''return List[List[List[str]]]
+    With the first List being the Page and the second the list of [page_classification, page_number, key, value]
+    page_classification, page_number, key_name, value_name, key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left
+    '''
+    page_list: List[List[str]] = list()
+    for idx, page_result in enumerate(trp2_doc.lending_results):
+        page_classification_max: tl.TPrediction = max(page_result.page_classification.page_type,
+                                                      key=lambda x: x.confidence)
+        page_number_max: tl.TPrediction = max(page_result.page_classification.page_number, key=lambda x: x.confidence)
+
+        for extraction in page_result.extractions:
+            for lending_detection in convert_lending_document_from_trp2(extraction.lending_document):
+                logger.debug(f"lending: {lending_detection}")
+                page_list.append([f"{page_classification_max.value}_{page_number_max.value}",
+                                  str(idx + 1)] + lending_detection)
+
+            for expense_detection in convert_expense_from_trp2(extraction.expense_document):
+                page_list.append([f"{page_classification_max.value}_{page_number_max.value}",
+                                  str(idx + 1)] + expense_detection)
+            for identity_detection in convert_idenitity_from_trp2(extraction.identity_document):
+                page_list.append([f"{page_classification_max.value}_{page_number_max.value}",
+                                  str(idx + 1)] + identity_detection)
+    return page_list
