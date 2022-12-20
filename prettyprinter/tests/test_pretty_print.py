@@ -1,12 +1,11 @@
-from textractcaller.t_call import Textract_Features
-from textractcaller.t_call import call_textract
+from textractcaller import Textract_Features, call_textract
 from trp.trp2 import TDocumentSchema
-from trp.trp2_lending import TFullLendingDocument, TFullLendingDocumentSchema
 import trp.trp2_lending as tl
 from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, get_tables_string, convert_lending_from_trp2
 import boto3
 import os
 import json
+import logging
 
 
 def test_pretty_with_tables():
@@ -67,14 +66,16 @@ def test_pretty_with_queries_and_trp2_one_without_answer():
 
 
 def test_lending(caplog):
-    import csv
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     input_filename = os.path.join(SCRIPT_DIR, "data/lending-doc-output_from_output_config.json")
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
-        trp2_doc: tl.TFullLendingDocument = TFullLendingDocumentSchema().load(json.load(input_fp))    #type: ignore
+        trp2_doc: tl.TFullLendingDocument = tl.TFullLendingDocumentSchema().load(json.load(input_fp))    #type: ignore
         assert trp2_doc
         lending_array = convert_lending_from_trp2(trp2_doc)
         assert lending_array
-        with open("lending-output.csv", "w") as output_f:
-            csv_writer = csv.writer(output_f)
-            csv_writer.writerows(lending_array)
+        assert len(lending_array) > 900
+        # import csv
+        # with open("lending-output.csv", "w") as output_f:
+        #     csv_writer = csv.writer(output_f)
+        #     csv_writer.writerows(lending_array)
