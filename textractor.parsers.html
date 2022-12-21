@@ -48,7 +48,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="textractor.html">Textract Caller</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Entity Parser</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#response-parser">response_parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.parsers.response_parser">response_parser</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="textractor.entities.html">Document Entities</a></li>
@@ -110,8 +110,62 @@
 the response_parser function has been created to handle API response parsing for <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/API_DetectDocumentText.html">DetectDocumentText</a>,
 <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/API_AnalyzeDocument.html">AnalyzeDocument</a>, <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/API_StartDocumentTextDetection.html">StartDocumentTextDetection</a> and
 <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/API_StartDocumentAnalysis.html">StartDocumentAnalysis</a>.</p>
-<section id="response-parser">
-<h2>response_parser<a class="headerlink" href="#response-parser" title="Permalink to this heading"></a></h2>
+<section id="module-textractor.parsers.response_parser">
+<span id="response-parser"></span><h2>response_parser<a class="headerlink" href="#module-textractor.parsers.response_parser" title="Permalink to this heading"></a></h2>
+<p>Consumes Textract JSON response and converts them to a Document object format.
+This class contains all the necessary utilities to create entity objects from JSON blocks within the response.
+Use ResponseParser’s parse function to handle API response and convert them to Document objects.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="textractor.parsers.response_parser.create_expense_from_field">
+<span class="sig-prename descclassname"><span class="pre">textractor.parsers.response_parser.</span></span><span class="sig-name descname"><span class="pre">create_expense_from_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.entities.html#textractor.entities.page.Page" title="textractor.entities.page.Page"><span class="pre">Page</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ExpenseField</span></span></span><a class="headerlink" href="#textractor.parsers.response_parser.create_expense_from_field" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="textractor.parsers.response_parser.parse">
+<span class="sig-prename descclassname"><span class="pre">textractor.parsers.response_parser.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document"><span class="pre">Document</span></a></span></span><a class="headerlink" href="#textractor.parsers.response_parser.parse" title="Permalink to this definition"></a></dt>
+<dd><p>Ingests response data and API Call Mode and calls the appropriate function for it.
+Presently supports only SYNC and ASYNC API calls. Will be extended to Analyze ID and Expense in the future.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>response</strong> (<em>dict</em>) – JSON response data in a format readable by the ResponseParser.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Document object returned after making respective parse function calls.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document">Document</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="textractor.parsers.response_parser.parse_analyze_id_response">
+<span class="sig-prename descclassname"><span class="pre">textractor.parsers.response_parser.</span></span><span class="sig-name descname"><span class="pre">parse_analyze_id_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.parsers.response_parser.parse_analyze_id_response" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="textractor.parsers.response_parser.parse_document_api_response">
+<span class="sig-prename descclassname"><span class="pre">textractor.parsers.response_parser.</span></span><span class="sig-name descname"><span class="pre">parse_document_api_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document"><span class="pre">Document</span></a></span></span><a class="headerlink" href="#textractor.parsers.response_parser.parse_document_api_response" title="Permalink to this definition"></a></dt>
+<dd><p>Parses Textract JSON response and converts them into Document object containing Page objects.
+A valid Page object must contain at least a unique name and physical dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>response</strong> (<em>dict</em>) – JSON response data in a format readable by the ResponseParser</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Document object containing the hierarchy of DocumentEntity descendants.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document">Document</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="textractor.parsers.response_parser.parser_analyze_expense_response">
+<span class="sig-prename descclassname"><span class="pre">textractor.parsers.response_parser.</span></span><span class="sig-name descname"><span class="pre">parser_analyze_expense_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.parsers.response_parser.parser_analyze_expense_response" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 </section>
 

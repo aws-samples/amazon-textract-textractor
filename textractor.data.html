@@ -100,8 +100,563 @@
     text-align: unset;
 }
 </style>
-<section id="constants">
-<h1>Constants<a class="headerlink" href="#constants" title="Permalink to this heading"></a></h1>
+<section id="module-textractor.data.constants">
+<span id="constants"></span><h1>Constants<a class="headerlink" href="#module-textractor.data.constants" title="Permalink to this heading"></a></h1>
+<p>Multiple feature calls within the Textractor tool require the use of input parameters from fixed choices. They’ve been defined as <code class="code docutils literal notranslate"><span class="pre">Enum</span></code> within the data package.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">AnalyzeIDFields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Enum containing all the AnalyzeID keys</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.ADDRESS">
+<span class="sig-name descname"><span class="pre">ADDRESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ADDRESS'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.ADDRESS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.CITY_IN_ADDRESS">
+<span class="sig-name descname"><span class="pre">CITY_IN_ADDRESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CITY_IN_ADDRESS'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.CITY_IN_ADDRESS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.CLASS">
+<span class="sig-name descname"><span class="pre">CLASS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CLASS'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.CLASS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.COUNTY">
+<span class="sig-name descname"><span class="pre">COUNTY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'COUNTY'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.COUNTY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.DATE_OF_BIRTH">
+<span class="sig-name descname"><span class="pre">DATE_OF_BIRTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATE_OF_BIRTH'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.DATE_OF_BIRTH" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.DATE_OF_ISSUE">
+<span class="sig-name descname"><span class="pre">DATE_OF_ISSUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DATE_OF_ISSUE'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.DATE_OF_ISSUE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.DOCUMENT_NUMBER">
+<span class="sig-name descname"><span class="pre">DOCUMENT_NUMBER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DOCUMENT_NUMBER'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.DOCUMENT_NUMBER" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.ENDORSEMENTS">
+<span class="sig-name descname"><span class="pre">ENDORSEMENTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ENDORSEMENTS'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.ENDORSEMENTS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.EXPIRATION_DATE">
+<span class="sig-name descname"><span class="pre">EXPIRATION_DATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EXPIRATION_DATE'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.EXPIRATION_DATE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.FIRST_NAME">
+<span class="sig-name descname"><span class="pre">FIRST_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'FIRST_NAME'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.FIRST_NAME" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.ID_TYPE">
+<span class="sig-name descname"><span class="pre">ID_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ID_TYPE'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.ID_TYPE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.LAST_NAME">
+<span class="sig-name descname"><span class="pre">LAST_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'LAST_NAME'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.LAST_NAME" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.MIDDLE_NAME">
+<span class="sig-name descname"><span class="pre">MIDDLE_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MIDDLE_NAME'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.MIDDLE_NAME" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.PLACE_OF_BIRTH">
+<span class="sig-name descname"><span class="pre">PLACE_OF_BIRTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'PLACE_OF_BIRTH'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.PLACE_OF_BIRTH" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.RESTRICTIONS">
+<span class="sig-name descname"><span class="pre">RESTRICTIONS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RESTRICTIONS'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.RESTRICTIONS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.STATE_IN_ADDRESS">
+<span class="sig-name descname"><span class="pre">STATE_IN_ADDRESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'STATE_IN_ADDRESS'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.STATE_IN_ADDRESS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.STATE_NAME">
+<span class="sig-name descname"><span class="pre">STATE_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'STATE_NAME'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.STATE_NAME" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.SUFFIX">
+<span class="sig-name descname"><span class="pre">SUFFIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SUFFIX'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.SUFFIX" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.VETERAN">
+<span class="sig-name descname"><span class="pre">VETERAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'VETERAN'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.VETERAN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.AnalyzeIDFields.ZIP_CODE_IN_ADDRESS">
+<span class="sig-name descname"><span class="pre">ZIP_CODE_IN_ADDRESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ZIP_CODE_IN_ADDRESS'</span></em><a class="headerlink" href="#textractor.data.constants.AnalyzeIDFields.ZIP_CODE_IN_ADDRESS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIOverlay">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">CLIOverlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.CLIOverlay" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIOverlay.ALL">
+<span class="sig-name descname"><span class="pre">ALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.CLIOverlay.ALL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIOverlay.FORMS">
+<span class="sig-name descname"><span class="pre">FORMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#textractor.data.constants.CLIOverlay.FORMS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIOverlay.LINES">
+<span class="sig-name descname"><span class="pre">LINES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#textractor.data.constants.CLIOverlay.LINES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIOverlay.QUERIES">
+<span class="sig-name descname"><span class="pre">QUERIES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#textractor.data.constants.CLIOverlay.QUERIES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIOverlay.SIGNATURE">
+<span class="sig-name descname"><span class="pre">SIGNATURE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#textractor.data.constants.CLIOverlay.SIGNATURE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIOverlay.TABLES">
+<span class="sig-name descname"><span class="pre">TABLES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#textractor.data.constants.CLIOverlay.TABLES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIOverlay.WORDS">
+<span class="sig-name descname"><span class="pre">WORDS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.CLIOverlay.WORDS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIPrint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">CLIPrint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.CLIPrint" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIPrint.ALL">
+<span class="sig-name descname"><span class="pre">ALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.CLIPrint.ALL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIPrint.EXPENSES">
+<span class="sig-name descname"><span class="pre">EXPENSES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#textractor.data.constants.CLIPrint.EXPENSES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIPrint.FORMS">
+<span class="sig-name descname"><span class="pre">FORMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#textractor.data.constants.CLIPrint.FORMS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIPrint.IDS">
+<span class="sig-name descname"><span class="pre">IDS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#textractor.data.constants.CLIPrint.IDS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIPrint.QUERIES">
+<span class="sig-name descname"><span class="pre">QUERIES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#textractor.data.constants.CLIPrint.QUERIES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIPrint.SIGNATURES">
+<span class="sig-name descname"><span class="pre">SIGNATURES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#textractor.data.constants.CLIPrint.SIGNATURES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIPrint.TABLES">
+<span class="sig-name descname"><span class="pre">TABLES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#textractor.data.constants.CLIPrint.TABLES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CLIPrint.TEXT">
+<span class="sig-name descname"><span class="pre">TEXT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.CLIPrint.TEXT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.CellTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">CellTypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.CellTypes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Special cells within the <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code> belong to one of these categories.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CellTypes.COLUMN_HEADER">
+<span class="sig-name descname"><span class="pre">COLUMN_HEADER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.CellTypes.COLUMN_HEADER" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CellTypes.FLOATING_FOOTER">
+<span class="sig-name descname"><span class="pre">FLOATING_FOOTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#textractor.data.constants.CellTypes.FLOATING_FOOTER" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CellTypes.FLOATING_TITLE">
+<span class="sig-name descname"><span class="pre">FLOATING_TITLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#textractor.data.constants.CellTypes.FLOATING_TITLE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CellTypes.SECTION_TITLE">
+<span class="sig-name descname"><span class="pre">SECTION_TITLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.CellTypes.SECTION_TITLE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.CellTypes.SUMMARY_CELL">
+<span class="sig-name descname"><span class="pre">SUMMARY_CELL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#textractor.data.constants.CellTypes.SUMMARY_CELL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.Direction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">Direction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.Direction" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Directions available for search using DirectionalFinder</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.Direction.ABOVE">
+<span class="sig-name descname"><span class="pre">ABOVE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.Direction.ABOVE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.Direction.BELOW">
+<span class="sig-name descname"><span class="pre">BELOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.Direction.BELOW" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.Direction.LEFT">
+<span class="sig-name descname"><span class="pre">LEFT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#textractor.data.constants.Direction.LEFT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.Direction.RIGHT">
+<span class="sig-name descname"><span class="pre">RIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#textractor.data.constants.Direction.RIGHT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.DirectionalFinderType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">DirectionalFinderType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.DirectionalFinderType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Document Entity types recognized by Textract APIs.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.DirectionalFinderType.KEY_VALUE_SET">
+<span class="sig-name descname"><span class="pre">KEY_VALUE_SET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.DirectionalFinderType.KEY_VALUE_SET" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.DirectionalFinderType.SELECTION_ELEMENT">
+<span class="sig-name descname"><span class="pre">SELECTION_ELEMENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.DirectionalFinderType.SELECTION_ELEMENT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.SelectionStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">SelectionStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.SelectionStatus" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>These are the 2 categories defined for the SelectionStatus of a <code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionElement</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.SelectionStatus.NOT_SELECTED">
+<span class="sig-name descname"><span class="pre">NOT_SELECTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.SelectionStatus.NOT_SELECTED" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.SelectionStatus.SELECTED">
+<span class="sig-name descname"><span class="pre">SELECTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.SelectionStatus.SELECTED" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.SimilarityMetric">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">SimilarityMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.SimilarityMetric" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Similarity metrics for search queries on Document data</p>
+<p>COSINE: Cosine similarity is a metric used to measure the similarity of two vectors. It measures the similarity in the direction or orientation of the vectors ignoring differences in their magnitude or scale.
+EUCLIDEAN: Euclidean distance is calculated as the square root of the sum of the squared differences between the two vectors.
+LEVENSHTEIN: The Levenshtein distance is a string metric for measuring difference between two sequences. It is the minimum number of single-character edits (i.e. insertions, deletions or substitutions) required to change one word into the other.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.SimilarityMetric.COSINE">
+<span class="sig-name descname"><span class="pre">COSINE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.SimilarityMetric.COSINE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.SimilarityMetric.EUCLIDEAN">
+<span class="sig-name descname"><span class="pre">EUCLIDEAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.SimilarityMetric.EUCLIDEAN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.SimilarityMetric.LEVENSHTEIN">
+<span class="sig-name descname"><span class="pre">LEVENSHTEIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#textractor.data.constants.SimilarityMetric.LEVENSHTEIN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">TableFormat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.TableFormat" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Various formats of printing <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code> data with the tabulate package.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.CSV">
+<span class="sig-name descname"><span class="pre">CSV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.CSV" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.FANCY_GRID">
+<span class="sig-name descname"><span class="pre">FANCY_GRID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.FANCY_GRID" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.GITHUB">
+<span class="sig-name descname"><span class="pre">GITHUB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.GITHUB" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.GRID">
+<span class="sig-name descname"><span class="pre">GRID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.GRID" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.HTML">
+<span class="sig-name descname"><span class="pre">HTML</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.HTML" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.JIRA">
+<span class="sig-name descname"><span class="pre">JIRA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.JIRA" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.LATEX">
+<span class="sig-name descname"><span class="pre">LATEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">18</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.LATEX" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.LATEX_BOOKTABS">
+<span class="sig-name descname"><span class="pre">LATEX_BOOKTABS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">20</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.LATEX_BOOKTABS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.LATEX_LONGTABLE">
+<span class="sig-name descname"><span class="pre">LATEX_LONGTABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">21</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.LATEX_LONGTABLE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.LATEX_RAW">
+<span class="sig-name descname"><span class="pre">LATEX_RAW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">19</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.LATEX_RAW" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.MEDIAWIKI">
+<span class="sig-name descname"><span class="pre">MEDIAWIKI</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">13</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.MEDIAWIKI" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.MOINMOIN">
+<span class="sig-name descname"><span class="pre">MOINMOIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">14</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.MOINMOIN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.ORGTBL">
+<span class="sig-name descname"><span class="pre">ORGTBL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.ORGTBL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.PIPE">
+<span class="sig-name descname"><span class="pre">PIPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.PIPE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.PLAIN">
+<span class="sig-name descname"><span class="pre">PLAIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.PLAIN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.PRESTO">
+<span class="sig-name descname"><span class="pre">PRESTO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.PRESTO" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.PRETTY">
+<span class="sig-name descname"><span class="pre">PRETTY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.PRETTY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.PSQL">
+<span class="sig-name descname"><span class="pre">PSQL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">11</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.PSQL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.RST">
+<span class="sig-name descname"><span class="pre">RST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.RST" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.SIMPLE">
+<span class="sig-name descname"><span class="pre">SIMPLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.SIMPLE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.TEXTILE">
+<span class="sig-name descname"><span class="pre">TEXTILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">22</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.TEXTILE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.TSV">
+<span class="sig-name descname"><span class="pre">TSV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">23</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.TSV" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.UNSAFEHTML">
+<span class="sig-name descname"><span class="pre">UNSAFEHTML</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">17</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.UNSAFEHTML" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TableFormat.YOUTRACK">
+<span class="sig-name descname"><span class="pre">YOUTRACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">15</span></em><a class="headerlink" href="#textractor.data.constants.TableFormat.YOUTRACK" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.TextTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">TextTypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.TextTypes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Textract recognizes TextType of all words in the document to fall into one of these 2 categories.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextTypes.HANDWRITING">
+<span class="sig-name descname"><span class="pre">HANDWRITING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.TextTypes.HANDWRITING" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextTypes.PRINTED">
+<span class="sig-name descname"><span class="pre">PRINTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.TextTypes.PRINTED" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">TextractAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.TextractAPI" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>API types for asynchronous type fetching</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractAPI.ANALYZE">
+<span class="sig-name descname"><span class="pre">ANALYZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.TextractAPI.ANALYZE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractAPI.DETECT_TEXT">
+<span class="sig-name descname"><span class="pre">DETECT_TEXT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.TextractAPI.DETECT_TEXT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractAPI.EXPENSE">
+<span class="sig-name descname"><span class="pre">EXPENSE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#textractor.data.constants.TextractAPI.EXPENSE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractAPI.TextractAPI_to_Textract_API">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TextractAPI_to_Textract_API</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.TextractAPI.TextractAPI_to_Textract_API" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractAPI.Textract_API_to_TextractAPI">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Textract_API_to_TextractAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Textract_API</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.TextractAPI.Textract_API_to_TextractAPI" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractFeatures">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">TextractFeatures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.TextractFeatures" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Features to be used as parameter for AnalyzeDocument and StartDocumentAnalysis.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractFeatures.FORMS">
+<span class="sig-name descname"><span class="pre">FORMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.TextractFeatures.FORMS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractFeatures.QUERIES">
+<span class="sig-name descname"><span class="pre">QUERIES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#textractor.data.constants.TextractFeatures.QUERIES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractFeatures.SIGNATURES">
+<span class="sig-name descname"><span class="pre">SIGNATURES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#textractor.data.constants.TextractFeatures.SIGNATURES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractFeatures.TABLES">
+<span class="sig-name descname"><span class="pre">TABLES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.TextractFeatures.TABLES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.data.constants.</span></span><span class="sig-name descname"><span class="pre">TextractType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.data.constants.TextractType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Document Entity types recognized by Textract APIs.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractType.KEY_VALUE_SET">
+<span class="sig-name descname"><span class="pre">KEY_VALUE_SET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#textractor.data.constants.TextractType.KEY_VALUE_SET" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractType.LINES">
+<span class="sig-name descname"><span class="pre">LINES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#textractor.data.constants.TextractType.LINES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractType.SELECTION_ELEMENT">
+<span class="sig-name descname"><span class="pre">SELECTION_ELEMENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#textractor.data.constants.TextractType.SELECTION_ELEMENT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractType.TABLES">
+<span class="sig-name descname"><span class="pre">TABLES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#textractor.data.constants.TextractType.TABLES" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractType.TABLE_CELL">
+<span class="sig-name descname"><span class="pre">TABLE_CELL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#textractor.data.constants.TextractType.TABLE_CELL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="textractor.data.constants.TextractType.WORDS">
+<span class="sig-name descname"><span class="pre">WORDS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#textractor.data.constants.TextractType.WORDS" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

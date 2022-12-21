@@ -101,8 +101,250 @@
     text-align: unset;
 }
 </style>
-<section id="textract-caller">
-<h1>Textract Caller<a class="headerlink" href="#textract-caller" title="Permalink to this heading"></a></h1>
+<section id="module-textractor.textractor">
+<span id="textract-caller"></span><h1>Textract Caller<a class="headerlink" href="#module-textractor.textractor" title="Permalink to this heading"></a></h1>
+<p><a class="reference internal" href="#textractor.textractor.Textractor" title="textractor.textractor.Textractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Textractor</span></code></a> is the main class associated with this package. It needs to be instantiated before using any of the functionalities
+the package provides. The main use of this class is to make calls to the Textract API and create Python objects for all the
+document entities that are returned in the JSON output of the API. The response received is implicitly parsed and a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> type 
+object is returned containing all the document entities, their associated relationships and metadata.</p>
+<p>The Textract API and Textractor method mapping is as below. Use these wrappers to make calls and parse the responses
+in one step.</p>
+<ul class="simple">
+<li><p>(SYNC) DetectDocumentText : detect_document_text</p></li>
+<li><p>(SYNC) AnalyzeDocument : analyze_document</p></li>
+<li><p>(SYNC) AnalyzeID : analyze_id</p></li>
+<li><p>(SYNC) AnalyzeExpense : analyze_expense</p></li>
+<li><p>(ASYNC) StartDocumentTextDetection : start_document_text_detection</p></li>
+<li><p>(ASYNC) StartDocumentAnalysis : start_document_analysis</p></li>
+<li><p>(ASYNC) StartExpenseAnalysis : start_expense_analysis</p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="textractor.textractor.Textractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.textractor.</span></span><span class="sig-name descname"><span class="pre">Textractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kms_key_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.textractor.Textractor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Initializes the customer credentials needed to make calls to Textract using boto3 package internally.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Customer’s profile name as set in the ~/.aws/config file. This profile typically contains this format.
+<code class="code docutils literal notranslate"><span class="pre">[default]</span>
+<span class="pre">region</span> <span class="pre">=</span> <span class="pre">us-west-2</span>
+<span class="pre">output=json</span></code></p></li>
+<li><p><strong>region_name</strong> – If AWSCLI isn’t setup, the user can pass region to let boto3 pick up credentials from the system.</p></li>
+<li><p><strong>region_name</strong> – str</p></li>
+<li><p><strong>kms_key_id</strong> (<em>str</em><em>, </em><em>optional</em>) – Customer’s AWS KMS key (cryptographic key)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.textractor.Textractor.analyze_document">
+<span class="sig-name descname"><span class="pre">analyze_document</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">QueriesConfig</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document"><span class="pre">Document</span></a></span></span><a class="headerlink" href="#textractor.textractor.Textractor.analyze_document" title="Permalink to this definition"></a></dt>
+<dd><p>Make a call to the SYNC AnalyzeDocument API, implicitly parses the response and produces a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> object.
+This function is ideal for single page PDFs or single images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_source</strong> (<em>str</em><em> or </em><em>PIL.Image</em><em>, </em><em>required</em>) – Path to a file stored locally, on an S3 bucket or PIL Image</p></li>
+<li><p><strong>features</strong> (<em>Union</em><em>[</em><em>QueriesConfig</em><em>, </em><em>List</em><em>[</em><em>Query</em><em>]</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – List of TextractFeatures to be extracted from the Document by the TextractAPI</p></li>
+<li><p><strong>queries</strong> – Queries to run on the document</p></li>
+<li><p><strong>s3_output_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Prefix to store the output on the S3 bucket (passed as param to Textractor).</p></li>
+<li><p><strong>save_image</strong> (<em>bool</em>) – Flag to indicate if document images are to be stored within the Document object. This is optional
+and necessary only if the customer wants to visualize bounding boxes for their document entities.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a Document object containing all the entities, relationships and metadata extracted by the Textract
+AnalyzeDocument API stored within it.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document">Document</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.textractor.Textractor.analyze_expense">
+<span class="sig-name descname"><span class="pre">analyze_expense</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Image</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.textractor.Textractor.analyze_expense" title="Permalink to this definition"></a></dt>
+<dd><p>Make a call to the SYNC AnalyzeExpense API, implicitly parses the response and produces a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> object.
+This function is ideal for multipage PDFs or list of images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_source</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>Image.Image</em><em>]</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Path to a file stored locally, on an S3 bucket or PIL Image</p></li>
+<li><p><strong>s3_output_path</strong> (<em>str</em><em>, </em><em>optional</em>) – S3 output path. When used the job output is save to the given S3 path, defaults to “”</p></li>
+<li><p><strong>save_image</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to keep the file source as PIL Images inside the returned Document object, defaults to False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>IncorrectMethodException</strong> – Raised when the file source type is incompatible with the Textract API being called</p></li>
+<li><p><strong>InputError</strong> – Raised when the file source type is invalid</p></li>
+<li><p><strong>RegionMismatchError</strong> – Raised when the file source region is different the API region.</p></li>
+<li><p><strong>exception</strong> – Raised if the Textract API call fails</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Document</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document">Document</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.textractor.Textractor.analyze_id">
+<span class="sig-name descname"><span class="pre">analyze_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Image</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document"><span class="pre">Document</span></a></span></span><a class="headerlink" href="#textractor.textractor.Textractor.analyze_id" title="Permalink to this definition"></a></dt>
+<dd><p>AnalyzeID parses identity documents such as passports and driver’s license and
+returns the result as a dictionary of standardized fields. See <a class="reference external" href="https://docs.aws.amazon.com/textract/latest/dg/identitydocumentfields.html">https://docs.aws.amazon.com/textract/latest/dg/identitydocumentfields.html</a>
+for a complete list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_source</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>Image.Image</em><em>]</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Path to a file stored locally, on an S3 bucket or list of PIL Images</p></li>
+<li><p><strong>save_image</strong> (<em>bool</em><em>, </em><em>optional</em>) – Saves the images in the returned Document object for visualizing the results, defaults to False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>InputError</strong> – Raised when the file_source could not be parsed</p></li>
+<li><p><strong>RegionMismatchError</strong> – Raised when the S3 object passed as file source is in a region that does not match the one used to create the Textractor object.</p></li>
+<li><p><strong>exception</strong> – Raised when the Textract call fails</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Document</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document">Document</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.textractor.Textractor.detect_document_text">
+<span class="sig-name descname"><span class="pre">detect_document_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document"><span class="pre">Document</span></a></span></span><a class="headerlink" href="#textractor.textractor.Textractor.detect_document_text" title="Permalink to this definition"></a></dt>
+<dd><p>Make a call to the SYNC DetectDocumentText API, implicitly parses the response and produces a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> object.
+This function is ideal for single page PDFs or single images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_source</strong> (<em>str</em><em> or </em><em>PIL.Image</em><em>, </em><em>required</em>) – Path to a file stored locally, on an S3 bucket or PIL Image</p></li>
+<li><p><strong>s3_output_path</strong> (<em>str</em><em>, </em><em>optional</em>) – S3 path to store the output.</p></li>
+<li><p><strong>save_image</strong> (<em>bool</em>) – Flag to indicate if document images are to be stored within the Document object. This is optional
+and necessary only if the customer wants to visualize bounding boxes for their document entities.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a Document object containing all the entities, relationships and metadata extracted by the Textract
+DetectDocumentText API stored within it.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document">Document</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.textractor.Textractor.get_result">
+<span class="sig-name descname"><span class="pre">get_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="textractor.data.html#textractor.data.constants.TextractAPI" title="textractor.data.constants.TextractAPI"><span class="pre">TextractAPI</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Textract_API</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.textractor.Textractor.get_result" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.textractor.Textractor.start_document_analysis">
+<span class="sig-name descname"><span class="pre">start_document_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Image</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_upload_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">QueriesConfig</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_request_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">LazyDocument</span></span></span><a class="headerlink" href="#textractor.textractor.Textractor.start_document_analysis" title="Permalink to this definition"></a></dt>
+<dd><p>Make a call to the ASYNC StartDocumentAnalysis API, implicitly parses the response and produces a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> object.
+This function is ideal for multipage PDFs or list of images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_source</strong> (<em>str</em><em> or </em><em>List</em><em>[</em><em>PIL.Image</em><em>]</em><em>, </em><em>required</em>) – Path to a file stored locally, on an S3 bucket or list of PIL Images</p></li>
+<li><p><strong>features</strong> (<em>list</em><em>, </em><em>required</em>) – List of TextractFeatures to be extracted from the Document by the TextractAPI</p></li>
+<li><p><strong>s3_output_path</strong> (<em>str</em>) – Path to store the output on the S3 bucket (passed as param to Textractor).</p></li>
+<li><p><strong>s3_upload_path</strong> (<em>str</em><em>, </em><em>optional</em>) – If given, will automatically upload the document to the given S3 prefix before calling Textract. Files are uploaded
+under a uuid. If not given the data is expected to be already in s3</p></li>
+<li><p><strong>client_request_token</strong> (<em>str</em><em>, </em><em>optional</em>) – The idempotent token that’s used to identify the start request. If you use the same. token
+with multiple StartDocumentTextDetection requests, the same. JobId is returned. Use ClientRequestToken
+to prevent the same. job from being accidentally started more than once.</p></li>
+<li><p><strong>job_tag</strong> (<em>str</em><em>, </em><em>optional</em>) – An identifier that you specify that’s included in the completion notification published to the Amazon SNS topic.</p></li>
+<li><p><strong>save_image</strong> (<em>bool</em>) – Flag to indicate if document images are to be stored within the Document object. This is optional
+and necessary only if the customer wants to visualize bounding boxes for their document entities.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a Document object containing all the entities, relationships and metadata extracted by the Textract
+StartDocumentAnalysis API stored within it.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="textractor.entities.html#textractor.entities.document.Document" title="textractor.entities.document.Document">Document</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.textractor.Textractor.start_document_text_detection">
+<span class="sig-name descname"><span class="pre">start_document_text_detection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Image</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_upload_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_request_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.textractor.Textractor.start_document_text_detection" title="Permalink to this definition"></a></dt>
+<dd><p>Make a call to the ASYNC StartDocumentTextDetection API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_source</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>bytes</em><em>, </em><em>Image.Image</em><em>]</em><em>, </em><em>required</em>) – File bytes, path to a file stored locally or in an S3 bucket</p></li>
+<li><p><strong>s3_output_path</strong> (<em>str</em>) – Prefix to store the output on the S3 bucket (passed as param to Textractor).</p></li>
+<li><p><strong>s3_upload_path</strong> (<em>str</em><em>, </em><em>optional</em>) – If given, will automatically upload the document to the given S3 prefix before calling Textract. Files are uploaded
+under a uuid. If not given the data is expected to be already in s3</p></li>
+<li><p><strong>client_request_token</strong> (<em>str</em><em>, </em><em>optional</em>) – The idempotent token that’s used to identify the start request. If you use the same. token
+with multiple StartDocumentTextDetection requests, the same. JobId is returned. Use ClientRequestToken
+to prevent the same. job from being accidentally started more than once.</p></li>
+<li><p><strong>job_tag</strong> (<em>str</em><em>, </em><em>optional</em>) – An identifier that you specify that’s included in the completion notification published to the Amazon SNS topic.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a job id which can be used to fetch the results</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.textractor.Textractor.start_expense_analysis">
+<span class="sig-name descname"><span class="pre">start_expense_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Image</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_upload_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_request_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">LazyDocument</span></span></span><a class="headerlink" href="#textractor.textractor.Textractor.start_expense_analysis" title="Permalink to this definition"></a></dt>
+<dd><p>Make a call to the ASYNC StartExpenseAnalysis API, implicitly parses the response and produces a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> object.
+This function is ideal for multipage PDFs or list of images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_source</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>bytes</em><em>, </em><em>Image.Image</em><em>]</em>) – Path to a file stored locally, on an S3 bucket or list of PIL Images</p></li>
+<li><p><strong>s3_output_path</strong> (<em>str</em>) – Path to store the output on the S3 bucket (passed as param to Textractor).</p></li>
+<li><p><strong>s3_upload_path</strong> (<em>str</em><em>, </em><em>optional</em>) – If given, will automatically upload the document to the given S3 prefix before calling Textract. Files are uploaded
+under a uuid. If not given the data is expected to be already in s3</p></li>
+<li><p><strong>client_request_token</strong> (<em>str</em><em>, </em><em>optional</em>) – The idempotent token that’s used to identify the start request. If you use the same. token
+with multiple StartDocumentTextDetection requests, the same. JobId is returned. Use ClientRequestToken
+to prevent the same. job from being accidentally started more than once.</p></li>
+<li><p><strong>job_tag</strong> (<em>str</em><em>, </em><em>optional</em>) – An identifier that you specify that’s included in the completion notification published to the Amazon SNS topic.</p></li>
+<li><p><strong>save_image</strong> (<em>bool</em>) – Flag to indicate if document images are to be stored within the Document object. This is optional
+and necessary only if the customer wants to visualize bounding boxes for their document entities.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>InputError</strong> – Raised when the file source type is invalid</p></li>
+<li><p><strong>RegionMismatchError</strong> – Raised when the file source region is different the API region.</p></li>
+<li><p><strong>exception</strong> – Raised if the Textract API call fails</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Lazy-loaded Document object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>LazyDocument</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
