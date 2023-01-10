@@ -5,7 +5,6 @@ from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, conv
 import boto3
 import os
 import json
-import logging
 
 
 def test_pretty_with_tables():
@@ -66,7 +65,6 @@ def test_pretty_with_queries_and_trp2_one_without_answer():
 
 
 def test_lending(caplog):
-    caplog.set_level(logging.DEBUG, logger="textractcaller")
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     input_filename = os.path.join(SCRIPT_DIR, "data/lending-doc-output_from_output_config.json")
     with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
