@@ -1,8 +1,6 @@
 import trp
 from trp.trp2 import TBlock, TBoundingBox, TDocument, TGeometry, TPoint
 from trp.trp2_analyzeid import TIdentityDocument
-from trp.trp2_expense import TExpenseField, TFieldType
-from trp.trp2_lending import TFullLendingDocument
 import trp.trp2_lending as tl
 from typing import List, Optional
 from tabulate import tabulate
@@ -343,6 +341,8 @@ def convert_lending_document_from_trp2(trp2_lending: tl.TLendingDocument) -> Lis
     returns: a list of ['key-name', 'confidence-score-for-key-name', 'value', 'confidence-score-for-value', key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left]
     """
     lending_document_value_list: List[List[str]] = list()
+    if not trp2_lending:
+        return lending_document_value_list
 
     if trp2_lending:
         # Iterate through all lending fields
@@ -456,7 +456,7 @@ def convert_expense_from_trp2(trp2_expense: tl.TExpense) -> List[List[str]]:
     return expense_value_list
 
 
-def convert_idenitity_from_trp2(trp2_identity: TIdentityDocument) -> List[List[str]]:
+def convert_identity_from_trp2(trp2_identity: TIdentityDocument) -> List[List[str]]:
     """
     returns: a list of ['key-name', 'confidence-score-for-key-name', 'value', 'confidence-score-for-value', key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left]
     Will not have entries for normalized values
@@ -474,10 +474,10 @@ def convert_idenitity_from_trp2(trp2_identity: TIdentityDocument) -> List[List[s
     return identity_value_list
 
 
-def convert_lending_from_trp2(trp2_doc: TFullLendingDocument) -> List[List[str]]:
-    '''return List[List[List[str]]]
-    With the first List being the Page and the second the list of [page_classification, page_number, key, value]
-    page_classification, page_number, key_name, value_name, key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left
+def convert_lending_from_trp2(trp2_doc: tl.TFullLendingDocument) -> List[List[str]]:
+    '''return List[List[str]]
+    With the first List being the Page and the second the list of
+    [{page_classification}_{page_number_within_document_type}, page_number_in_document, key, key_confidence, value, value_confidence, key-bounding-box.top, key-bounding-box.height, key-bb.width, key-bb.left, value-bounding-box.top, value-bb.height, value-bb.width, value-bb.left]
     '''
     page_list: List[List[str]] = list()
     for idx, page_result in enumerate(trp2_doc.lending_results):
@@ -494,7 +494,7 @@ def convert_lending_from_trp2(trp2_doc: TFullLendingDocument) -> List[List[str]]
             for expense_detection in convert_expense_from_trp2(extraction.expense_document):
                 page_list.append([f"{page_classification_max.value}_{page_number_max.value}",
                                   str(idx + 1)] + expense_detection)
-            for identity_detection in convert_idenitity_from_trp2(extraction.identity_document):
+            for identity_detection in convert_identity_from_trp2(extraction.identity_document):
                 page_list.append([f"{page_classification_max.value}_{page_number_max.value}",
                                   str(idx + 1)] + identity_detection)
     return page_list
