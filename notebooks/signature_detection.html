@@ -371,8 +371,8 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from PIL import Image
-Image.open(&quot;../../../tests/fixtures/signature.jpg&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/signature.jpg&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -392,15 +392,15 @@ Image.open(&quot;../../../tests/fixtures/signature.jpg&quot;)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
-from textractor import Textractor
-from textractor.data.constants import TextractFeatures
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
+<span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span>
 
-extractor = Textractor(profile_name=&quot;default&quot;)
-document = extractor.analyze_document(
-    file_source=Image.open(&quot;../../../tests/fixtures/signature.jpg&quot;),
-    features=[TextractFeatures.SIGNATURES],
-)
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/signature.jpg&quot;</span><span class="p">),</span>
+    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">SIGNATURES</span><span class="p">],</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -408,7 +408,7 @@ document = extractor.analyze_document(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document.signatures[0]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">signatures</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>

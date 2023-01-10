@@ -396,14 +396,14 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
-from textractor import Textractor
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
 
-extractor = Textractor(profile_name=&quot;default&quot;)
-document = extractor.detect_document_text(
-    file_source=&quot;../../../tests/fixtures/tutorial.pdf&quot;,
-    save_image=True
-)
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">detect_document_text</span><span class="p">(</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="s2">&quot;../../../tests/fixtures/tutorial.pdf&quot;</span><span class="p">,</span>
+    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -415,8 +415,8 @@ document = extractor.detect_document_text(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>word_occurences = document.search_words(keyword=&quot;Room&quot;, top_k=15, similarity_threshold=0.5)
-print(&quot;Number of occurences of the word Room in the document = &quot;, len(word_occurences))
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">word_occurences</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">search_words</span><span class="p">(</span><span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;Room&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of occurences of the word Room in the document = &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">word_occurences</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -428,7 +428,7 @@ print(&quot;Number of occurences of the word Room in the document = &quot;, len(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>word_occurences.visualize()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">word_occurences</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -448,15 +448,15 @@ print(&quot;Number of occurences of the word Room in the document = &quot;, len(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from textractor.data.constants import SimilarityMetric
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">SimilarityMetric</span>
 
-word_occurences = document.search_words(
-    keyword=&quot;Room&quot;,
-    top_k=15,
-    similarity_threshold=0.5,
-    similarity_metric=SimilarityMetric.LEVENSHTEIN
-)
-print(&quot;Number of occurences of the word Room in the document = &quot;, len(word_occurences))
+<span class="n">word_occurences</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">search_words</span><span class="p">(</span>
+    <span class="n">keyword</span><span class="o">=</span><span class="s2">&quot;Room&quot;</span><span class="p">,</span>
+    <span class="n">top_k</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+    <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">similarity_metric</span><span class="o">=</span><span class="n">SimilarityMetric</span><span class="o">.</span><span class="n">LEVENSHTEIN</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of occurences of the word Room in the document = &quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">word_occurences</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -472,7 +472,7 @@ Number of occurences of the word Room in the document =  10
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>word_occurences.visualize()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">word_occurences</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

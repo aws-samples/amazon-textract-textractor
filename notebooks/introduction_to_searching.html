@@ -393,22 +393,22 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
-from PIL import Image
-from textractor import Textractor
-from textractor.data.constants import TextractFeatures
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
+<span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span>
 
-extractor = Textractor(profile_name=&quot;default&quot;)
-document = extractor.start_document_analysis(
-    # Here we pass a Pillow image instead of path. This changes nothing as
-    # Textractor supports most input types.
-    file_source=Image.open(&quot;../../../tests/fixtures/form.png&quot;),
-    # We specify the features that we want, here, we only want keys and values
-    # therefore we use TextractFeatures.FORMS.
-    features=[TextractFeatures.FORMS],
-    s3_upload_path=&quot;s3://textract-ocr/temp/&quot;,
-    save_image=True
-)
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">start_document_analysis</span><span class="p">(</span>
+    <span class="c1"># Here we pass a Pillow image instead of path. This changes nothing as</span>
+    <span class="c1"># Textractor supports most input types.</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">),</span>
+    <span class="c1"># We specify the features that we want, here, we only want keys and values</span>
+    <span class="c1"># therefore we use TextractFeatures.FORMS.</span>
+    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">FORMS</span><span class="p">],</span>
+    <span class="n">s3_upload_path</span><span class="o">=</span><span class="s2">&quot;s3://textract-ocr/temp/&quot;</span><span class="p">,</span>
+    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -417,7 +417,7 @@ document = extractor.start_document_analysis(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Image.open(&quot;../../../tests/fixtures/form.png&quot;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -434,7 +434,7 @@ document = extractor.start_document_analysis(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>[c for c in document.checkboxes if &quot;rent&quot; in str(c.key).lower()]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">checkboxes</span> <span class="k">if</span> <span class="s2">&quot;rent&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
 </pre></div>
 </div>
 </div>
@@ -452,8 +452,8 @@ document = extractor.start_document_analysis(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>out = [c for c in document.checkboxes if &quot;rent&quot; in str(c.key).lower() and c.is_selected()]
-out
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">document</span><span class="o">.</span><span class="n">checkboxes</span> <span class="k">if</span> <span class="s2">&quot;rent&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()]</span>
+<span class="n">out</span>
 </pre></div>
 </div>
 </div>
@@ -474,9 +474,9 @@ out
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document = extractor.detect_document_text(
-    file_source=Image.open(&quot;../../../tests/fixtures/form.png&quot;),
-)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">detect_document_text</span><span class="p">(</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">),</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -484,7 +484,7 @@ out
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
 </pre></div>
 </div>
 </div>
@@ -509,7 +509,7 @@ Expense Documents - 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rents = document.search_lines(&quot;Rent&quot;, top_k=10, similarity_threshold=0.1)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rents</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">search_lines</span><span class="p">(</span><span class="s2">&quot;Rent&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -517,7 +517,7 @@ Expense Documents - 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rents
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rents</span>
 </pre></div>
 </div>
 </div>

@@ -396,11 +396,11 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from textractor import Textractor
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
 
-extractor = Textractor(profile_name=&quot;default&quot;)
-# This path assumes that you are running the notebook from docs/source/notebooks
-document = extractor.analyze_expense(file_source=&quot;../../../tests/fixtures/form.png&quot;)
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="c1"># This path assumes that you are running the notebook from docs/source/notebooks</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_expense</span><span class="p">(</span><span class="n">file_source</span><span class="o">=</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -412,7 +412,7 @@ document = extractor.analyze_expense(file_source=&quot;../../../tests/fixtures/f
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document.response
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">response</span>
 </pre></div>
 </div>
 </div>
@@ -1618,7 +1618,7 @@ document = extractor.analyze_expense(file_source=&quot;../../../tests/fixtures/f
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document.expense_documents[0][&quot;Phone&quot;]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">expense_documents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;Phone&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -1635,7 +1635,7 @@ document = extractor.analyze_expense(file_source=&quot;../../../tests/fixtures/f
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document.expense_documents[0][&quot;Phone&quot;].raw_object
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">expense_documents</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;Phone&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">raw_object</span>
 </pre></div>
 </div>
 </div>
@@ -1662,7 +1662,7 @@ document = extractor.analyze_expense(file_source=&quot;../../../tests/fixtures/f
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document.expense_documents[0].raw_object
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">expense_documents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">raw_object</span>
 </pre></div>
 </div>
 </div>

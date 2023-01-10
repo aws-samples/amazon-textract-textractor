@@ -394,11 +394,11 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from textractor import Textractor
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
 
-extractor = Textractor(profile_name=&quot;default&quot;)
-# This path assumes that you are running the notebook from docs/source/notebooks
-document = extractor.detect_document_text(&quot;../../../tests/fixtures/form.png&quot;)
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="c1"># This path assumes that you are running the notebook from docs/source/notebooks</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">detect_document_text</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -406,7 +406,7 @@ document = extractor.detect_document_text(&quot;../../../tests/fixtures/form.png
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
 </pre></div>
 </div>
 </div>
@@ -431,7 +431,7 @@ Identity Documents - 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document.text
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">text</span>
 </pre></div>
 </div>
 </div>
@@ -452,14 +452,14 @@ Identity Documents - 0
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from textractor import Textractor
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
 
-extractor = Textractor(profile_name=&quot;default&quot;)
-# This path assumes that you are running the notebook from docs/source/notebooks
-document = extractor.start_document_text_detection(
-    &quot;../../../tests/fixtures/form.png&quot;,
-    s3_upload_path=&quot;s3://textract-ocr/temp/&quot;,
-)
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="c1"># This path assumes that you are running the notebook from docs/source/notebooks</span>
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">start_document_text_detection</span><span class="p">(</span>
+    <span class="s2">&quot;../../../tests/fixtures/form.png&quot;</span><span class="p">,</span>
+    <span class="n">s3_upload_path</span><span class="o">=</span><span class="s2">&quot;s3://textract-ocr/temp/&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -468,7 +468,7 @@ document = extractor.start_document_text_detection(
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>type(document)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -486,7 +486,7 @@ textractor.entities.lazy_document.LazyDocument
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>document.text
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">text</span>
 </pre></div>
 </div>
 </div>
