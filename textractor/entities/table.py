@@ -432,10 +432,15 @@ class Table(DocumentEntity):
 
         worksheet = workbook.add_worksheet()
 
+        merged_cells = set()
         for cell in self.table_cells:
             cell_content = cell.__repr__().split(">")[1][1:]
             if cell.metadata[IS_MERGED_CELL]:
                 first_row, first_col, last_row, last_col = cell._get_merged_cell_range()
+                if (first_row, first_col, last_row, last_col) in merged_cells:
+                    continue
+                else:
+                    merged_cells.add((first_row, first_col, last_row, last_col))
                 worksheet.merge_range(
                     first_row - 1,
                     first_col - 1,
