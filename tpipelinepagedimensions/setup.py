@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'Pillow>=9.2.*', 'PyPDF2>=2.5.*']
+requirements = ['boto3', 'botocore', 'Pillow>=9.4.*', 'pypdf>=2.5.*']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
