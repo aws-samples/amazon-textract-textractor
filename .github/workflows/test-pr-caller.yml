@@ -21,6 +21,9 @@ jobs:
     defaults:
       run:
         working-directory: ./caller
+    permissions:
+        id-token: write
+        contents: write
 
     steps:
       # Checks out the repository
