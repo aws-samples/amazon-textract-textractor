@@ -2,28 +2,25 @@ from textractcaller import Textract_Features, call_textract
 from trp.trp2 import TDocumentSchema
 import trp.trp2_lending as tl
 from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, get_tables_string, convert_lending_from_trp2
-import boto3
 import os
 import json
 
 
 def test_pretty_with_tables():
-    features = [Textract_Features.FORMS, Textract_Features.TABLES]
-    textract_client = boto3.client('textract', region_name='us-east-2')
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(SCRIPT_DIR, "data", "w2-example.json")) as input_fp:
+        textract_json = json.load(input_fp)
+        tables_result = get_tables_string(textract_json=textract_json)
+        assert tables_result
+        tables_result = get_tables_string(textract_json=textract_json)
+        assert len(tables_result) > 0
 
-    response = call_textract(input_document="s3://amazon-textract-public-content/blogs/w2-example.png",
-                             features=features,
-                             boto3_textract_client=textract_client)
-    assert response
-    tables_result = get_tables_string(textract_json=response)
-    assert len(tables_result) > 0
-
-    response = call_textract(input_document="s3://amazon-textract-public-content/blogs/employmentapp.png",
-                             features=features,
-                             boto3_textract_client=textract_client)
-    assert response
-    tables_result = get_tables_string(textract_json=response)
-    assert len(tables_result) > 0
+    with open(os.path.join(SCRIPT_DIR, "data", "employmentapp.json")) as input_fp:
+        textract_json = json.load(input_fp)
+        tables_result = get_tables_string(textract_json=textract_json)
+        assert tables_result
+        tables_result = get_tables_string(textract_json=textract_json)
+        assert len(tables_result) > 0
 
 
 def test_pretty_with_forms_and_trp2():
