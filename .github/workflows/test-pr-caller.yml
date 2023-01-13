@@ -25,6 +25,12 @@ jobs:
     steps:
       # Checks out the repository
       - uses: actions/checkout@v3
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::913165245630:role/GithubActionsOIDC-Role-1U7IPQFU9Q8RS
+          role-duration-seconds: 900 # the ttl of the session, in seconds.
+          aws-region: us-east-1 # use your region here.
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
