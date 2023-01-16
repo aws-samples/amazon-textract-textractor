@@ -1,0 +1,53 @@
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch and changes in folder src-python
+name: Test-Pull-Request-Caller
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - caller
+  pull_request_target:
+    types: [assigned, opened, synchronize, reopened]
+  workflow_dispatch:
+
+# Run the tests
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+    defaults:
+      run:
+        working-directory: ./caller
+    permissions:
+        id-token: write
+        contents: write
+
+    steps:
+      # Checks out the repository
+      - uses: actions/checkout@v3
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: arn:aws:iam::913165245630:role/GithubActionsOIDC-Role-1U7IPQFU9Q8RS
+          role-duration-seconds: 900 # the ttl of the session, in seconds.
+          aws-region: us-east-1 # use your region here.
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Install package locally
+      - name: Install package
+        run: python -m pip install -e .
+
+      # Install dev dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+      # Run tests
+      - name: Test
+        run: pytest
