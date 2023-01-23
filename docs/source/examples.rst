@@ -14,4 +14,5 @@ Examples
    notebooks/using_analyze_id
    notebooks/using_queries
    notebooks/interfacing_with_trp2
+   notebooks/signature_detection
    notebooks/going_further
