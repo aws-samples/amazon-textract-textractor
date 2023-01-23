@@ -20,7 +20,9 @@
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -38,8 +40,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using Textractor in AWS Lambda</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-by-step">Step-by-step</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="commandline.html">CLI</a></li>
 </ul>
@@ -107,12 +113,62 @@
 While we encourage you to build your own lambda layers, we received several requests mentioning that the process tedious,
 which is why we also offer precompiled layers as zip files that you can directly upload to lambda.</p>
 <p>The precompiled layers are rebuilt on release and can be downloaded here <a class="reference external" href="https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/lambda_layers.yml">https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/lambda_layers.yml</a>.</p>
+<section id="step-by-step">
+<h2>Step-by-step<a class="headerlink" href="#step-by-step" title="Permalink to this heading"></a></h2>
+<p>We provide a step by step through the AWS Console, but note that proceeding with the AWS CLI would also work. For brevity we assume that you already have an existing lambda.
+You can find an excellent guide on how to create a lambda function here:
+<a class="reference external" href="https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html">https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html</a>. Note that your lambda function will need
+to have Textract access. Since we are targeting a wide range of use cases we will use the AmazonTextractFullAccess
+policy. We recommend that you review your lambda function and tailor the permission to your specific use case.</p>
+<ol class="arabic">
+<li><p>Download the precompiled layers from the GitHub Actions workflow. <a class="reference external" href="https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/lambda_layers.yml">https://github.com/aws-samples/amazon-textract-textractor/actions/workflows/lambda_layers.yml</a></p>
+<ol class="loweralpha simple">
+<li><p>Navigate to the page</p></li>
+<li><p>Click on “Lambda Layers”</p></li>
+</ol>
+<img alt="_images/1b.png" src="_images/1b.png" />
+<ol class="loweralpha simple" start="3">
+<li><p>Scroll to the bottom of the page and download the package that matches your Python installation. Packages with the <cite>-pdf</cite> suffix contains <cite>pdf2image</cite> and allow you to process PDF documents.</p></li>
+</ol>
+<img alt="_images/1c.png" src="_images/1c.png" />
+</li>
+<li><p>In your AWS Console, navigate to “Lambda” and click “Layers” in the sidebar to the left.</p>
+<img alt="_images/2.png" src="_images/2.png" />
+<ol class="loweralpha simple">
+<li><p>Click “Create layer”</p></li>
+</ol>
+<img alt="_images/2a.png" src="_images/2a.png" />
+<ol class="loweralpha simple" start="2">
+<li><p>Fill-in the form and upload the .zip file you downloaded in step 1.</p></li>
+</ol>
+<img alt="_images/2b.png" src="_images/2b.png" />
+<ol class="loweralpha simple" start="3">
+<li><p>Click “Create”</p></li>
+</ol>
+</li>
+<li><p>Navigate to your lambda</p>
+<ol class="loweralpha simple">
+<li><p>Scroll down and click “Add a layer”</p></li>
+</ol>
+<img alt="_images/3a.png" src="_images/3a.png" />
+<ol class="loweralpha simple" start="2">
+<li><p>Choose “Custom layers” and pick your amazon-textract-textractor layer</p></li>
+<li><p>Click “Add”</p></li>
+</ol>
+<img alt="_images/3c.png" src="_images/3c.png" />
+</li>
+<li><p>Update your code to use Textractor</p></li>
+</ol>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

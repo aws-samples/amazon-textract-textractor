@@ -22,7 +22,9 @@
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Going further" href="going_further.html" />
+    <link rel="prev" title="Interfacing with trp2" href="interfacing_with_trp2.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,9 +42,30 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_in_lambda.html">Using Textractor in AWS Lambda</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simple_ocr.html">Using Textract OCR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parsing_an_existing_response.html">Parsing an existing response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_searching.html">Introduction to searching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualizing_results.html">Visualizing Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finding_words_within_a_document.html">Word Occurence within Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_form_data.html">Exporting Form Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="table_data_to_various_formats.html">Table data extraction to Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_analyze_id.html">Using AnalyzeID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_queries.html">Using Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interfacing_with_trp2.html">Interfacing with trp2</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Signature Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Examples-of-queries">Examples of queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calling-Textract">Calling Textract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../commandline.html">CLI</a></li>
 </ul>
 <ul>
@@ -67,6 +90,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../examples.html">Examples</a> &raquo;</li>
       <li>Signature Detection</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/notebooks/signature_detection.ipynb.txt" rel="nofollow"> View page source</a>
@@ -389,14 +413,14 @@ div.rendered_html tbody tr:hover {
 <section id="Calling-Textract">
 <h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
 <span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span>
 
-<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">region_name</span><span class="o">=</span><span class="s2">&quot;us-west-2&quot;</span><span class="p">)</span>
 <span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span>
     <span class="n">file_source</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/signature.jpg&quot;</span><span class="p">),</span>
     <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">SIGNATURES</span><span class="p">],</span>
@@ -404,33 +428,36 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">signatures</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">signatures</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_signature_detection_5_0.png" src="../_images/notebooks_signature_detection_5_0.png" />
 </div>
 </div>
 </section>
 <section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
-<p>Queries are a powerful and inexpensive solution for processing a smaller number of keys and values. However, you can run into issues where the result is wrong either because the question requires a higher-level understanding, as with “How many people are there in the household?”. We recommend testing your workflow with some real samples and fine-tuning your queries to fit your use case.</p>
+<p>Signature detection allows you to quickly verify that a document is signed while provided</p>
 </section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="interfacing_with_trp2.html" class="btn btn-neutral float-left" title="Interfacing with trp2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="going_further.html" class="btn btn-neutral float-right" title="Going further" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
