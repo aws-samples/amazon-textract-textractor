@@ -53,6 +53,7 @@ Usage
    :maxdepth: 2
 
    installation
+   using_in_lambda
    examples
    commandline
 
