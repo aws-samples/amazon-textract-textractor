@@ -11,6 +11,7 @@ amazon-textract-prettyprinter
 
 Make sure your environment is setup with AWS credentials through configuration files or environment variables or an attached role. (https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
 
+
 # Samples
 
 ## Get FORMS and TABLES as CSV
