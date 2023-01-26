@@ -1,6 +1,7 @@
 import trp
 from trp.trp2 import TBlock, TBoundingBox, TDocument, TGeometry, TPoint
 from trp.trp2_analyzeid import TIdentityDocument
+from trp.trp2_expense import TExpense
 import trp.trp2_lending as tl
 from typing import List, Optional
 from tabulate import tabulate
@@ -405,7 +406,7 @@ def convert_lending_document_from_trp2(trp2_lending: tl.TLendingDocument) -> Lis
     return lending_document_value_list
 
 
-def convert_expense_from_trp2(trp2_expense: tl.TExpense) -> List[List[str]]:
+def convert_expense_from_trp2(trp2_expense: TExpense) -> List[List[str]]:
     """
     returns: a list of ['key-name', 'confidence-score-for-key-name', 'value', 'confidence-score-for-value', key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left]
     If there is a Type, use that text as the first part of the key

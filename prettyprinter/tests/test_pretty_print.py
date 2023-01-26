@@ -1,4 +1,3 @@
-from textractcaller import Textract_Features, call_textract
 from trp.trp2 import TDocumentSchema
 import trp.trp2_lending as tl
 from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, get_tables_string, convert_lending_from_trp2
