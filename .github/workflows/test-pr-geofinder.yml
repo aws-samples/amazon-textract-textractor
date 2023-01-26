@@ -2,13 +2,9 @@
 # events but only for the main branch and changes in folder src-python
 name: Test-Pull-Request-Geofinder
 on:
-  push:
-    branches:
-      - master
+  pull_request:
     paths:
       - tpipelinegeofinder
-  pull_request_target:
-    types: [assigned, opened, synchronize, reopened]
   workflow_dispatch:
 
 # Run the tests

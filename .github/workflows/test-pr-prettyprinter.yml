@@ -2,9 +2,7 @@
 # events but only for the main branch and changes in folder src-python
 name: Test-Pull-Request-PrettyPrinter
 on:
-  pull_request_target:
-    branches: [master]
-    types: [assigned, opened, synchronize, reopened]
+  pull_request:
     paths:
       - prettyprinter
 
