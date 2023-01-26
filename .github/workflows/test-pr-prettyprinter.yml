@@ -3,13 +3,12 @@
 name: Test-Pull-Request-PrettyPrinter
 on:
   push:
-    branches:
-      - master
     paths:
       - prettyprinter
   pull_request_target:
+    branches: [master]
     types: [assigned, opened, synchronize, reopened]
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 # Run the tests
 jobs:
