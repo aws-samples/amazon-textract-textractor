@@ -2,12 +2,10 @@
 # events but only for the main branch and changes in folder src-python
 name: Test-Pull-Request-PrettyPrinter
 on:
-  push:
+  pull_request:
     paths:
       - prettyprinter
-  pull_request_target:
-    branches: [master]
-    types: [assigned, opened, synchronize, reopened]
+
   workflow_dispatch: {}
 
 # Run the tests
