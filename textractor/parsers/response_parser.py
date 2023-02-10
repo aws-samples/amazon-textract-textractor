@@ -346,6 +346,8 @@ def _create_value_objects(
                 values[val_id].words += _create_word_objects(
                     [child_id], id_json_map, page
                 )
+            elif id_json_map[child_id]["BlockType"] == SIGNATURE:
+                continue
             else:
                 checkbox = checkboxes[child_id]
                 checkbox.value_id = val_id
