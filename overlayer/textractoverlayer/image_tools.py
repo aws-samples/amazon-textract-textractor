@@ -9,7 +9,7 @@ if os.getenv('AWS_EXECUTION_ENV') is not None:
     sys.path.append('/opt')
 
 from PIL import Image
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 
 pdf_suffixes = ['.pdf']
 image_suffixes = ['.png', '.jpg', '.jpeg']

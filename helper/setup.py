@@ -52,7 +52,7 @@ class FontInstaller(install):
 
 requirements = [
     'boto3', 'botocore', 'amazon-textract-response-parser>=0.1.40', 'amazon-textract-caller>=0.0.27',
-    'amazon-textract-overlayer>=0.0.10', 'amazon-textract-prettyprinter>=0.1.0', 'Pillow>=9.2.*', 'PyPDF2>=2.5.*'
+    'amazon-textract-overlayer>=0.0.10', 'amazon-textract-prettyprinter>=0.1.0', 'Pillow>=9.2.*', 'pypdf>=2.5.*'
 ]
 
 if sys.argv[-1] == 'publish-test':
