@@ -418,7 +418,7 @@ class EntityList(list, Generic[T]):
         ]
 
         for expense_document in expense_documents:
-            result_value += f"{expense_document}{os.linesep}"
+            result_value += f"{expense_document}{os.linesep}{os.linesep}"
 
         return result_value
 
