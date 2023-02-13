@@ -1,0 +1,18 @@
+{
+    "s3Path": "s3://amazon-textract-public-content/blogs/employeeapp20210510.png",
+    "textractFeatures": [
+        "FORMS",
+        "TABLES",
+        "QUERIES"
+    ],
+    "queriesConfig": [{
+        "text": "What is the applicant full name?",
+        "alias": "FULL_NAME",
+        "pages": ["*"]
+    }],
+    "classification":"EMPLOYMENT_APPLICATION",
+    "metaData":[
+        {"key": "key1", "value": "value1"},
+        {"key": "key2", "value": "value2"}
+    ]
+}
