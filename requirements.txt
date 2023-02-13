@@ -1,5 +1,5 @@
-amazon-textract-response-parser==0.1.42
-amazon-textract-caller==0.0.28
+amazon-textract-response-parser>=0.1.37,<0.2.0
+amazon-textract-caller>=0.0.27,<0.1.0
 jsonschema
 Pillow
 tabulate==0.9.*
