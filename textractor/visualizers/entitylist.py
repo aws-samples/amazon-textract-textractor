@@ -18,7 +18,7 @@ from collections import defaultdict
 from textractor.utils.geometry_util import get_indices
 from PIL import Image, ImageDraw, ImageColor, ImageFont
 
-from textractor.data.constants import TextractType, TableFormat
+from textractor.data.constants import TextractType, TableFormat, AnalyzeExpenseLineItemFields, AnalyzeExpenseFields
 from textractor.exceptions import EntityListCreationError, NoImageException
 
 logger = logging.getLogger(__name__)
@@ -49,6 +49,7 @@ class EntityList(list, Generic[T]):
     def visualize(
         self,
         with_text: bool = True,
+        with_words: bool = True,
         with_confidence: bool = False,
         font_size_ratio: float = 0.5,
     ) -> List:
@@ -67,21 +68,30 @@ class EntityList(list, Generic[T]):
         if len(self) > 0 and any([ent.__class__.__name__ == "Document" for ent in self]):
             return EntityList(self[0].pages).visualize(
                 with_text=with_text,
+                with_words=with_words,
                 with_confidence=with_confidence,
                 font_size_ratio=font_size_ratio,
             )
         elif len(self) > 0 and any([ent.__class__.__name__ == "Page" for ent in self]):
             new_entity_list = []
             for entity in self:
+                if not with_words and (entity.__class__.__name__ == "Word" or entity.__class__.__name__ == "Line"):
+                    continue
                 if entity.__class__.__name__ == "Page":
-                    new_entity_list.extend(entity.words)
-                    new_entity_list.extend(entity.lines)
+                    if with_words:
+                        new_entity_list.extend(entity.words)
+                        new_entity_list.extend(entity.lines)
                     new_entity_list.extend(entity.tables)
-                    new_entity_list.extend(entity.tables)
+                    new_entity_list.extend(entity.key_values)
+                    for expense_document in entity.expense_documents:
+                        new_entity_list = self._add_expense_document_to_list(new_entity_list, expense_document)
+                elif entity.__class__.__name__ == "ExpenseDocument":
+                    self._add_expense_document_to_list(new_entity_list, entity)
                 else:
                     new_entity_list.append(entity)
             return EntityList(list(set(new_entity_list))).visualize(
                 with_text=with_text,
+                with_words=with_words,
                 with_confidence=with_confidence,
                 font_size_ratio=font_size_ratio,
             )
@@ -95,7 +105,8 @@ class EntityList(list, Generic[T]):
         for obj in self:
             entities_pagewise[obj.page].append(obj)
             try:
-                entities_pagewise[obj.page].extend(obj.words)
+                if with_words:
+                    entities_pagewise[obj.page].extend(obj.words)
             # FIXME: There should be a way to recurse through all entities
             except AttributeError:
                 pass
@@ -114,6 +125,19 @@ class EntityList(list, Generic[T]):
         images = list(visualized_images.values())
         images = images if len(images) != 1 else images[0]
         return images
+
+    def _add_expense_document_to_list(self, entity_list, expense_document):
+        entity_list.append(expense_document)
+        for field in expense_document.summary_fields_list:
+            entity_list.append(field)
+        for line_item_group in expense_document.line_items_groups:
+            entity_list.append(line_item_group)
+            for row in line_item_group.rows:
+                entity_list.append(row)
+                for expense in row.expenses:
+                    if expense.type.text != AnalyzeExpenseLineItemFields.EXPENSE_ROW.name:
+                        entity_list.append(expense)
+        return entity_list
 
     def pretty_print(
         self,
@@ -417,8 +441,13 @@ class EntityList(list, Generic[T]):
             obj for obj in self if obj.__class__.__name__ == "ExpenseDocument"
         ]
 
-        for expense_document in expense_documents:
-            result_value += f"{expense_document}{os.linesep}"
+        for i, expense_document in enumerate(expense_documents):
+            result_value += f"Expense Document {i+1}:{os.linesep}"
+            result_value += f"### Summary Fields:{os.linesep}"
+            result_value += f"{expense_document.summary_fields}{os.linesep}"
+            result_value += f"### Line Item Groups: {os.linesep}"
+            for line_item_group in expense_document.line_items_groups:
+                result_value += f"{line_item_group}{os.linesep}"
 
         return result_value
 
@@ -569,8 +598,11 @@ def _draw_bbox(
     :rtype: PIL.Image
     """
     image = entities[0].bbox.spatial_object.image
-    image = image.convert("RGB")
-    drw = ImageDraw.Draw(image)
+    image = image.convert("RGBA")
+    overlay = Image.new("RGBA", image.size, (255, 255, 255, 0))
+    drw = ImageDraw.Draw(overlay, "RGBA")
+
+    text_locations = {}
 
     # First drawing, bounding boxes
     for entity in entities:
@@ -614,6 +646,11 @@ def _draw_bbox(
                         cell.bbox.x + cell.bbox.width,
                         cell.bbox.y + cell.bbox.height,
                     )
+
+                fill_color=None
+                if cell.is_column_header:
+                    fill_color = ImageColor.getrgb("blue") + (120,)
+
                 drw.rectangle(
                     (
                         int(min_x * width),
@@ -622,6 +659,7 @@ def _draw_bbox(
                         int(max_y * height),
                     ),
                     outline=overlayer_data["color"],
+                    fill=fill_color,
                     width=2,
                 )
         elif entity.__class__.__name__ == "Query":
@@ -629,19 +667,43 @@ def _draw_bbox(
             drw.rectangle(
                 xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
             )
+        elif entity.__class__.__name__ == "ExpenseField":
+            overlayer_data = _get_overlayer_data(entity, width, height)
+            drw.rectangle(
+                xy=overlayer_data["coords_value"], outline=overlayer_data["color_value"], width=2
+            )
+            if entity.key is not None:
+                b1 = entity.key.bbox
+                b2 = entity.value.bbox
+                drw.rectangle(
+                    xy=overlayer_data["coords_key"], outline=overlayer_data["color_key"], width=2
+                )
+                drw.line([((b1.x + b1.width / 2) * width, (b1.y + b1.height / 2) * height),
+                          ((b2.x + b2.width / 2) * width, (b2.y + b2.height / 2) * height)], fill=overlayer_data["color_key"], width=2)
+        elif entity.__class__.__name__ == "ExpenseDocument":
+            overlayer_data = _get_overlayer_data(entity, width, height)
+            drw.rectangle(
+                xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
+            )
+            for coord, text in zip(overlayer_data["coords_list"], overlayer_data["coords_list"]):
+                drw.rectangle(
+                    xy=coord, outline=overlayer_data["color_expense_group"], width=2
+                )
         else:
             overlayer_data = _get_overlayer_data(entity, width, height)
             drw.rectangle(
                 xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
             )
-            bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
-
             if entity.__class__.__name__ == "KeyValue":
                 drw.rectangle(
                     xy=overlayer_data["value_bbox"],
-                    outline=ImageColor.getrgb("orange"),
+                    outline=overlayer_data["color_value"],
                     width=2,
                 )
+                b1 = overlayer_data["value_bbox"]
+                b2 = overlayer_data["coords"]
+                drw.line([((b1[0] + b1[2]) / 2, (b1[1] + b1[3]) / 2),
+                          ((b2[0] + b2[2]) / 2, (b2[1] + b2[3]) / 2)], fill=overlayer_data["color_value"], width=1)
     
     # Second drawing, text
     if with_text:
@@ -676,10 +738,34 @@ def _draw_bbox(
                 width, height = image.size
                 overlayer_data = _get_overlayer_data(entity, width, height)
 
+                # Key Text
+                final_txt = ""
+                bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
+                text_height = min(int(0.03 * height), int(bbox_height * font_size_ratio))
+                fnt = ImageFont.truetype(
+                    os.path.join(present_path, "arial.ttf"), text_height
+                )
+
+                final_txt += overlayer_data["text"]
+                if with_confidence:
+                    final_txt += " (" + str(overlayer_data["confidence"])[:4] + ")"
+
+                drw.text(
+                    (
+                        overlayer_data["coords"][0],
+                        overlayer_data["coords"][3] + 1,
+                    ),
+                    final_txt,
+                    font=fnt,
+                    fill=overlayer_data["color"],
+                )
+
+                # Value Text
                 final_txt = overlayer_data["value_text"]
 
-                bbox_height = overlayer_data["coords"][3] - overlayer_data["coords"][1]
-                text_height = int(bbox_height * font_size_ratio)
+                bbox_height = overlayer_data["value_bbox"][3] - overlayer_data["value_bbox"][1]
+                text_height = min(int(0.01 * height), int(bbox_height * font_size_ratio))
+                print(text_height, height)
                 fnt = ImageFont.truetype(
                     os.path.join(present_path, "arial.ttf"), text_height
                 )
@@ -690,12 +776,52 @@ def _draw_bbox(
                 drw.text(
                     (
                         overlayer_data["value_bbox"][0],
-                        overlayer_data["value_bbox"][1] - text_height,
+                        overlayer_data["value_bbox"][3] + 1,
                     ),
                     final_txt,
                     font=fnt,
-                    fill=overlayer_data["text_color"],
+                    fill=overlayer_data["color_value"],
                 )
+            elif entity.__class__.__name__ == "ExpenseField":
+                width, height = image.size
+                overlayer_data = _get_overlayer_data(entity, width, height)
+
+                final_txt = overlayer_data["text"]
+                text_height = int(0.018 * height * font_size_ratio)
+                fnt = ImageFont.truetype(
+                    os.path.join(present_path, "arial.ttf"), text_height
+                )
+                if entity.key is not None:
+                    x = overlayer_data["coords_key"][0] + 0.3*(overlayer_data["coords_key"][2] - overlayer_data["coords_key"][0])
+                    y =  overlayer_data["coords_key"][1] - text_height - 1
+                else:
+                    x = int(overlayer_data["coords"][0] + 0.3*(overlayer_data["coords"][2] - overlayer_data["coords"][0]))
+                    y = overlayer_data["coords"][1] - text_height - 1
+                while (x, y) in text_locations and text_locations[(x, y)] != final_txt:
+                    y = y - text_height - 1
+                text_locations[(x, y)] = final_txt
+                drw.text(
+                    (x, y),
+                    final_txt,
+                    font=fnt,
+                    fill=overlayer_data["text_color"],
+
+                )
+            elif entity.__class__.__name__ == "ExpenseDocument":
+                width, height = image.size
+                text_height = int(0.018 * height * font_size_ratio)
+                fnt = ImageFont.truetype(
+                    os.path.join(present_path, "arial.ttf"), text_height
+                )
+                overlayer_data = _get_overlayer_data(entity, width, height)
+                for coord, text in zip(overlayer_data["coords_list"], overlayer_data["text_list"]):
+                    drw.text(
+                        (coord[0], coord[3]),
+                        text,
+                        font=fnt,
+                        fill=overlayer_data["color_expense_group"],
+                    )
+
             elif entity.__class__.__name__ == "Query":
                 if entity.result is None:
                     continue
@@ -725,6 +851,7 @@ def _draw_bbox(
                 )
 
     del drw
+    image = Image.alpha_composite(image, overlay)
     return image
 
 
@@ -753,7 +880,7 @@ def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
     )
     data["coords"] = [x, y, x + w, y + h]
     data["confidence"] = (
-        entity.confidence if not entity.__class__.__name__ == "Table" else ""
+        entity.confidence if entity.__class__.__name__ not in ["Table", "ExpenseField", "ExpenseDocument", "LineItemRow", "LineItemGroup"] else ""
     )
     data["text_color"] = (0, 0, 0)
 
@@ -763,12 +890,13 @@ def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
 
     elif entity.__class__.__name__ == "Line":
         data["text"] = entity.text
-        data["color"] = ImageColor.getrgb("purple")
-
+        data["color"] = ImageColor.getrgb("lightgrey")
+        data["coords"] = [x - 1, y - 1, x + w + 1, y + h + 1]
     elif entity.__class__.__name__ == "KeyValue":
         data["text"] = entity.key.__repr__()
-        data["color"] = ImageColor.getrgb("blue")
+        data["color"] = ImageColor.getrgb("brown")
         data["value_text"] = entity.value.__repr__()
+        data["coords"] = [x - 2, y - 2, x + w + 2, y + h + 2]
 
         if entity.contains_checkbox:
             value_bbox = entity.children[0].bbox
@@ -778,11 +906,12 @@ def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
             value_bbox = entity.value.bbox
             data["value_conf"] = entity.value.confidence
 
+        data["color_value"] = ImageColor.getrgb("orange")
         x, y, w, h = (
-            value_bbox.x * width,
-            value_bbox.y * height,
-            value_bbox.width * width,
-            value_bbox.height * height,
+            value_bbox.x * width - 2,
+            value_bbox.y * height - 2,
+            value_bbox.width * width + 2,
+            value_bbox.height * height + 2,
         )
         data["value_bbox"] = [x, y, x + w, y + h]
 
@@ -798,6 +927,57 @@ def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
         data["text"] = entity.answer
     elif entity.__class__.__name__ == "Signature":
         data["color"] = ImageColor.getrgb("coral")
+    elif entity.__class__.__name__ == "ExpenseField":
+        data["text"] = entity.type.text
+        data["text_color"] = ImageColor.getrgb("brown")
+        data["coords"] = [x - 5, y - 5, x + w + 5, y + h + 5]
+
+        if entity.key:
+            data["color_key"] = ImageColor.getrgb("brown")
+            data["coords_key"] = (
+                entity.key.bbox.x * width-3,
+                entity.key.bbox.y * height-3,
+                (entity.key.bbox.x + entity.key.bbox.width) * width+3,
+                ((entity.key.bbox.y + entity.key.bbox.height)) * height+3,
+            )
+        data["color_value"] = ImageColor.getrgb("orange")
+        data["coords_value"] = (
+            entity.value.bbox.x * width-3,
+            entity.value.bbox.y * height-3,
+            (entity.value.bbox.x + entity.value.bbox.width) * width+3,
+            ((entity.value.bbox.y + entity.value.bbox.height)) * height+3,
+        )
+    elif entity.__class__.__name__ == "Expense":
+        data["text"] = entity.text
+        data["coords"] = [x-3, y-3, x + w + 3, y + h + 3]
+    elif entity.__class__.__name__ == "ExpenseDocument":
+        data["color"] = ImageColor.getrgb("beige")
+        data["coords_list"] = []
+        data["text_list"] = []
+        for group in entity.summary_groups:
+            bboxes = entity.summary_groups.get_group_bboxes(group)
+            for bbox in bboxes:
+                data["coords_list"].append(
+                    (
+                        bbox.x * width - 5,
+                        bbox.y * height- 5,
+                        (bbox.x + bbox.width) * width + 3,
+                        (bbox.y + bbox.height) * height + 3,
+                    )
+                )
+                data["text_list"].append(
+                    group
+                )
+        data["color_expense_group"] = ImageColor.getrgb("coral")
+
+
+    elif entity.__class__.__name__ == "LineItemGroup":
+        data["color"] = ImageColor.getrgb("lightblue")
+        data["coords"] = [x-10, y-10, x + w + 10, y + h + 10]
+
+    elif entity.__class__.__name__ == "LineItemRow":
+        data["color"] = ImageColor.getrgb("lightyellow")
+        data["coords"] = [x-7, y-7, x + w + 7, y + h + 7]
     else:
         pass
     return data

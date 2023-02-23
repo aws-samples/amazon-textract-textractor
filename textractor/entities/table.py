@@ -11,10 +11,6 @@ import os
 import xlsxwriter
 from copy import deepcopy
 
-try:
-    from pandas import DataFrame
-except ImportError:
-    logging.info("pandas library is required for exporting tables to DataFrame objects")
 
 from typing import List, Dict
 
@@ -242,7 +238,6 @@ class Table(DocumentEntity):
         if cell_property == "":
             logging.info("No cells of this type exist.")
             return []
-        table_cells_by_id = {cell.id: cell for cell in self.table_cells}
         filtered_cells = {}
 
         for cell in self.table_cells:
@@ -389,18 +384,41 @@ class Table(DocumentEntity):
         return new_table
 
 
-    def to_pandas(self):
-        """Converts the table to a pandas DataFrame
-
-        :return: DataFrame for the table
-        :rtype: DataFrame
+    def to_pandas(self, use_columns=False):
         """
+        Converts the table to a pandas DataFrame
+
+        :param use_columns: If the first row of the table is made of column headers, use them for the pandas dataframe. Only supports single row header.
+        :return:
+        """
+        try:
+            from pandas import DataFrame
+        except ImportError:
+            logging.info("pandas library is required for exporting tables to DataFrame objects")
+            return None
+
+
+        if use_columns:
+            # Try to automatically get the columns if they are in the first row
+            columns = []
+            for j in range(1, self.column_count + 1):
+                for cell in self.table_cells:
+                    if cell.col_index == j and cell.row_index == 1:
+                        if cell.is_column_header:
+                            columns.append(cell.text)
+            if len(columns) == self.column_count:
+                use_columns = True
+            else:
+                use_columns = False
+                print(f"The number of column header cell do not match the column count, ignoring them, {len(columns)} vs {self.column_count}")
 
         table = [["" for _ in range(self.column_count)] for _ in range(self.row_count)]
+
         for cell in self.table_cells:
             table[cell.row_index - 1][cell.col_index - 1] = cell.text
 
-        return DataFrame(table)
+
+        return DataFrame(table[1:] if use_columns else table, columns=columns if use_columns else None)
 
     def to_csv(self) -> str:
         """Returns the table in the Comma-Separated-Value (CSV) format
