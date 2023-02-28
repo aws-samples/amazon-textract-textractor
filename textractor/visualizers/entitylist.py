@@ -765,7 +765,6 @@ def _draw_bbox(
 
                 bbox_height = overlayer_data["value_bbox"][3] - overlayer_data["value_bbox"][1]
                 text_height = min(int(0.01 * height), int(bbox_height * font_size_ratio))
-                print(text_height, height)
                 fnt = ImageFont.truetype(
                     os.path.join(present_path, "arial.ttf"), text_height
                 )
