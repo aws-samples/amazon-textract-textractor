@@ -662,6 +662,14 @@ def _draw_bbox(
                     fill=fill_color,
                     width=2,
                 )
+                for checkbox in cell.checkboxes:
+                    drw.rectangle(
+                        (int(checkbox.bbox.x * width),
+                        int(checkbox.bbox.y * height),
+                        int((checkbox.bbox.x + checkbox.bbox.width) * width),
+                        int((checkbox.bbox.y + checkbox.bbox.height) * height)),
+                        outline=ImageColor.getrgb("lightgreen") if checkbox.is_selected() else ImageColor.getrgb("indianred")
+                    )
         elif entity.__class__.__name__ == "Query":
             overlayer_data = _get_overlayer_data(entity.result, width, height)
             drw.rectangle(
@@ -921,6 +929,7 @@ def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
     elif entity.__class__.__name__ == "TableCell":
         data["color"] = ImageColor.getrgb("skyblue")
         data["text"] = entity.__repr__().split(">")[-1][1:]
+
     elif entity.__class__.__name__ == "QueryResult":
         data["color"] = ImageColor.getrgb("mediumturquoise")
         data["text"] = entity.answer

@@ -19,6 +19,7 @@ from textractor.entities.bbox import BoundingBox
 from textractor.entities.table_cell import TableCell
 from textractor.visualizers.entitylist import EntityList
 from textractor.entities.document_entity import DocumentEntity
+from textractor.entities.selection_element import SelectionElement
 from textractor.utils.geometry_util import get_indices
 from textractor.data.constants import SimilarityMetric, TextTypes, CellTypes
 from textractor.data.constants import (
@@ -87,6 +88,13 @@ class Table(DocumentEntity):
         """
 
         return self._page_id
+
+    @property
+    def checkboxes(self) -> List[SelectionElement]:
+        checkboxes = []
+        for cell in self.table_cells:
+            checkboxes.extend(cell.checkboxes)
+        return checkboxes
 
     @page_id.setter
     def page_id(self, page_id: str):
@@ -384,11 +392,12 @@ class Table(DocumentEntity):
         return new_table
 
 
-    def to_pandas(self, use_columns=False):
+    def to_pandas(self, use_columns=False, checkbox_string="X "):
         """
         Converts the table to a pandas DataFrame
 
         :param use_columns: If the first row of the table is made of column headers, use them for the pandas dataframe. Only supports single row header.
+        :param checkbox_string: first character is selected checkbox second character is non-selected checkbox
         :return:
         """
         try:
@@ -396,6 +405,8 @@ class Table(DocumentEntity):
         except ImportError:
             logging.info("pandas library is required for exporting tables to DataFrame objects")
             return None
+
+        assert len(checkbox_string) == 2, "Checkbox string needs to be exactly two characters"
 
 
         if use_columns:
@@ -415,7 +426,7 @@ class Table(DocumentEntity):
         table = [["" for _ in range(self.column_count)] for _ in range(self.row_count)]
 
         for cell in self.table_cells:
-            table[cell.row_index - 1][cell.col_index - 1] = cell.text
+            table[cell.row_index - 1][cell.col_index - 1] = " ".join([checkbox_string[0 if c.is_selected else 1] for c in cell.checkboxes])  + " ".join([w.text for w in cell.words])
 
 
         return DataFrame(table[1:] if use_columns else table, columns=columns if use_columns else None)

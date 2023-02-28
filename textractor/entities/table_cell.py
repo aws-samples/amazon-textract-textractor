@@ -16,6 +16,7 @@ from textractor.exceptions import InputError
 from textractor.entities.bbox import BoundingBox
 from textractor.visualizers.entitylist import EntityList
 from textractor.entities.document_entity import DocumentEntity
+from textractor.entities.selection_element import SelectionElement
 
 from textractor.data.constants import (
     IS_COLUMN_HEAD,
@@ -182,13 +183,22 @@ class TableCell(DocumentEntity):
         self._words = words
 
     @property
+    def checkboxes(self):
+        output = []
+        for child in self._children:
+            if isinstance(child, SelectionElement):
+                output.append(child)
+        return output
+
+
+    @property
     def text(self) -> str:
         """Returns the text in the cell as one space-separated string
 
         :return: Text in the cell
         :rtype: str
         """
-        return " ".join([w.text for w in self.words])
+        return " ".join([" ".join([str(c) for c in self.checkboxes]), " ".join([w.text for w in self.words])])
 
     @property
     def table_id(self):
