@@ -4,4 +4,4 @@ from .manifest import IDPManifest as IDPManifest, IDPManifestSchema as IDPManife
 
 logging.getLogger('tidpmanifest').addHandler(NullHandler())
 
-__version__ = '__version__ = '0.0.11''
+__version__ = '0.0.1'
