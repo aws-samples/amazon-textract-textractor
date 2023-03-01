@@ -80,7 +80,7 @@ class TestTable(unittest.TestCase):
         self.assertEqual(len(cell.get_words_by_type(TextTypes.HANDWRITING)), 0)
 
         self.assertEqual(cell.merge_direction(), (None, "None"))
-        self.assertEqual(cell.__repr__(), "<Cell: (1,1), Span: (1, 1), MergedCell: False>  Cell 1")
+        self.assertEqual(cell.__repr__(), "<Cell: (1,1), Span: (1, 1), Column Header: True, MergedCell: False>  Cell 1")
 
 if __name__ == "__main__":
     test = TestTable()
