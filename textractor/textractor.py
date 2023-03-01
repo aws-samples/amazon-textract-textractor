@@ -402,8 +402,7 @@ class Textractor:
                     f"Queries must be of type QueriesConfig, List[Query] or List[str], not {type(queries)}"
                 )
             if isinstance(queries[0], Query):
-                queries_config = QueriesConfig()
-                queries_config.queries = queries
+                queries_config = QueriesConfig(queries)
                 queries = queries_config
             elif isinstance(queries[0], str):
                 queries_config = QueriesConfig([Query(query) for query in queries])
@@ -525,11 +524,10 @@ class Textractor:
                     f"Queries must be of type QueriesConfig, List[Query] or List[str], not {type(queries)}"
                 )
             if isinstance(queries[0], Query):
-                queries_config = QueriesConfig()
-                queries_config.queries = queries
+                queries_config = QueriesConfig(queries)
                 queries = queries_config
             elif isinstance(queries[0], str):
-                queries_config = QueriesConfig(queries)
+                queries_config = QueriesConfig([Query(query) for query in queries])
                 queries = queries_config
             else:
                 raise InputError(
