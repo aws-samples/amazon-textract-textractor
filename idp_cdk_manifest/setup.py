@@ -25,7 +25,7 @@ if sys.argv[-1] == 'publish':
     os.system('twine upload --repository pypi dist/*')
     sys.exit()
 
-setup(name='idp-cdk-manifest',
+setup(name='amazon-textract-idp-cdk-manifest',
       packages=find_packages(exclude=['tests']),
       include_package_data=True,
       exclude_package_data={"": ["test_*.py", "__pycache__"]},
