@@ -54,6 +54,22 @@ class KeyValue(DocumentEntity):
         self._page_id = None
 
     @property
+    def ocr_confidence(self):
+        """
+        Return the average OCR confidence
+        :return:
+        """
+        key_confidences = [w.confidence for w in self.key.words]
+        value_confidences = [w.confidence for w in self.value.words] if self.value else []
+
+        key_confidence = sum(key_confidences) / len(key_confidences) if key_confidences else None
+        value_confidence = sum(value_confidences) / len(value_confidences) if value_confidences else None
+        return {"key_average": key_confidence,
+                "key_min": min(key_confidences) if key_confidences else None,
+                "value_average": value_confidence,
+                "value_min": min(value_confidences) if value_confidences else None}
+
+    @property
     def words(self) -> List[Word]:
         """
         Returns all the :class:`Word` objects present in the key and value of the :class:`KeyValue` object.

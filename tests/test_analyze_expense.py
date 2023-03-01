@@ -37,7 +37,10 @@ class TestTextractorAnalyzeExpense(unittest.TestCase):
 
         self.assertIsInstance(document, Document)
         self.assertEqual(len(document.pages), 1)
-        self.assertEqual(document.expense_documents[0].get("TOTAL").text, "$1810.46")
+        self.assertEqual(document.expense_documents[0].summary_fields.TOTAL[0].value.text, "$1810.46")
+        self.assertEqual(len(document.expense_documents[0].summary_groups.VENDOR), 2)
+        self.assertEqual(len(document.expense_documents[0].line_items_groups[0].to_pandas()), 4,
+                         "There are 4 line item in the receipts")
     
     def test_analyze_expense_from_image(self):
         # Testing local single image input
@@ -50,7 +53,10 @@ class TestTextractorAnalyzeExpense(unittest.TestCase):
 
         self.assertIsInstance(document, Document)
         self.assertEqual(len(document.pages), 1)
-        self.assertEqual(document.expense_documents[0].get("TOTAL").text, "$1810.46")
+        self.assertEqual(document.expense_documents[0].summary_fields.TOTAL[0].value.text, "$1810.46")
+        self.assertEqual(len(document.expense_documents[0].summary_groups.VENDOR), 2)
+        self.assertEqual(len(document.expense_documents[0].line_items_groups[0].to_pandas()), 4,
+                         "There are 4 line item in the receipts")
 
 if __name__ == "__main__":
     test = TestTextractorAnalyzeExpense()

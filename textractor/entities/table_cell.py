@@ -16,6 +16,7 @@ from textractor.exceptions import InputError
 from textractor.entities.bbox import BoundingBox
 from textractor.visualizers.entitylist import EntityList
 from textractor.entities.document_entity import DocumentEntity
+from textractor.entities.selection_element import SelectionElement
 
 from textractor.data.constants import (
     IS_COLUMN_HEAD,
@@ -50,6 +51,7 @@ class TableCell(DocumentEntity):
         row_span: int,
         col_span: int,
         confidence: float = 0,
+        is_column_header: bool = False
     ):
 
         super().__init__(entity_id, bbox)
@@ -61,12 +63,16 @@ class TableCell(DocumentEntity):
         self.confidence = confidence / 100
         self._page = None
         self._page_id = None
-
+        self._is_column_header = is_column_header
         # this gets populated when cells are added to a table using the `add_cells` method
         # or when cells are attributed to a table with table.cells = [TableCell]
         self._parent_table_id = None
         self.parent_cell_id = None
         self.siblings: List[TableCell] = []
+
+    @property
+    def is_column_header(self):
+        return self._is_column_header
 
     @property
     def page(self):
@@ -177,13 +183,22 @@ class TableCell(DocumentEntity):
         self._words = words
 
     @property
+    def checkboxes(self):
+        output = []
+        for child in self._children:
+            if isinstance(child, SelectionElement):
+                output.append(child)
+        return output
+
+
+    @property
     def text(self) -> str:
         """Returns the text in the cell as one space-separated string
 
         :return: Text in the cell
         :rtype: str
         """
-        return " ".join([w.text for w in self.words])
+        return " ".join([" ".join([str(c) for c in self.checkboxes]), " ".join([w.text for w in self.words])])
 
     @property
     def table_id(self):
@@ -304,7 +319,7 @@ class TableCell(DocumentEntity):
             entities = self.words + self.children
             entity_repr = " ".join([entity.__repr__() for entity in entities])
 
-        entity_string = f"<Cell: ({self.row_index},{self.col_index}), Span: ({self.row_span}, {self.col_span}), "
+        entity_string = f"<Cell: ({self.row_index},{self.col_index}), Span: ({self.row_span}, {self.col_span}), Column Header: { self.is_column_header}, "
         entity_string += (
             f"MergedCell: {self.metadata.get(IS_MERGED_CELL, False)}>  " + entity_repr
         )

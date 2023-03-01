@@ -2,7 +2,7 @@
 on the image of the document page."""
 
 from abc import ABC
-from typing import Tuple
+from typing import Tuple, List
 
 try:
     import numpy as np
@@ -103,6 +103,24 @@ class BoundingBox(SpatialObject):
         height = height * spatial_object.height
 
         return x, y, width, height
+
+    @classmethod
+    def enclosing_bbox(cls, bboxes, spatial_object:SpatialObject=None):
+        """
+        :param bboxes [BoundingBox]: list of bounding boxes
+        :param spatial_object SpatialObject: spatial object to be added to the returned bbox
+        :return:
+        """
+        x1, y1, x2, y2 = float('inf'), float('inf'), float('-inf'), float('-inf')
+        assert any([bbox is not None for bbox in bboxes]), "At least one bounding box needs to be non-null"
+        for bbox in bboxes:
+            if bbox is not None:
+                x1 = min(x1, bbox.x)
+                x2 = max(x2, bbox.x + bbox.width)
+                y1 = min(y1, bbox.y)
+                y2 = max(y2, bbox.y + bbox.height)
+        return BoundingBox(x1, y1, x2-x1, y2-y1, spatial_object=spatial_object)
+
 
     @classmethod
     def _from_dict(

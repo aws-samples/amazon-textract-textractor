@@ -10,7 +10,8 @@ from typing import Any, List, Dict, Tuple
 from collections import defaultdict
 from textractor.entities.identity_document import IdentityDocument
 from textractor.entities.expense_document import ExpenseDocument
-from textractor.entities.expense_field import Expense, ExpenseField
+from textractor.entities.expense_field import Expense, ExpenseField, ExpenseType, \
+    ExpenseGroupProperty, LineItemGroup, LineItemRow
 
 from textractor.entities.page import Page
 from textractor.entities.query_result import QueryResult
@@ -588,6 +589,7 @@ def _create_table_cell_objects(
             row_span=elem["RowSpan"],
             col_span=elem["ColumnSpan"],
             confidence=elem["Confidence"],
+            is_column_header="COLUMN_HEADER" in elem.get("EntityTypes", [])
         )
         table_cells[elem_id].raw_object = elem
 
@@ -803,35 +805,48 @@ def parse_analyze_id_response(response):
 
 def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
     if "Type" in field:
-        type_expense = Expense(
-            field["Type"]["Text"], field["Type"]["Confidence"], bbox=None
+        type_expense = ExpenseType(
+            field["Type"]["Text"], field["Type"]["Confidence"], field["Type"]
         )
-        type_expense.raw_object = field["Type"]
     else:
         type_expense = None
     if "ValueDetection" in field:
         value_expense = Expense(
-            field["ValueDetection"]["Text"],
-            field["ValueDetection"]["Confidence"],
             bbox=BoundingBox.from_normalized_dict(
                 field["ValueDetection"]["Geometry"]["BoundingBox"], spatial_object=page
             ),
+            text=field["ValueDetection"]["Text"],
+            confidence=field["ValueDetection"]["Confidence"],
+            page = page.page_num
         )
         value_expense.raw_object = field["ValueDetection"]
     else:
         value_expense = None
     if "LabelDetection" in field:
         label_expense = Expense(
-            field["LabelDetection"]["Text"],
-            field["LabelDetection"]["Confidence"],
             bbox=BoundingBox.from_normalized_dict(
                 field["LabelDetection"]["Geometry"]["BoundingBox"], spatial_object=page
             ),
+            text=field["LabelDetection"]["Text"],
+            confidence=field["LabelDetection"]["Confidence"],
+            page=page.page_num
         )
         label_expense.raw_object = field["LabelDetection"]
     else:
         label_expense = None
-    return ExpenseField(type_expense, value_expense, label_expense)
+    group_properties = []
+    if "GroupProperties" in field:
+        for group_property in field["GroupProperties"]:
+            group_properties.append(
+                ExpenseGroupProperty(id=group_property["Id"], types=group_property["Types"])
+            )
+    if "Currency" in field:
+        currency = field["Currency"]["Code"]
+    else:
+        currency = None
+    return ExpenseField(type_expense, value_expense, group_properties=group_properties, label=label_expense,
+                        currency=currency, page=page.page_num)
+
 
 
 def parser_analyze_expense_response(response):
@@ -846,16 +861,21 @@ def parser_analyze_expense_response(response):
         for summary_field in doc["SummaryFields"]:
             summary_fields.append(create_expense_from_field(summary_field, page))
             summary_fields[-1].raw_object = summary_field
-        line_item_groups = []
-        for line_item_group in doc["LineItemGroups"]:
-            for line_item in line_item_group["LineItems"]:
+
+        line_items_groups = []
+        for line_items_group in doc["LineItemGroups"]:
+            line_item_rows = []
+            for i, line_item in enumerate(line_items_group["LineItems"]):
+                row_expenses = []
                 for line_item_field in line_item["LineItemExpenseFields"]:
-                    line_item_groups.append(
-                        create_expense_from_field(line_item_field, page)
-                    )
-                    line_item_groups[-1].raw_object = line_item_field
+                    row_expenses.append(create_expense_from_field(line_item_field, page))
+                    row_expenses[-1].raw_object = line_item_field
+                line_item_rows.append(LineItemRow(index=i, line_item_expense_fields=row_expenses, page=page.page_num))
+            line_items_groups.append(LineItemGroup(index=line_items_group["LineItemGroupIndex"], line_item_rows=line_item_rows, page=page.page_num))
+
+        bbox = BoundingBox.enclosing_bbox(bboxes=[s.bbox for s in summary_fields] + [g.bbox for g in line_items_groups], spatial_object=page)
         expense_document = ExpenseDocument(
-            summary_fields=summary_fields, line_item_fields=line_item_groups
+            summary_fields=summary_fields, line_items_groups=line_items_groups, bounding_box=bbox, page=page.page_num
         )
         expense_document.raw_object = doc
         document.pages[summary_field["PageNumber"] - 1].expense_documents.append(
