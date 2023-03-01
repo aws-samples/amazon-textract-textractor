@@ -156,6 +156,22 @@ on the image of the document page.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.enclosing_bbox">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">enclosing_bbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bboxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><span class="pre">SpatialObject</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.enclosing_bbox" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>[</strong><strong>BoundingBox</strong><strong>]</strong> (<em>bboxes</em>) – list of bounding boxes</p></li>
+<li><p><strong>SpatialObject</strong> (<em>spatial_object</em>) – spatial object to be added to the returned bbox</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.from_normalized_dict">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_normalized_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><span class="pre">SpatialObject</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.from_normalized_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Builds an axis aligned BoundingBox from a dictionary like <code class="code docutils literal notranslate"><span class="pre">{'x':</span> <span class="pre">x,</span> <span class="pre">'y':</span> <span class="pre">y,</span> <span class="pre">'width':</span> <span class="pre">width,</span> <span class="pre">'height':</span> <span class="pre">height}</span></code>.         The coordinates will be denormalized according to spatial_object.</p>
@@ -520,6 +536,13 @@ bounding box information, value, existence of checkbox, page number, Page ID and
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.key_value.KeyValue.ocr_confidence">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ocr_confidence</span></span><a class="headerlink" href="#textractor.entities.key_value.KeyValue.ocr_confidence" title="Permalink to this definition"></a></dt>
+<dd><p>Return the average OCR confidence
+:return:</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.key_value.KeyValue.page">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">page</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#textractor.entities.key_value.KeyValue.page" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -793,6 +816,11 @@ No specific ordering is assumed since it is implicitly ordered by row and column
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.table.Table.checkboxes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">checkboxes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.selection_element.SelectionElement" title="textractor.entities.selection_element.SelectionElement"><span class="pre">SelectionElement</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.table.Table.checkboxes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.table.Table.column_count">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">column_count</span></span><a class="headerlink" href="#textractor.entities.table.Table.column_count" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
@@ -948,14 +976,17 @@ FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.table.Table.to_pandas">
-<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.table.Table.to_pandas" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkbox_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'X</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.table.Table.to_pandas" title="Permalink to this definition"></a></dt>
 <dd><p>Converts the table to a pandas DataFrame</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>DataFrame for the table</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_columns</strong> – If the first row of the table is made of column headers, use them for the pandas dataframe. Only supports single row header.</p></li>
+<li><p><strong>checkbox_string</strong> – first character is selected checkbox second character is non-selected checkbox</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>DataFrame</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -994,7 +1025,7 @@ FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
 </ul>
 <dl class="py class">
 <dt class="sig sig-object py" id="textractor.entities.table_cell.TableCell">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.table_cell.</span></span><span class="sig-name descname"><span class="pre">TableCell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><span class="pre">BoundingBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.table_cell.TableCell" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.table_cell.</span></span><span class="sig-name descname"><span class="pre">TableCell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><span class="pre">BoundingBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_span</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_column_header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.table_cell.TableCell" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity" title="textractor.entities.document_entity.DocumentEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a></p>
 <p>To create a new TableCell object we need the following:</p>
 <dl class="field-list simple">
@@ -1010,6 +1041,11 @@ FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
 </ul>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.table_cell.TableCell.checkboxes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">checkboxes</span></span><a class="headerlink" href="#textractor.entities.table_cell.TableCell.checkboxes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.table_cell.TableCell.col_index">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">col_index</span></span><a class="headerlink" href="#textractor.entities.table_cell.TableCell.col_index" title="Permalink to this definition"></a></dt>
@@ -1052,6 +1088,11 @@ FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.table_cell.TableCell.is_column_header">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_column_header</span></span><a class="headerlink" href="#textractor.entities.table_cell.TableCell.is_column_header" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.table_cell.TableCell.merge_direction">
