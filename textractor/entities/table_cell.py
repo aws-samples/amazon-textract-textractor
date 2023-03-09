@@ -14,6 +14,7 @@ from typing import List
 from textractor.entities.word import Word
 from textractor.exceptions import InputError
 from textractor.entities.bbox import BoundingBox
+from textractor.entities.page import Page
 from textractor.visualizers.entitylist import EntityList
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.selection_element import SelectionElement
@@ -46,6 +47,7 @@ class TableCell(DocumentEntity):
         self,
         entity_id: str,
         bbox: BoundingBox,
+        page: Page,
         row_index: int,
         col_index: int,
         row_span: int,
@@ -54,15 +56,13 @@ class TableCell(DocumentEntity):
         is_column_header: bool = False
     ):
 
-        super().__init__(entity_id, bbox)
+        super().__init__(entity_id, bbox, page)
         self._row_index: int = int(row_index)
         self._col_index: int = int(col_index)
         self._row_span: int = int(row_span)
         self._col_span: int = int(col_span)
         self._words: List[Word] = []
         self.confidence = confidence / 100
-        self._page = None
-        self._page_id = None
         self._is_column_header = is_column_header
         # this gets populated when cells are added to a table using the `add_cells` method
         # or when cells are attributed to a table with table.cells = [TableCell]
@@ -73,42 +73,6 @@ class TableCell(DocumentEntity):
     @property
     def is_column_header(self):
         return self._is_column_header
-
-    @property
-    def page(self):
-        """
-        :return: Returns the page number of the page the :class:`TableCell` entity is present in.
-        :rtype: int
-        """
-        return self._page
-
-    @page.setter
-    def page(self, page_num: int):
-        """
-        Sets the page number attribute of the :class:`TableCell` entity.
-
-        :param page_num: Page number where the TableCell entity exists.
-        :type page_num: int
-        """
-        self._page = page_num
-
-    @property
-    def page_id(self) -> str:
-        """
-        :return: Returns the Page ID attribute of the page which the entity belongs to.
-        :rtype: str
-        """
-        return self._page_id
-
-    @page_id.setter
-    def page_id(self, page_id: str):
-        """
-        Sets the Page ID of the TableCell entity.
-
-        :param page_id: Page ID of the page the entity belongs to.
-        :type page_id: str
-        """
-        self._page_id = page_id
 
     @property
     def row_index(self):

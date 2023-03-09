@@ -4,6 +4,7 @@ import logging
 
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
+from textractor.entities.page import Page
 from textractor.data.constants import AnalyzeExpenseLineItemFields as AELineItems
 from typing import List
 
@@ -28,16 +29,11 @@ class Expense(DocumentEntity):
     """
     Holds the Key or the Value of an Expense
     """
-    def __init__(self, bbox: BoundingBox, text: str, confidence: float, page: int):
-        super(Expense, self).__init__(entity_id="", bbox=bbox)
+    def __init__(self, bbox: BoundingBox, text: str, confidence: float, page: Page):
+        super(Expense, self).__init__(entity_id="", bbox=bbox, page=page)
         self._text = text
         self._confidence = confidence
         self._bbox = bbox
-        self._page = page
-
-    @property
-    def page(self):
-        return self._page
 
     @property
     def text(self):
@@ -60,15 +56,18 @@ class ExpenseField(DocumentEntity):
     The ExpenseField holds the information a given summary field, key, value and type.
     The bounding box of that ExpenseField is the enclosing one of all its components
     """
-    def __init__(self, type: ExpenseType, value: Expense, group_properties: List[ExpenseGroupProperty], page:int, label: Expense = None, currency=None):
-        super(ExpenseField, self).__init__('', BoundingBox.enclosing_bbox([label, value], spatial_object=value.bbox.spatial_object))
+    def __init__(self, type: ExpenseType, value: Expense, group_properties: List[ExpenseGroupProperty], page: Page, label: Expense = None, currency=None):
+        super(ExpenseField, self).__init__(
+            '',
+            BoundingBox.enclosing_bbox([label, value], spatial_object=value.bbox.spatial_object),
+            page,
+        )
         self._type = type
         self._key = label
         self._value = value
         self._group_properties = group_properties
         self._currency = currency
         self.raw_object = None
-        self._page = page
 
     @property
     def bbox(self) -> BoundingBox:
@@ -85,10 +84,6 @@ class ExpenseField(DocumentEntity):
     @property
     def value(self) -> Expense:
         return self._value
-
-    @property
-    def page(self) -> int:
-        return self._page
 
     @property
     def group_properties(self) -> List[ExpenseGroupProperty]:
@@ -117,15 +112,14 @@ class LineItemRow(DocumentEntity):
     A LineItemRow contains several ExpenseField that are all inside the row. They don't always align in
     a structured column structure as tables do.
     """
-    def __init__(self, index, line_item_expense_fields: List[ExpenseField], page:int):
-        super().__init__('', bbox=BoundingBox.enclosing_bbox([i.bbox for i in line_item_expense_fields]))
+    def __init__(self, index, line_item_expense_fields: List[ExpenseField], page: Page):
+        super().__init__(
+            '',
+            bbox=BoundingBox.enclosing_bbox([i.bbox for i in line_item_expense_fields]),
+            page=page
+        )
         self._index = index
         self._line_item_expense_fields = line_item_expense_fields
-        self._page = page
-
-    @property
-    def page(self):
-        return self._page
 
     @property
     def expenses(self):
@@ -156,15 +150,14 @@ class LineItemGroup(DocumentEntity):
     A LineItemGroup contains several LineItemRow. It is often similar to a table in invoices
     but in receipts, the table structure can be more loose and less aligned.
     """
-    def __init__(self, index, line_item_rows: List[LineItemRow], page:int):
-        super(LineItemGroup, self).__init__('', BoundingBox.enclosing_bbox([f.bbox for f in line_item_rows]))
+    def __init__(self, index, line_item_rows: List[LineItemRow], page: Page):
+        super(LineItemGroup, self).__init__(
+            '',
+            BoundingBox.enclosing_bbox([f.bbox for f in line_item_rows]),
+            page,
+        )
         self._index = index
         self._line_item_rows = line_item_rows
-        self._page = page
-
-    @property
-    def page(self):
-        return self._page
 
     @property
     def rows(self):

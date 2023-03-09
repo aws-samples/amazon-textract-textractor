@@ -186,19 +186,14 @@ def _create_word_objects(
     for elem in word_elements:
         word = Word(
             entity_id=elem["Id"],
-            bbox=BoundingBox.from_normalized_dict(
-                elem["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=BoundingBox.from_normalized_dict(elem["Geometry"]["BoundingBox"]),
+            page=page,
             text=elem.get("Text"),
             text_type=text_type[elem.get("TextType")],
             confidence=elem["Confidence"],
         )
         word.raw_object = elem
         words.append(word)
-
-    for word in words:
-        word.page = page.page_num
-        word.page_id = page.id
 
     return words
 
@@ -240,18 +235,13 @@ def _create_line_objects(
             lines.append(
                 Line(
                     entity_id=line["Id"],
-                    bbox=BoundingBox.from_normalized_dict(
-                        line["Geometry"]["BoundingBox"], spatial_object=page
-                    ),
+                    bbox=BoundingBox.from_normalized_dict(line["Geometry"]["BoundingBox"]),
+                    page=page,
                     words=line_words,
                     confidence=line["Confidence"],
                 )
             )
             lines[-1].raw_object = line
-
-    for line in lines:
-        line.page = page.page_num
-        line.page_id = page.id
 
     return lines, page_words
 
@@ -286,17 +276,12 @@ def _create_selection_objects(
     for block in checkbox_elements:
         checkboxes[block["Id"]] = SelectionElement(
             entity_id=block["Id"],
-            bbox=BoundingBox.from_normalized_dict(
-                block["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=BoundingBox.from_normalized_dict(block["Geometry"]["BoundingBox"]),
+            page=page,
             status=status[block["SelectionStatus"]],
             confidence=block["Confidence"],
         )
         checkboxes[block["Id"]].raw_object = block
-
-    for c in checkboxes.values():
-        c.page = page.page_num
-        c.page_id = page.id
 
     return checkboxes
 
@@ -328,9 +313,8 @@ def _create_value_objects(
     for block_id, block in values_info.items():
         values[block_id] = Value(
             entity_id=block_id,
-            bbox=BoundingBox.from_normalized_dict(
-                block["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=BoundingBox.from_normalized_dict(block["Geometry"]["BoundingBox"]),
+            page=page,
             confidence=block["Confidence"],
         )
         values[block_id].raw_object = block
@@ -354,9 +338,6 @@ def _create_value_objects(
                 checkbox.value_id = val_id
                 values[val_id].add_children([checkbox])
                 values[val_id].contains_checkbox = True
-
-            values[val_id].page = page.page_num
-            values[val_id].page_id = page.id
 
     return values
 
@@ -391,6 +372,7 @@ def _create_query_objects(
             query["Query"].get("Alias"),
             query_result,
             query_result.bbox if query_result is not None else None,
+            page=page,
         )
         query_obj.raw_object = query
         queries.append(query_obj)
@@ -415,16 +397,11 @@ def _create_query_result_objects(
         query_results[block["Id"]] = QueryResult(
             entity_id=block["Id"],
             confidence=block["Confidence"],
-            result_bbox=BoundingBox.from_normalized_dict(
-                block["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            result_bbox=BoundingBox.from_normalized_dict(block["Geometry"]["BoundingBox"]),
             answer=block["Text"],
+            page=page,
         )
         query_results[block["Id"]].raw_object = block
-
-    for query_result_id, query_result in query_results.items():
-        query_result.page = page.page_num
-        query_result.page_id = page.id
 
     return query_results
 
@@ -445,15 +422,10 @@ def _create_signature_objects(
         signatures[block["Id"]] = Signature(
             entity_id=block["Id"],
             confidence=block["Confidence"],
-            bbox=BoundingBox.from_normalized_dict(
-                block["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=BoundingBox.from_normalized_dict(block["Geometry"]["BoundingBox"]),
+            page=page,
         )
         signatures[block["Id"]].raw_object = block
-
-    for signature_id, signature in signatures.items():
-        signature.page = page.page_num
-        signature.page_id = page.id
 
     return list(signatures.values())
 
@@ -503,9 +475,8 @@ def _create_keyvalue_objects(
     for block in keys_info.values():
         keys[block["Id"]] = KeyValue(
             entity_id=block["Id"],
-            bbox=BoundingBox.from_normalized_dict(
-                block["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=BoundingBox.from_normalized_dict(block["Geometry"]["BoundingBox"]),
+            page=page,
             contains_checkbox=values[key_value_id_map[block["Id"]]].contains_checkbox,
             value=values[key_value_id_map[block["Id"]]],
             confidence=block["Confidence"],
@@ -543,9 +514,6 @@ def _create_keyvalue_objects(
         kv_words.extend(key_words)
 
     key_values = list(keys.values())
-    for kv in key_values:
-        kv.page = page.page_num
-        kv.page_id = page.id
     return key_values, kv_words
 
 
@@ -581,9 +549,8 @@ def _create_table_cell_objects(
     for elem_id, elem in all_table_cells_info.items():
         table_cells[elem_id] = TableCell(
             entity_id=elem_id,
-            bbox=BoundingBox.from_normalized_dict(
-                elem["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=BoundingBox.from_normalized_dict(elem["Geometry"]["BoundingBox"]),
+            page=page,
             row_index=elem["RowIndex"],
             col_index=elem["ColumnIndex"],
             row_span=elem["RowSpan"],
@@ -593,9 +560,6 @@ def _create_table_cell_objects(
         )
         table_cells[elem_id].raw_object = elem
 
-    for cell in table_cells.values():
-        cell.page = page.page_num
-        cell.page_id = page.id
     return table_cells, all_table_cells_info
 
 
@@ -636,9 +600,8 @@ def _create_table_objects(
     for val in page_tables:
         tables[val["Id"]] = Table(
             entity_id=val["Id"],
-            bbox=BoundingBox.from_normalized_dict(
-                val["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=BoundingBox.from_normalized_dict(val["Geometry"]["BoundingBox"]),
+            page=page,
         )
         tables[val["Id"]].raw_object = val
 
@@ -705,10 +668,6 @@ def _create_table_objects(
 
         tables[table["Id"]].add_cells(children_cells)
 
-    tables = list(tables.values())
-    for table in tables:
-        table.page = page.page_num
-        table.page_id = page.id
     return tables, table_words
 
 
@@ -735,7 +694,6 @@ def parse_document_api_response(response: dict) -> Document:
     assert len(pages) == response["DocumentMetadata"]["Pages"]
 
     for page_json in page_elements:
-        entities = {}
         page = pages[page_json["Id"]]
 
         lines, line_words = _create_line_objects(entity_id_map[LINE], id_json_map, page)
@@ -812,24 +770,20 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
         type_expense = None
     if "ValueDetection" in field:
         value_expense = Expense(
-            bbox=BoundingBox.from_normalized_dict(
-                field["ValueDetection"]["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=BoundingBox.from_normalized_dict(field["ValueDetection"]["Geometry"]["BoundingBox"]),
             text=field["ValueDetection"]["Text"],
             confidence=field["ValueDetection"]["Confidence"],
-            page = page.page_num
+            page = page
         )
         value_expense.raw_object = field["ValueDetection"]
     else:
         value_expense = None
     if "LabelDetection" in field:
         label_expense = Expense(
-            bbox=BoundingBox.from_normalized_dict(
-                field["LabelDetection"]["Geometry"]["BoundingBox"], spatial_object=page
-            ),
+            bbox=BoundingBox.from_normalized_dict(field["LabelDetection"]["Geometry"]["BoundingBox"]),
             text=field["LabelDetection"]["Text"],
             confidence=field["LabelDetection"]["Confidence"],
-            page=page.page_num
+            page=page
         )
         label_expense.raw_object = field["LabelDetection"]
     else:
@@ -845,7 +799,7 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
     else:
         currency = None
     return ExpenseField(type_expense, value_expense, group_properties=group_properties, label=label_expense,
-                        currency=currency, page=page.page_num)
+                        currency=currency, page=page)
 
 
 
@@ -870,12 +824,12 @@ def parser_analyze_expense_response(response):
                 for line_item_field in line_item["LineItemExpenseFields"]:
                     row_expenses.append(create_expense_from_field(line_item_field, page))
                     row_expenses[-1].raw_object = line_item_field
-                line_item_rows.append(LineItemRow(index=i, line_item_expense_fields=row_expenses, page=page.page_num))
+                line_item_rows.append(LineItemRow(index=i, line_item_expense_fields=row_expenses, page=page))
             line_items_groups.append(LineItemGroup(index=line_items_group["LineItemGroupIndex"], line_item_rows=line_item_rows, page=page.page_num))
 
-        bbox = BoundingBox.enclosing_bbox(bboxes=[s.bbox for s in summary_fields] + [g.bbox for g in line_items_groups], spatial_object=page)
+        bbox = BoundingBox.enclosing_bbox(bboxes=[s.bbox for s in summary_fields] + [g.bbox for g in line_items_groups])
         expense_document = ExpenseDocument(
-            summary_fields=summary_fields, line_items_groups=line_items_groups, bounding_box=bbox, page=page.page_num
+            summary_fields=summary_fields, line_items_groups=line_items_groups, bounding_box=bbox, page=page
         )
         expense_document.raw_object = doc
         document.pages[summary_field["PageNumber"] - 1].expense_documents.append(

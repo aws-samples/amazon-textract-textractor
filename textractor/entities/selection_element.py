@@ -9,6 +9,7 @@ from typing import List
 from textractor.entities.value import Value
 from textractor.entities.word import Word
 from textractor.entities.bbox import BoundingBox
+from textractor.entities.page import Page
 from textractor.data.constants import SELECTED, NOT_SELECTED, SelectionStatus
 from textractor.entities.document_entity import DocumentEntity
 
@@ -31,17 +32,16 @@ class SelectionElement(Value):
         self,
         entity_id: str,
         bbox: BoundingBox,
+        page: Page,
         status: SelectionStatus,
         confidence: float = 0,
     ):
 
-        super().__init__(entity_id, bbox)
+        super().__init__(entity_id, bbox, page)
         self.key_id = None
         self.value_id = None
         self.status = status
         self.confidence = confidence / 100
-        self._page = None
-        self._page_id = None
 
     def is_selected(self) -> bool:
         """
@@ -57,42 +57,6 @@ class SelectionElement(Value):
         :rtype: EntityList[Word]
         """
         return []
-
-    @property
-    def page(self):
-        """
-        :return: Returns the page number of the page the SelectionElement entity is present in.
-        :rtype: int
-        """
-        return self._page
-
-    @page.setter
-    def page(self, page_num: int):
-        """
-        Sets the page number attribute of the SelectionElement entity.
-
-        :param page_num: Page number where the SelectionElement entity exists.
-        :type page_num: int
-        """
-        self._page = page_num
-
-    @property
-    def page_id(self) -> str:
-        """
-        :return: Returns the Page ID attribute of the page which the entity belongs to.
-        :rtype: str
-        """
-        return self._page_id
-
-    @page_id.setter
-    def page_id(self, page_id: str):
-        """
-        Sets the Page ID of the SelectionElement entity.
-
-        :param page_id: Page ID of the page the entity belongs to.
-        :type page_id: str
-        """
-        self._page_id = page_id
 
     def __repr__(self) -> str:
         """
