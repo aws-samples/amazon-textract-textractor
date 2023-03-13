@@ -312,6 +312,7 @@ def textractor_cli():
                 args.file_source,
                 s3_output_path=args.s3_output_path,
                 s3_upload_path=args.s3_upload_path,
+                save_image=False,
             )
         elif args.subcommand == "start-document-analysis":
             out = extractor.start_document_analysis(
@@ -320,12 +321,14 @@ def textractor_cli():
                 queries=args.queries,
                 s3_output_path=args.s3_output_path,
                 s3_upload_path=args.s3_upload_path,
+                save_image=False,
             )
         elif args.subcommand == "start-expense-analysis":
             out = extractor.start_expense_analysis(
                 args.file_source,
                 s3_output_path=args.s3_output_path,
                 s3_upload_path=args.s3_upload_path,
+                save_image=False,
             )
         print(out.job_id)
     # SYNC
