@@ -43,5 +43,5 @@ class TestWordOrdering(unittest.TestCase):
         else:
             document = Document.open(get_fixture_path())
 
-        self.assertEqual(document.tables[0].table_cells[0].text, "Are those Words in order?")
+        self.assertEqual(document.tables[0].table_cells[0].text.strip(), "Are those Words in order?")
 

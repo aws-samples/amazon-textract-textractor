@@ -4,7 +4,7 @@ import os
 from typing import List, Union
 from dataclasses import dataclass, asdict
 from PIL import Image, ImageSequence
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 import boto3
 import io
 

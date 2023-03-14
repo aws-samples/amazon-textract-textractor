@@ -1,8 +1,8 @@
-amazon-textract-response-parser==0.1.37
-amazon-textract-caller==0.0.27
+amazon-textract-response-parser>=0.1.37,<0.2.0
+amazon-textract-caller>=0.0.27,<0.1.0
 amazon-textract-pipeline-pagedimensions
 jsonschema
 Pillow
-tabulate==0.8.*
+tabulate==0.9.*
 XlsxWriter==3.0.*
 editdistance==0.6.2

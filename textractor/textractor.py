@@ -402,8 +402,7 @@ class Textractor:
                     f"Queries must be of type QueriesConfig, List[Query] or List[str], not {type(queries)}"
                 )
             if isinstance(queries[0], Query):
-                queries_config = QueriesConfig()
-                queries_config.queries = queries
+                queries_config = QueriesConfig(queries)
                 queries = queries_config
             elif isinstance(queries[0], str):
                 queries_config = QueriesConfig([Query(query) for query in queries])
@@ -443,7 +442,6 @@ class Textractor:
                 page.image = images[document.pages.index(page)]
         return document
 
-    # FIXME: This should not be synchronous
     def start_document_analysis(
         self,
         file_source: Union[str, bytes, Image.Image],
@@ -457,10 +455,10 @@ class Textractor:
     ) -> LazyDocument:
         """
         Make a call to the ASYNC StartDocumentAnalysis API, implicitly parses the response and produces a :class:`Document` object.
-        This function is ideal for multipage PDFs or list of images.
+        This function is ideal for multipage PDFs or an image.
 
-        :param file_source: Path to a file stored locally, on an S3 bucket or list of PIL Images
-        :type file_source: str or List[PIL.Image], required
+        :param file_source: Path to a file stored locally, on an S3 bucket or a PIL Image
+        :type file_source: Union[str, bytes, Image.Image], required
         :param features: List of TextractFeatures to be extracted from the Document by the TextractAPI
         :type features: list, required
         :param s3_output_path: Path to store the output on the S3 bucket (passed as param to Textractor).
@@ -525,11 +523,10 @@ class Textractor:
                     f"Queries must be of type QueriesConfig, List[Query] or List[str], not {type(queries)}"
                 )
             if isinstance(queries[0], Query):
-                queries_config = QueriesConfig()
-                queries_config.queries = queries
+                queries_config = QueriesConfig(queries)
                 queries = queries_config
             elif isinstance(queries[0], str):
-                queries_config = QueriesConfig(queries)
+                queries_config = QueriesConfig([Query(query) for query in queries])
                 queries = queries_config
             else:
                 raise InputError(
@@ -726,9 +723,9 @@ class Textractor:
         save_image: bool = True,
     ) -> LazyDocument:
         """Make a call to the ASYNC StartExpenseAnalysis API, implicitly parses the response and produces a :class:`Document` object.
-        This function is ideal for multipage PDFs or list of images.
+        This function is ideal for multipage PDFs or an image.
 
-        :param file_source: Path to a file stored locally, on an S3 bucket or list of PIL Images
+        :param file_source: Path to a file stored locally, on an S3 bucket or a PIL Image
         :type file_source: Union[str, bytes, Image.Image]
         :param s3_output_path: Path to store the output on the S3 bucket (passed as param to Textractor).
         :type s3_output_path: str

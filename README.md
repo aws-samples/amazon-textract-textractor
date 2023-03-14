@@ -89,7 +89,7 @@ print(document.identity_documents[0].get("FIRST_NAME"))
 
 ```py
 document = extractor.analyze_expense(file_source="tests/fixtures/receipt.jpg")
-print(document.expense_documents[0].get("TOTAL").text)
+print(document.expense_documents[0].summary_fields.get("TOTAL")[0].text)
 # '$1810.46'
 ```
 
