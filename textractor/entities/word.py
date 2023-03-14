@@ -57,6 +57,7 @@ class Word(DocumentEntity):
         :type text: str
         """
         self._text = text
+        self.raw_object["Text"] = text
 
     @property
     def text_type(self) -> TextTypes:

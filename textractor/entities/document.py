@@ -3,6 +3,7 @@ accessed, searched and exported the functions given below."""
 
 import boto3
 import json
+import itertools
 import os
 import string
 import logging
@@ -614,6 +615,23 @@ class Document(SpatialObject):
                 filepath=None, workbook=workbook, save_workbook=False
             )
         workbook.close()
+
+    def export_json(self, response_file: str = "edited_response.json"):
+        """
+        Export the edited Document object in the API response format.
+
+        :param response_file: Path to where file is to be stored.
+        :type response_file: str
+        """
+        table_cells = list(itertools.chain.from_iterable([table.table_cells for table in self.tables]))
+
+        for line in self.lines:
+            line.raw_object["Text"] = line.__repr__()
+            
+        entities = self.pages + self.lines + self.words + self.checkboxes + self.tables + table_cells + self.key_values 
+        self.response["Blocks"] = [block.raw_object for block in entities]
+        with open(response_file, "w") as f:
+            json.dump(self.response, f, indent=4)
 
     def independent_words(self):
         """

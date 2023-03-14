@@ -62,8 +62,26 @@ class Page(SpatialObject):
         self.page_num = page_num
         self.child_ids: List[str] = child_ids
         self.image = None
-
+        self._raw_object = None
+        
     # functions to add entities to the Page object
+    @property
+    def raw_object(self) -> Dict:
+        """
+        :return: Returns the raw dictionary object that was used to create this Python object
+        :rtype: Dict
+        """
+        return self._raw_object
+
+    @raw_object.setter
+    def raw_object(self, raw_object: Dict):
+        """
+        Sets the raw object that was used to create this Python object
+        :param raw_object: raw object dictionary from the response
+        :type raw_object: Dict
+        """
+        self._raw_object = raw_object
+
     @property
     def words(self) -> EntityList[Word]:
         """
