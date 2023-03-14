@@ -11,7 +11,7 @@ import pytest
 logger = logging.getLogger(__name__)
 
 
-def add_sel_elements(t_document: t2.TDocument, selection_values: list[SelectionElement], key_base_name: str,
+def add_sel_elements(t_document: t2.TDocument, selection_values: List[SelectionElement], key_base_name: str,
                      page_block: t2.TBlock) -> t2.TDocument:
     for sel_element in selection_values:
         sel_key_string = "_".join([s_key.original_text.upper() for s_key in sel_element.key if s_key.original_text])
