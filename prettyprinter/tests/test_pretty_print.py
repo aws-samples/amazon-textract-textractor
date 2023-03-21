@@ -1,6 +1,6 @@
 from trp.trp2 import TDocumentSchema
 import trp.trp2_lending as tl
-from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, get_tables_string, convert_lending_from_trp2
+from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, get_tables_string, convert_lending_from_trp2, convert_signatures_to_list_trp2
 import os
 import json
 
@@ -30,7 +30,6 @@ def test_pretty_with_forms_and_trp2():
         trp2_doc = TDocumentSchema().load(json.load(input_fp))
         assert trp2_doc
         forms_as_list = convert_form_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
-        print(forms_as_list)
         assert len(forms_as_list) == 2
         assert len(forms_as_list[0]) == 30
         assert len(forms_as_list[1]) == 4
@@ -73,3 +72,14 @@ def test_lending(caplog):
         # with open("lending-output.csv", "w") as output_f:
         #     csv_writer = csv.writer(output_f)
         #     csv_writer.writerows(lending_array)
+
+
+def test_pretty_with_signatures_and_trp2():
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_filename = os.path.join(SCRIPT_DIR, "data/request_for_verification_of_employment.json")
+    with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
+        trp2_doc = TDocumentSchema().load(json.load(input_fp))
+        assert trp2_doc
+        signatures_as_list = convert_signatures_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
+        assert len(signatures_as_list) == 1
+        assert len(signatures_as_list[0]) == 3
