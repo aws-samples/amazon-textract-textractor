@@ -182,6 +182,27 @@ def convert_queries_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
     return page_list
 
 
+def convert_signatures_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
+    '''return List[List[List[str]]]
+    With the first List being the Page and the second the list of [page_number, alias (if exists, otherwise query), key_confidence, value, key-bounding-box.top, key-bounding-box.height, k-bb.width, k-bb.left, value-bounding-box.top, v-bb.height, v-bb.width, v-bb.left
+    '''
+    page_list: List[List[List[str]]] = list()
+    for idx, page_block in enumerate(trp2_doc.pages):
+        page_signatures: List[List[str]] = list()
+        for signature in trp2_doc.signatures(page=page_block):
+            value_geometry = TDocument.create_geometry_from_blocks([signature])
+            page_signatures.append([
+                str(idx + 1), "SIGNATURE", "1", "exists",
+                str(signature.confidence), "0", "0", "0", "0",
+                str(value_geometry.bounding_box.top),
+                str(value_geometry.bounding_box.height),
+                str(value_geometry.bounding_box.width),
+                str(value_geometry.bounding_box.left)
+            ])
+        page_list.append(page_signatures)
+    return page_list
+
+
 def convert_form_to_list(trp_form: trp.Form,
                          with_confidence: bool = False,
                          with_geo: bool = False,
