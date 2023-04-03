@@ -5,7 +5,7 @@ from typing import List
 
 from textractor.data.constants import AnalyzeExpenseFieldsGroup as AEFieldsGroup, AnalyzeExpenseFields as AEFields
 from textractor.entities.expense_field import ExpenseField, LineItemGroup, BoundingBox, DocumentEntity
-
+from textractor.entities.page import Page
 
 class Fields(dict):
     """
@@ -71,7 +71,7 @@ class ExpenseDocument(DocumentEntity):
     """
 
     def __init__(
-        self, summary_fields: List[ExpenseField], line_items_groups: List[LineItemGroup], bounding_box: BoundingBox, page:int
+        self, summary_fields: List[ExpenseField], line_items_groups: List[LineItemGroup], bounding_box: BoundingBox, page: Page
     ):
         """
         :param summary_fields: List of ExpenseFields, not including line item ones
@@ -79,18 +79,13 @@ class ExpenseDocument(DocumentEntity):
         :param bounding_box: The bounding box for that ExpenseDocument
         :param page: The page where that document is
         """
-        super().__init__('', bbox=bounding_box)
+        super().__init__('', bbox=bounding_box, page=page)
         self._summary_fields_list = summary_fields
         self._line_items_groups = line_items_groups
         self.summary_fields = Fields()
         self.summary_groups = FieldsGroups()
         self._unnormalized_fields = defaultdict(list)
         self._assign_summary_fields()
-        self._page = page
-
-    @property
-    def page(self):
-        return self._page
 
     @property
     def bbox(self):

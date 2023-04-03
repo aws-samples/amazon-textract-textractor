@@ -15,6 +15,7 @@ from textractor.entities.value import Value
 from textractor.exceptions import InputError
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
+from textractor.entities.page import Page
 from textractor.data.constants import TextTypes
 from textractor.visualizers.entitylist import EntityList
 
@@ -39,19 +40,18 @@ class KeyValue(DocumentEntity):
         self,
         entity_id: str,
         bbox: BoundingBox,
+        page: Page,
         contains_checkbox: bool = False,
         value: Value = None,
         confidence: float = 0,
     ):
-        super().__init__(entity_id, bbox)
+        super().__init__(entity_id, bbox, page)
 
         self._words: List[Word] = []
         self.contains_checkbox = contains_checkbox
         self._value: Value = value
         self.selection_status = False
         self.confidence = confidence / 100
-        self._page = None
-        self._page_id = None
 
     @property
     def ocr_confidence(self):
@@ -135,41 +135,6 @@ class KeyValue(DocumentEntity):
         """
         self._value = value
 
-    @property
-    def page(self) -> int:
-        """
-        :return: Returns the page number of the page the :class:`Table` entity is present in.
-        :rtype: int
-        """
-        return self._page
-
-    @page.setter
-    def page(self, page_num: int):
-        """
-        Sets the page number attribute of the :class:`Table` entity.
-
-        :param page_num: Page number where the Table entity exists.
-        :type page_num: int
-        """
-        self._page = page_num
-
-    @property
-    def page_id(self) -> str:
-        """
-        :return: Returns the Page ID attribute of the page which the entity belongs to.
-        :rtype: str
-        """
-        return self._page_id
-
-    @page_id.setter
-    def page_id(self, page_id: str):
-        """
-        Sets the Page ID of the :class:`Table` entity.
-
-        :param page_id: Page ID of the page the entity belongs to.
-        :type page_id: str
-        """
-        self._page_id = page_id
 
     def get_words_by_type(self, text_type: str = TextTypes.PRINTED) -> List[Word]:
         """

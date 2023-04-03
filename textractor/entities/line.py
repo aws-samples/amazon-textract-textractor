@@ -10,6 +10,7 @@ import logging
 from typing import List
 
 from textractor.entities.word import Word
+from textractor.entities.page import Page
 from textractor.data.constants import TextTypes
 from textractor.entities.bbox import BoundingBox
 from textractor.exceptions import InputError
@@ -35,18 +36,17 @@ class Line(DocumentEntity):
         self,
         entity_id: str,
         bbox: BoundingBox,
+        page: Page,
         words: List[Word] = None,
         confidence: float = 0,
     ):
-        super().__init__(entity_id, bbox)
+        super().__init__(entity_id, bbox, page)
         if words is not None and len(words) > 0:
             self.words: List[Word] = sorted(words, key=lambda x: x.bbox.y + x.bbox.x)
         else:
             self.words = []
 
         self.confidence = confidence / 100
-        self._page = None
-        self._page_id = None
 
     @property
     def text(self):
@@ -55,42 +55,6 @@ class Line(DocumentEntity):
         :rtype: str
         """
         return " ".join([word.text for word in self.words])
-
-    @property
-    def page(self):
-        """
-        :return: Returns the page number of the page the :class:`Line` entity is present in.
-        :rtype: int
-        """
-        return self._page
-
-    @page.setter
-    def page(self, page_num: int):
-        """
-        Sets the page number attribute of the Line entity.
-
-        :param page_num: Page number where the Line entity exists.
-        :type page_num: int
-        """
-        self._page = page_num
-
-    @property
-    def page_id(self) -> str:
-        """
-        :return: Returns the Page ID attribute of the page which the entity belongs to.
-        :rtype: str
-        """
-        return self._page_id
-
-    @page_id.setter
-    def page_id(self, page_id: str):
-        """
-        Sets the Page ID of the :class:`Line` entity.
-
-        :param page_id: Page ID of the page the entity belongs to.
-        :type page_id: str
-        """
-        self._page_id = page_id
 
     def get_words_by_type(self, text_type: TextTypes = TextTypes.PRINTED) -> List[Word]:
         """

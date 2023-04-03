@@ -17,6 +17,7 @@ from typing import List, Dict
 from textractor.exceptions import InputError
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.table_cell import TableCell
+from textractor.entities.page import Page
 from textractor.visualizers.entitylist import EntityList
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.selection_element import SelectionElement
@@ -37,12 +38,10 @@ class Table(DocumentEntity):
     :param bbox:                Bounding box of the table.
     """
 
-    def __init__(self, entity_id, bbox: BoundingBox):
-        super().__init__(entity_id, bbox)
+    def __init__(self, entity_id, bbox: BoundingBox, page: Page):
+        super().__init__(entity_id, bbox, page)
         self.table_cells: List[TableCell] = []
         self.column_headers: Dict[str, List[TableCell]] = {}
-        self._page = None
-        self._page_id = None
 
     @property
     def words(self):
@@ -61,51 +60,11 @@ class Table(DocumentEntity):
         return EntityList(all_words)
 
     @property
-    def page(self):
-        """
-        :return: Returns the page number of the page the Table entity is present in.
-        :rtype: int
-        """
-
-        return self._page
-
-    @page.setter
-    def page(self, page_num: int):
-        """
-        Sets the page number attribute of the Table entity.
-
-        :param page_num: Page number where the Table entity exists.
-        :type page_num: int
-        """
-
-        self._page = page_num
-
-    @property
-    def page_id(self) -> str:
-        """
-        :return: Returns the Page ID attribute of the page which the entity belongs to.
-        :rtype: str
-        """
-
-        return self._page_id
-
-    @property
     def checkboxes(self) -> List[SelectionElement]:
         checkboxes = []
         for cell in self.table_cells:
             checkboxes.extend(cell.checkboxes)
         return checkboxes
-
-    @page_id.setter
-    def page_id(self, page_id: str):
-        """
-        Sets the Page ID of the Table entity.
-
-        :param page_id: Page ID of the page the entity belongs to.
-        :type page_id: str
-        """
-
-        self._page_id = page_id
 
     @property
     def column_count(self):

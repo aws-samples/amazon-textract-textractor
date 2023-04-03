@@ -4,6 +4,7 @@ useful to all such entities."""
 from abc import ABC
 from typing import Dict
 from textractor.entities.bbox import BoundingBox
+from textractor.entities.page import Page
 from textractor.visualizers.entitylist import EntityList
 
 
@@ -15,7 +16,7 @@ class DocumentEntity(ABC):
     i.e. unique id and bounding box.
     """
 
-    def __init__(self, entity_id: str, bbox: BoundingBox):
+    def __init__(self, entity_id: str, bbox: BoundingBox, page: Page):
         """
         Initialize the common properties to DocumentEntities. Additionally, it contains information about
         child entities within a document entity.
@@ -29,6 +30,23 @@ class DocumentEntity(ABC):
         self._children = list()
         self._children_type = None
         self._raw_object = None
+        self._page = page
+
+    @property
+    def page(self):
+        """
+        :return: Page object containing the entity
+        :rtype: Page
+        """
+        return self._page
+
+    @property
+    def page_id(self) -> str:
+        """
+        :return: Returns the Page ID attribute of the page which the entity belongs to.
+        :rtype: str
+        """
+        return self._page.id
 
     def add_children(self, children):
         """

@@ -10,6 +10,7 @@ import logging
 from typing import List
 
 from textractor.entities.bbox import BoundingBox
+from textractor.entities.page import Page
 from textractor.entities.document_entity import DocumentEntity
 
 
@@ -31,45 +32,8 @@ class Signature(DocumentEntity):
         self,
         entity_id: str,
         bbox: BoundingBox,
+        page: Page,
         confidence: float = 0,
     ):
-        super().__init__(entity_id, bbox)
+        super().__init__(entity_id, bbox, page)
         self.confidence = confidence / 100
-        self._page = None
-        self._page_id = None
-
-    @property
-    def page(self):
-        """
-        :return: Returns the page number of the page the :class:`Signature` entity is present in.
-        :rtype: int
-        """
-        return self._page
-
-    @page.setter
-    def page(self, page_num: int):
-        """
-        Sets the page number attribute of the Signature entity.
-
-        :param page_num: Page number where the Signature entity exists.
-        :type page_num: int
-        """
-        self._page = page_num
-
-    @property
-    def page_id(self) -> str:
-        """
-        :return: Returns the Page ID attribute of the page which the entity belongs to.
-        :rtype: str
-        """
-        return self._page_id
-
-    @page_id.setter
-    def page_id(self, page_id: str):
-        """
-        Sets the Page ID of the :class:`Signature` entity.
-
-        :param page_id: Page ID of the page the entity belongs to.
-        :type page_id: str
-        """
-        self._page_id = page_id
