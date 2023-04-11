@@ -33,6 +33,11 @@ from textractor.entities.selection_element import SelectionElement
 from textractor.data.constants import (
     TABLE_FOOTER,
     TABLE_TITLE,
+    COLUMN_HEADER,
+    TABLE_SUMMARY,
+    TABLE_SECTION_TITLE,
+    TABLE_STRUCTURED,
+    TABLE_SEMI_STRUCTURED,
     SelectionStatus,
     TextTypes,
     TableTypes,
@@ -592,11 +597,11 @@ def _create_table_cell_objects(
             row_span=elem["RowSpan"],
             col_span=elem["ColumnSpan"],
             confidence=elem["Confidence"],
-            is_column_header="COLUMN_HEADER" in elem.get("EntityTypes", []),
-            is_title="TABLE_TITLE" in elem.get("EntityTypes", []),
-            is_footer="TABLE_FOOTER" in elem.get("EntityTypes", []),
-            is_summary="TABLE_SUMMARY" in elem.get("EntityTypes", []),
-            is_section_title="TABLE_SECTION_TITLE" in elem.get("EntityTypes", []),
+            is_column_header=COLUMN_HEADER in elem.get("EntityTypes", []),
+            is_title=TABLE_TITLE in elem.get("EntityTypes", []),
+            is_footer=TABLE_FOOTER in elem.get("EntityTypes", []),
+            is_summary=TABLE_SUMMARY in elem.get("EntityTypes", []),
+            is_section_title=TABLE_SECTION_TITLE in elem.get("EntityTypes", []),
         )
         table_cells[elem_id].raw_object = elem
 
@@ -648,9 +653,9 @@ def _create_table_objects(
             ),
         )
         # Setting table type based on the entity types present in the table
-        if "STRUCTURED" in val.get("EntityTypes", []):
+        if TABLE_STRUCTURED in val.get("EntityTypes", []):
             tables[val["Id"]].table_type = TableTypes.STRUCTURED
-        elif "SEMI_STRUCTURED" in val.get("EntityTypes", []):
+        elif TABLE_SEMI_STRUCTURED in val.get("EntityTypes", []):
             tables[val["Id"]].table_type = TableTypes.SEMI_STRUCTURED
         else:
             tables[val["Id"]].table_type = TableTypes.UNKNOWN

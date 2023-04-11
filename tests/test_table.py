@@ -94,8 +94,7 @@ class TestTable(unittest.TestCase):
 
         if os.environ.get("CALL_TEXTRACT"):
             extractor = Textractor(
-                #profile_name=profile_name, kms_key_id=""
-                region_name="us-west-2"
+                profile_name=profile_name, kms_key_id=""
             )
             document = extractor.analyze_document(
                 file_source=os.path.join(current_directory, "fixtures/paystub.jpg"),
