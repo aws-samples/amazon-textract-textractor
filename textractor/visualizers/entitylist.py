@@ -110,6 +110,7 @@ class EntityList(list, Generic[T]):
             # FIXME: There should be a way to recurse through all entities
             except AttributeError:
                 pass
+
         for page in list(entities_pagewise.keys()):
             # Deduplication
             entities_pagewise[page] = list(set(entities_pagewise[page]))
@@ -604,7 +605,7 @@ def _draw_bbox(
 
     text_locations = {}
 
-    # First drawing, bounding boxes
+    # First drawing tables
     for entity in entities:
         width, height = image.size
         if entity.__class__.__name__ == "Table":
@@ -612,6 +613,32 @@ def _draw_bbox(
             drw.rectangle(
                 xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
             )
+            if entity.title:
+                drw.rectangle(
+                    (
+                        int(entity.title.bbox.x * width),
+                        int(entity.title.bbox.y * height),
+                        int((entity.title.bbox.x + entity.title.bbox.width) * width),
+                        int((entity.title.bbox.y + entity.title.bbox.height) * height),
+                    ),
+                    outline=overlayer_data["color"],
+                    fill=ImageColor.getrgb("red") + (120,),
+                    width=2,
+                )
+
+            for footer in entity.footers:
+                drw.rectangle(
+                    (
+                        int(footer.bbox.x * width),
+                        int(footer.bbox.y * height),
+                        int((footer.bbox.x + footer.bbox.width) * width),
+                        int((footer.bbox.y + footer.bbox.height) * height),
+                    ),
+                    outline=overlayer_data["color"],
+                    fill=ImageColor.getrgb("cyan") + (120,),
+                    width=2,
+                )
+
             processed_cells = set()
             for cell in entity.table_cells:
                 if cell.id in processed_cells:
@@ -650,6 +677,14 @@ def _draw_bbox(
                 fill_color=None
                 if cell.is_column_header:
                     fill_color = ImageColor.getrgb("blue") + (120,)
+                if cell.is_title:
+                    fill_color = ImageColor.getrgb("red") + (120,)
+                if cell.is_footer:
+                    fill_color = ImageColor.getrgb("cyan") + (120,)
+                if cell.is_summary:
+                    fill_color = ImageColor.getrgb("yellow") + (120,)
+                if cell.is_section_title:
+                    fill_color = ImageColor.getrgb("green") + (120,)
 
                 drw.rectangle(
                     (
@@ -670,7 +705,19 @@ def _draw_bbox(
                         int((checkbox.bbox.y + checkbox.bbox.height) * height)),
                         outline=ImageColor.getrgb("lightgreen") if checkbox.is_selected() else ImageColor.getrgb("indianred")
                     )
-        elif entity.__class__.__name__ == "Query":
+    # Second drawing bounding boxes
+    for entity in entities:
+        if entity.__class__.__name__ == "Query":
+            overlayer_data = _get_overlayer_data(entity.result, width, height)
+            drw.rectangle(
+                xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
+            )
+        elif entity.__class__.__name__ == "TableTitle":
+            overlayer_data = _get_overlayer_data(entity.result, width, height)
+            drw.rectangle(
+                xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
+            )
+        elif entity.__class__.__name__ == "TableFooter":
             overlayer_data = _get_overlayer_data(entity.result, width, height)
             drw.rectangle(
                 xy=overlayer_data["coords"], outline=overlayer_data["color"], width=2
@@ -923,6 +970,12 @@ def _get_overlayer_data(entity: Any, width: float, height: float) -> dict:
         data["value_bbox"] = [x, y, x + w, y + h]
 
     elif entity.__class__.__name__ == "Table":
+        data["color"] = ImageColor.getrgb("green")
+        data["text"] = ""
+    elif entity.__class__.__name__ == "TableTitle":
+        data["color"] = ImageColor.getrgb("green")
+        data["text"] = ""
+    elif entity.__class__.__name__ == "TableFooter":
         data["color"] = ImageColor.getrgb("green")
         data["text"] = ""
 

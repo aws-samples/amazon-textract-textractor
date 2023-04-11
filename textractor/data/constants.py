@@ -11,6 +11,11 @@ LINE = "LINE"
 KEY_VALUE_SET = "KEY_VALUE_SET"
 SELECTION_ELEMENT = "SELECTION_ELEMENT"
 TABLE = "TABLE"
+TABLE_TITLE = "TABLE_TITLE"
+TABLE_FOOTER = "TABLE_FOOTER"
+TABLE_SUMMARY_CELL = "TABLE_SUMMARY"
+TABLE_SECTION_TITLE = "TABLE_SECTION_TITLE"
+TABLE_COLUMN_HEADER = "COLUMN_HEADER"
 CELL = "CELL"
 PAGE = "PAGE"
 MERGED_CELL = "MERGED_CELL"
@@ -30,6 +35,12 @@ IS_MERGED_CELL = "isMergedCell"
 HANDWRITING = "HANDWRITING"
 PRINTED = "PRINTED"
 
+class TableTypes(Enum):
+    """Types of tables recognized by Textract APIs."""
+
+    UNKNOWN = 0
+    STRUCTURED = 1
+    SEMI_STRUCTURED = 2
 
 class Direction(Enum):
     """Directions available for search using DirectionalFinder"""

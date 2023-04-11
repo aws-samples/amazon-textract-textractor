@@ -38,8 +38,13 @@ class TableCell(DocumentEntity):
     :param row_index: Row index of position of cell within the table
     :param col_index: Column index of position of cell within the table
     :param row_span: How many merged cells does the cell spans horizontally (1 means no merged cells)
-    :param col_span: How mant merged cells does the cell spand vertically (1 means no merged cells)
+    :param col_span: How many merged cells does the cell spand vertically (1 means no merged cells)
     :param confidence: Confidence out of 100 with which the Cell was detected.
+    :param is_column_header: Indicates if the cell is a column header
+    :param is_title: Indicates if the cell is a table title
+    :param is_footer: Indicates if the cell is a table footer
+    :param is_summary: Indicates if the cell is a summary cell
+    :param is_section_title: Indicates if the cell is a section title
     """
 
     def __init__(
@@ -51,7 +56,11 @@ class TableCell(DocumentEntity):
         row_span: int,
         col_span: int,
         confidence: float = 0,
-        is_column_header: bool = False
+        is_column_header: bool = False,
+        is_title: bool = False,
+        is_footer: bool = False,
+        is_summary: bool = False,
+        is_section_title: bool = False
     ):
 
         super().__init__(entity_id, bbox)
@@ -64,6 +73,10 @@ class TableCell(DocumentEntity):
         self._page = None
         self._page_id = None
         self._is_column_header = is_column_header
+        self._is_title = is_title
+        self._is_footer = is_footer
+        self._is_summary = is_summary
+        self._is_section_title = is_section_title
         # this gets populated when cells are added to a table using the `add_cells` method
         # or when cells are attributed to a table with table.cells = [TableCell]
         self._parent_table_id = None
@@ -73,6 +86,22 @@ class TableCell(DocumentEntity):
     @property
     def is_column_header(self):
         return self._is_column_header
+
+    @property
+    def is_title(self):
+        return self._is_title
+    
+    @property
+    def is_footer(self):
+        return self._is_footer
+    
+    @property
+    def is_summary(self):
+        return self._is_summary
+    
+    @property
+    def is_section_title(self):
+        return self._is_section_title
 
     @property
     def page(self):

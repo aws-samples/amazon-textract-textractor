@@ -24,17 +24,20 @@ from textractor.entities.bbox import BoundingBox
 from textractor.entities.document import Document
 from textractor.entities.key_value import KeyValue
 from textractor.entities.table_cell import TableCell
+from textractor.entities.table_title import TableTitle
+from textractor.entities.table_footer import TableFooter
 from textractor.entities.query import Query
 from textractor.validate.validation import validate_entity_schema
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.selection_element import SelectionElement
 from textractor.data.constants import (
+    TABLE_FOOTER,
+    TABLE_TITLE,
     SelectionStatus,
     TextTypes,
+    TableTypes,
     HANDWRITING,
     PRINTED,
-)
-from textractor.data.constants import (
     WORD,
     LINE,
     KEY_VALUE_SET,
@@ -589,7 +592,11 @@ def _create_table_cell_objects(
             row_span=elem["RowSpan"],
             col_span=elem["ColumnSpan"],
             confidence=elem["Confidence"],
-            is_column_header="COLUMN_HEADER" in elem.get("EntityTypes", [])
+            is_column_header="COLUMN_HEADER" in elem.get("EntityTypes", []),
+            is_title="TABLE_TITLE" in elem.get("EntityTypes", []),
+            is_footer="TABLE_FOOTER" in elem.get("EntityTypes", []),
+            is_summary="TABLE_SUMMARY" in elem.get("EntityTypes", []),
+            is_section_title="TABLE_SECTION_TITLE" in elem.get("EntityTypes", []),
         )
         table_cells[elem_id].raw_object = elem
 
@@ -640,6 +647,14 @@ def _create_table_objects(
                 val["Geometry"]["BoundingBox"], spatial_object=page
             ),
         )
+        # Setting table type based on the entity types present in the table
+        if "STRUCTURED" in val.get("EntityTypes", []):
+            tables[val["Id"]].table_type = TableTypes.STRUCTURED
+        elif "SEMI_STRUCTURED" in val.get("EntityTypes", []):
+            tables[val["Id"]].table_type = TableTypes.SEMI_STRUCTURED
+        else:
+            tables[val["Id"]].table_type = TableTypes.UNKNOWN
+        # Setting raw JSON in the resulting object
         tables[val["Id"]].raw_object = val
 
     # Create Table Cells
@@ -696,14 +711,57 @@ def _create_table_objects(
                     table_cells[cid] for cid in child_cells
                 ]  # CHECK IF IDS ARE BETTER THAN INSTANCES
 
+    # Create table title (if exists)
+    for table in page_tables:
+        children = _get_relationship_ids(table, relationship="TABLE_TITLE")
+        for child_id in children:
+            tables[table["Id"]].title = TableTitle(
+                entity_id=child_id,
+                bbox=BoundingBox.from_normalized_dict(id_json_map[child_id]["Geometry"]["BoundingBox"])
+            )
+            children = _get_relationship_ids(id_json_map[child_id], relationship="CHILD")
+            tables[table["Id"]].title.words = _create_word_objects(
+                [child_id for child_id in children if id_entity_map[child_id] == WORD],
+                id_json_map,
+                page
+            )
+
+    # Create table footer (if exists)
+    for table in page_tables:
+        children = _get_relationship_ids(table, relationship="TABLE_FOOTER")
+        for child_id in children:
+            tables[table["Id"]].footers.append(
+                TableFooter(
+                    entity_id=child_id,
+                    bbox=BoundingBox.from_normalized_dict(id_json_map[child_id]["Geometry"]["BoundingBox"])
+                )
+            )
+            children = _get_relationship_ids(id_json_map[child_id], relationship="CHILD")
+            tables[table["Id"]].footers[-1].words = _create_word_objects(
+                [child_id for child_id in children if id_entity_map[child_id] == WORD],
+                id_json_map,
+                page
+            )
+
     # Associate Children with Tables
     for table in page_tables:
         children = _get_relationship_ids(table, relationship="CHILD")
         children_cells = []
         for child_id in children:
             children_cells.append(table_cells[child_id])
+            if table_cells[child_id].is_title:
+                tables[table["Id"]].title.is_floating = False
+        # FIXME: This will be slow and there should be a better way to do it.
+        words = set([w.id for child_id in children for w in table_cells[child_id].words])
+        for footer in tables[table["Id"]].footers:
+            for w in footer.words:
+                if w.id in words:
+                    footer.is_floating = False
+                    break
 
         tables[table["Id"]].add_cells(children_cells)
+
+    
 
     tables = list(tables.values())
     for table in tables:
