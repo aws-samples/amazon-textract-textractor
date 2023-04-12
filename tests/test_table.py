@@ -1,3 +1,4 @@
+import json
 import os
 import unittest
 from tests.utils import get_fixture_path
@@ -106,7 +107,7 @@ class TestTable(unittest.TestCase):
 
         self.assertEqual(len(document.tables), 7)
         self.assertNotEqual(document.tables[3].title, None)
-        self.assertNotEqual(len(document.tables[4].footers), 1)
+        self.assertEqual(len(document.tables[4].footers), 1)
 
 if __name__ == "__main__":
     test = TestTable()
