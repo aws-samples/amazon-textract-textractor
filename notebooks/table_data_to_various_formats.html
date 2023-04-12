@@ -407,7 +407,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/amzn_q2.png&quot;</span><span class="p">)</span>
@@ -416,7 +416,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -424,10 +424,10 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">profile_name</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
 
 <span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span>
     <span class="n">file_source</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
@@ -438,7 +438,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span>
@@ -446,7 +446,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -458,22 +458,24 @@ Lines - 318
 Key-values - 0
 Checkboxes - 0
 Tables - 1
+Queries - 0
+Signatures - 0
 Identity Documents - 0
 Expense Documents - 0
 </pre></div></div>
 </div>
-<p>As expected, Textract Identified the table. Let’s see how it looks.</p>
+<p>As expected, Textract identified the table. Let’s see how it looks.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">EntityList</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">table</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+<span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
