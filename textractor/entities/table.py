@@ -20,8 +20,10 @@ from textractor.entities.table_cell import TableCell
 from textractor.visualizers.entitylist import EntityList
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.selection_element import SelectionElement
+from textractor.entities.table_title import TableTitle
+from textractor.entities.table_footer import TableFooter
 from textractor.utils.geometry_util import get_indices
-from textractor.data.constants import SimilarityMetric, TextTypes, CellTypes
+from textractor.data.constants import SimilarityMetric, TextTypes, CellTypes, TableTypes
 from textractor.data.constants import (
     IS_COLUMN_HEAD,
     IS_MERGED_CELL,
@@ -41,6 +43,9 @@ class Table(DocumentEntity):
         super().__init__(entity_id, bbox)
         self.table_cells: List[TableCell] = []
         self.column_headers: Dict[str, List[TableCell]] = {}
+        self._title: TableTitle = None
+        self._footers: TableFooter = []
+        self._table_type: TableTypes = TableTypes.UNKNOWN
         self._page = None
         self._page_id = None
 
@@ -79,6 +84,66 @@ class Table(DocumentEntity):
         """
 
         self._page = page_num
+
+    @property
+    def table_type(self):
+        """
+        :return: Returns the table type.
+        :rtype: TableTypes
+        """
+
+        return self._table_type
+
+    @table_type.setter
+    def table_type(self, table_type: TableTypes):
+        """
+        Sets the table type attribute of the Table entity.
+
+        :param title: Type of the Table entity.
+        :type title: TableTypes
+        """
+
+        self._table_type = table_type
+
+    @property
+    def title(self):
+        """
+        :return: Returns the table title.
+        :rtype: TableTitle
+        """
+
+        return self._title
+
+    @title.setter
+    def title(self, title: TableTitle):
+        """
+        Sets the table title attribute of the Table entity.
+
+        :param title: Title of the Table entity.
+        :type title: TableTitle
+        """
+
+        self._title = title
+
+    @property
+    def footers(self):
+        """
+        :return: Returns the table footers.
+        :rtype: List[TableFooter]
+        """
+
+        return self._footers
+
+    @footers.setter
+    def footers(self, footers: List[TableFooter]):
+        """
+        Sets the footers attribute of the Table entity.
+
+        :param footers: Footers of the Table entity.
+        :type footers: List[TableFooter]
+        """
+
+        self._footers = footers
 
     @property
     def page_id(self) -> str:

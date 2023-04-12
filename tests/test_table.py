@@ -82,6 +82,32 @@ class TestTable(unittest.TestCase):
         self.assertEqual(cell.merge_direction(), (None, "None"))
         self.assertEqual(cell.__repr__(), "<Cell: (1,1), Span: (1, 1), Column Header: True, MergedCell: False>  Cell 1")
 
+    def test_table_with_title_and_footers(self):
+        # Insert credentials here to run test
+        profile_name = "default"
+        current_directory = os.path.abspath(os.path.dirname(__file__))
+
+        if profile_name is None:
+            raise InvalidProfileNameError(
+                "Textractor could not be initialized. Populate profile_name with a valid input in tests/test_table.py."
+            )
+
+        if os.environ.get("CALL_TEXTRACT"):
+            extractor = Textractor(
+                profile_name=profile_name, kms_key_id=""
+            )
+            document = extractor.analyze_document(
+                file_source=os.path.join(current_directory, "fixtures/paystub.jpg"),
+                features=[TextractFeatures.TABLES],
+                save_image=False,
+            )
+        else:
+            document = Document.open(get_fixture_path())
+
+        self.assertEqual(len(document.tables), 7)
+        self.assertNotEqual(document.tables[3].title, None)
+        self.assertNotEqual(len(document.tables[4].footers), 1)
+
 if __name__ == "__main__":
     test = TestTable()
     test.setUp()
