@@ -69,7 +69,7 @@ def validate_word(json_block):
             },
             "Id": {"type": "string"},
         },
-        "required": ["BlockType", "Confidence", "Text", "TextType", "Geometry", "Id"],
+        "required": ["BlockType", "Confidence", "Text", "Geometry", "Id"],
     }
     validate(instance=json_block, schema=word_schema)
 
