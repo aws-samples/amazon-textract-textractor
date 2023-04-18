@@ -1,5 +1,4 @@
 numpy==1.21.*
-jsonschema
 jupyterlab
 pandas
 pdf2image==1.16.*

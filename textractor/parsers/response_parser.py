@@ -27,7 +27,6 @@ from textractor.entities.table_cell import TableCell
 from textractor.entities.table_title import TableTitle
 from textractor.entities.table_footer import TableFooter
 from textractor.entities.query import Query
-from textractor.validate.validation import validate_entity_schema
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.selection_element import SelectionElement
 from textractor.data.constants import (
@@ -185,7 +184,6 @@ def _create_word_objects(
     word_elements = []
 
     for word_id in word_ids:
-        validate_entity_schema(id_json_map[word_id], entity=WORD)
         word_elements.append(id_json_map[word_id])
 
     text_type = {PRINTED: TextTypes.PRINTED, HANDWRITING: TextTypes.HANDWRITING}
@@ -232,7 +230,6 @@ def _create_line_objects(
 
     for line_id in line_ids:
         if line_id in page.child_ids:
-            validate_entity_schema(id_json_map[line_id], entity=LINE)
             page_lines.append(id_json_map[line_id])
 
     lines = []
@@ -282,8 +279,6 @@ def _create_selection_objects(
     :rtype: Dict[str, SelectionElement]
     """
     checkbox_elements = [id_json_map[selection_id] for selection_id in selection_ids]
-    for checkbox_info in checkbox_elements:
-        validate_entity_schema(checkbox_info, entity=SELECTION_ELEMENT)
 
     status = {
         "SELECTED": SelectionStatus.SELECTED,
@@ -378,7 +373,6 @@ def _create_query_objects(
     page_queries = []
     for query_id in query_ids:
         if query_id in page.child_ids:
-            validate_entity_schema(id_json_map[query_id], entity=QUERY)
             page_queries.append(id_json_map[query_id])
 
     query_result_id_map = {}
@@ -415,7 +409,6 @@ def _create_query_result_objects(
     page_query_results = []
     for query_result_id in query_result_ids:
         if query_result_id in page.child_ids:
-            validate_entity_schema(id_json_map[query_result_id], entity=QueryResult)
             page_query_results.append(id_json_map[query_result_id])
 
     query_results = {}
@@ -445,7 +438,6 @@ def _create_signature_objects(
     page_signatures = []
     for signature_id in signature_ids:
         if signature_id in page.child_ids:
-            validate_entity_schema(id_json_map[signature_id], entity=Signature)
             page_signatures.append(id_json_map[signature_id])
 
     signatures = {}
@@ -493,7 +485,6 @@ def _create_keyvalue_objects(
     page_kv = []
     for kv_id in key_value_ids:
         if kv_id in page.child_ids:
-            validate_entity_schema(id_json_map[kv_id], entity=KEY_VALUE_SET)
             page_kv.append(id_json_map[kv_id])
 
     keys_info = _filter_by_entity(page_kv, entity_type="KEY")
@@ -582,7 +573,6 @@ def _create_table_cell_objects(
     for table in page_tables:
         for cell_id in _get_relationship_ids(table, relationship="CHILD"):
             if id_entity_map[cell_id] == CELL:
-                validate_entity_schema(id_json_map[cell_id], entity=CELL)
                 all_table_cells_info[cell_id] = id_json_map[cell_id]
 
     table_cells = {}
@@ -641,7 +631,6 @@ def _create_table_objects(
     page_tables = []
     for table_id in table_ids:
         if table_id in page.child_ids:
-            validate_entity_schema(id_json_map[table_id], entity=TABLE)
             page_tables.append(id_json_map[table_id])
 
     tables = {}
@@ -911,7 +900,6 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
                         currency=currency, page=page.page_num)
 
 
-
 def parser_analyze_expense_response(response):
     response["Blocks"] = [b for doc in response["ExpenseDocuments"] for b in doc.get("Blocks", [])]
     document = parse_document_api_response(response)
@@ -960,10 +948,15 @@ def parse(response: dict) -> Document:
     :return: Document object returned after making respective parse function calls.
     :rtype: Document
     """
-
     if "IdentityDocuments" in response:
+        from trp.trp2_analyzeid import TAnalyzeIdDocumentSchema
+        t_doc = TAnalyzeIdDocumentSchema().load(response)
         return parse_analyze_id_response(response)
     if "ExpenseDocuments" in response:
+        from trp.trp2_expense import TAnalyzeExpenseDocumentSchema
+        t_doc = TAnalyzeExpenseDocumentSchema().load(response)
         return parser_analyze_expense_response(response)
     else:
+        from trp.trp2 import TDocumentSchema
+        t_doc = TDocumentSchema().load(response)
         return parse_document_api_response(response)
