@@ -209,15 +209,17 @@ def get_s3_output_config_keys(output_config: OutputConfig, job_id: str, s3_clien
         }
     logger.info(f"s3-params {params}")
 
+    keys = list()
     while True:
         response = s3_client.list_objects_v2(**params)
 
-        for object in [o for o in response.get('Contents', []) if o['Key'].split('/')[-1].isnumeric()]:
-            yield object['Key']
+        keys.extend([o['Key'] for o in response.get('Contents', []) if o['Key'].split('/')[-1].isnumeric()])
 
         params['ContinuationToken'] = response.get('NextContinuationToken')
         if not params['ContinuationToken']:
             break
+
+    return [x for x in sorted(keys, key=lambda item: int(item.split('/')[-1]))]
 
 
 def remove_none(obj):
