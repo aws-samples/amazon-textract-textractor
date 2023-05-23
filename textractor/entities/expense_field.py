@@ -61,7 +61,12 @@ class ExpenseField(DocumentEntity):
     The bounding box of that ExpenseField is the enclosing one of all its components
     """
     def __init__(self, type: ExpenseType, value: Expense, group_properties: List[ExpenseGroupProperty], page:int, label: Expense = None, currency=None):
-        super(ExpenseField, self).__init__('', BoundingBox.enclosing_bbox([label, value], spatial_object=value.bbox.spatial_object))
+        if label:
+            enclosing_bbox = BoundingBox.enclosing_bbox([label.bbox, value.bbox], spatial_object=label.bbox.spatial_object)
+        else:
+            enclosing_bbox = BoundingBox.enclosing_bbox([label, value], spatial_object=value.bbox.spatial_object)
+        super(ExpenseField, self).__init__('', enclosing_bbox)
+        self._enclosing_bbox = enclosing_bbox
         self._type = type
         self._key = label
         self._value = value
@@ -72,7 +77,7 @@ class ExpenseField(DocumentEntity):
 
     @property
     def bbox(self) -> BoundingBox:
-        return BoundingBox.enclosing_bbox([self.key, self.value], spatial_object=self.value.bbox.spatial_object)
+        return self._enclosing_bbox
 
     @property
     def type(self) -> ExpenseType:
