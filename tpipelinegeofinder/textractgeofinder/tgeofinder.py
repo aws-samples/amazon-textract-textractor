@@ -258,7 +258,6 @@ class TGeoFinder():
 
         query = ''' and ? < (xmin + xmax) / 2
                     and ? > ( xmin + xmax ) / 2
-                    and ? < ymin
                     and text_type = ?
                     order by ymin  asc '''
         params = [xmin, xmax, text_type]
