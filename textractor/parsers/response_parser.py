@@ -875,8 +875,13 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
         type_expense = None
     if "ValueDetection" in field:
         value_expense = Expense(
-            bbox=BoundingBox.from_normalized_dict(
-                field["ValueDetection"]["Geometry"]["BoundingBox"], spatial_object=page
+            bbox=(
+                None
+                if not "Geometry" in field["ValueDetection"] else 
+                BoundingBox.from_normalized_dict(
+                    field["ValueDetection"]["Geometry"]["BoundingBox"],
+                    spatial_object=page
+                )
             ),
             text=field["ValueDetection"]["Text"],
             confidence=field["ValueDetection"]["Confidence"],
