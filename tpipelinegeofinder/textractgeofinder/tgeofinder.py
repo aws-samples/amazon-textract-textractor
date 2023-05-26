@@ -255,12 +255,14 @@ class TGeoFinder():
                         exclude_ids: List[str] = None) -> List[TWord]:
         xmin = anker.top_left.x
         xmax = anker.lower_right.x
+        ymax = anker.lower_right.y
 
         query = ''' and ? < (xmin + xmax) / 2
                     and ? > ( xmin + xmax ) / 2
+                    and ? < ymin
                     and text_type = ?
                     order by ymin  asc '''
-        params = [xmin, xmax, text_type]
+        params = [xmin, xmax, ymax, text_type]
         if number_of_words_to_return:
             query += " limit ? "
             params.append(number_of_words_to_return)
