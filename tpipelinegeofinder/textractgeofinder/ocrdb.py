@@ -41,7 +41,7 @@ class OCRDB():
         if OCRDB.__instance == None:
             OCRDB()
         if OCRDB.__instance != None:
-            OCRDB.__instance.__reset_database
+            OCRDB.__instance.__reset_database()
             return OCRDB.__instance
         raise Exception("could not instantiate OCRDB instance")
 
