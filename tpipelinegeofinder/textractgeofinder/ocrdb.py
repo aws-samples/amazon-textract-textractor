@@ -41,6 +41,7 @@ class OCRDB():
         if OCRDB.__instance == None:
             OCRDB()
         if OCRDB.__instance != None:
+            OCRDB.__instance.__reset_database
             return OCRDB.__instance
         raise Exception("could not instantiate OCRDB instance")
 
@@ -85,7 +86,11 @@ class OCRDB():
         cursor.execute('''CREATE INDEX idx_ocrdb_ymin ON ocrdb (ymin);''')
         cursor.execute('''CREATE INDEX idx_ocrdb_xmax ON ocrdb (xmax);''')
         cursor.execute('''CREATE INDEX idx_ocrdb_ymax ON ocrdb (ymax);''')
-
+    
+    def __reset_database(self):
+        cursor: sqlite3.Cursor = self.conn.cursor()
+        cursor.execute('''DELETE FROM ocrdb''')   
+        
     def insert(self, textract_doc_uuid, x: TWord):
         # logger.warning(f"insert: {x}")
         cursor: sqlite3.Cursor = self.conn.cursor()
