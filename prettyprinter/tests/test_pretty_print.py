@@ -83,3 +83,12 @@ def test_pretty_with_signatures_and_trp2():
         signatures_as_list = convert_signatures_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
         assert len(signatures_as_list) == 1
         assert len(signatures_as_list[0]) == 3
+
+
+def test_queries_bouding_box_issue():
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_filename = os.path.join(SCRIPT_DIR, "data/bounding_box_issue.json")
+    with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
+        trp2_doc = TDocumentSchema().load(json.load(input_fp))
+        assert trp2_doc
+        queries_as_list = convert_queries_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore

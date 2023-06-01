@@ -170,10 +170,12 @@ def convert_queries_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
                     page_keys.append([
                         str(idx + 1), key, "1", answer.text,
                         str(answer.confidence), "0", "0", "0", "0",
-                        str(value_geometry.bounding_box.top),
-                        str(value_geometry.bounding_box.height),
-                        str(value_geometry.bounding_box.width),
-                        str(value_geometry.bounding_box.left)
+                        str(value_geometry.bounding_box.top) if value_geometry and value_geometry.bounding_box else "0",
+                        str(value_geometry.bounding_box.height)
+                        if value_geometry and value_geometry.bounding_box else "0",
+                        str(value_geometry.bounding_box.width)
+                        if value_geometry and value_geometry.bounding_box else "0",
+                        str(value_geometry.bounding_box.left) if value_geometry and value_geometry.bounding_box else "0"
                     ])
             else:
                 # no answer found
