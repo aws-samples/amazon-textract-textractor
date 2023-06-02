@@ -137,14 +137,14 @@ def convert_form_to_list_trp2(trp2_doc: TDocument, ) -> List[List[List[str]]]:
                     str(idx + 1), key_name,
                     str(key_confidence), key_value,
                     str(value_confidence),
-                    str(key_geometry.bounding_box.top),
-                    str(key_geometry.bounding_box.height),
-                    str(key_geometry.bounding_box.width),
-                    str(key_geometry.bounding_box.left),
-                    str(value_geometry.bounding_box.top),
-                    str(value_geometry.bounding_box.height),
-                    str(value_geometry.bounding_box.width),
-                    str(value_geometry.bounding_box.left)
+                    str(key_geometry.bounding_box.top) if key_geometry and key_geometry.bounding_box else "0",
+                    str(key_geometry.bounding_box.height) if key_geometry and key_geometry.bounding_box else "0",
+                    str(key_geometry.bounding_box.width) if key_geometry and key_geometry.bounding_box else "0",
+                    str(key_geometry.bounding_box.left) if key_geometry and key_geometry.bounding_box else "0",
+                    str(value_geometry.bounding_box.top) if value_geometry and value_geometry.bounding_box else "0",
+                    str(value_geometry.bounding_box.height) if value_geometry and value_geometry.bounding_box else "0",
+                    str(value_geometry.bounding_box.width) if value_geometry and value_geometry.bounding_box else "0",
+                    str(value_geometry.bounding_box.left) if value_geometry and value_geometry.bounding_box else "0"
                 ])
         page_list.append(page_keys)
     return page_list
@@ -196,10 +196,10 @@ def convert_signatures_to_list_trp2(trp2_doc: TDocument) -> List[List[List[str]]
             page_signatures.append([
                 str(idx + 1), "SIGNATURE", "1", "exists",
                 str(signature.confidence), "0", "0", "0", "0",
-                str(value_geometry.bounding_box.top),
-                str(value_geometry.bounding_box.height),
-                str(value_geometry.bounding_box.width),
-                str(value_geometry.bounding_box.left)
+                str(value_geometry.bounding_box.top) if value_geometry and value_geometry.bounding_box else "0",
+                str(value_geometry.bounding_box.height) if value_geometry and value_geometry.bounding_box else "0",
+                str(value_geometry.bounding_box.width) if value_geometry and value_geometry.bounding_box else "0",
+                str(value_geometry.bounding_box.left) if value_geometry and value_geometry.bounding_box else "0"
             ])
         page_list.append(page_signatures)
     return page_list

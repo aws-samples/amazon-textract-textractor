@@ -92,3 +92,5 @@ def test_queries_bouding_box_issue():
         trp2_doc = TDocumentSchema().load(json.load(input_fp))
         assert trp2_doc
         queries_as_list = convert_queries_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
+        form_as_list = convert_form_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
+        signature_as_list = convert_signatures_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
