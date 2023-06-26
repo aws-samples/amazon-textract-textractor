@@ -938,6 +938,8 @@ def parser_analyze_expense_response(response):
                     row_expenses.append(create_expense_from_field(line_item_field, page))
                     row_expenses[-1].raw_object = line_item_field
                 line_item_rows.append(LineItemRow(index=i, line_item_expense_fields=row_expenses, page=page.page_num))
+            if not line_item_rows:
+                continue
             line_items_groups.append(LineItemGroup(index=line_items_group["LineItemGroupIndex"], line_item_rows=line_item_rows, page=page.page_num))
 
         bbox = BoundingBox.enclosing_bbox(bboxes=[s.bbox for s in summary_fields] + [g.bbox for g in line_items_groups], spatial_object=page)
