@@ -122,7 +122,7 @@ class Textractor:
                 else boto3.session.Session(region_name=self.region_name).client("s3")
             )
             file_obj = s3_client.get_object(Bucket=bucket, Key=key).get("Body").read()
-            if filepath.endswith(".pdf"):
+            if filepath.lower().endswith(".pdf"):
                 if IS_PDF2IMAGE_INSTALLED:
                     images = convert_from_bytes(bytearray(file_obj))
                 else:
@@ -131,7 +131,7 @@ class Textractor:
                 images = [Image.open(io.BytesIO(bytearray(file_obj)))]
 
         else:
-            if filepath.endswith(".pdf"):
+            if filepath.lower().endswith(".pdf"):
                 if IS_PDF2IMAGE_INSTALLED:
                     images = convert_from_path(filepath)
                 else:
