@@ -267,7 +267,7 @@ class Textractor:
             )
 
         # If the file is not already in S3
-        if not file_source.startswith("s3://"):
+        if not isinstance(file_source, str) or not file_source.startswith("s3://"):
             # Check if the user has given us a bucket to upload to
             if not s3_upload_path:
                 raise InputError(
@@ -760,7 +760,7 @@ class Textractor:
             )
 
         # If the file is not already in S3
-        if not file_source.startswith("s3://"):
+        if not isinstance(file_source, str) or not file_source.startswith("s3://"):
             # Check if the user has given us a bucket to upload to
             if not s3_upload_path:
                 raise InputError(
