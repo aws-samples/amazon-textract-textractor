@@ -94,7 +94,10 @@ class Textractor:
             raise InputError(
                 "Unable to initiate Textractor. Either profile_name or region requires an input parameter."
             )
-        self.textract_client = self.session.client("textract")
+        if self.region_name is not None:
+            self.textract_client = self.session.client("textract", region_name=self.region_name)
+        else:
+            self.textract_client = self.session.client("textract")
         self.s3_client = self.session.client("s3")
 
     def _get_document_images_from_path(self, filepath: str) -> List[Image.Image]:
