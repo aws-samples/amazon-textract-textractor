@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'amazon-textract-caller>=0.0.11', 'Pillow>=9.2.*', 'pypdf>=2.5.*']
+requirements = ['boto3', 'botocore', 'amazon-textract-caller>=0.0.11', 'Pillow>=9.2,<9.3', 'pypdf>=2.5,<2.6']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
@@ -47,5 +47,6 @@ setup(name='amazon-textract-overlayer',
           'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: 3.8',
           'Programming Language :: Python :: 3.9',
+          'Programming Language :: Python :: 3.10',
       ],
       python_requires='>=3.6')
