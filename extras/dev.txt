@@ -1,7 +1,7 @@
-numpy==1.21.*
+numpy>=1.21,<1.22
 jupyterlab
 pandas
-pdf2image==1.16.*
+pdf2image>=1.16,<1.17
 pytest
-sentence-transformers==2.2.*
-sphinx-rtd-theme==1.0.*
+sentence-transformers>=2.2,<2.3
+sphinx-rtd-theme>=1.0,<1.1
