@@ -142,10 +142,10 @@ class BoundingBox(SpatialObject):
         y = bbox_dict["Top"]
         width = bbox_dict["Width"]
         height = bbox_dict["Height"]
-        if spatial_object is not None:
-            x, y, width, height = cls._denormalize(x, y, width, height, spatial_object)
-        else:
-            spatial_object = None
+        #if spatial_object is not None:
+        #    x, y, width, height = cls._denormalize(x, y, width, height, spatial_object)
+        #else:
+        #    spatial_object = None
         return BoundingBox(x, y, width, height, spatial_object)
 
     def as_denormalized_numpy(self):

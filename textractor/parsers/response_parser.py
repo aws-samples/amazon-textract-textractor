@@ -722,7 +722,10 @@ def _create_table_objects(
         for child_id in children:
             tables[table["Id"]].title = TableTitle(
                 entity_id=child_id,
-                bbox=BoundingBox.from_normalized_dict(id_json_map[child_id]["Geometry"]["BoundingBox"])
+                bbox=BoundingBox.from_normalized_dict(
+                    id_json_map[child_id]["Geometry"]["BoundingBox"],
+                    spatial_object=page
+                )
             )
             children = _get_relationship_ids(id_json_map[child_id], relationship="CHILD")
             tables[table["Id"]].title.words = _create_word_objects(
@@ -738,7 +741,10 @@ def _create_table_objects(
             tables[table["Id"]].footers.append(
                 TableFooter(
                     entity_id=child_id,
-                    bbox=BoundingBox.from_normalized_dict(id_json_map[child_id]["Geometry"]["BoundingBox"])
+                    bbox=BoundingBox.from_normalized_dict(
+                        id_json_map[child_id]["Geometry"]["BoundingBox"],
+                        spatial_object=page
+                    )
                 )
             )
             children = _get_relationship_ids(id_json_map[child_id], relationship="CHILD")
