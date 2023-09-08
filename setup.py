@@ -18,7 +18,7 @@ def read_requirements(path):
 setup(
     # include data files
     name="amazon-textract-textractor",
-    version="1.3.3",
+    version="1.3.4",
     license="Apache 2.0",
     description="A package to use AWS Textract services.",
     url="https://github.com/aws-samples/amazon-textract-textractor",
