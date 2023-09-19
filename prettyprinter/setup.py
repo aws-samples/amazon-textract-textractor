@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'amazon-textract-response-parser>=0.1.48', 'tabulate>=0.9,<0.10']
+requirements = ['boto3>=1,<2', 'botocore', 'amazon-textract-response-parser>=1,<2', 'tabulate>=0.9,<0.10']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
@@ -46,5 +46,7 @@ setup(name='amazon-textract-prettyprinter',
           'Programming Language :: Python :: 3.8',
           'Programming Language :: Python :: 3.9',
           'Programming Language :: Python :: 3.10',
+          'Programming Language :: Python :: 3.11',
+          'Programming Language :: Python :: 3.12',
       ],
       python_requires='>=3.6')
