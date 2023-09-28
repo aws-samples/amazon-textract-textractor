@@ -463,9 +463,9 @@ class Document(SpatialObject):
 
         top_n = []
         similarity_threshold = (
-            similarity_threshold
-            if similarity_metric == SimilarityMetric.COSINE
-            else -(similarity_threshold)
+            -similarity_threshold
+            if similarity_metric == SimilarityMetric.EUCLIDEAN
+            else similarity_threshold
         )
         lowest_similarity = similarity_threshold
 
@@ -493,9 +493,9 @@ class Document(SpatialObject):
             )
 
             similarity = (
-                max(similarity)
-                if similarity_metric == SimilarityMetric.COSINE
-                else -min(similarity)
+                min(similarity)
+                if similarity_metric == SimilarityMetric.EUCLIDEAN
+                else max(similarity)
             )
 
             if similarity > similarity_threshold:
