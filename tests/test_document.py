@@ -204,7 +204,7 @@ class TestDocument(unittest.TestCase):
                 key="date",
                 top_k_matches=5,
                 similarity_metric=SimilarityMetric.LEVENSHTEIN,
-                similarity_threshold=5,
+                similarity_threshold=0.6,
             )[0],
             KeyValue,
         )

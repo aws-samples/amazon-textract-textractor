@@ -115,7 +115,7 @@ def get_metadata_attr_name(cell_atr):
 
 def normalized_edit_distance(s1: str, s2: str):
     """
-    Returns the normalized edit distance from Lopresti et al.
+    Returns the normalized edit distance
 
     :param s1: First string
     :type s1: str
@@ -123,7 +123,8 @@ def normalized_edit_distance(s1: str, s2: str):
     :type s2: str
     """
 
-    dist = editdistance.eval(s1, s2) 
-    if min(len(s1), len(s2)) - dist == 0:
+    dist = editdistance.eval(s1, s2)
+    max_length = max(len(s1), len(s2))
+    if max_length - dist == 0:
         return 0.0
-    return 1.0 / math.exp(dist / (min(len(s1), len(s2)) - dist))
+    return (max_length - dist) / max_length
