@@ -58,3 +58,10 @@ policy. We recommend that you review your lambda function and tailor the permiss
    .. image:: images/lambda_tutorial/3c.png
 
 4. Update your code to use Textractor
+
+   a. If using the PDF version you have to update the `PATH` and `LD_LIBRARY_PATH` environment variables through the lambda function configuration interface or directly in code with the `os` module: 
+
+   .. code-block:: python
+
+      os.environ["LD_LIBRARY_PATH"] = f"/opt/python/bin/:{os.environ['LD_LIBRARY_PATH']}"
+      os.environ["PATH"] = f"/opt/python/bin/:{os.environ['PATH']}"
