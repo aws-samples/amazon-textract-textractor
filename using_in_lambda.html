@@ -157,7 +157,15 @@ policy. We recommend that you review your lambda function and tailor the permiss
 </ol>
 <img alt="_images/3c.png" src="_images/3c.png" />
 </li>
-<li><p>Update your code to use Textractor</p></li>
+<li><p>Update your code to use Textractor</p>
+<ol class="loweralpha simple">
+<li><p>If using the PDF version you have to update the <cite>PATH</cite> and <cite>LD_LIBRARY_PATH</cite> environment variables through the lambda function configuration interface or directly in code with the <cite>os</cite> module:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;LD_LIBRARY_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/opt/python/bin/:</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LD_LIBRARY_PATH&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/opt/python/bin/:</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PATH&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</li>
 </ol>
 </section>
 </section>
