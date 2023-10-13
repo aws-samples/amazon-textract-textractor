@@ -105,7 +105,7 @@ class QueriesConfig():
 @dataclass
 class Adapter():
     adapter_id: str
-    version: int
+    version: str
     pages: List[str] = field(default_factory=list)
 
     def get_dict(self):

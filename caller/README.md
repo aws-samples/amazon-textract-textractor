@@ -114,7 +114,7 @@ import boto3
 textract = boto3.client('textract', region_name="us-east-2")
 q1 = tc.Query(text="What is the employee SSN?", alias="SSN", pages=["1"])
 q2 = tc.Query(text="What is YTD gross pay?", alias="GROSS_PAY", pages=["2"])
-adapter1 = tc.Adapter(adapter_id="2e9bf1c4aa31", version=1, pages=["1"])
+adapter1 = tc.Adapter(adapter_id="2e9bf1c4aa31", version="1", pages=["1"])
 textract_json = tc.call_textract(
     input_document="s3://amazon-textract-public-content/blogs/2-pager.pdf",
     queries_config=tc.QueriesConfig(queries=[q1, q2]),
