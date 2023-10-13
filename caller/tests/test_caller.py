@@ -187,7 +187,7 @@ def test_custom_queries(caplog):
     queries_config = QueriesConfig(queries=[query1, query2, query3])
     adapters_config = AdaptersConfig(adapters=[])
     assert not adapters_config.get_dict()
-    adapter1 = Adapter(adapter_id="2e9bf1c4aa31", version=1, pages=["1"])
+    adapter1 = Adapter(adapter_id="2e9bf1c4aa31", version="1", pages=["1"])
     adapters_config = AdaptersConfig(adapters=[adapter1])
 
     textract_client = boto3.client("textract", region_name="us-east-2")
