@@ -1,4 +1,4 @@
-from textractcaller import call_textract, call_textract_analyzeid, QueriesConfig, Query, get_full_json_from_output_config, get_full_json, call_textract_lending, get_full_json_lending
+from textractcaller import call_textract, call_textract_analyzeid, QueriesConfig, Query, AdaptersConfig, Adapter, get_full_json_from_output_config, get_full_json, call_textract_lending, get_full_json_lending
 from textractcaller.t_call import OutputConfig, Textract_Features, call_textract_expense, remove_none
 from trp import Document
 import trp.trp2 as t2
@@ -177,6 +177,33 @@ def test_queries(caplog):
     query_answers = tdoc.get_query_answers(page=page)
     assert len(query_answers) == 3
 
+def test_custom_queries(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    queries_config = QueriesConfig(queries=[])
+    assert not queries_config.get_dict()
+    query1 = Query(text="What is the applicant full name?")
+    query2 = Query(text="What is the applicant phone number?", alias="PHONE_NUMBER")
+    query3 = Query(text="What is the applicant home address?", alias="HOME_ADDRESS", pages=["1"])
+    queries_config = QueriesConfig(queries=[query1, query2, query3])
+    adapters_config = AdaptersConfig(adapters=[])
+    assert not adapters_config.get_dict()
+    adapter1 = Adapter(adapter_id="2e9bf1c4aa31", version="1", pages=["1"])
+    adapters_config = AdaptersConfig(adapters=[adapter1])
+
+    textract_client = boto3.client("textract", region_name="us-east-2")
+    j = call_textract(
+        input_document="s3://amazon-textract-public-content/blogs/employeeapp20210510.png",
+        boto3_textract_client=textract_client,
+        features=[Textract_Features.QUERIES],
+        queries_config=queries_config,
+        adapters_config=adapters_config
+    )
+    assert j
+    tdoc: t2.TDocument = t2.TDocumentSchema().load(j)  # type: ignore
+    assert tdoc
+    page = tdoc.pages[0]
+    query_answers = tdoc.get_query_answers(page=page)
+    assert len(query_answers) == 3
 
 def test_empty_features_and_queries(caplog):
     caplog.set_level(logging.DEBUG, logger="textractcaller")

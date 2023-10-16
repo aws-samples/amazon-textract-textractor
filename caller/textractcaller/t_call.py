@@ -102,6 +102,31 @@ class QueriesConfig():
         else:
             return {}
 
+@dataclass
+class Adapter():
+    adapter_id: str
+    version: str
+    pages: List[str] = field(default_factory=list)
+
+    def get_dict(self):
+        return_dict: dict = {"AdapterId": self.adapter_id}
+        if self.alias:
+            return_dict["Version"] = self.version
+        if self.pages:
+            return_dict["Pages"] = self.pages  # type: ignore
+        return return_dict
+
+
+@dataclass
+class AdaptersConfig():
+    adapters: List[Adapter]
+
+    def get_dict(self):
+        if self.adapters:
+            return {"Adapters": [x.get_dict() for x in self.adapters]}
+        else:
+            return {}
+
 
 @dataclass
 class Document():
@@ -143,6 +168,7 @@ def generate_request_params(document_location: Optional[DocumentLocation] = None
                             document: Optional[Document] = None,
                             features: Optional[List[Textract_Features]] = None,
                             queries_config: Optional[QueriesConfig] = None,
+                            adapters_config: Optional[AdaptersConfig] = None,
                             client_request_token: str = "",
                             job_tag: str = "",
                             notification_channel: Optional[NotificationChannel] = None,
@@ -432,6 +458,7 @@ def call_textract(input_document: Union[str, bytes],
                   features: Optional[List[Textract_Features]] = None,
                   queries_config: Optional[QueriesConfig] = None,
                   output_config: Optional[OutputConfig] = None,
+                  adapters_config: Optional[AdaptersConfig] = None,
                   kms_key_id: str = "",
                   job_tag: str = "",
                   notification_channel: Optional[NotificationChannel] = None,
@@ -498,6 +525,7 @@ def call_textract(input_document: Union[str, bytes],
                 document_location=DocumentLocation(s3_bucket=s3_bucket, s3_prefix=s3_key),
                 features=features,
                 queries_config=queries_config,
+                adapters_config=adapters_config,
                 output_config=output_config,
                 notification_channel=notification_channel,
                 kms_key_id=kms_key_id,
@@ -530,6 +558,7 @@ def call_textract(input_document: Union[str, bytes],
                 params = generate_request_params(document=Document(s3_bucket=s3_bucket, s3_prefix=s3_key),
                                                  features=features,
                                                  queries_config=queries_config,
+                                                 adapters_config=adapters_config,
                                                  output_config=output_config,
                                                  kms_key_id=kms_key_id,
                                                  notification_channel=notification_channel)
@@ -543,7 +572,8 @@ def call_textract(input_document: Union[str, bytes],
                     doc_bytes: bytearray = bytearray(input_file.read())
                     params = generate_request_params(document=Document(byte_data=doc_bytes),
                                                      features=features,
-                                                     queries_config=queries_config)
+                                                     queries_config=queries_config,
+                                                     adapters_config=adapters_config)
 
                     if features:
                         result_value = textract.analyze_document(**params)
@@ -557,7 +587,8 @@ def call_textract(input_document: Union[str, bytes],
             raise Exception("cannot run async for bytearray")
         params = generate_request_params(document=Document(byte_data=input_document),
                                          features=features,
-                                         queries_config=queries_config)
+                                         queries_config=queries_config,
+                                         adapters_config=adapters_config)
         if features:
             result_value = textract.analyze_document(**params)
         else:
