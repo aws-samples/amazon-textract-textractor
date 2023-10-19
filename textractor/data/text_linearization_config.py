@@ -4,6 +4,10 @@ from dataclasses import dataclass
 
 @dataclass
 class TextLinearizationConfig:
+    """
+    The :class:`TextLinearizationConfig` object defines how a document is linearized into a text string
+    """
+
     # Include tables in the linearized output
     linearize_table: bool = True
 
