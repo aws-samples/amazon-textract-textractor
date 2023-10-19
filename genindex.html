@@ -153,6 +153,8 @@
 </li>
       <li><a href="textractor.data.html#textractor.data.constants.AnalyzeIDFields">AnalyzeIDFields (class in textractor.data.constants)</a>
 </li>
+      <li><a href="textractor.entities.html#textractor.entities.bbox.BoundingBox.area">area (textractor.entities.bbox.BoundingBox property)</a>
+</li>
       <li><a href="textractor.entities.html#textractor.entities.bbox.BoundingBox.as_denormalized_numpy">as_denormalized_numpy() (textractor.entities.bbox.BoundingBox method)</a>
 </li>
   </ul></td>
@@ -208,6 +210,8 @@
       <li><a href="textractor.entities.html#textractor.entities.table.Table.column_count">column_count (textractor.entities.table.Table property)</a>
 </li>
       <li><a href="textractor.data.html#textractor.data.constants.CellTypes.COLUMN_HEADER">COLUMN_HEADER (textractor.data.constants.CellTypes attribute)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.page.Page.container_layouts">container_layouts (textractor.entities.page.Page property)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.value.Value.contains_checkbox">contains_checkbox (textractor.entities.value.Value property)</a>
 </li>
@@ -327,12 +331,12 @@
 </li>
       <li><a href="textractor.data.html#textractor.data.constants.CellTypes.FLOATING_FOOTER">FLOATING_FOOTER (textractor.data.constants.CellTypes attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textractor.data.html#textractor.data.constants.CellTypes.FLOATING_TITLE">FLOATING_TITLE (textractor.data.constants.CellTypes attribute)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.table.Table.footers">footers (textractor.entities.table.Table property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textractor.data.html#textractor.data.constants.CLIOverlay.FORMS">FORMS (textractor.data.constants.CLIOverlay attribute)</a>
 
       <ul>
@@ -341,6 +345,14 @@
         <li><a href="textractor.data.html#textractor.data.constants.TextractFeatures.FORMS">(textractor.data.constants.TextractFeatures attribute)</a>
 </li>
       </ul></li>
+      <li><a href="textractor.entities.html#textractor.entities.bbox.BoundingBox.from_denormalized_borders">from_denormalized_borders() (textractor.entities.bbox.BoundingBox class method)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.bbox.BoundingBox.from_denormalized_corners">from_denormalized_corners() (textractor.entities.bbox.BoundingBox class method)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.bbox.BoundingBox.from_denormalized_dict">from_denormalized_dict() (textractor.entities.bbox.BoundingBox class method)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.bbox.BoundingBox.from_denormalized_xywh">from_denormalized_xywh() (textractor.entities.bbox.BoundingBox class method)</a>
+</li>
       <li><a href="textractor.entities.html#textractor.entities.bbox.BoundingBox.from_normalized_dict">from_normalized_dict() (textractor.entities.bbox.BoundingBox class method)</a>
 </li>
   </ul></td>
@@ -359,10 +371,44 @@
 </li>
       <li><a href="textractor.entities.html#textractor.entities.table.Table.get_columns_by_name">get_columns_by_name() (textractor.entities.table.Table method)</a>
 </li>
+      <li><a href="textractor.entities.html#textractor.entities.bbox.BoundingBox.get_distance">get_distance() (textractor.entities.bbox.BoundingBox method)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.bbox.BoundingBox.get_intersection">get_intersection() (textractor.entities.bbox.BoundingBox method)</a>
+</li>
       <li><a href="textractor.html#textractor.textractor.Textractor.get_result">get_result() (textractor.textractor.Textractor method)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.table.Table.get_table_range">get_table_range() (textractor.entities.table.Table method)</a>
 </li>
+      <li><a href="textractor.entities.html#textractor.entities.document.Document.get_text">get_text() (textractor.entities.document.Document method)</a>
+
+      <ul>
+        <li><a href="textractor.entities.html#textractor.entities.page.Page.get_text">(textractor.entities.page.Page method)</a>
+</li>
+      </ul></li>
+      <li><a href="textractor.entities.html#textractor.entities.document.Document.get_text_and_words">get_text_and_words() (textractor.entities.document.Document method)</a>
+
+      <ul>
+        <li><a href="textractor.entities.html#textractor.entities.document_entity.DocumentEntity.get_text_and_words">(textractor.entities.document_entity.DocumentEntity method)</a>
+</li>
+        <li><a href="textractor.entities.html#textractor.entities.key_value.KeyValue.get_text_and_words">(textractor.entities.key_value.KeyValue method)</a>
+</li>
+        <li><a href="textractor.entities.html#textractor.entities.line.Line.get_text_and_words">(textractor.entities.line.Line method)</a>
+</li>
+        <li><a href="textractor.entities.html#textractor.entities.page.Page.get_text_and_words">(textractor.entities.page.Page method)</a>
+</li>
+        <li><a href="textractor.entities.html#textractor.entities.selection_element.SelectionElement.get_text_and_words">(textractor.entities.selection_element.SelectionElement method)</a>
+</li>
+        <li><a href="textractor.entities.html#textractor.entities.table.Table.get_text_and_words">(textractor.entities.table.Table method)</a>
+</li>
+        <li><a href="textractor.entities.html#textractor.entities.table_cell.TableCell.get_text_and_words">(textractor.entities.table_cell.TableCell method)</a>
+</li>
+        <li><a href="textractor.entities.html#textractor.entities.value.Value.get_text_and_words">(textractor.entities.value.Value method)</a>
+</li>
+        <li><a href="textractor.entities.html#textractor.entities.word.Word.get_text_and_words">(textractor.entities.word.Word method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textractor.entities.html#textractor.entities.document.Document.get_words_by_type">get_words_by_type() (textractor.entities.document.Document method)</a>
 
       <ul>
@@ -379,8 +425,6 @@
         <li><a href="textractor.entities.html#textractor.entities.value.Value.get_words_by_type">(textractor.entities.value.Value method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textractor.data.html#textractor.data.constants.TableFormat.GITHUB">GITHUB (textractor.data.constants.TableFormat attribute)</a>
 </li>
       <li><a href="textractor.data.html#textractor.data.constants.AnalyzeExpenseFields.GRATUITY">GRATUITY (textractor.data.constants.AnalyzeExpenseFields attribute)</a>
@@ -503,10 +547,16 @@
 </li>
       <li><a href="textractor.data.html#textractor.data.constants.TableFormat.LATEX_RAW">LATEX_RAW (textractor.data.constants.TableFormat attribute)</a>
 </li>
-      <li><a href="textractor.data.html#textractor.data.constants.Direction.LEFT">LEFT (textractor.data.constants.Direction attribute)</a>
+      <li><a href="textractor.data.html#textractor.data.constants.TextractFeatures.LAYOUT">LAYOUT (textractor.data.constants.TextractFeatures attribute)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.page.Page.layouts">layouts (textractor.entities.page.Page property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="textractor.entities.html#textractor.entities.page.Page.leaf_layouts">leaf_layouts (textractor.entities.page.Page property)</a>
+</li>
+      <li><a href="textractor.data.html#textractor.data.constants.Direction.LEFT">LEFT (textractor.data.constants.Direction attribute)</a>
+</li>
       <li><a href="textractor.data.html#textractor.data.constants.SimilarityMetric.LEVENSHTEIN">LEVENSHTEIN (textractor.data.constants.SimilarityMetric attribute)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.line.Line">Line (class in textractor.entities.line)</a>

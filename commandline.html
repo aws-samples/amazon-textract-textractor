@@ -200,6 +200,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">detect</span><span class="o">-</span><span class="n">document</span><span class="o">-</span><span class="n">text</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
                                 <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                                 <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">linearize</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">linearize</span><span class="o">-</span><span class="n">config</span><span class="o">-</span><span class="n">path</span> <span class="n">LINEARIZE_CONFIG_PATH</span><span class="p">]</span>
                                 <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURE</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURE</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
                                 <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
                                 <span class="n">file_source</span> <span class="n">output_file</span>
@@ -228,6 +230,13 @@
 <dt><kbd>--print</kbd></dt>
 <dd><p>Possible choices: ALL, TEXT, TABLES, FORMS, QUERIES, EXPENSES, SIGNATURES, IDS</p>
 <p>Print the output in a readable format</p>
+</dd>
+<dt><kbd>--linearize</kbd></dt>
+<dd><p>Print the linearized document output</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--linearize-config-path</kbd></dt>
+<dd><p>Configuration file for the linearization</p>
 </dd>
 <dt><kbd>--overlay</kbd></dt>
 <dd><p>Possible choices: ALL, WORDS, LINES, TABLES, FORMS, QUERIES, SIGNATURE</p>
@@ -280,12 +289,15 @@
 <section id="analyze-document">
 <h4>analyze-document<a class="headerlink" href="#analyze-document" title="Permalink to this heading"></a></h4>
 <p>Synchronous API for document analysis (forms, tables, queries, and signatures)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">analyze</span><span class="o">-</span><span class="n">document</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">features</span> <span class="p">{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">}</span>
-                            <span class="p">[{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">}</span> <span class="o">...</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">analyze</span><span class="o">-</span><span class="n">document</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">features</span>
+                            <span class="p">{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">LAYOUT</span><span class="p">}</span>
+                            <span class="p">[{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">LAYOUT</span><span class="p">}</span> <span class="o">...</span><span class="p">]</span>
                             <span class="p">[</span><span class="o">--</span><span class="n">queries</span> <span class="n">QUERIES</span> <span class="p">[</span><span class="n">QUERIES</span> <span class="o">...</span><span class="p">]]</span>
                             <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
                             <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                             <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                            <span class="p">[</span><span class="o">--</span><span class="n">linearize</span><span class="p">]</span>
+                            <span class="p">[</span><span class="o">--</span><span class="n">linearize</span><span class="o">-</span><span class="n">config</span><span class="o">-</span><span class="n">path</span> <span class="n">LINEARIZE_CONFIG_PATH</span><span class="p">]</span>
                             <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURE</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURE</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
                             <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
                             <span class="n">file_source</span> <span class="n">output_file</span>
@@ -306,7 +318,7 @@
 <h5>Named Arguments<a class="headerlink" href="#named-arguments_repeat2" title="Permalink to this heading"></a></h5>
 <dl class="option-list">
 <dt><kbd>--features</kbd></dt>
-<dd><p>Possible choices: FORMS, TABLES, QUERIES, SIGNATURES</p>
+<dd><p>Possible choices: FORMS, TABLES, QUERIES, SIGNATURES, LAYOUT</p>
 </dd>
 <dt><kbd>--queries</kbd></dt>
 <dd><p>List of queries, use quotes (”) to escape spaces</p>
@@ -320,6 +332,13 @@
 <dt><kbd>--print</kbd></dt>
 <dd><p>Possible choices: ALL, TEXT, TABLES, FORMS, QUERIES, EXPENSES, SIGNATURES, IDS</p>
 <p>Print the output in a readable format</p>
+</dd>
+<dt><kbd>--linearize</kbd></dt>
+<dd><p>Print the linearized document output</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--linearize-config-path</kbd></dt>
+<dd><p>Configuration file for the linearization</p>
 </dd>
 <dt><kbd>--overlay</kbd></dt>
 <dd><p>Possible choices: ALL, WORDS, LINES, TABLES, FORMS, QUERIES, SIGNATURE</p>
@@ -336,8 +355,8 @@
 <h4>start-document-analysis<a class="headerlink" href="#start-document-analysis" title="Permalink to this heading"></a></h4>
 <p>Asynchronous API for document analysis (forms, tables, queries, and signatures)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">start</span><span class="o">-</span><span class="n">document</span><span class="o">-</span><span class="n">analysis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">features</span>
-                                   <span class="p">{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">}</span>
-                                   <span class="p">[{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">}</span> <span class="o">...</span><span class="p">]</span>
+                                   <span class="p">{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">LAYOUT</span><span class="p">}</span>
+                                   <span class="p">[{</span><span class="n">FORMS</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">LAYOUT</span><span class="p">}</span> <span class="o">...</span><span class="p">]</span>
                                    <span class="p">[</span><span class="o">--</span><span class="n">queries</span> <span class="n">QUERIES</span> <span class="p">[</span><span class="n">QUERIES</span> <span class="o">...</span><span class="p">]]</span>
                                    <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">upload</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_UPLOAD_PATH</span><span class="p">]</span>
                                    <span class="p">[</span><span class="o">--</span><span class="n">s3</span><span class="o">-</span><span class="n">output</span><span class="o">-</span><span class="n">path</span> <span class="n">S3_OUTPUT_PATH</span><span class="p">]</span>
@@ -358,7 +377,7 @@
 <h5>Named Arguments<a class="headerlink" href="#named-arguments_repeat3" title="Permalink to this heading"></a></h5>
 <dl class="option-list">
 <dt><kbd>--features</kbd></dt>
-<dd><p>Possible choices: FORMS, TABLES, QUERIES, SIGNATURES</p>
+<dd><p>Possible choices: FORMS, TABLES, QUERIES, SIGNATURES, LAYOUT</p>
 </dd>
 <dt><kbd>--queries</kbd></dt>
 <dd><p>List of queries, use quotes (”) to escape spaces</p>
@@ -384,6 +403,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">analyze</span><span class="o">-</span><span class="n">expense</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
                            <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                            <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                           <span class="p">[</span><span class="o">--</span><span class="n">linearize</span><span class="p">]</span>
+                           <span class="p">[</span><span class="o">--</span><span class="n">linearize</span><span class="o">-</span><span class="n">config</span><span class="o">-</span><span class="n">path</span> <span class="n">LINEARIZE_CONFIG_PATH</span><span class="p">]</span>
                            <span class="p">[</span><span class="o">--</span><span class="n">overlay</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURE</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">WORDS</span><span class="p">,</span><span class="n">LINES</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">SIGNATURE</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
                            <span class="p">[</span><span class="o">--</span><span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="o">-</span><span class="n">ratio</span> <span class="n">FONT_SIZE_RATIO</span><span class="p">]</span>
                            <span class="n">file_source</span> <span class="n">output_file</span>
@@ -412,6 +433,13 @@
 <dt><kbd>--print</kbd></dt>
 <dd><p>Possible choices: ALL, TEXT, TABLES, FORMS, QUERIES, EXPENSES, SIGNATURES, IDS</p>
 <p>Print the output in a readable format</p>
+</dd>
+<dt><kbd>--linearize</kbd></dt>
+<dd><p>Print the linearized document output</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--linearize-config-path</kbd></dt>
+<dd><p>Configuration file for the linearization</p>
 </dd>
 <dt><kbd>--overlay</kbd></dt>
 <dd><p>Possible choices: ALL, WORDS, LINES, TABLES, FORMS, QUERIES, SIGNATURE</p>
@@ -502,6 +530,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">textractor</span> <span class="n">get</span><span class="o">-</span><span class="n">result</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">profile</span><span class="o">-</span><span class="n">name</span> <span class="n">PROFILE_NAME</span><span class="p">]</span>
                       <span class="p">[</span><span class="o">--</span><span class="n">region</span><span class="o">-</span><span class="n">name</span> <span class="n">REGION_NAME</span><span class="p">]</span>
                       <span class="p">[</span><span class="o">--</span><span class="nb">print</span> <span class="p">{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="p">[{</span><span class="n">ALL</span><span class="p">,</span><span class="n">TEXT</span><span class="p">,</span><span class="n">TABLES</span><span class="p">,</span><span class="n">FORMS</span><span class="p">,</span><span class="n">QUERIES</span><span class="p">,</span><span class="n">EXPENSES</span><span class="p">,</span><span class="n">SIGNATURES</span><span class="p">,</span><span class="n">IDS</span><span class="p">}</span> <span class="o">...</span><span class="p">]]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="n">linearize</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="n">linearize</span><span class="o">-</span><span class="n">config</span><span class="o">-</span><span class="n">path</span> <span class="n">LINEARIZE_CONFIG_PATH</span><span class="p">]</span>
                       <span class="n">job_id</span> <span class="p">{</span><span class="n">DETECT_TEXT</span><span class="p">,</span><span class="n">ANALYZE</span><span class="p">,</span><span class="n">EXPENSE</span><span class="p">}</span> <span class="n">output_file</span>
 </pre></div>
 </div>
@@ -532,6 +562,13 @@
 <dt><kbd>--print</kbd></dt>
 <dd><p>Possible choices: ALL, TEXT, TABLES, FORMS, QUERIES, EXPENSES, SIGNATURES, IDS</p>
 <p>Print the output in a readable format</p>
+</dd>
+<dt><kbd>--linearize</kbd></dt>
+<dd><p>Print the linearized document output</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--linearize-config-path</kbd></dt>
+<dd><p>Configuration file for the linearization</p>
 </dd>
 </dl>
 </section>

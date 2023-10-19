@@ -142,6 +142,20 @@ on the image of the document page.</p>
 <li><p>Directly:            <code class="code docutils literal notranslate"><span class="pre">print('The</span> <span class="pre">top</span> <span class="pre">left</span> <span class="pre">is:</span> <span class="pre">'</span> <span class="pre">+</span> <span class="pre">str(bb.x)</span> <span class="pre">+</span> <span class="pre">'</span> <span class="pre">'</span> <span class="pre">+</span> <span class="pre">str(bb.y))</span></code> </p></li>
 <li><p>Convert to dict:     <code class="code docutils literal notranslate"><span class="pre">bb_dict</span> <span class="pre">=</span> <span class="pre">bb.as_dict()</span></code> returns <code class="code docutils literal notranslate"><span class="pre">{'x':</span> <span class="pre">x,</span> <span class="pre">'y':</span> <span class="pre">y,</span> <span class="pre">'width':</span> <span class="pre">width,</span> <span class="pre">'height':</span> <span class="pre">height}</span></code></p></li>
 </ul>
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">area</span></span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.area" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the area of the bounding box, handles negative bboxes as 0-area</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Bounding box area</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.as_denormalized_numpy">
 <span class="sig-name descname"><span class="pre">as_denormalized_numpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.as_denormalized_numpy" title="Permalink to this definition"></a></dt>
@@ -172,6 +186,57 @@ on the image of the document page.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.from_denormalized_borders">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_denormalized_borders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><span class="pre">SpatialObject</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.from_denormalized_borders" title="Permalink to this definition"></a></dt>
+<dd><p>Builds an axis aligned bounding box from top-left and bottom-right coordinates.
+The coordinates are assumed to be denormalized.
+If spatial_object is not None, the coordinates will be denormalized according to the spatial object.
+:param left: ~ [0, doc_width]
+:param top: ~ [0, doc_height]
+:param right: ~ [0, doc_width]
+:param bottom: ~ [0, doc_height]
+:param spatial_object: Some object with width and height attributes
+:return: BoundingBox object in denormalized coordinates:  ~ [0, doc_height] x [0, doc_width]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.from_denormalized_corners">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_denormalized_corners</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><span class="pre">SpatialObject</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.from_denormalized_corners" title="Permalink to this definition"></a></dt>
+<dd><p>Builds an axis aligned bounding box from top-left and bottom-right coordinates.
+The coordinates are assumed to be denormalized.
+:param x1: Left  ~ [0, wdoc_idth]
+:param y1: Top ~ [0, doc_height]
+:param x2: Right  ~ [0, doc_width]
+:param y2: Bottom ~ [0, doc_height]
+:param spatial_object: Some object with width and height attributes (i.e: Document, ConvertibleImage).
+:return: BoundingBox object in denormalized coordinates:  ~ [0, doc_height] x [0, doc_width]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.from_denormalized_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_denormalized_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.from_denormalized_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Builds an axis aligned bounding box from a dictionary of:
+{‘x’: x, ‘y’: y, ‘width’: width, ‘height’: height}
+The coordinates will be denormalized according to the spatial object.
+:param bbox_dict: {‘x’: x, ‘y’: y, ‘width’: width, ‘height’: height} of [0, doc_height] x [0, doc_width]
+:param spatial_object: Some object with width and height attributes
+:return: BoundingBox object in denormalized coordinates:  ~ [0, doc_height] x [0, doc_width]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.from_denormalized_xywh">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_denormalized_xywh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><span class="pre">SpatialObject</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.from_denormalized_xywh" title="Permalink to this definition"></a></dt>
+<dd><p>Builds an axis aligned bounding box from top-left, width and height properties.
+The coordinates are assumed to be denormalized.
+:param x: Left ~ [0, doc_width]
+:param y: Top  ~ [0, doc_height]
+:param width: Width ~ [0, doc_width]
+:param height: Height  ~ [0, doc_height]
+:param spatial_object: Some object with width and height attributes (i.e: Document, ConvertibleImage).
+:return: BoundingBox object in denormalized coordinates:  ~ [0, doc_height] x [0, doc_width]</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.from_normalized_dict">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_normalized_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spatial_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.bbox.SpatialObject" title="textractor.entities.bbox.SpatialObject"><span class="pre">SpatialObject</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.from_normalized_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Builds an axis aligned BoundingBox from a dictionary like <code class="code docutils literal notranslate"><span class="pre">{'x':</span> <span class="pre">x,</span> <span class="pre">'y':</span> <span class="pre">y,</span> <span class="pre">'width':</span> <span class="pre">width,</span> <span class="pre">'height':</span> <span class="pre">height}</span></code>.         The coordinates will be denormalized according to spatial_object.</p>
@@ -189,6 +254,27 @@ on the image of the document page.</p>
 <dd class="field-odd"><p><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox">BoundingBox</a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.get_distance">
+<span class="sig-name descname"><span class="pre">get_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.get_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the distance between the center point of the bounding box and another bounding box</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns the distance as float</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.bbox.BoundingBox.get_intersection">
+<span class="sig-name descname"><span class="pre">get_intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.bbox.BoundingBox.get_intersection" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the intersection of this object’s bbox and another BoundingBox
+:return: a BoundingBox object</p>
 </dd></dl>
 
 </dd></dl>
@@ -250,6 +336,20 @@ i.e. unique id and bounding box.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.get_text_and_words">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_text_and_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.get_text_and_words" title="Permalink to this definition"></a></dt>
+<dd><p>Used for linearization, returns the linearized text of the entity and the matching words</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tuple of text and word list</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[str, List[<a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word">Word</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.height">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">height</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.height" title="Permalink to this definition"></a></dt>
@@ -278,8 +378,17 @@ i.e. unique id and bounding box.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.visualize">
-<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.visualize" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a></span></span><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.visualize" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the object’s children in a visualization EntityList object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns an EntityList object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.width">
@@ -344,6 +453,20 @@ text type, bounding box information, page number, Page ID and confidence of dete
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.word.Word.get_text_and_words">
+<span class="sig-name descname"><span class="pre">get_text_and_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.word.Word.get_text_and_words" title="Permalink to this definition"></a></dt>
+<dd><p>Used for linearization, returns the linearized text of the entity and the matching words</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tuple of text and word list</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[str, List[<a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word">Word</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.word.Word.page">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">page</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#textractor.entities.word.Word.page" title="Permalink to this definition"></a></dt>
@@ -420,6 +543,20 @@ bounding box information, child words, page number, Page ID and confidence of de
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.line.Line.get_text_and_words">
+<span class="sig-name descname"><span class="pre">get_text_and_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.line.Line.get_text_and_words" title="Permalink to this definition"></a></dt>
+<dd><p>Used for linearization, returns the linearized text of the entity and the matching words</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tuple of text and word list</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[str, List[<a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word">Word</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.line.Line.get_words_by_type">
 <span class="sig-name descname"><span class="pre">get_words_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.TextTypes" title="textractor.data.constants.TextTypes"><span class="pre">TextTypes</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextTypes.PRINTED</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.line.Line.get_words_by_type" title="Permalink to this definition"></a></dt>
@@ -501,6 +638,20 @@ bounding box information, value, existence of checkbox, page number, Page ID and
 </dd>
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.key_value.KeyValue.get_text_and_words">
+<span class="sig-name descname"><span class="pre">get_text_and_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.key_value.KeyValue.get_text_and_words" title="Permalink to this definition"></a></dt>
+<dd><p>Used for linearization, returns the linearized text of the entity and the matching words</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tuple of text and word list</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[str, List[<a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word">Word</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.key_value.KeyValue.get_words_by_type">
 <span class="sig-name descname"><span class="pre">get_words_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextTypes.PRINTED</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.key_value.KeyValue.get_words_by_type" title="Permalink to this definition"></a></dt>
 <dd><p>Returns list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code> entities that match the input text type.</p>
@@ -520,7 +671,16 @@ bounding box information, value, existence of checkbox, page number, Page ID and
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.key_value.KeyValue.is_selected">
 <span class="sig-name descname"><span class="pre">is_selected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#textractor.entities.key_value.KeyValue.is_selected" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>For KeyValues containing a selection item, returns its <cite>is_selected</cite> status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Selection status of a selection item key value pair</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.key_value.KeyValue.key">
@@ -635,6 +795,20 @@ and if it’s a checkbox.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.value.Value.get_text_and_words">
+<span class="sig-name descname"><span class="pre">get_text_and_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.value.Value.get_text_and_words" title="Permalink to this definition"></a></dt>
+<dd><p>Used for linearization, returns the linearized text of the entity and the matching words</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tuple of text and word list</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[str, List[<a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word">Word</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.value.Value.get_words_by_type">
 <span class="sig-name descname"><span class="pre">get_words_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextTypes.PRINTED</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.value.Value.get_words_by_type" title="Permalink to this definition"></a></dt>
 <dd><p>Returns list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code> entities that match the input text type.</p>
@@ -729,6 +903,20 @@ bounding box information, selection status, page number, Page ID and confidence 
 </dd>
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.selection_element.SelectionElement.get_text_and_words">
+<span class="sig-name descname"><span class="pre">get_text_and_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.selection_element.SelectionElement.get_text_and_words" title="Permalink to this definition"></a></dt>
+<dd><p>Used for linearization, returns the linearized text of the entity and the matching words</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tuple of text and word list</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[str, List[<a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word">Word</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.selection_element.SelectionElement.is_selected">
 <span class="sig-name descname"><span class="pre">is_selected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#textractor.entities.selection_element.SelectionElement.is_selected" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -772,7 +960,7 @@ bounding box information, selection status, page number, Page ID and confidence 
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">words</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.selection_element.SelectionElement.words" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>On SelectionElement this should always return an empty list</p>
+<dd class="field-odd"><p>Empty Word list as SelectionElement do not have words</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[<a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word">Word</a>]</p>
@@ -886,6 +1074,20 @@ FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Tuple(int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.table.Table.get_text_and_words">
+<span class="sig-name descname"><span class="pre">get_text_and_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.table.Table.get_text_and_words" title="Permalink to this definition"></a></dt>
+<dd><p>Used for linearization, returns the linearized text of the entity and the matching words</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tuple of text and word list</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[str, List[<a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word">Word</a>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1117,6 +1319,20 @@ FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.table_cell.TableCell.get_text_and_words">
+<span class="sig-name descname"><span class="pre">get_text_and_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#textractor.entities.table_cell.TableCell.get_text_and_words" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the text in the cell as one space-separated string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Text in the cell</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str, List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.table_cell.TableCell.get_words_by_type">
 <span class="sig-name descname"><span class="pre">get_words_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.TextTypes" title="textractor.data.constants.TextTypes"><span class="pre">TextTypes</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextTypes.PRINTED</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.table_cell.TableCell.get_words_by_type" title="Permalink to this definition"></a></dt>
 <dd><p>Returns list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code> entities that match the input text type.</p>
@@ -1302,6 +1518,20 @@ The <a class="reference internal" href="#textractor.entities.page.Page" title="t
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page.Page.container_layouts">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">container_layouts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page.Page.container_layouts" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the container <code class="xref py py-class docutils literal notranslate"><span class="pre">Layout</span></code> objects present in the Page.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of Layout objects.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.page.Page.directional_finder">
 <span class="sig-name descname"><span class="pre">directional_finder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">word_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">word_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Direction.BELOW</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.page.Page.directional_finder" title="Permalink to this definition"></a></dt>
@@ -1425,6 +1655,40 @@ to lowest similarity.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.page.Page.get_text">
+<span class="sig-name descname"><span class="pre">get_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#textractor.entities.page.Page.get_text" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the page text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>TextLinearizationConfig</em><em>, </em><em>optional</em>) – Text linearization configuration object, defaults to TextLinearizationConfig()</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Linearized page text</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.page.Page.get_text_and_words">
+<span class="sig-name descname"><span class="pre">get_text_and_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.page.Page.get_text_and_words" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the page text and words sorted in reading order</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>TextLinearizationConfig</em><em>, </em><em>optional</em>) – Text linearization configuration object, defaults to TextLinearizationConfig()</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tuple of page text and words</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple[str, List[<a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word">Word</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.page.Page.get_words_by_type">
 <span class="sig-name descname"><span class="pre">get_words_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.TextTypes" title="textractor.data.constants.TextTypes"><span class="pre">TextTypes</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextTypes.PRINTED</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.page.Page.get_words_by_type" title="Permalink to this definition"></a></dt>
 <dd><p>Returns list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code> entities that match the input text type.</p>
@@ -1481,6 +1745,34 @@ to lowest similarity.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page.Page.layouts">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">layouts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page.Page.layouts" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the <code class="xref py py-class docutils literal notranslate"><span class="pre">Layout</span></code> objects present in the Page.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of Layout objects.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page.Page.leaf_layouts">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">leaf_layouts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page.Page.leaf_layouts" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the leaf <code class="xref py py-class docutils literal notranslate"><span class="pre">Layout</span></code> objects present in the Page.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of Layout objects.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1605,10 +1897,10 @@ from highest to lowest similarity.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.page.Page.text">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#textractor.entities.page.Page.text" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the page text as one string</p>
+<dd><p>Returns the page text</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Line text seperated by line return</p>
+<dd class="field-odd"><p>Linearized page text</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>str</p>
@@ -1619,7 +1911,16 @@ from highest to lowest similarity.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.page.Page.visualize">
 <span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.page.Page.visualize" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Returns the object’s children in a visualization EntityList object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns an EntityList object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.page.Page.words">
@@ -1652,7 +1953,7 @@ which should be used as an intermediate form for most analytic purposes.
 The Document node also contains the metadata of the document.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.checkboxes">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">checkboxes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.key_value.KeyValue" title="textractor.entities.key_value.KeyValue"><span class="pre">KeyValue</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.checkboxes" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">checkboxes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.key_value.KeyValue" title="textractor.entities.key_value.KeyValue"><span class="pre">KeyValue</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.checkboxes" title="Permalink to this definition"></a></dt>
 <dd><p>Returns all the <code class="xref py py-class docutils literal notranslate"><span class="pre">KeyValue</span></code> objects with SelectionElements present in the Document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1787,6 +2088,16 @@ This is stored on the filepath passed by the user.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.document.Document.get_text">
+<span class="sig-name descname"><span class="pre">get_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#textractor.entities.document.Document.get_text" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.document.Document.get_text_and_words">
+<span class="sig-name descname"><span class="pre">get_text_and_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextLinearizationConfig</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextLinearizationConfig(linearize_table=True,</span> <span class="pre">linearize_key_values=True,</span> <span class="pre">remove_new_lines_in_leaf_elements=True,</span> <span class="pre">max_number_of_consecutive_new_lines=2,</span> <span class="pre">hide_header_layout=False,</span> <span class="pre">hide_footer_layout=False,</span> <span class="pre">hide_figure_layout=False,</span> <span class="pre">hide_page_num_layout=False,</span> <span class="pre">same_paragraph_separator='</span> <span class="pre">',</span> <span class="pre">layout_element_separator='\n\n',</span> <span class="pre">list_element_separator='\n',</span> <span class="pre">list_layout_prefix='',</span> <span class="pre">list_layout_suffix='',</span> <span class="pre">list_element_prefix='',</span> <span class="pre">list_element_suffix='',</span> <span class="pre">title_prefix='',</span> <span class="pre">title_suffix='',</span> <span class="pre">table_layout_prefix='\n\n',</span> <span class="pre">table_layout_suffix='\n',</span> <span class="pre">table_remove_column_headers=False,</span> <span class="pre">table_linearization_format='plaintext',</span> <span class="pre">table_tabulate_format='github',</span> <span class="pre">table_min_table_words=0,</span> <span class="pre">table_column_separator='\t',</span> <span class="pre">table_row_separator='\n',</span> <span class="pre">section_header_prefix='',</span> <span class="pre">section_header_suffix='',</span> <span class="pre">text_prefix='',</span> <span class="pre">text_suffix='',</span> <span class="pre">key_value_layout_prefix='\n\n',</span> <span class="pre">key_value_layout_suffix='',</span> <span class="pre">key_prefix='',</span> <span class="pre">key_suffix='</span> <span class="pre">',</span> <span class="pre">value_prefix='',</span> <span class="pre">value_suffix='',</span> <span class="pre">selection_element_selected='[X]',</span> <span class="pre">selection_element_not_selected='[</span> <span class="pre">]',</span> <span class="pre">heuristic_h_tolerance=0.3,</span> <span class="pre">heuristic_line_break_threshold=0.9,</span> <span class="pre">heuristic_overlap_ratio=0.5)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.document.Document.get_text_and_words" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.get_words_by_type">
 <span class="sig-name descname"><span class="pre">get_words_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.TextTypes" title="textractor.data.constants.TextTypes"><span class="pre">TextTypes</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TextTypes.PRINTED</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.word.Word" title="textractor.entities.word.Word"><span class="pre">Word</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.document.Document.get_words_by_type" title="Permalink to this definition"></a></dt>
 <dd><p>Returns list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Word</span></code> entities that match the input text type.</p>
@@ -1860,7 +2171,7 @@ This is stored on the filepath passed by the user.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.key_values">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key_values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.key_value.KeyValue" title="textractor.entities.key_value.KeyValue"><span class="pre">KeyValue</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.key_values" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key_values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.key_value.KeyValue" title="textractor.entities.key_value.KeyValue"><span class="pre">KeyValue</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.key_values" title="Permalink to this definition"></a></dt>
 <dd><p>Returns all the <code class="xref py py-class docutils literal notranslate"><span class="pre">KeyValue</span></code> objects present in the Document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1957,7 +2268,7 @@ Page objects.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.queries">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">queries</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.queries" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">queries</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.queries" title="Permalink to this definition"></a></dt>
 <dd><p>Returns all the <code class="xref py py-class docutils literal notranslate"><span class="pre">Query</span></code> objects present in the Document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2033,7 +2344,7 @@ to lowest similarity.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.signatures">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signatures</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Signature</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.signatures" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signatures</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Signature</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.signatures" title="Permalink to this definition"></a></dt>
 <dd><p>Returns all the <code class="xref py py-class docutils literal notranslate"><span class="pre">Signature</span></code> objects present in the Document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2047,7 +2358,7 @@ to lowest similarity.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.tables">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tables</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.tables" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tables</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.document.Document.tables" title="Permalink to this definition"></a></dt>
 <dd><p>Returns all the <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code> objects present in the Document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2090,7 +2401,16 @@ to lowest similarity.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.visualize">
 <span class="sig-name descname"><span class="pre">visualize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document.Document.visualize" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Returns the object’s children in a visualization EntityList object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns an EntityList object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.words">
