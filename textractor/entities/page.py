@@ -177,7 +177,12 @@ class Page(SpatialObject):
                 else:
                     sorted_layouts.append(unsorted_layout)
 
-        text, words = zip(*[l.get_text_and_words(config) for l in sorted_layouts])
+        page_texts_and_words = [l.get_text_and_words(config) for l in sorted_layouts]
+
+        if not page_texts_and_words:
+            return "", []
+    
+        text, words = zip(*page_texts_and_words)
         combined_words = []
         for w in words:
             combined_words += w
