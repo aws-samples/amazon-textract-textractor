@@ -7,6 +7,7 @@ Represents a single :class:`TableFooter:class:` object. The `TableCell:class:` o
 """
 
 from typing import List
+from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.word import Word
@@ -97,3 +98,8 @@ class TableFooter(DocumentEntity):
         """
 
         self._page_id = page_id
+
+    def get_text_and_words(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ):
+        return " ".join(self.words), self.words

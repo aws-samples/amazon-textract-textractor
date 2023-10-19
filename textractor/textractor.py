@@ -126,7 +126,9 @@ class Textractor:
                 if IS_PDF2IMAGE_INSTALLED:
                     images = convert_from_bytes(bytearray(file_obj))
                 else:
-                    raise MissingDependencyException("pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call.")
+                    raise MissingDependencyException(
+                        "pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call."
+                    )
             else:
                 images = [Image.open(io.BytesIO(bytearray(file_obj)))]
 
@@ -135,9 +137,11 @@ class Textractor:
                 if IS_PDF2IMAGE_INSTALLED:
                     images = convert_from_path(filepath)
                 else:
-                    raise MissingDependencyException("pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call.")
+                    raise MissingDependencyException(
+                        "pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call."
+                    )
             else:
-                images = [Image.open(open(filepath, "rb"))]
+                images = [Image.open(filepath)]
 
         if not images:
             raise UnhandledCaseException(f"Could not get any images from {filepath}")
@@ -260,11 +264,7 @@ class Textractor:
 
         original_file_source = file_source
 
-        if not (
-            isinstance(file_source, str)
-            or isinstance(file_source, bytes)
-            or isinstance(file_source, Image.Image)
-        ):
+        if not isinstance(file_source, (str, bytes, Image.Image)):
             raise InputError(
                 f"file_source needs to be of type str, bytes or PIL Image, not {type(file_source)}"
             )
@@ -274,7 +274,7 @@ class Textractor:
             # Check if the user has given us a bucket to upload to
             if not s3_upload_path:
                 raise InputError(
-                    f"For files not in S3, an S3 upload path must be provided"
+                    "For files not in S3, an S3 upload path must be provided"
                 )
 
             s3_file_path = os.path.join(s3_upload_path, str(uuid.uuid4()))
@@ -486,11 +486,7 @@ class Textractor:
 
         original_file_source = file_source
 
-        if not (
-            isinstance(file_source, str)
-            or isinstance(file_source, bytes)
-            or isinstance(file_source, Image.Image)
-        ):
+        if not isinstance(file_source, (str, bytes, Image.Image)):
             raise InputError(
                 f"file_source needs to be of type str, bytes or PIL Image, not {type(file_source)}"
             )
@@ -752,12 +748,8 @@ class Textractor:
         """
 
         original_file_source = file_source
-        
-        if not (
-            isinstance(file_source, str)
-            or isinstance(file_source, bytes)
-            or isinstance(file_source, Image.Image)
-        ):
+
+        if not isinstance(file_source, (str, bytes, Image.Image)):
             raise InputError(
                 f"file_source needs to be of type str, bytes or PIL Image, not {type(file_source)}"
             )
@@ -819,8 +811,16 @@ class Textractor:
             images=images,
         )
 
-    def get_result(self, job_id: str, api: Union[TextractAPI, Textract_API]):
-        """ """
+    def get_result(
+        self, job_id: str, api: Union[TextractAPI, Textract_API]
+    ) -> Document:
+        """
+        Retrieves Textract API output for a given job id.
+        :param job_id: Textract API JobID
+        :type job_id: str, required
+        :return: Returns a Document object
+        :rtype: Document
+        """
 
         response = get_full_json(
             job_id,
@@ -846,6 +846,6 @@ def _image_to_byte_array(image: Image) -> bytes:
     :rtype: bytes
     """
     img_byte_arr = io.BytesIO()
-    image.save(img_byte_arr, format="PNG")
+    image.convert("RGB").save(img_byte_arr, format="JPEG")
     img_byte_arr = img_byte_arr.getvalue()
     return img_byte_arr

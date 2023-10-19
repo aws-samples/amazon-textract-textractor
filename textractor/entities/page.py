@@ -16,6 +16,7 @@ from textractor.entities.word import Word
 from textractor.entities.line import Line
 from textractor.entities.table import Table
 from textractor.entities.signature import Signature
+from textractor.entities.layout import Layout
 from textractor.exceptions import InputError
 from textractor.entities.key_value import KeyValue
 from textractor.entities.query import Query
@@ -23,6 +24,19 @@ from textractor.entities.identity_document import IdentityDocument
 from textractor.entities.bbox import SpatialObject
 from textractor.data.constants import SelectionStatus, Direction, DirectionalFinderType
 from textractor.data.constants import TextTypes, SimilarityMetric
+from textractor.data.constants import (
+    LAYOUT_TEXT,
+    LAYOUT_TITLE,
+    LAYOUT_HEADER,
+    LAYOUT_FOOTER,
+    LAYOUT_SECTION_HEADER,
+    LAYOUT_PAGE_NUMBER,
+    LAYOUT_LIST,
+    LAYOUT_FIGURE,
+    LAYOUT_TABLE,
+    LAYOUT_KEY_VALUE,
+)
+from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.entities.selection_element import SelectionElement
 from textractor.utils.geometry_util import sort_by_position
 from textractor.utils.search_utils import SearchUtils, jaccard_similarity
@@ -57,6 +71,8 @@ class Page(SpatialObject):
         self._tables: EntityList[Table] = EntityList([])
         self._queries: EntityList[Query] = EntityList([])
         self._expense_documents: EntityList[ExpenseDocument] = EntityList([])
+        self._leaf_layouts: EntityList[Layout] = EntityList([])
+        self._container_layouts: EntityList[Layout] = EntityList([])
         self.kv_cache = defaultdict(list)
         self.metadata = {}
         self.page_num = page_num
@@ -107,12 +123,65 @@ class Page(SpatialObject):
 
     @property
     def text(self) -> str:
-        """Returns the page text as one string
+        """
+        Returns the page text
 
-        :return: Line text seperated by line return
+        :return: Linearized page text
         :rtype: str
         """
-        return os.linesep.join([line.text for line in self.lines])
+        return self.get_text()
+
+    def get_text(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ) -> str:
+        """
+        Returns the page text
+
+        :param config: Text linearization configuration object, defaults to TextLinearizationConfig()
+        :type config: TextLinearizationConfig, optional
+        :return: Linearized page text
+        :rtype: str
+        """
+        return self.get_text_and_words(config)[0]
+
+    def get_text_and_words(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ) -> Tuple[str, List[Word]]:
+        """
+        Returns the page text and words sorted in reading order
+
+        :param config: Text linearization configuration object, defaults to TextLinearizationConfig()
+        :type config: TextLinearizationConfig, optional
+        :return: Tuple of page text and words
+        :rtype: Tuple[str, List[Word]]
+        """
+        unsorted_layouts = [l for l in self.layouts if l.reading_order == -1]
+        sorted_layouts = [l for l in self.layouts if l.reading_order >= 0]
+        if unsorted_layouts:
+            for unsorted_layout in sorted(
+                unsorted_layouts, key=lambda x: (x.bbox.y, x.bbox.x)
+            ):
+                closest_layout = None
+                closest_reading_order_distance = None
+                for layout in sorted(sorted_layouts, key=lambda x: x.reading_order):
+                    dist = layout.bbox.get_distance(unsorted_layout)
+                    if (
+                        closest_reading_order_distance is None
+                        or dist < closest_reading_order_distance
+                    ):
+                        closest_layout = layout
+                if closest_layout:
+                    sorted_layouts.insert(
+                        sorted_layouts.index(closest_layout) + 1, unsorted_layout
+                    )
+                else:
+                    sorted_layouts.append(unsorted_layout)
+
+        text, words = zip(*[l.get_text_and_words(config) for l in sorted_layouts])
+        combined_words = []
+        for w in words:
+            combined_words += w
+        return os.linesep.join(text), combined_words
 
     @property
     def key_values(self) -> EntityList[KeyValue]:
@@ -215,6 +284,60 @@ class Page(SpatialObject):
         self._signatures = EntityList(signatures)
 
     @property
+    def layouts(self) -> EntityList[Layout]:
+        """
+        Returns all the :class:`Layout` objects present in the Page.
+
+        :return: List of Layout objects.
+        :rtype: EntityList
+        """
+        return EntityList(
+            sorted(
+                self._leaf_layouts + self._container_layouts, key=lambda c: c.reading_order
+            )
+        )
+
+    @property
+    def leaf_layouts(self) -> EntityList[Layout]:
+        """
+        Returns all the leaf :class:`Layout` objects present in the Page.
+
+        :return: List of Layout objects.
+        :rtype: EntityList
+        """
+        return self._leaf_layouts
+
+    @leaf_layouts.setter
+    def leaf_layouts(self, leaf_layouts: List[Layout]):
+        """
+        Add leaf layout objects to the Page.
+
+        :param layouts: List of Layout objects.
+        :type layouts: list
+        """
+        self._leaf_layouts = EntityList(leaf_layouts)
+
+    @property
+    def container_layouts(self) -> EntityList[Layout]:
+        """
+        Returns all the container :class:`Layout` objects present in the Page.
+
+        :return: List of Layout objects.
+        :rtype: EntityList
+        """
+        return self._container_layouts
+
+    @container_layouts.setter
+    def container_layouts(self, container_layouts: List[Layout]):
+        """
+        Add Layout objects to the Page.
+
+        :param layouts: List of Layout objects.
+        :type layouts: list
+        """
+        self._container_layouts = EntityList(container_layouts)
+
+    @property
     def expense_documents(self) -> EntityList[ExpenseDocument]:
         """
         Returns all the :class:`ExpenseDocument` objects present in the Page.
@@ -246,6 +369,7 @@ class Page(SpatialObject):
                 f"Queries - {len(self.queries)}",
                 f"Signatures - {len(self.signatures)}",
                 f"Expense documents - {len(self.expense_documents)}",
+                f"Layout elements - {len(self.layouts)}",
             ]
         )
 
@@ -825,7 +949,7 @@ class Page(SpatialObject):
         final_kv = []
         for kv in new_key_values:
             if kv.key:
-                key_words = [deepcopy(word) for word in kv.key.words]
+                key_words = [deepcopy(word) for word in kv.key]
                 key_words[0].text = prefix + key_words[0].text
                 new_kv = deepcopy(kv)
                 new_kv.key = key_words
@@ -933,4 +1057,10 @@ class Page(SpatialObject):
         return x1, x2, y1, y2
 
     def visualize(self, *args, **kwargs):
+        """
+        Returns the object's children in a visualization EntityList object
+
+        :return: Returns an EntityList object
+        :rtype: EntityList
+        """
         return EntityList(self).visualize(*args, **kwargs)
