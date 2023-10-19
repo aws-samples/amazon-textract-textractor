@@ -156,7 +156,7 @@ class TestDocument(unittest.TestCase):
                 keyword="Textractor",
                 top_k=5,
                 similarity_metric=SimilarityMetric.LEVENSHTEIN,
-                similarity_threshold=5,
+                similarity_threshold=0.5,
             )[0],
             Line,
         )
@@ -204,7 +204,7 @@ class TestDocument(unittest.TestCase):
                 key="date",
                 top_k_matches=5,
                 similarity_metric=SimilarityMetric.LEVENSHTEIN,
-                similarity_threshold=0.6,
+                similarity_threshold=0.5,
             )[0],
             KeyValue,
         )

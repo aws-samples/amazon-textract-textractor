@@ -9,13 +9,13 @@ bounding box information, value, existence of checkbox, page number, Page ID and
 import logging
 from typing import List
 
-from textractor.entities.line import Line
 from textractor.entities.word import Word
 from textractor.entities.value import Value
 from textractor.exceptions import InputError
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
 from textractor.data.constants import TextTypes
+from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.visualizers.entitylist import EntityList
 
 
@@ -47,9 +47,9 @@ class KeyValue(DocumentEntity):
 
         self._words: List[Word] = []
         self.contains_checkbox = contains_checkbox
+        self.confidence = confidence / 100
         self._value: Value = value
         self.selection_status = False
-        self.confidence = confidence / 100
         self._page = None
         self._page_id = None
 
@@ -59,15 +59,25 @@ class KeyValue(DocumentEntity):
         Return the average OCR confidence
         :return:
         """
-        key_confidences = [w.confidence for w in self.key.words]
-        value_confidences = [w.confidence for w in self.value.words] if self.value else []
+        key_confidences = [w.confidence for w in self.key]
+        value_confidences = (
+            [w.confidence for w in self.value.words] if self.value else []
+        )
 
-        key_confidence = sum(key_confidences) / len(key_confidences) if key_confidences else None
-        value_confidence = sum(value_confidences) / len(value_confidences) if value_confidences else None
-        return {"key_average": key_confidence,
-                "key_min": min(key_confidences) if key_confidences else None,
-                "value_average": value_confidence,
-                "value_min": min(value_confidences) if value_confidences else None}
+        key_confidence = (
+            sum(key_confidences) / len(key_confidences) if key_confidences else None
+        )
+        value_confidence = (
+            sum(value_confidences) / len(value_confidences)
+            if value_confidences
+            else None
+        )
+        return {
+            "key_average": key_confidence,
+            "key_min": min(key_confidences) if key_confidences else None,
+            "value_average": value_confidence,
+            "value_min": min(value_confidences) if value_confidences else None,
+        }
 
     @property
     def words(self) -> List[Word]:
@@ -89,15 +99,9 @@ class KeyValue(DocumentEntity):
         :rtype: Line
         """
         if not self._words:
-            logging.warning(f"Key contains no words objects.")
+            logging.warning("Key contains no words objects.")
             return []
-        else:
-            return Line(
-                entity_id=self.id,
-                bbox=self.bbox,
-                words=self._words,
-                confidence=self.confidence * 100,
-            )
+        return self._words
 
     @key.setter
     def key(self, words: List[Word]):
@@ -108,7 +112,7 @@ class KeyValue(DocumentEntity):
         No specific ordering is assumed.
         :type words: list
         """
-        self._words = sorted(words, key=lambda x: x.bbox.x + x.bbox.y)
+        self._words = words
 
     @property
     def value(self) -> Value:
@@ -118,8 +122,8 @@ class KeyValue(DocumentEntity):
         """
         if self._value is None:
             logging.warning(
-                f"Asked for a value but it was never attributed "
-                f"-> make sure to assign value to key with the `kv.value = <Value Object>` property setter"
+                "Asked for a value but it was never attributed "
+                "-> make sure to assign value to key with the `kv.value = <Value Object>` property setter"
             )
             return None
         else:
@@ -195,6 +199,12 @@ class KeyValue(DocumentEntity):
             )
 
     def is_selected(self) -> bool:
+        """
+        For KeyValues containing a selection item, returns its `is_selected` status
+
+        :return: Selection status of a selection item key value pair
+        :rtype: bool
+        """
         if self.contains_checkbox:
             if len(self.value.children) == 1:
                 return self.value.children[0].is_selected()
@@ -208,6 +218,30 @@ class KeyValue(DocumentEntity):
                 "is_checked() was called on a KeyValue that does not contain checkboxes. Returning False"
             )
             return False
+
+    def get_text_and_words(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ):
+        key_text, key_words = " ".join([w.text for w in self.key]), self.key
+        value_text, value_words = self.value.get_text_and_words(config)
+        words = []
+        if not len(key_text) and not len(value_text):
+            return "", []
+        s = config.key_suffix.strip()
+        key_suffix = (
+            config.key_suffix
+            if not (len(key_text) > len(s) and key_text[-len(s) :] == s)
+            else " "
+        )
+        text = f"{config.key_prefix}{key_text}{key_suffix}{config.value_prefix}{value_text}{config.value_suffix}"
+
+        words += (key_words + value_words)
+
+        for w in words:
+            w.kv_id = str(self.id)
+            w.kv_bbox = self.bbox
+
+        return text, words
 
     def __repr__(self) -> str:
         """

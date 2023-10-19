@@ -1,5 +1,6 @@
 """All test cases for methods in KeyValue class"""
 
+from typing import List
 import unittest
 
 from textractor.entities.key_value import KeyValue
@@ -88,7 +89,7 @@ class TestKeyValue(unittest.TestCase):
 
     def test_key(self):
         """Test case to set Key field to a key-value pair"""
-        self.assertIsInstance(self.kv.key, Line)
+        self.assertIsInstance(self.kv.key, List)
 
 
     def test_value(self):

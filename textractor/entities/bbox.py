@@ -2,6 +2,7 @@
 on the image of the document page."""
 
 from abc import ABC
+import math
 from typing import Tuple, List
 
 try:
@@ -105,22 +106,129 @@ class BoundingBox(SpatialObject):
         return x, y, width, height
 
     @classmethod
-    def enclosing_bbox(cls, bboxes, spatial_object:SpatialObject=None):
+    def from_denormalized_xywh(
+        cls,
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        spatial_object: SpatialObject = None,
+    ):
+        """
+        Builds an axis aligned bounding box from top-left, width and height properties.
+        The coordinates are assumed to be denormalized.
+        :param x: Left ~ [0, doc_width]
+        :param y: Top  ~ [0, doc_height]
+        :param width: Width ~ [0, doc_width]
+        :param height: Height  ~ [0, doc_height]
+        :param spatial_object: Some object with width and height attributes (i.e: Document, ConvertibleImage).
+        :return: BoundingBox object in denormalized coordinates:  ~ [0, doc_height] x [0, doc_width]
+        """
+        return BoundingBox(x, y, width, height, spatial_object)
+
+    @classmethod
+    def from_denormalized_corners(
+        cls,
+        x1: float,
+        y1: float,
+        x2: float,
+        y2: float,
+        spatial_object: SpatialObject = None,
+    ):
+        """
+        Builds an axis aligned bounding box from top-left and bottom-right coordinates.
+        The coordinates are assumed to be denormalized.
+        :param x1: Left  ~ [0, wdoc_idth]
+        :param y1: Top ~ [0, doc_height]
+        :param x2: Right  ~ [0, doc_width]
+        :param y2: Bottom ~ [0, doc_height]
+        :param spatial_object: Some object with width and height attributes (i.e: Document, ConvertibleImage).
+        :return: BoundingBox object in denormalized coordinates:  ~ [0, doc_height] x [0, doc_width]
+        """
+        x = x1
+        y = y1
+        width = x2 - x1
+        height = y2 - y1
+        return BoundingBox(x, y, width, height, spatial_object=spatial_object)
+
+    @classmethod
+    def from_denormalized_borders(
+        cls,
+        left: float,
+        top: float,
+        right: float,
+        bottom: float,
+        spatial_object: SpatialObject = None,
+    ):
+        """
+        Builds an axis aligned bounding box from top-left and bottom-right coordinates.
+        The coordinates are assumed to be denormalized.
+        If spatial_object is not None, the coordinates will be denormalized according to the spatial object.
+        :param left: ~ [0, doc_width]
+        :param top: ~ [0, doc_height]
+        :param right: ~ [0, doc_width]
+        :param bottom: ~ [0, doc_height]
+        :param spatial_object: Some object with width and height attributes
+        :return: BoundingBox object in denormalized coordinates:  ~ [0, doc_height] x [0, doc_width]
+        """
+        return cls.from_denormalized_corners(left, top, right, bottom, spatial_object)
+
+    @classmethod
+    def from_denormalized_dict(cls, bbox_dict: Dict[str, float]):
+        """
+        Builds an axis aligned bounding box from a dictionary of:
+        {'x': x, 'y': y, 'width': width, 'height': height}
+        The coordinates will be denormalized according to the spatial object.
+        :param bbox_dict: {'x': x, 'y': y, 'width': width, 'height': height} of [0, doc_height] x [0, doc_width]
+        :param spatial_object: Some object with width and height attributes
+        :return: BoundingBox object in denormalized coordinates:  ~ [0, doc_height] x [0, doc_width]
+        """
+        x = bbox_dict["x"]
+        y = bbox_dict["y"]
+        width = bbox_dict["width"]
+        height = bbox_dict["height"]
+        return BoundingBox(x, y, width, height)
+
+    @classmethod
+    def enclosing_bbox(cls, bboxes, spatial_object: SpatialObject = None):
         """
         :param bboxes [BoundingBox]: list of bounding boxes
         :param spatial_object SpatialObject: spatial object to be added to the returned bbox
         :return:
         """
-        x1, y1, x2, y2 = float('inf'), float('inf'), float('-inf'), float('-inf')
-        assert any([bbox is not None for bbox in bboxes]), "At least one bounding box needs to be non-null"
+        bboxes = [bbox for bbox in bboxes if bbox is not None]
+        if bboxes and not isinstance(bboxes[0], BoundingBox):
+            try:
+                bboxes = [bbox.bbox for bbox in bboxes]
+            except:
+                raise Exception(
+                    "bboxes must be of type List[BoundingBox] or of type List[DocumentEntity]"
+                )
+
+        x1, y1, x2, y2 = float("inf"), float("inf"), float("-inf"), float("-inf")
+        assert any(
+            [bbox is not None for bbox in bboxes]
+        ), "At least one bounding box needs to be non-null"
         for bbox in bboxes:
             if bbox is not None:
                 x1 = min(x1, bbox.x)
                 x2 = max(x2, bbox.x + bbox.width)
                 y1 = min(y1, bbox.y)
                 y2 = max(y2, bbox.y + bbox.height)
-        return BoundingBox(x1, y1, x2-x1, y2-y1, spatial_object=spatial_object)
+        return BoundingBox(x1, y1, x2 - x1, y2 - y1, spatial_object=spatial_object)
 
+    @property
+    def area(self):
+        """
+        Returns the area of the bounding box, handles negative bboxes as 0-area
+
+        :return: Bounding box area
+        :rtype: float
+        """
+        if self.width < 0 or self.height < 0:
+            return 0
+        else:
+            return self.width * self.height
 
     @classmethod
     def _from_dict(
@@ -142,9 +250,9 @@ class BoundingBox(SpatialObject):
         y = bbox_dict["Top"]
         width = bbox_dict["Width"]
         height = bbox_dict["Height"]
-        #if spatial_object is not None:
+        # if spatial_object is not None:
         #    x, y, width, height = cls._denormalize(x, y, width, height, spatial_object)
-        #else:
+        # else:
         #    spatial_object = None
         return BoundingBox(x, y, width, height, spatial_object)
 
@@ -154,6 +262,34 @@ class BoundingBox(SpatialObject):
         :rtype: numpy.array
         """
         return np.array([self.x, self.y, self.width, self.height])
+
+    def get_intersection(self, bbox):
+        """
+        Returns the intersection of this object's bbox and another BoundingBox
+        :return: a BoundingBox object
+        """
+        assert isinstance(bbox, BoundingBox)
+        x1y1x2y2 = (
+            max(self.x, bbox.x),
+            max(self.y, bbox.y),
+            min(self.x + self.width, bbox.x + bbox.width),
+            min(self.y + self.height, bbox.y + bbox.height),
+        )
+        return BoundingBox.from_denormalized_corners(
+            *x1y1x2y2, spatial_object=self.spatial_object
+        )
+
+    def get_distance(self, bbox):
+        """
+        Returns the distance between the center point of the bounding box and another bounding box
+
+        :return: Returns the distance as float
+        :rtype: float
+        """
+        return math.sqrt(
+            ((self.x + self.width / 2) - (bbox.x + bbox.width / 2)) ** 2
+            + ((self.y + self.height / 2) - (bbox.y + bbox.height / 2)) ** 2
+        )
 
     def __repr__(self):
         return f"x: {self.x}, y: {self.y}, width: {self.width}, height: {self.height}"
