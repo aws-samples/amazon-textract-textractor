@@ -16,6 +16,8 @@ from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
 from textractor.data.constants import PRINTED, HANDWRITING, TextTypes
 from textractor.visualizers.entitylist import EntityList
+from textractor.data.text_linearization_config import TextLinearizationConfig
+from textractor.utils.text_utils import linearize_children
 
 
 class Value(DocumentEntity):
@@ -154,6 +156,23 @@ class Value(DocumentEntity):
             )
 
         return EntityList([word for word in self.words if word.text_type == text_type])
+
+    def get_text_and_words(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ):
+        # We will need to handle the case where the Value contains a checkbox.
+        if self.contains_checkbox:
+            text, words = self.children[0].get_text_and_words(config)
+        else:
+            text, words = linearize_children(
+                self.words,
+                config=config,
+                no_new_lines=config.remove_new_lines_in_leaf_elements,
+            )
+        for w in words:
+            w.value_id = str(self.id)
+            w.value_bbox = self.bbox
+        return text, words
 
     def __repr__(self) -> str:
         """

@@ -24,6 +24,21 @@ MERGED_CELL = "MERGED_CELL"
 QUERY = "QUERY"
 QUERY_RESULT = "QUERY_RESULT"
 SIGNATURE = "SIGNATURE"
+LAYOUT = "LAYOUT"
+LAYOUT_TEXT = "LAYOUT_TEXT"
+LAYOUT_TITLE = "LAYOUT_TITLE"
+LAYOUT_HEADER = "LAYOUT_HEADER"
+LAYOUT_FOOTER = "LAYOUT_FOOTER"
+LAYOUT_SECTION_HEADER = "LAYOUT_SECTION_HEADER"
+LAYOUT_PAGE_NUMBER = "LAYOUT_PAGE_NUMBER"
+LAYOUT_LIST = "LAYOUT_LIST"
+LAYOUT_FIGURE = "LAYOUT_FIGURE"
+LAYOUT_TABLE = "LAYOUT_TABLE"
+LAYOUT_KEY_VALUE = "LAYOUT_KEY_VALUE"
+
+# This is not a base layout type, but a fake type for the text conversion logic
+# whne an API is called without the AnalyzeLayout API, all the elements will be LAYOUT_ENTITY
+LAYOUT_ENTITY = "LAYOUT_ENTITY"
 
 # cell type attributes
 IS_COLUMN_HEAD = "isColumnHead"
@@ -37,12 +52,14 @@ IS_MERGED_CELL = "isMergedCell"
 HANDWRITING = "HANDWRITING"
 PRINTED = "PRINTED"
 
+
 class TableTypes(Enum):
     """Types of tables recognized by Textract APIs."""
 
     UNKNOWN = 0
     STRUCTURED = 1
     SEMI_STRUCTURED = 2
+
 
 class Direction(Enum):
     """Directions available for search using DirectionalFinder"""
@@ -97,6 +114,7 @@ DEFAULT = "DEFAULT"
 FORMS = "FORMS"
 TABLES = "TABLES"
 QUERIES = "QUERIES"
+LAYOUT = "LAYOUT"
 
 
 class TextractFeatures(Enum):
@@ -106,6 +124,7 @@ class TextractFeatures(Enum):
     TABLES = 1
     QUERIES = 2
     SIGNATURES = 3
+    LAYOUT = 4
 
 
 class TextractType(Enum):
@@ -224,6 +243,7 @@ class AnalyzeIDFields(Enum):
     # Only available in passports
     PLACE_OF_BIRTH = "PLACE_OF_BIRTH"
 
+
 class AnalyzeExpenseLineItemFields(Enum):
     ITEM = "ITEM"
     PRICE = "PRICE"
@@ -231,6 +251,7 @@ class AnalyzeExpenseLineItemFields(Enum):
     QUANTITY = "QUANTITY"
     UNIT_PRICE = "UNIT_PRICE"
     EXPENSE_ROW = "EXPENSE_ROW"
+
 
 class AnalyzeExpenseFields(Enum):
     ACCOUNT_NUMBER = "ACCOUNT_NUMBER"
@@ -278,6 +299,7 @@ class AnalyzeExpenseFields(Enum):
     VENDOR_VAT_NUMBER = "VENDOR_VAT_NUMBER"
     ZIP_CODE = "ZIP_CODE"
 
+
 class AnalyzeExpenseFieldsGroup(Enum):
     RECEIVER = "RECEIVER"
     RECEIVER_BILL_TO = "RECEIVER_BILL_TO"
@@ -286,6 +308,7 @@ class AnalyzeExpenseFieldsGroup(Enum):
     VENDOR = "VENDOR"
     VENDOR_REMIT_TO = "VENDOR_REMIT_TO"
     VENDOR_SUPPLIER = "VENDOR_SUPPLIER"
+
 
 class CLIPrint(Enum):
     ALL = 0

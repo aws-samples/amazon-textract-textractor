@@ -3,8 +3,17 @@
 from collections import defaultdict
 from typing import List
 
-from textractor.data.constants import AnalyzeExpenseFieldsGroup as AEFieldsGroup, AnalyzeExpenseFields as AEFields
-from textractor.entities.expense_field import ExpenseField, LineItemGroup, BoundingBox, DocumentEntity
+from textractor.data.constants import (
+    AnalyzeExpenseFieldsGroup as AEFieldsGroup,
+    AnalyzeExpenseFields as AEFields,
+)
+from textractor.data.text_linearization_config import TextLinearizationConfig
+from textractor.entities.expense_field import (
+    ExpenseField,
+    LineItemGroup,
+    BoundingBox,
+    DocumentEntity,
+)
 
 
 class Fields(dict):
@@ -12,11 +21,16 @@ class Fields(dict):
     Dictionary to hold Summary Fields
     Dynamically added properties to enable ease of discovery
     """
+
     def __init__(self):
         super(Fields, self).__init__()
         # We dynamically set the fields to None to help with discoverability
         for field in AEFields:
-            setattr(self.__class__, field.name, property(lambda self, field=field: self.get(field.name)))
+            setattr(
+                self.__class__,
+                field.name,
+                property(lambda self, field=field: self.get(field.name)),
+            )
 
     def __repr__(self):
         output = ""
@@ -27,9 +41,10 @@ class Fields(dict):
                 output += "\n"
                 offset = 4
             for field in value:
-                output += " "*offset + str(field).replace('\n', '\\n') + "\n"
+                output += " " * offset + str(field).replace("\n", "\\n") + "\n"
 
         return output
+
 
 class FieldsGroups(dict):
     """
@@ -40,7 +55,11 @@ class FieldsGroups(dict):
     def __init__(self):
         super(FieldsGroups, self).__init__()
         for group in AEFieldsGroup:
-            setattr(self.__class__, group.name, property(lambda self, group=group: self.get(group.name)))
+            setattr(
+                self.__class__,
+                group.name,
+                property(lambda self, group=group: self.get(group.name)),
+            )
 
     def __repr__(self):
         output = ""
@@ -48,7 +67,7 @@ class FieldsGroups(dict):
             output += f"{key}: \n"
             for block in group.values():
                 for expense_field in block:
-                    output +=  "  " + str(expense_field).replace('\n', '\\n') + "\n"
+                    output += "  " + str(expense_field).replace("\n", "\\n") + "\n"
                 output += "\n"
             output += "\n"
         return output
@@ -71,7 +90,11 @@ class ExpenseDocument(DocumentEntity):
     """
 
     def __init__(
-        self, summary_fields: List[ExpenseField], line_items_groups: List[LineItemGroup], bounding_box: BoundingBox, page:int
+        self,
+        summary_fields: List[ExpenseField],
+        line_items_groups: List[LineItemGroup],
+        bounding_box: BoundingBox,
+        page: int,
     ):
         """
         :param summary_fields: List of ExpenseFields, not including line item ones
@@ -79,7 +102,7 @@ class ExpenseDocument(DocumentEntity):
         :param bounding_box: The bounding box for that ExpenseDocument
         :param page: The page where that document is
         """
-        super().__init__('', bbox=bounding_box)
+        super().__init__("", bbox=bounding_box)
         self._summary_fields_list = summary_fields
         self._line_items_groups = line_items_groups
         self.summary_fields = Fields()
@@ -94,7 +117,11 @@ class ExpenseDocument(DocumentEntity):
 
     @property
     def bbox(self):
-        return BoundingBox.enclosing_bbox([s.bbox for s in self._summary_fields_list]+[g.bbox for g in self._line_items_groups], spatial_object=self._bbox.spatial_object)
+        return BoundingBox.enclosing_bbox(
+            [s.bbox for s in self._summary_fields_list]
+            + [g.bbox for g in self._line_items_groups],
+            spatial_object=self._bbox.spatial_object,
+        )
 
     def _assign_summary_fields(self):
         for field in self._summary_fields_list:
@@ -118,7 +145,9 @@ class ExpenseDocument(DocumentEntity):
                         self.summary_groups[property_type] = dict()
                     if group_properties.id not in self.summary_groups[property_type]:
                         self.summary_groups[property_type][group_properties.id] = []
-                    self.summary_groups[property_type][group_properties.id].append(field)
+                    self.summary_groups[property_type][group_properties.id].append(
+                        field
+                    )
 
     @property
     def summary_fields_list(self):
@@ -128,6 +157,12 @@ class ExpenseDocument(DocumentEntity):
     def line_items_groups(self) -> List[LineItemGroup]:
         return self._line_items_groups
 
+    def get_text_and_words(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ):
+        # TODO
+        return "", []
+
     def __repr__(self) -> str:
         output = f"Summary fields: {len(self.summary_fields)}\n"
         output += "Line Item Groups:"
@@ -135,4 +170,3 @@ class ExpenseDocument(DocumentEntity):
         for i, line_item in enumerate(self.line_items_groups):
             output += f"index {line_item.index}: {len(line_item.rows)} row{'s' if (len(line_item.rows) > 1) else ''}"
         return output
-

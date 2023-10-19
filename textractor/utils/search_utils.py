@@ -59,9 +59,7 @@ class SearchUtils:
             cls.util = util
 
         if similarity_metric == SimilarityMetric.LEVENSHTEIN:
-            return normalized_edit_distance(
-                word_1.lower(), word_2.lower()
-            )
+            return normalized_edit_distance(word_1.lower(), word_2.lower())
         elif similarity_metric == SimilarityMetric.EUCLIDEAN:
             ref_word_emb = cls.model.encode([word_1])
             word_emb = cls.model.encode([word_2])
@@ -112,6 +110,7 @@ def get_metadata_attr_name(cell_atr):
         return cell_map[cell_atr]
     except:
         return ""
+
 
 def normalized_edit_distance(s1: str, s2: str):
     """

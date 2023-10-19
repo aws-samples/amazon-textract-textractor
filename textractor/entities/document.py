@@ -8,7 +8,7 @@ import string
 import logging
 import xlsxwriter
 import io
-from typing import List, IO, Union, AnyStr
+from typing import List, IO, Union, AnyStr, Tuple
 from copy import deepcopy
 from collections import defaultdict
 from PIL import Image
@@ -37,6 +37,7 @@ from textractor.data.constants import (
 )
 from textractor.entities.selection_element import SelectionElement
 from textractor.utils.search_utils import SearchUtils, jaccard_similarity
+from textractor.data.text_linearization_config import TextLinearizationConfig
 
 
 class Document(SpatialObject):
@@ -145,7 +146,7 @@ class Document(SpatialObject):
         return EntityList(sum([page.lines for page in self.pages], []))
 
     @property
-    def key_values(self) -> List[KeyValue]:
+    def key_values(self) -> EntityList[KeyValue]:
         """
         Returns all the :class:`KeyValue` objects present in the Document.
 
@@ -155,7 +156,7 @@ class Document(SpatialObject):
         return EntityList(sum([page.key_values for page in self.pages], []))
 
     @property
-    def checkboxes(self) -> List[KeyValue]:
+    def checkboxes(self) -> EntityList[KeyValue]:
         """
         Returns all the :class:`KeyValue` objects with SelectionElements present in the Document.
 
@@ -165,7 +166,7 @@ class Document(SpatialObject):
         return EntityList(sum([page.checkboxes for page in self.pages], []))
 
     @property
-    def tables(self) -> List[Table]:
+    def tables(self) -> EntityList[Table]:
         """
         Returns all the :class:`Table` objects present in the Document.
 
@@ -175,7 +176,7 @@ class Document(SpatialObject):
         return EntityList(sum([page.tables for page in self.pages], []))
 
     @property
-    def queries(self) -> List[Query]:
+    def queries(self) -> EntityList[Query]:
         """
         Returns all the :class:`Query` objects present in the Document.
 
@@ -185,7 +186,7 @@ class Document(SpatialObject):
         return EntityList(sum([page.queries for page in self.pages], []))
 
     @property
-    def signatures(self) -> List[Signature]:
+    def signatures(self) -> EntityList[Signature]:
         """
         Returns all the :class:`Signature` objects present in the Document.
 
@@ -245,6 +246,20 @@ class Document(SpatialObject):
         """
         self._pages = sorted(pages, key=lambda x: x.page_num)
 
+    def get_text(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ) -> str:
+        return self.get_text_and_words(config)[0]
+
+    def get_text_and_words(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ) -> Tuple[str, List]:
+        text, words_lists = zip(*[p.get_text_and_words(config) for p in self.pages])
+        flattened_words = []
+        for words in words_lists:
+            flattened_words.extend(words)
+        return os.linesep.join(text), flattened_words
+
     def page(self, page_no: int = 0):
         """
         Returns :class:`Page` object/s depending on the input page_no. Follows zero-indexing.
@@ -292,6 +307,12 @@ class Document(SpatialObject):
         return self._trp2_document
 
     def visualize(self, *args, **kwargs):
+        """
+        Returns the object's children in a visualization EntityList object
+
+        :return: Returns an EntityList object
+        :rtype: EntityList
+        """
         return EntityList(self.pages).visualize(*args, **kwargs)
 
     def keys(self, include_checkboxes: bool = True) -> List[str]:
@@ -704,7 +725,7 @@ class Document(SpatialObject):
         final_kv = []
         for kv in new_key_values:
             if kv.key:
-                key_words = [deepcopy(word) for word in kv.key.words]
+                key_words = [deepcopy(word) for word in kv.key]
                 key_words[0].text = prefix + key_words[0].text
                 new_kv = deepcopy(kv)
                 new_kv.key = key_words
