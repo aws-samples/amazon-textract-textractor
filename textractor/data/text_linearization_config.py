@@ -123,3 +123,6 @@ class TextLinearizationConfig:
 
     # How much vertical overlap is tolerated between two subsequent lines before merging them into a single line
     heuristic_overlap_ratio: float = 0.5
+
+    # Signature representation in the linearized text
+    signature_token = "[SIGNATURE]"
