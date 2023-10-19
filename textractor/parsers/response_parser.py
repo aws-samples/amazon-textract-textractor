@@ -695,7 +695,10 @@ def _create_layout_objects(
 
     leaf_layouts = []
     container_layouts = []
+    parsed_blocks = set()
     for i, block in enumerate(page_layouts):
+        if block["Id"] in parsed_blocks:
+            continue
         if block["BlockType"] in (LAYOUT_LIST,):
             container_layouts.append(
                 Layout(
@@ -708,6 +711,31 @@ def _create_layout_objects(
                     ),
                 )
             )
+            parsed_blocks.add(block["Id"])
+            for relationship in block.get("Relationships", []):
+                if relationship["Type"] != "CHILD":
+                    continue
+                for leaf_id in relationship["Ids"]:
+                    block = id_json_map[leaf_id]
+                    parsed_blocks.add(leaf_id)
+                    container_layouts[-1].children.append(
+                        Layout(
+                            entity_id=block["Id"],
+                            confidence=block["Confidence"],
+                            reading_order=i,
+                            label=block["BlockType"],
+                            bbox=BoundingBox.from_normalized_dict(
+                                block["Geometry"]["BoundingBox"], spatial_object=page
+                            ),
+                        )
+                    )
+                    container_layouts[-1].children[-1].raw_object = block
+                    for relationship in block.get("Relationships", []):
+                        if relationship["Type"] != "CHILD":
+                            continue
+                        container_layouts[-1].children[-1].add_children(
+                            [line_by_id[line_id] for line_id in relationship["Ids"]]
+                        )
         else:
             leaf_layouts.append(
                 Layout(
