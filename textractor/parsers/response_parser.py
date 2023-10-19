@@ -499,7 +499,74 @@ def _create_signature_objects(
         signature.page = page.page_num
         signature.page_id = page.id
 
-    return list(signatures.values())
+    signatures_added = set()
+    for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
+        if layout.layout_type == LAYOUT_ENTITY:
+            continue
+        for signature in sorted(signatures.values(), key=lambda x: x.bbox.y):
+            if (
+                layout.bbox.get_intersection(signature.bbox).area > THRESHOLD * signature.bbox.area
+                and signature not in signatures_added
+            ):
+                layout.children.append(signature)
+                signatures_added.add(signature)
+                del signatures[signature.id]
+
+    signature_layouts = []
+    for signature in signatures.values():
+        if signature not in signatures_added:
+            signatures_added.add(signature)
+            layout = Layout(
+                entity_id=signature.id,
+                bbox=signature.bbox,
+                label=LAYOUT_ENTITY,
+                reading_order=-1,
+            )
+            layout.children.append(signature)
+            layout.page = page.page_num
+            layout.page_id = page.id
+            signature_layouts.append(layout)
+
+    layouts_to_remove = []
+    for layout in page.leaf_layouts:
+        layouts_that_intersect = []
+        for signature_layout in signature_layouts:
+            intersection = layout.bbox.get_intersection(signature_layout.bbox).area
+            if intersection:
+                layouts_that_intersect.append(signature_layout)
+        words_in_sub_layouts = set()
+        for i, intersect_layout in enumerate(
+            sorted(layouts_that_intersect, key=lambda l: (l.bbox.y, l.bbox.x))
+        ):
+            intersect_layout.reading_order = (
+                (layout.reading_order + (i + 1) * 0.1)
+                if intersect_layout.reading_order == -1
+                else min(
+                    intersect_layout.reading_order, layout.reading_order + (i + 1) * 0.1
+                )
+            )
+            for w in intersect_layout.children[0].words:
+                words_in_sub_layouts.add(w.id)
+        if words_in_sub_layouts:
+            remaining_words = []
+            for w in layout.words:
+                if w.id not in words_in_sub_layouts:
+                    remaining_words.append(w)
+            if remaining_words:
+                layout.bbox = BoundingBox.enclosing_bbox(
+                    [w.bbox for w in remaining_words]
+                )
+                layout._children = list(set([w.line for w in remaining_words]))
+            else:
+                layouts_to_remove.append(layout)
+
+    for layout in layouts_to_remove:
+        page.leaf_layouts.remove(layout)
+
+    for layout in signature_layouts:
+        page.leaf_layouts.append(layout)
+
+    return list(signatures_added)
 
 
 def _create_keyvalue_objects(

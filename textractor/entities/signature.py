@@ -50,6 +50,14 @@ class Signature(DocumentEntity):
         """
         return self._page
 
+    @property
+    def words(self):
+        """
+        :return: Returns an empty list
+        :rtype: list
+        """
+        return []
+
     @page.setter
     def page(self, page_num: int):
         """
