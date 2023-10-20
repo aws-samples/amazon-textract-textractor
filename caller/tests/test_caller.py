@@ -281,6 +281,16 @@ def test_signature(caplog):
     assert j
 
 
+def test_layout(caplog):
+    caplog.set_level(logging.DEBUG, logger="textractcaller")
+    input_file = "s3://amazon-textract-public-content/blogs/signature/verification-of-employment.png"
+    textract_client = boto3.client('textract', region_name='us-east-2')
+    j = call_textract(input_document=input_file,
+                      features=[Textract_Features.FORMS, Textract_Features.SIGNATURES, Textract_Features.LAYOUT],
+                      boto3_textract_client=textract_client,
+                      return_job_id=True)
+    assert j
+
 # def test_lending_output_config(caplog):
 #     caplog.set_level(logging.DEBUG, logger="textractcaller")
 #     input_file = "s3://sdx-textract-us-east-1/lending-package.pdf"
