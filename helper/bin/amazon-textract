@@ -7,7 +7,6 @@ import boto3
 import glob
 import json
 import sys
-from typing import List
 from textractcaller.t_call import Textract_Features, Textract_Types, call_textract, is_tiff
 from textractoverlayer.t_overlay import DocumentDimensions, get_bounding_boxes
 from textractprettyprinter.t_pretty_print import Pretty_Print_Table_Format, Textract_Pretty_Print, get_string
@@ -16,7 +15,6 @@ from textracthelper._version import __version__
 from PIL import Image, ImageSequence
 import textracthelper._version
 import logging
-import trp.trp2 as t2
 
 logger = logging.getLogger(__name__)
 
@@ -63,11 +61,6 @@ parser.add_argument("--overlay",
                     help="defines what bounding boxes to draw on the output")
 parser.add_argument("--pop-up-overlay-output", dest='showoutput', action='store_true', help="shows image with overlay")
 parser.set_defaults(showoutput=False)
-parser.add_argument("--use-polygon",
-                    dest='usepolygon',
-                    action='store_true',
-                    help="uses polygon instead of bounding boxes")
-parser.set_defaults(usepolygon=False)
 parser.add_argument(
     "--overlay-text",
     dest="showoverlaytext",
@@ -105,7 +98,6 @@ pretty_print_arg = args.pretty_print
 overlay_output_folder = args.overlay_output_folder
 overlay_arg = args.overlay
 showoutput = args.showoutput
-usepolygon = args.usepolygon
 showstdout = args.showstdout
 use_example = args.use_example
 showdebug = args.showdebug
@@ -239,7 +231,6 @@ for input_document in input_documents:
             print(json.dumps(doc))
 
     logger.debug(f"overlay_output_folder or showoutput: {overlay_output_folder or showoutput}")
-    logger.debug(f"usepolygon: {usepolygon}")
     if overlay_output_folder or showoutput:
         logger.debug(f"overlay")
         colors = {
@@ -265,61 +256,34 @@ for input_document in input_documents:
         rgb_im = image.convert('RGB')
         draw = ImageDraw.Draw(rgb_im)
         document_dimension: DocumentDimensions = DocumentDimensions(doc_width=image.size[0], doc_height=image.size[1])
-        polygon_array: List[List[List[t2.TPoint]]] = list()
-        if not usepolygon:
-            bounding_box_list = get_bounding_boxes(textract_json=doc,
-                                                   document_dimensions=[document_dimension],
-                                                   overlay_features=overlay)
-        else:
-            t_doc: t2.TDocument = t2.TDocumentSchema().loads(json.dumps(doc))    # type: ignore
-            for page in t_doc.pages:
-                word_blocks = t_doc.get_blocks_by_type(block_type_enum=t2.TextractBlockTypes.LINE, page=page)
-                # word_blocks = t_doc.get_blocks_by_type(block_type_enum=t2.TextractBlockTypes.WORD, page=page)
-                polygon_page_array: List[List[t2.TPoint]] = list()
-                for word in word_blocks:
-                    point_1: t2.TPoint = t2.TPoint(x=word.geometry.polygon[0].x, y=word.geometry.polygon[0].y)
-                    point_1.scale(doc_width=document_dimension.doc_width, doc_height=document_dimension.doc_height)
-                    point_2: t2.TPoint = t2.TPoint(x=word.geometry.polygon[1].x, y=word.geometry.polygon[1].y)
-                    point_2.scale(doc_width=document_dimension.doc_width, doc_height=document_dimension.doc_height)
-                    point_3: t2.TPoint = t2.TPoint(x=word.geometry.polygon[2].x, y=word.geometry.polygon[2].y)
-                    point_3.scale(doc_width=document_dimension.doc_width, doc_height=document_dimension.doc_height)
-                    point_4: t2.TPoint = t2.TPoint(x=word.geometry.polygon[3].x, y=word.geometry.polygon[3].y)
-                    point_4.scale(doc_width=document_dimension.doc_width, doc_height=document_dimension.doc_height)
-                    polygon_page_array.append([point_1, point_2, point_3, point_4])
-
-                    draw.polygon(xy=[(point_1.x, point_1.y), (point_2.x, point_2.y), (point_3.x, point_3.y),
-                                     (point_4.x, point_4.y)],
-                                 width=2)
-                polygon_array.append(polygon_page_array)
+        bounding_box_list = get_bounding_boxes(textract_json=doc,
+                                               document_dimensions=[document_dimension],
+                                               overlay_features=overlay)
 
         suppress_line_text_overlay = False
         # use WORD text overlay when both LINE and WORD overlays are specified
         if show_overlay_text and len([x for x in ['WORD', 'LINE'] if x in overlay_arg]) == 2:
             suppress_line_text_overlay = True
-        if not usepolygon:
-            for bbox in bounding_box_list:
-                box_color = colors[bbox.box_type.name]
-                draw.rectangle(xy=(bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax), outline=box_color, width=2)
-                if show_overlay_text and (bbox.box_type.name == 'WORD' or
-                                          (bbox.box_type.name == 'LINE' and not suppress_line_text_overlay)):
-                    logger.debug(f"bbox type {bbox.box_type.name}: {bbox.text}, confidence: {bbox.confidence}")
-                    overlay_text = bbox.text
-                    box_height = round((bbox.ymax - bbox.ymin) * 0.8)
-                    if show_overlay_confidence:
-                        overlay_text += f" {bbox.confidence}%"
-                    try:
-                        font = ImageFont.truetype('Roboto-Regular.ttf', size=box_height)
-                        draw.text(xy=(bbox.xmin, bbox.ymin - box_height),
-                                  text=overlay_text,
-                                  fill=box_color,
-                                  align='center',
-                                  font=font)
-                    except:
-                        # use default font
-                        draw.text(xy=(bbox.xmin, bbox.ymin - box_height),
-                                  text=overlay_text,
-                                  fill=box_color,
-                                  align='center')
+        for bbox in bounding_box_list:
+            box_color = colors[bbox.box_type.name]
+            draw.rectangle(xy=(bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax), outline=box_color, width=2)
+            if show_overlay_text and (bbox.box_type.name == 'WORD' or
+                                      (bbox.box_type.name == 'LINE' and not suppress_line_text_overlay)):
+                logger.debug(f"bbox type {bbox.box_type.name}: {bbox.text}, confidence: {bbox.confidence}")
+                overlay_text = bbox.text
+                box_height = round((bbox.ymax - bbox.ymin) * 0.8)
+                if show_overlay_confidence:
+                    overlay_text += f" {bbox.confidence}%"
+                try:
+                    font = ImageFont.truetype('Roboto-Regular.ttf', size=box_height)
+                    draw.text(xy=(bbox.xmin, bbox.ymin - box_height),
+                              text=overlay_text,
+                              fill=box_color,
+                              align='center',
+                              font=font)
+                except:
+                    # use default font
+                    draw.text(xy=(bbox.xmin, bbox.ymin - box_height), text=overlay_text, fill=box_color, align='center')
 
         if showoutput:
             rgb_im.show()

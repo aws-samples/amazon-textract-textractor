@@ -1,9 +1,6 @@
 import argparse
 import json
 
-import yaml
-from textractor.data.text_linearization_config import TextLinearizationConfig
-
 from textractor import Textractor
 from textractor.data.constants import (
     TextractAPI,
@@ -38,14 +35,10 @@ STRING_DICT = {
     "GET_RESULT_API": "API used to make the request",
     # Output print
     "PRINT": "Print the output in a readable format",
-    # Output linearize
-    "LINEARIZE": "Print the linearized document output",
-    "LINEARIZE_CONFIG": "Configuration file for the linearization",
     # Overlay
     "OVERLAY": "Save an image of the document with the words, lines, form fields, and tables overlayed on top",
     "FONT_SIZE_RATIO": "Scales the text up or down, default is 0.75, which would be half the pixel height",
 }
-
 
 def _build_parser():
     parser = argparse.ArgumentParser(
@@ -77,16 +70,6 @@ def _build_parser():
         help=STRING_DICT["PRINT"],
     )
     parser_detect_document_text.add_argument(
-        "--linearize",
-        action="store_true",
-        help=STRING_DICT["LINEARIZE"],
-    )
-    parser_detect_document_text.add_argument(
-        "--linearize-config-path",
-        type=str,
-        help=STRING_DICT["LINEARIZE_CONFIG"],
-    )
-    parser_detect_document_text.add_argument(
         "--overlay",
         choices=[cd.name for cd in CLIOverlay],
         nargs="+",
@@ -100,8 +83,7 @@ def _build_parser():
     )
 
     parser_start_document_text_detection = subparsers.add_parser(
-        "start-document-text-detection",
-        help=STRING_DICT["START_DOCUMENT_TEXT_DETECTION"],
+        "start-document-text-detection", help=STRING_DICT["START_DOCUMENT_TEXT_DETECTION"]
     )
     parser_start_document_text_detection.add_argument(
         "file_source", type=str, help=STRING_DICT["INPUT_FILE_ASYNC"]
@@ -149,16 +131,6 @@ def _build_parser():
         choices=[cd.name for cd in CLIPrint],
         nargs="+",
         help=STRING_DICT["PRINT"],
-    )
-    parser_analyze_document.add_argument(
-        "--linearize",
-        action="store_true",
-        help=STRING_DICT["LINEARIZE"],
-    )
-    parser_analyze_document.add_argument(
-        "--linearize-config-path",
-        type=str,
-        help=STRING_DICT["LINEARIZE_CONFIG"],
     )
     parser_analyze_document.add_argument(
         "--overlay",
@@ -224,16 +196,6 @@ def _build_parser():
         help=STRING_DICT["PRINT"],
     )
     parser_analyze_expense.add_argument(
-        "--linearize",
-        action="store_true",
-        help=STRING_DICT["LINEARIZE"],
-    )
-    parser_analyze_expense.add_argument(
-        "--linearize-config-path",
-        type=str,
-        help=STRING_DICT["LINEARIZE_CONFIG"],
-    )
-    parser_analyze_expense.add_argument(
         "--overlay",
         choices=[cd.name for cd in CLIOverlay],
         nargs="+",
@@ -278,15 +240,14 @@ def _build_parser():
     parser_analyze_id.add_argument(
         "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
-    parser_analyze_id.add_argument(
-        "--region-name", type=str, help=STRING_DICT["REGION"]
-    )
+    parser_analyze_id.add_argument("--region-name", type=str, help=STRING_DICT["REGION"])
     parser_analyze_id.add_argument(
         "--print",
         choices=[cd.name for cd in CLIPrint],
         nargs="+",
         help=STRING_DICT["PRINT"],
     )
+
     # get-result parsers
     parser_get_result = subparsers.add_parser(
         "get-result", help=STRING_DICT["GET_RESULT"]
@@ -306,27 +267,14 @@ def _build_parser():
     parser_get_result.add_argument(
         "--profile-name", type=str, help=STRING_DICT["PROFILE_NAME"]
     )
-    parser_get_result.add_argument(
-        "--region-name", type=str, help=STRING_DICT["REGION"]
-    )
+    parser_get_result.add_argument("--region-name", type=str, help=STRING_DICT["REGION"])
     parser_get_result.add_argument(
         "--print",
         choices=[cd.name for cd in CLIPrint],
         nargs="+",
         help=STRING_DICT["PRINT"],
     )
-    parser_get_result.add_argument(
-        "--linearize",
-        action="store_true",
-        help=STRING_DICT["LINEARIZE"],
-    )
-    parser_get_result.add_argument(
-        "--linearize-config-path",
-        type=str,
-        help=STRING_DICT["LINEARIZE_CONFIG"],
-    )
     return parser
-
 
 def textractor_cli():
     """
@@ -427,14 +375,6 @@ def textractor_cli():
                 print(out.signatures.pretty_print())
             if "ALL" in args.print or "IDS" in args.print:
                 print(out.identity_documents.pretty_print())
-
-        if args.linearize is not None:
-            if args.linearize_config_path is not None:
-                with open(args.linearize_config_path, "r") as f:
-                    config = yaml.safe_load(f)
-                print(out.get_text(TextLinearizationConfig(**config)))
-            else:
-                print(out.get_text())
 
         if "overlay" in args and args.overlay is not None:
             entity_list = EntityList()

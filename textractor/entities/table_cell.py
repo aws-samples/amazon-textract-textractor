@@ -27,7 +27,6 @@ from textractor.data.constants import (
     IS_FOOTER_CELL,
 )
 from textractor.data.constants import TextTypes
-from textractor.utils.text_utils import TextLinearizationConfig, linearize_children
 
 
 class TableCell(DocumentEntity):
@@ -61,8 +60,9 @@ class TableCell(DocumentEntity):
         is_title: bool = False,
         is_footer: bool = False,
         is_summary: bool = False,
-        is_section_title: bool = False,
+        is_section_title: bool = False
     ):
+
         super().__init__(entity_id, bbox)
         self._row_index: int = int(row_index)
         self._col_index: int = int(col_index)
@@ -90,15 +90,15 @@ class TableCell(DocumentEntity):
     @property
     def is_title(self):
         return self._is_title
-
+    
     @property
     def is_footer(self):
         return self._is_footer
-
+    
     @property
     def is_summary(self):
         return self._is_summary
-
+    
     @property
     def is_section_title(self):
         return self._is_section_title
@@ -219,6 +219,7 @@ class TableCell(DocumentEntity):
                 output.append(child)
         return output
 
+
     @property
     def text(self) -> str:
         """Returns the text in the cell as one space-separated string
@@ -226,23 +227,7 @@ class TableCell(DocumentEntity):
         :return: Text in the cell
         :rtype: str
         """
-        return " ".join(
-            [
-                " ".join([str(c) for c in self.checkboxes]),
-                " ".join([w.text for w in self.words]),
-            ]
-        )
-
-    def get_text_and_words(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ) -> str:
-        """Returns the text in the cell as one space-separated string
-
-        :return: Text in the cell
-        :rtype: str, List
-        """
-        text = linearize_children(self.words, config=config, no_new_lines=True)
-        return text, self.words
+        return " ".join([" ".join([str(c) for c in self.checkboxes]), " ".join([w.text for w in self.words])])
 
     @property
     def table_id(self):

@@ -1,2 +1,2 @@
-numpy>=1.21,<1.22
+numpy==1.21.*
 pandas

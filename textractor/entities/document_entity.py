@@ -1,11 +1,10 @@
 """:class:`DocumentEntity` is the class that all Document entities such as :class:`Word`, :class:`Line`, :class:`Table` etc. inherit from. This class provides methods 
 useful to all such entities."""
 
-from abc import ABC, abstractmethod
-from typing import Dict, List, Tuple
+from abc import ABC
+from typing import Dict
 from textractor.entities.bbox import BoundingBox
 from textractor.visualizers.entitylist import EntityList
-from textractor.data.text_linearization_config import TextLinearizationConfig
 
 
 class DocumentEntity(ABC):
@@ -26,8 +25,8 @@ class DocumentEntity(ABC):
         """
         self.id = entity_id
         self._bbox: BoundingBox = bbox
-        self.metadata = {}  # Holds optional information about the entity
-        self._children = []
+        self.metadata = dict()  # Holds optional information about the entity
+        self._children = list()
         self._children_type = None
         self._raw_object = None
 
@@ -137,10 +136,6 @@ class DocumentEntity(ABC):
         """
         return self._bbox
 
-    @bbox.setter
-    def bbox(self, bbox: BoundingBox):
-        self._bbox = bbox
-
     @property
     def children(self):
         """
@@ -149,23 +144,5 @@ class DocumentEntity(ABC):
         """
         return self._children
 
-    def visualize(self, *args, **kwargs) -> EntityList:
-        """
-        Returns the object's children in a visualization EntityList object
-
-        :return: Returns an EntityList object
-        :rtype: EntityList
-        """
+    def visualize(self, *args, **kwargs):
         return EntityList(self).visualize(*args, **kwargs)
-
-    @abstractmethod
-    def get_text_and_words(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ) -> Tuple[str, List]:
-        """
-        Used for linearization, returns the linearized text of the entity and the matching words
-
-        :return: Tuple of text and word list
-        :rtype: Tuple[str, List[Word]]
-        """
-        pass

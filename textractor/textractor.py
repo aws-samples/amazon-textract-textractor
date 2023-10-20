@@ -94,10 +94,7 @@ class Textractor:
             raise InputError(
                 "Unable to initiate Textractor. Either profile_name or region requires an input parameter."
             )
-        if self.region_name is not None:
-            self.textract_client = self.session.client("textract", region_name=self.region_name)
-        else:
-            self.textract_client = self.session.client("textract")
+        self.textract_client = self.session.client("textract")
         self.s3_client = self.session.client("s3")
 
     def _get_document_images_from_path(self, filepath: str) -> List[Image.Image]:
@@ -122,26 +119,22 @@ class Textractor:
                 else boto3.session.Session(region_name=self.region_name).client("s3")
             )
             file_obj = s3_client.get_object(Bucket=bucket, Key=key).get("Body").read()
-            if filepath.lower().endswith(".pdf"):
+            if filepath.endswith(".pdf"):
                 if IS_PDF2IMAGE_INSTALLED:
                     images = convert_from_bytes(bytearray(file_obj))
                 else:
-                    raise MissingDependencyException(
-                        "pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call."
-                    )
+                    raise MissingDependencyException("pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call.")
             else:
                 images = [Image.open(io.BytesIO(bytearray(file_obj)))]
 
         else:
-            if filepath.lower().endswith(".pdf"):
+            if filepath.endswith(".pdf"):
                 if IS_PDF2IMAGE_INSTALLED:
                     images = convert_from_path(filepath)
                 else:
-                    raise MissingDependencyException(
-                        "pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call."
-                    )
+                    raise MissingDependencyException("pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call.")
             else:
-                images = [Image.open(filepath)]
+                images = [Image.open(open(filepath, "rb"))]
 
         if not images:
             raise UnhandledCaseException(f"Could not get any images from {filepath}")
@@ -264,17 +257,21 @@ class Textractor:
 
         original_file_source = file_source
 
-        if not isinstance(file_source, (str, bytes, Image.Image)):
+        if not (
+            isinstance(file_source, str)
+            or isinstance(file_source, bytes)
+            or isinstance(file_source, Image.Image)
+        ):
             raise InputError(
                 f"file_source needs to be of type str, bytes or PIL Image, not {type(file_source)}"
             )
 
         # If the file is not already in S3
-        if not isinstance(file_source, str) or not file_source.startswith("s3://"):
+        if not file_source.startswith("s3://"):
             # Check if the user has given us a bucket to upload to
             if not s3_upload_path:
                 raise InputError(
-                    "For files not in S3, an S3 upload path must be provided"
+                    f"For files not in S3, an S3 upload path must be provided"
                 )
 
             s3_file_path = os.path.join(s3_upload_path, str(uuid.uuid4()))
@@ -486,7 +483,11 @@ class Textractor:
 
         original_file_source = file_source
 
-        if not isinstance(file_source, (str, bytes, Image.Image)):
+        if not (
+            isinstance(file_source, str)
+            or isinstance(file_source, bytes)
+            or isinstance(file_source, Image.Image)
+        ):
             raise InputError(
                 f"file_source needs to be of type str, bytes or PIL Image, not {type(file_source)}"
             )
@@ -748,14 +749,18 @@ class Textractor:
         """
 
         original_file_source = file_source
-
-        if not isinstance(file_source, (str, bytes, Image.Image)):
+        
+        if not (
+            isinstance(file_source, str)
+            or isinstance(file_source, bytes)
+            or isinstance(file_source, Image.Image)
+        ):
             raise InputError(
                 f"file_source needs to be of type str, bytes or PIL Image, not {type(file_source)}"
             )
 
         # If the file is not already in S3
-        if not isinstance(file_source, str) or not file_source.startswith("s3://"):
+        if not file_source.startswith("s3://"):
             # Check if the user has given us a bucket to upload to
             if not s3_upload_path:
                 raise InputError(
@@ -811,16 +816,8 @@ class Textractor:
             images=images,
         )
 
-    def get_result(
-        self, job_id: str, api: Union[TextractAPI, Textract_API]
-    ) -> Document:
-        """
-        Retrieves Textract API output for a given job id.
-        :param job_id: Textract API JobID
-        :type job_id: str, required
-        :return: Returns a Document object
-        :rtype: Document
-        """
+    def get_result(self, job_id: str, api: Union[TextractAPI, Textract_API]):
+        """ """
 
         response = get_full_json(
             job_id,
@@ -846,6 +843,6 @@ def _image_to_byte_array(image: Image) -> bytes:
     :rtype: bytes
     """
     img_byte_arr = io.BytesIO()
-    image.convert("RGB").save(img_byte_arr, format="JPEG")
+    image.save(img_byte_arr, format="PNG")
     img_byte_arr = img_byte_arr.getvalue()
     return img_byte_arr

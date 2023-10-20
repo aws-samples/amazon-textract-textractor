@@ -59,7 +59,9 @@ class SearchUtils:
             cls.util = util
 
         if similarity_metric == SimilarityMetric.LEVENSHTEIN:
-            return normalized_edit_distance(word_1.lower(), word_2.lower())
+            return normalized_edit_distance(
+                word_1.lower(), word_2.lower()
+            )
         elif similarity_metric == SimilarityMetric.EUCLIDEAN:
             ref_word_emb = cls.model.encode([word_1])
             word_emb = cls.model.encode([word_2])
@@ -111,10 +113,9 @@ def get_metadata_attr_name(cell_atr):
     except:
         return ""
 
-
 def normalized_edit_distance(s1: str, s2: str):
     """
-    Returns the normalized edit distance
+    Returns the normalized edit distance from Lopresti et al.
 
     :param s1: First string
     :type s1: str
@@ -122,8 +123,7 @@ def normalized_edit_distance(s1: str, s2: str):
     :type s2: str
     """
 
-    dist = editdistance.eval(s1, s2)
-    max_length = max(len(s1), len(s2))
-    if max_length - dist == 0:
+    dist = editdistance.eval(s1, s2) 
+    if min(len(s1), len(s2)) - dist == 0:
         return 0.0
-    return (max_length - dist) / max_length
+    return 1.0 / math.exp(dist / (min(len(s1), len(s2)) - dist))

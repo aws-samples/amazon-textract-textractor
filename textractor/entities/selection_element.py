@@ -5,13 +5,9 @@ This class contains the associated metadata with the :class:`SelectionElement` e
 bounding box information, selection status, page number, Page ID and confidence of detection.
 """
 
-import uuid
-
 from typing import List
-from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.entities.value import Value
 from textractor.entities.word import Word
-from textractor.entities.line import Line
 from textractor.entities.bbox import BoundingBox
 from textractor.data.constants import SELECTED, NOT_SELECTED, SelectionStatus
 from textractor.entities.document_entity import DocumentEntity
@@ -38,6 +34,7 @@ class SelectionElement(Value):
         status: SelectionStatus,
         confidence: float = 0,
     ):
+
         super().__init__(entity_id, bbox)
         self.key_id = None
         self.value_id = None
@@ -56,23 +53,10 @@ class SelectionElement(Value):
     @property
     def words(self) -> List[Word]:
         """
-        :return: Empty Word list as SelectionElement do not have words
+        :return: On SelectionElement this should always return an empty list
         :rtype: EntityList[Word]
         """
         return []
-
-    def get_text_and_words(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ):
-        w = Word(
-            entity_id=str(uuid.uuid4()),
-            bbox=self.bbox,
-            text=config.selection_element_selected
-            if self.status == SelectionStatus.SELECTED
-            else config.selection_element_not_selected,
-        )
-        w.line = Line(entity_id=str(uuid.uuid4()), bbox=self.bbox, words=[w])
-        return w.text, [w]
 
     @property
     def page(self):

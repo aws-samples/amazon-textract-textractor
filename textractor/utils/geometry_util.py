@@ -65,6 +65,5 @@ def get_indices(numpy_indexing: str = ":", max_val=10) -> List[int]:
 
     return list(set(indices))
 
-
 def sort_by_position(entities: List) -> List:
     return sorted(entities, key=lambda e: (e.bbox.y + e.bbox.height, e.bbox.x))

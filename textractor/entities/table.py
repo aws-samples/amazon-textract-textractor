@@ -6,10 +6,8 @@ Tables are hierarchical objects composed of :class:`TableCell` objects, which *i
 page ID of the page within which it exists in the document. 
 """
 
-import itertools
 import logging
 import os
-import uuid
 import xlsxwriter
 from copy import deepcopy
 
@@ -24,7 +22,6 @@ from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.selection_element import SelectionElement
 from textractor.entities.table_title import TableTitle
 from textractor.entities.table_footer import TableFooter
-from textractor.entities.word import Word
 from textractor.utils.geometry_util import get_indices
 from textractor.data.constants import SimilarityMetric, TextTypes, CellTypes, TableTypes
 from textractor.data.constants import (
@@ -32,8 +29,6 @@ from textractor.data.constants import (
     IS_MERGED_CELL,
 )
 from textractor.utils.search_utils import SearchUtils, get_metadata_attr_name
-from textractor.utils.text_utils import group_elements_horizontally, linearize_children
-from textractor.data.text_linearization_config import TextLinearizationConfig
 
 
 class Table(DocumentEntity):
@@ -461,6 +456,7 @@ class Table(DocumentEntity):
 
         return new_table
 
+
     def to_pandas(self, use_columns=False, checkbox_string="X "):
         """
         Converts the table to a pandas DataFrame
@@ -472,14 +468,11 @@ class Table(DocumentEntity):
         try:
             from pandas import DataFrame
         except ImportError:
-            logging.info(
-                "pandas library is required for exporting tables to DataFrame objects"
-            )
+            logging.info("pandas library is required for exporting tables to DataFrame objects")
             return None
 
-        assert (
-            len(checkbox_string) == 2
-        ), "Checkbox string needs to be exactly two characters"
+        assert len(checkbox_string) == 2, "Checkbox string needs to be exactly two characters"
+
 
         if use_columns:
             # Try to automatically get the columns if they are in the first row
@@ -493,21 +486,15 @@ class Table(DocumentEntity):
                 use_columns = True
             else:
                 use_columns = False
-                logging.info(
-                    f"The number of column header cell do not match the column count, ignoring them, {len(columns)} vs {self.column_count}"
-                )
+                print(f"The number of column header cell do not match the column count, ignoring them, {len(columns)} vs {self.column_count}")
 
         table = [["" for _ in range(self.column_count)] for _ in range(self.row_count)]
 
         for cell in self.table_cells:
-            table[cell.row_index - 1][cell.col_index - 1] = " ".join(
-                [checkbox_string[0 if c.is_selected() else 1] for c in cell.checkboxes]
-            ) + " ".join([w.text for w in cell.words])
+            table[cell.row_index - 1][cell.col_index - 1] = " ".join([checkbox_string[0 if c.is_selected() else 1] for c in cell.checkboxes])  + " ".join([w.text for w in cell.words])
 
-        return DataFrame(
-            table[1:] if use_columns else table,
-            columns=columns if use_columns else None,
-        )
+
+        return DataFrame(table[1:] if use_columns else table, columns=columns if use_columns else None)
 
     def to_csv(self) -> str:
         """Returns the table in the Comma-Separated-Value (CSV) format
@@ -566,62 +553,6 @@ class Table(DocumentEntity):
         else:
             return workbook
 
-    def get_text_and_words(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ):
-        words_ = self.words
-        # If no text, return empty string
-        if not words_ and config.table_remove_column_headers:
-            return "", []
-
-        # If not many words, only return text
-        if len(words_) < config.table_min_table_words:
-            return linearize_children(words_, config=config)
-
-        words = []
-        cells = sorted(
-            self.table_cells, key=lambda cell: (cell.row_index, cell.col_index)
-        )
-        for cell in cells:
-            _, cell_words = cell.get_text_and_words(config)
-            words.extend(cell_words)
-
-        for w in words:
-            w.table_id = str(self.id)
-            w.table_bbox = self.bbox
-
-        # Markdown
-        if config.table_linearization_format == "markdown":
-            df = self.to_pandas(
-                use_columns=True,
-                checkbox_string=[
-                    config.selection_element_selected,
-                    config.selection_element_not_selected,
-                ],
-            )
-            has_column = any([isinstance(c, str) for c in df.columns])
-            if config.table_remove_column_headers:
-                headers = df.columns if has_column else []
-            else:
-                headers = df.columns
-            text = df.to_markdown(
-                index=False, tablefmt=config.table_tabulate_format, headers=headers
-            )
-        # Plaintext
-        else:
-            text = ""
-            rows = itertools.groupby(self.table_cells, key=lambda cell: cell.row_index)
-            for _, row in rows:
-                text = (
-                    text
-                    + "\t".join(
-                        cell.text for cell in sorted(row, key=lambda c: c.col_index)
-                    )
-                    + "\n"
-                )
-
-        return text, words
-
     def to_txt(self):
         table = [["" for _ in range(self.column_count)] for _ in range(self.row_count)]
         for cell in self.table_cells:
@@ -639,7 +570,6 @@ class Table(DocumentEntity):
                 f"Merged Cells - {len([c for c in self.table_cells if c.metadata[IS_MERGED_CELL]])}",
             ]
         )
-
 
 def _get_new_table_cells(rows, filtered_rows):
     """

@@ -7,7 +7,6 @@ Represents a single :class:`TableTitle:class:` object. The `TableCell:class:` ob
 """
 
 from typing import List
-from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.word import Word
@@ -118,8 +117,3 @@ class TableTitle(DocumentEntity):
         """
 
         self._is_floating = is_floating
-
-    def get_text_and_words(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ):
-        return " ".join(self.words), self.words

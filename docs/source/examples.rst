@@ -14,7 +14,6 @@ Examples
    notebooks/using_analyze_expense
    notebooks/using_analyze_id
    notebooks/using_queries
-   notebooks/layout_prediction
    notebooks/interfacing_with_trp2
    notebooks/signature_detection
    notebooks/going_further

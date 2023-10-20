@@ -40,7 +40,7 @@ class Line(DocumentEntity):
     ):
         super().__init__(entity_id, bbox)
         if words is not None and len(words) > 0:
-            self.words: List[Word] = sorted(words, key=lambda x: (x.bbox.x, x.bbox.y))
+            self.words: List[Word] = sorted(words, key=lambda x: x.bbox.y + x.bbox.x)
         else:
             self.words = []
 
@@ -55,12 +55,6 @@ class Line(DocumentEntity):
         :rtype: str
         """
         return " ".join([word.text for word in self.words])
-
-    def get_text_and_words(self, config):
-        for w in self.words:
-            w.line_id = self.id
-            w.line_bbox = self.bbox
-        return self.text, self.words
 
     @property
     def page(self):
@@ -111,6 +105,7 @@ class Line(DocumentEntity):
             )
 
         if not self.words:
+            logging.info("Document contains no word entities.")
             return []
         return EntityList([word for word in self.words if word.text_type == text_type])
 

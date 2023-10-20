@@ -5,7 +5,6 @@ text type, bounding box information, page number, Page ID and confidence of dete
 """
 
 from textractor.data.constants import TextTypes
-from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
 
@@ -40,26 +39,6 @@ class Word(DocumentEntity):
         self.confidence = confidence / 100
         self._page = None
         self._page_id = None
-        self.line = None
-        self.cell_bbox = None
-        self.cell_id = None
-        self.row_index = None
-        self.col_index = None
-        self.row_span = None
-        self.col_span = None
-        self.key_bbox = None
-        self.value_bbox = None
-        self.key_id = None
-        self.value_id = None
-        self.kv_id = None
-        self.kv_bbox = None
-        self.line_id = None
-        self.line_bbox = None
-        self.table_id = None
-        self.table_bbox = None
-        self.layout_id = None
-        self.layout_type = None
-        self.layout_bbox = None
 
     @property
     def text(self) -> str:
@@ -132,11 +111,6 @@ class Word(DocumentEntity):
         :type page_id: str
         """
         self._page_id = page_id
-
-    def get_text_and_words(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ):
-        return self.text, [self]
 
     def __repr__(self) -> str:
         """

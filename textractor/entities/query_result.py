@@ -6,8 +6,6 @@ This class contains the associated metadata with the :class:`KeyValue` entity in
 bounding box information, value, existence of checkbox, page number, Page ID and confidence of detection.
 """
 
-from typing import List, Tuple
-from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
 
@@ -86,14 +84,3 @@ class QueryResult(DocumentEntity):
         """
 
         return f"{self.answer}"
-
-    def get_text_and_words(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ) -> Tuple[str, List]:
-        """
-        Used for linearization, returns the linearized text of the QueryResult and the matching words
-
-        :return: Tuple of text and word list
-        :rtype: Tuple[str, List[Word]]
-        """
-        return "", []
