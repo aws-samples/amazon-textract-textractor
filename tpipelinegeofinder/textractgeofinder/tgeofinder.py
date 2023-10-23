@@ -273,6 +273,35 @@ class TGeoFinder():
                                   area_selection=area_selection,
                                   page_number=page_number,
                                   exclude_ids=exclude_ids)
+        
+    def get_words_above(self,
+                        anker: AreaSelection,
+                        number_of_words_to_return: int = None,
+                        text_type: str = 'word',
+                        area_selection: AreaSelection = None,
+                        page_number: int = 1,
+                        exclude_ids: List[str] = None) -> List[TWord]:
+        xmin = anker.top_left.x
+        ymin = anker.top_left.y
+        xmax = anker.lower_right.x
+        ymax = anker.lower_right.y
+        
+        query = ''' and ? < (xmin + xmax) / 2
+                    and ? > ( xmin + xmax ) / 2
+                    and ? > ymax
+                    and text_type = ?
+                    order by ymin  asc '''
+        params = [xmin, xmax, ymin, text_type]
+        if number_of_words_to_return:
+            query += " limit ? "
+            params.append(number_of_words_to_return)
+
+        return self.ocrdb.execute(query=query,
+                                  textract_doc_uuid=self.textract_doc_uuid,
+                                  params=params,
+                                  area_selection=area_selection,
+                                  page_number=page_number,
+                                  exclude_ids=exclude_ids)         
 
     def get_words_to_the_right(self,
                                anker: AreaSelection,

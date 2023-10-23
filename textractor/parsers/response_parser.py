@@ -10,8 +10,14 @@ from typing import Any, List, Dict, Tuple
 from collections import defaultdict
 from textractor.entities.identity_document import IdentityDocument
 from textractor.entities.expense_document import ExpenseDocument
-from textractor.entities.expense_field import Expense, ExpenseField, ExpenseType, \
-    ExpenseGroupProperty, LineItemGroup, LineItemRow
+from textractor.entities.expense_field import (
+    Expense,
+    ExpenseField,
+    ExpenseType,
+    ExpenseGroupProperty,
+    LineItemGroup,
+    LineItemRow,
+)
 
 from textractor.entities.page import Page
 from textractor.entities.query_result import QueryResult
@@ -29,7 +35,9 @@ from textractor.entities.table_footer import TableFooter
 from textractor.entities.query import Query
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.selection_element import SelectionElement
+from textractor.entities.layout import Layout
 from textractor.data.constants import (
+    LAYOUT_ENTITY,
     TABLE_FOOTER,
     TABLE_TITLE,
     COLUMN_HEADER,
@@ -52,7 +60,20 @@ from textractor.data.constants import (
     MERGED_CELL,
     QUERY,
     SIGNATURE,
+    LAYOUT,
+    LAYOUT_TEXT,
+    LAYOUT_TITLE,
+    LAYOUT_HEADER,
+    LAYOUT_FOOTER,
+    LAYOUT_SECTION_HEADER,
+    LAYOUT_PAGE_NUMBER,
+    LAYOUT_LIST,
+    LAYOUT_FIGURE,
+    LAYOUT_TABLE,
+    LAYOUT_KEY_VALUE,
 )
+
+THRESHOLD = 0.8
 
 
 def _create_document_object(response: dict) -> Document:
@@ -166,7 +187,10 @@ def _create_page_objects(
 
 
 def _create_word_objects(
-    word_ids: List[str], id_json_map: Dict[str, str], page: Page
+    word_ids: List[str],
+    id_json_map: Dict[str, str],
+    existing_words: Dict[str, Word],
+    page: Page,
 ) -> List[Word]:
     """
     Creates list of Word objects for all word_ids passed to the function.
@@ -181,26 +205,26 @@ def _create_word_objects(
     :return: Returns a list of Word objects for the IDs passed in word_ids.
     :rtype: list
     """
-    word_elements = []
-
-    for word_id in word_ids:
-        word_elements.append(id_json_map[word_id])
-
+    words = []
     text_type = {PRINTED: TextTypes.PRINTED, HANDWRITING: TextTypes.HANDWRITING}
 
-    words = []
-    for elem in word_elements:
-        word = Word(
-            entity_id=elem["Id"],
-            bbox=BoundingBox.from_normalized_dict(
-                elem["Geometry"]["BoundingBox"], spatial_object=page
-            ),
-            text=elem.get("Text"),
-            text_type=text_type[elem.get("TextType")],
-            confidence=elem["Confidence"],
-        )
-        word.raw_object = elem
-        words.append(word)
+    for word_id in word_ids:
+        if word_id in existing_words:
+            words.append(existing_words[word_id])
+        else:
+            elem = id_json_map[word_id]
+            word = Word(
+                entity_id=elem["Id"],
+                bbox=BoundingBox.from_normalized_dict(
+                    elem["Geometry"]["BoundingBox"], spatial_object=page
+                ),
+                text=elem.get("Text"),
+                text_type=text_type[elem.get("TextType")],
+                confidence=elem["Confidence"],
+            )
+            word.raw_object = elem
+            words.append(word)
+            existing_words[word_id] = word
 
     for word in words:
         word.page = page.page_num
@@ -210,7 +234,10 @@ def _create_word_objects(
 
 
 def _create_line_objects(
-    line_ids: List[str], id_json_map: Dict[str, str], page: Page
+    line_ids: List[str],
+    id_json_map: Dict[str, str],
+    existing_words: Dict[str, Word],
+    page: Page,
 ) -> Tuple[List[Line], List[Word]]:
     """
     Creates list of Line objects for all lines in the Page derived from the API JSON response.
@@ -239,6 +266,7 @@ def _create_line_objects(
             line_words = _create_word_objects(
                 _get_relationship_ids(line, relationship="CHILD"),
                 id_json_map,
+                existing_words,
                 page,
             )
             page_words.extend(line_words)
@@ -252,6 +280,9 @@ def _create_line_objects(
                     confidence=line["Confidence"],
                 )
             )
+            for word in line_words:
+                word.line = lines[-1]
+                word.line_id = lines[-1].id
             lines[-1].raw_object = line
 
     for line in lines:
@@ -308,8 +339,9 @@ def _create_value_objects(
     value_ids: List[str],
     id_json_map: Dict[str, Any],
     entity_id_map: Dict[str, list],
+    existing_words: Dict[str, Word],
     page: Page,
-) -> Dict[str, Value]:
+) -> Tuple[Dict[str, Value], Dict[str, SelectionElement]]:
     """
     Creates dictionary containing Value objects for all value_ids in the Page derived from the API response JSON.
 
@@ -348,7 +380,7 @@ def _create_value_objects(
         for child_id in val_child_ids:
             if id_json_map[child_id]["BlockType"] == WORD:
                 values[val_id].words += _create_word_objects(
-                    [child_id], id_json_map, page
+                    [child_id], id_json_map, existing_words, page
                 )
             elif id_json_map[child_id]["BlockType"] == SIGNATURE:
                 continue
@@ -361,7 +393,7 @@ def _create_value_objects(
             values[val_id].page = page.page_num
             values[val_id].page_id = page.id
 
-    return values
+    return values, checkboxes
 
 
 def _create_query_objects(
@@ -420,15 +452,15 @@ def _create_query_result_objects(
                 block.get(
                     "Geometry",
                     {
-                        'BoundingBox': {
-                            'Width': 1.0,
-                            'Height': 1.0,
-                            'Left': 0.0,
-                            'Top': 0.0
+                        "BoundingBox": {
+                            "Width": 1.0,
+                            "Height": 1.0,
+                            "Left": 0.0,
+                            "Top": 0.0,
                         }
-                    }
+                    },
                 )["BoundingBox"],
-                spatial_object=page
+                spatial_object=page,
             ),
             answer=block["Text"],
         )
@@ -439,6 +471,7 @@ def _create_query_result_objects(
         query_result.page_id = page.id
 
     return query_results
+
 
 def _create_signature_objects(
     signature_ids: List[str],
@@ -466,15 +499,84 @@ def _create_signature_objects(
         signature.page = page.page_num
         signature.page_id = page.id
 
-    return list(signatures.values())
+    signatures_added = set()
+    for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
+        if layout.layout_type == LAYOUT_ENTITY:
+            continue
+        for signature in sorted(signatures.values(), key=lambda x: x.bbox.y):
+            if (
+                layout.bbox.get_intersection(signature.bbox).area > THRESHOLD * signature.bbox.area
+                and signature not in signatures_added
+            ):
+                layout.children.append(signature)
+                signatures_added.add(signature)
+                del signatures[signature.id]
+
+    signature_layouts = []
+    for signature in signatures.values():
+        if signature not in signatures_added:
+            signatures_added.add(signature)
+            layout = Layout(
+                entity_id=signature.id,
+                bbox=signature.bbox,
+                label=LAYOUT_ENTITY,
+                reading_order=-1,
+            )
+            layout.children.append(signature)
+            layout.page = page.page_num
+            layout.page_id = page.id
+            signature_layouts.append(layout)
+
+    layouts_to_remove = []
+    for layout in page.leaf_layouts:
+        layouts_that_intersect = []
+        for signature_layout in signature_layouts:
+            intersection = layout.bbox.get_intersection(signature_layout.bbox).area
+            if intersection:
+                layouts_that_intersect.append(signature_layout)
+        words_in_sub_layouts = set()
+        for i, intersect_layout in enumerate(
+            sorted(layouts_that_intersect, key=lambda l: (l.bbox.y, l.bbox.x))
+        ):
+            intersect_layout.reading_order = (
+                (layout.reading_order + (i + 1) * 0.1)
+                if intersect_layout.reading_order == -1
+                else min(
+                    intersect_layout.reading_order, layout.reading_order + (i + 1) * 0.1
+                )
+            )
+            for w in intersect_layout.children[0].words:
+                words_in_sub_layouts.add(w.id)
+        if words_in_sub_layouts:
+            remaining_words = []
+            for w in layout.words:
+                if w.id not in words_in_sub_layouts:
+                    remaining_words.append(w)
+            if remaining_words:
+                layout.bbox = BoundingBox.enclosing_bbox(
+                    [w.bbox for w in remaining_words]
+                )
+                layout._children = list(set([w.line for w in remaining_words]))
+            else:
+                layouts_to_remove.append(layout)
+
+    for layout in layouts_to_remove:
+        page.leaf_layouts.remove(layout)
+
+    for layout in signature_layouts:
+        page.leaf_layouts.append(layout)
+
+    return list(signatures_added)
+
 
 def _create_keyvalue_objects(
     key_value_ids: List[str],
     id_json_map: Dict[str, Any],
     id_entity_map: Dict[str, str],
     entity_id_map: Dict[str, list],
+    existing_words: Dict[str, Word],
     page: Page,
-) -> Tuple[List[KeyValue], List[Word]]:
+) -> Tuple[List[KeyValue], List[Word], Dict[str, SelectionElement]]:
     """
     Creates list of KeyValue objects for all key-value pairs in the Page derived from the API response JSON.
 
@@ -505,8 +607,12 @@ def _create_keyvalue_objects(
         for block in keys_info.values()
     }
 
-    values = _create_value_objects(
-        list(key_value_id_map.values()), id_json_map, entity_id_map, page
+    values, selection_elements = _create_value_objects(
+        list(key_value_id_map.values()),
+        id_json_map,
+        entity_id_map,
+        existing_words,
+        page,
     )
 
     keys = {}
@@ -538,25 +644,190 @@ def _create_keyvalue_objects(
             for child_id in key_child_ids
             if id_json_map[child_id]["BlockType"] == WORD
         ]
-        key_words = _create_word_objects(key_word_ids, id_json_map, page)
+        key_words = _create_word_objects(
+            key_word_ids, id_json_map, existing_words, page
+        )
 
         key_child_ids = [
             child_id for child_id in key_child_ids if child_id not in key_word_ids
         ]
-        key_selection_elements = _create_selection_objects(
-            key_child_ids, id_json_map, page
-        )
         # find a place to add selection elements for keys
 
         keys[key_id].key = key_words
-        keys[key_id].add_children([values[key_value_id_map[key_id]]])
+        # keys[key_id].add_children([values[key_value_id_map[key_id]]])
         kv_words.extend(key_words)
 
     key_values = list(keys.values())
     for kv in key_values:
         kv.page = page.page_num
         kv.page_id = page.id
-    return key_values, kv_words
+
+    kv_added = set()
+    for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
+        if layout.layout_type == LAYOUT_ENTITY:
+            continue
+        for kv in sorted(key_values, key=lambda x: x.bbox.y):
+            if (
+                layout.bbox.get_intersection(kv.bbox).area > THRESHOLD * kv.bbox.area
+                and kv not in kv_added
+            ):
+                layout.children.append(kv)
+                kv_added.add(kv)
+                key_values.remove(kv)
+
+    kv_layouts = []
+    for kv in key_values:
+        if kv not in kv_added:
+            kv_added.add(kv)
+            layout = Layout(
+                entity_id=kv.id,
+                bbox=kv.bbox,
+                label=LAYOUT_KEY_VALUE,
+                reading_order=-1,
+            )
+            layout.children.append(kv)
+            layout.page = page.page_num
+            layout.page_id = page.id
+            kv_layouts.append(layout)
+
+    layouts_to_remove = []
+    for layout in page.leaf_layouts:
+        layouts_that_intersect = []
+        for kv_layout in kv_layouts:
+            intersection = layout.bbox.get_intersection(kv_layout.bbox).area
+            if intersection:
+                layouts_that_intersect.append(kv_layout)
+        words_in_sub_layouts = set()
+        for i, intersect_layout in enumerate(
+            sorted(layouts_that_intersect, key=lambda l: (l.bbox.y, l.bbox.x))
+        ):
+            intersect_layout.reading_order = (
+                (layout.reading_order + (i + 1) * 0.1)
+                if intersect_layout.reading_order == -1
+                else min(
+                    intersect_layout.reading_order, layout.reading_order + (i + 1) * 0.1
+                )
+            )
+            for w in intersect_layout.children[0].words:
+                words_in_sub_layouts.add(w.id)
+        if words_in_sub_layouts:
+            remaining_words = []
+            for w in layout.words:
+                if w.id not in words_in_sub_layouts:
+                    remaining_words.append(w)
+            if remaining_words:
+                layout.bbox = BoundingBox.enclosing_bbox(
+                    [w.bbox for w in remaining_words]
+                )
+                layout._children = list(set([w.line for w in remaining_words]))
+            else:
+                layouts_to_remove.append(layout)
+
+    for layout in layouts_to_remove:
+        page.leaf_layouts.remove(layout)
+
+    for layout in kv_layouts:
+        page.leaf_layouts.append(layout)
+
+    return list(kv_added), kv_words, selection_elements
+
+
+def _create_layout_objects(
+    layout_ids: List[Any],
+    id_json_map: Dict[str, str],
+    id_entity_map: Dict[str, List[str]],
+    line_by_id: Dict[str, Line],
+    page: Page,
+) -> Tuple[List[Layout], List[Layout]]:
+    """
+    Creates Layout objects.
+
+    :param page_layouts: Reading-ordered list containing JSON structure of tables within the page.
+    :type page_layouts: list
+    :param id_json_map: Dictionary containing entity_id:JSON block mapping.
+    :type id_json_map: dict
+    :param id_entity_map: Dictionary containing entity_id:entity_type mapping.
+    :type id_entity_map: dict
+    :param page: Instance of parent Page object.
+    :type page: Page
+
+    :return: Returns a list containing Layout objects.
+    :rtype: List[Layout]
+    """
+
+    page_layouts = []
+    for layout_id in layout_ids:
+        if layout_id in page.child_ids:
+            page_layouts.append(id_json_map[layout_id])
+
+    leaf_layouts = []
+    container_layouts = []
+    parsed_blocks = set()
+    for i, block in enumerate(page_layouts):
+        if block["Id"] in parsed_blocks:
+            continue
+        if block["BlockType"] in (LAYOUT_LIST,):
+            container_layouts.append(
+                Layout(
+                    entity_id=block["Id"],
+                    confidence=block["Confidence"],
+                    reading_order=i,
+                    label=block["BlockType"],
+                    bbox=BoundingBox.from_normalized_dict(
+                        block["Geometry"]["BoundingBox"], spatial_object=page
+                    ),
+                )
+            )
+            parsed_blocks.add(block["Id"])
+            for relationship in block.get("Relationships", []):
+                if relationship["Type"] != "CHILD":
+                    continue
+                for leaf_id in relationship["Ids"]:
+                    block = id_json_map[leaf_id]
+                    parsed_blocks.add(leaf_id)
+                    container_layouts[-1].children.append(
+                        Layout(
+                            entity_id=block["Id"],
+                            confidence=block["Confidence"],
+                            reading_order=i,
+                            label=block["BlockType"],
+                            bbox=BoundingBox.from_normalized_dict(
+                                block["Geometry"]["BoundingBox"], spatial_object=page
+                            ),
+                        )
+                    )
+                    container_layouts[-1].children[-1].raw_object = block
+                    for relationship in block.get("Relationships", []):
+                        if relationship["Type"] != "CHILD":
+                            continue
+                        container_layouts[-1].children[-1].add_children(
+                            [line_by_id[line_id] for line_id in relationship["Ids"]]
+                        )
+        else:
+            leaf_layouts.append(
+                Layout(
+                    entity_id=block["Id"],
+                    confidence=block["Confidence"],
+                    reading_order=i,
+                    label=block["BlockType"],
+                    bbox=BoundingBox.from_normalized_dict(
+                        block["Geometry"]["BoundingBox"], spatial_object=page
+                    ),
+                )
+            )
+            leaf_layouts[-1].raw_object = block
+            for relationship in block.get("Relationships", []):
+                if relationship["Type"] != "CHILD":
+                    continue
+                leaf_layouts[-1].add_children(
+                    [line_by_id[line_id] for line_id in relationship["Ids"]]
+                )
+
+    for layout in leaf_layouts + container_layouts:
+        layout.page = page.page_num
+        layout.page_id = page.id
+
+    return container_layouts, leaf_layouts
 
 
 def _create_table_cell_objects(
@@ -617,6 +888,8 @@ def _create_table_objects(
     id_json_map: Dict[str, Any],
     id_entity_map: Dict[str, List[str]],
     entity_id_map: Dict[str, List[str]],
+    existing_words: Dict[str, Word],
+    checkboxes: Dict[str, SelectionElement],
     page: Page,
 ) -> Tuple[List[Table], List[Word]]:
     """
@@ -671,10 +944,6 @@ def _create_table_objects(
         id_json_map[merge_id] for merge_id in entity_id_map[MERGED_CELL]
     ]
 
-    checkboxes = _create_selection_objects(
-        entity_id_map[SELECTION_ELEMENT], id_json_map, page
-    )
-
     # Add children to cells
     merged_child_map = {
         merged_cell["Id"]: _get_relationship_ids(merged_cell, relationship="CHILD")
@@ -694,7 +963,16 @@ def _create_table_objects(
             if id_entity_map[child_id] == SELECTION_ELEMENT
         ]
 
-        cell_words = _create_word_objects(cell_word_ids, id_json_map, page)
+        cell_words = _create_word_objects(
+            cell_word_ids, id_json_map, existing_words, page
+        )
+        for w in cell_words:
+            w.cell_id = table_cells[cell_id].id
+            w.cell_bbox = table_cells[cell_id].bbox
+            w.row_span = table_cells[cell_id].row_span
+            w.col_span = table_cells[cell_id].col_span
+            w.row_index = table_cells[cell_id].row_index
+            w.col_index = table_cells[cell_id].col_index
         table_words.extend(cell_words)
         selection_child = [checkboxes[child_id] for child_id in selection_ids]
 
@@ -724,14 +1002,17 @@ def _create_table_objects(
                 entity_id=child_id,
                 bbox=BoundingBox.from_normalized_dict(
                     id_json_map[child_id]["Geometry"]["BoundingBox"],
-                    spatial_object=page
-                )
+                    spatial_object=page,
+                ),
             )
-            children = _get_relationship_ids(id_json_map[child_id], relationship="CHILD")
+            children = _get_relationship_ids(
+                id_json_map[child_id], relationship="CHILD"
+            )
             tables[table["Id"]].title.words = _create_word_objects(
                 [child_id for child_id in children if id_entity_map[child_id] == WORD],
                 id_json_map,
-                page
+                existing_words,
+                page,
             )
 
     # Create table footer (if exists)
@@ -743,15 +1024,18 @@ def _create_table_objects(
                     entity_id=child_id,
                     bbox=BoundingBox.from_normalized_dict(
                         id_json_map[child_id]["Geometry"]["BoundingBox"],
-                        spatial_object=page
-                    )
+                        spatial_object=page,
+                    ),
                 )
             )
-            children = _get_relationship_ids(id_json_map[child_id], relationship="CHILD")
+            children = _get_relationship_ids(
+                id_json_map[child_id], relationship="CHILD"
+            )
             tables[table["Id"]].footers[-1].words = _create_word_objects(
                 [child_id for child_id in children if id_entity_map[child_id] == WORD],
                 id_json_map,
-                page
+                existing_words,
+                page,
             )
 
     # Associate Children with Tables
@@ -763,7 +1047,9 @@ def _create_table_objects(
             if table_cells[child_id].is_title:
                 tables[table["Id"]].title.is_floating = False
         # FIXME: This will be slow and there should be a better way to do it.
-        words = set([w.id for child_id in children for w in table_cells[child_id].words])
+        words = set(
+            [w.id for child_id in children for w in table_cells[child_id].words]
+        )
         for footer in tables[table["Id"]].footers:
             for w in footer.words:
                 if w.id in words:
@@ -772,7 +1058,68 @@ def _create_table_objects(
 
         tables[table["Id"]].add_cells(children_cells)
 
-    
+    # Assign tables to layout elements
+    table_added = set()
+    # for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
+    #    if layout.layout_type == LAYOUT_TABLE:
+    #        for table in sorted(list(tables.values()), key=lambda x: x.bbox.y):
+    #            if layout.bbox.get_intersection(table.bbox).area > THRESHOLD*table.bbox.area and table not in table_added:
+    #                layout.children.append(table)
+    #                table_added.add(table)
+
+    tables_layout = []
+    for table in tables.values():
+        if table not in table_added:
+            table_added.add(table)
+            layout = Layout(
+                entity_id=table.id,
+                bbox=table.bbox,
+                label=LAYOUT_TABLE,
+                reading_order=-1,
+            )
+            layout.children.append(table)
+            layout.page = page.page_num
+            layout.page_id = page.id
+            tables_layout.append(layout)
+
+    layouts_to_remove = []
+    for layout in page.leaf_layouts:
+        layouts_that_intersect = []
+        for table_layout in tables_layout:
+            intersection = layout.bbox.get_intersection(table_layout.bbox).area
+            if intersection:
+                layouts_that_intersect.append(table_layout)
+        words_in_sub_layouts = set()
+        for i, intersect_layout in enumerate(
+            sorted(layouts_that_intersect, key=lambda l: (l.bbox.y, l.bbox.x))
+        ):
+            intersect_layout.reading_order = (
+                (layout.reading_order + (i + 1) * 0.1)
+                if intersect_layout.reading_order == -1
+                else min(
+                    intersect_layout.reading_order, layout.reading_order + (i + 1) * 0.1
+                )
+            )
+            for w in intersect_layout.children[0].words:
+                words_in_sub_layouts.add(w.id)
+        if words_in_sub_layouts:
+            remaining_words = []
+            for w in layout.words:
+                if w.id not in words_in_sub_layouts:
+                    remaining_words.append(w)
+            if remaining_words:
+                layout.bbox = BoundingBox.enclosing_bbox(
+                    [w.bbox for w in remaining_words]
+                )
+                layout._children = list(set([w.line for w in remaining_words]))
+            else:
+                layouts_to_remove.append(layout)
+
+    for layout in layouts_to_remove:
+        page.leaf_layouts.remove(layout)
+
+    for layout in tables_layout:
+        page.leaf_layouts.append(layout)
 
     tables = list(tables.values())
     for table in tables:
@@ -794,11 +1141,20 @@ def parse_document_api_response(response: dict) -> Document:
     """
     document = _create_document_object(response)
 
-    id_entity_map, id_json_map, entity_id_map = {}, {}, defaultdict(list)
+    id_entity_map, id_json_map, entity_id_map, layout_order_map, existing_words = (
+        {},
+        {},
+        defaultdict(list),
+        {},
+        {},
+    )
     for block in response["Blocks"]:
         id_entity_map[block["Id"]] = block["BlockType"]
         id_json_map[block["Id"]] = block
-        entity_id_map[block["BlockType"]].append(block["Id"])
+        if block["BlockType"].startswith("LAYOUT"):
+            entity_id_map["LAYOUT"].append(block["Id"])
+        else:
+            entity_id_map[block["BlockType"]].append(block["Id"])
 
     pages, page_elements = _create_page_objects(response)
     assert len(pages) == response["DocumentMetadata"]["Pages"]
@@ -807,14 +1163,45 @@ def parse_document_api_response(response: dict) -> Document:
         entities = {}
         page = pages[page_json["Id"]]
 
-        lines, line_words = _create_line_objects(entity_id_map[LINE], id_json_map, page)
+        lines, line_words = _create_line_objects(
+            entity_id_map[LINE], id_json_map, existing_words, page
+        )
         page.lines = lines
 
-        key_values, kv_words = _create_keyvalue_objects(
+        line_by_id = {l.id: l for l in page.lines}
+
+        container_layouts, leaf_layouts = _create_layout_objects(
+            entity_id_map[LAYOUT],
+            id_json_map,
+            entity_id_map,
+            line_by_id,
+            page,
+        )
+
+        if not container_layouts and not leaf_layouts:
+            # We are in a scenario where the LAYOUT API was not called. We will fake wrap
+            # all the lines to get a good linearized output regardless.
+            for i, line in enumerate(lines):
+                layout = Layout(
+                    entity_id=line.id,
+                    bbox=line.bbox,
+                    label=LAYOUT_ENTITY,
+                    reading_order=i,
+                )
+                layout._children = [line]
+                layout.page = page.page_num
+                layout.page_id = page.id
+                leaf_layouts.append(layout)
+
+        page._container_layouts.extend(container_layouts)
+        page._leaf_layouts.extend(leaf_layouts)
+
+        key_values, kv_words, selection_elements = _create_keyvalue_objects(
             entity_id_map[KEY_VALUE_SET],
             id_json_map,
             id_entity_map,
             entity_id_map,
+            existing_words,
             page,
         )
         kvs = [kv for kv in key_values if not kv.contains_checkbox]
@@ -827,11 +1214,27 @@ def parse_document_api_response(response: dict) -> Document:
             id_entity_map[checkbox.id] = SELECTION_ELEMENT
 
         tables, table_words = _create_table_objects(
-            entity_id_map[TABLE], id_json_map, id_entity_map, entity_id_map, page
+            entity_id_map[TABLE],
+            id_json_map,
+            id_entity_map,
+            entity_id_map,
+            existing_words,
+            selection_elements,
+            page,
         )
         page.tables = tables
 
         all_words = table_words + kv_words + line_words
+        for word in all_words:
+            if word.line is None:
+                line = Line(
+                    str(uuid.uuid4()),
+                    word.bbox,
+                    words=[word],
+                    confidence=word.confidence,
+                )
+                word.line = line
+                page.lines.append(line)
         all_words = {word.id: word for word in all_words}
 
         page.words = list(all_words.values())
@@ -845,6 +1248,20 @@ def parse_document_api_response(response: dict) -> Document:
             entity_id_map[SIGNATURE], id_json_map, entity_id_map, page
         )
         page.signatures = signatures
+
+        # We now have to go through each layout and update its children to avoid duplication.
+        for layout in page.leaf_layouts + page.container_layouts:
+            lines = {c.id: c for c in layout.children if isinstance(c, Line)}
+            for c in [c for c in layout.children if not isinstance(c, Line)]:
+                for w in c.words:
+                    if w.line_id in lines:
+                        lines[w.line_id].words.remove(w)
+                        if not lines[w.line_id].words:
+                            layout.children.remove(lines[w.line_id])
+                            continue
+                        lines[w.line_id].bbox = BoundingBox.enclosing_bbox(
+                            lines[w.line_id].words
+                        )
 
     document.pages = sorted(list(pages.values()), key=lambda x: x.page_num)
     return document
@@ -883,15 +1300,15 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
         value_expense = Expense(
             bbox=(
                 None
-                if not "Geometry" in field["ValueDetection"] else 
-                BoundingBox.from_normalized_dict(
+                if not "Geometry" in field["ValueDetection"]
+                else BoundingBox.from_normalized_dict(
                     field["ValueDetection"]["Geometry"]["BoundingBox"],
-                    spatial_object=page
+                    spatial_object=page,
                 )
             ),
             text=field["ValueDetection"]["Text"],
             confidence=field["ValueDetection"]["Confidence"],
-            page = page.page_num
+            page=page.page_num,
         )
         value_expense.raw_object = field["ValueDetection"]
     else:
@@ -903,7 +1320,7 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
             ),
             text=field["LabelDetection"]["Text"],
             confidence=field["LabelDetection"]["Confidence"],
-            page=page.page_num
+            page=page.page_num,
         )
         label_expense.raw_object = field["LabelDetection"]
     else:
@@ -912,18 +1329,28 @@ def create_expense_from_field(field: Dict, page: Page) -> ExpenseField:
     if "GroupProperties" in field:
         for group_property in field["GroupProperties"]:
             group_properties.append(
-                ExpenseGroupProperty(id=group_property["Id"], types=group_property["Types"])
+                ExpenseGroupProperty(
+                    id=group_property["Id"], types=group_property["Types"]
+                )
             )
     if "Currency" in field:
         currency = field["Currency"]["Code"]
     else:
         currency = None
-    return ExpenseField(type_expense, value_expense, group_properties=group_properties, label=label_expense,
-                        currency=currency, page=page.page_num)
+    return ExpenseField(
+        type_expense,
+        value_expense,
+        group_properties=group_properties,
+        label=label_expense,
+        currency=currency,
+        page=page.page_num,
+    )
 
 
 def parser_analyze_expense_response(response):
-    response["Blocks"] = [b for doc in response["ExpenseDocuments"] for b in doc.get("Blocks", [])]
+    response["Blocks"] = [
+        b for doc in response["ExpenseDocuments"] for b in doc.get("Blocks", [])
+    ]
     document = parse_document_api_response(response)
     for doc in response["ExpenseDocuments"]:
         # FIXME
@@ -941,16 +1368,37 @@ def parser_analyze_expense_response(response):
             for i, line_item in enumerate(line_items_group["LineItems"]):
                 row_expenses = []
                 for line_item_field in line_item["LineItemExpenseFields"]:
-                    row_expenses.append(create_expense_from_field(line_item_field, page))
+                    row_expenses.append(
+                        create_expense_from_field(line_item_field, page)
+                    )
                     row_expenses[-1].raw_object = line_item_field
-                line_item_rows.append(LineItemRow(index=i, line_item_expense_fields=row_expenses, page=page.page_num))
+                line_item_rows.append(
+                    LineItemRow(
+                        index=i,
+                        line_item_expense_fields=row_expenses,
+                        page=page.page_num,
+                    )
+                )
             if not line_item_rows:
                 continue
-            line_items_groups.append(LineItemGroup(index=line_items_group["LineItemGroupIndex"], line_item_rows=line_item_rows, page=page.page_num))
+            line_items_groups.append(
+                LineItemGroup(
+                    index=line_items_group["LineItemGroupIndex"],
+                    line_item_rows=line_item_rows,
+                    page=page.page_num,
+                )
+            )
 
-        bbox = BoundingBox.enclosing_bbox(bboxes=[s.bbox for s in summary_fields] + [g.bbox for g in line_items_groups], spatial_object=page)
+        bbox = BoundingBox.enclosing_bbox(
+            bboxes=[s.bbox for s in summary_fields]
+            + [g.bbox for g in line_items_groups],
+            spatial_object=page,
+        )
         expense_document = ExpenseDocument(
-            summary_fields=summary_fields, line_items_groups=line_items_groups, bounding_box=bbox, page=page.page_num
+            summary_fields=summary_fields,
+            line_items_groups=line_items_groups,
+            bounding_box=bbox,
+            page=page.page_num,
         )
         expense_document.raw_object = doc
         document.pages[summary_field["PageNumber"] - 1].expense_documents.append(
@@ -974,13 +1422,16 @@ def parse(response: dict) -> Document:
     """
     if "IdentityDocuments" in response:
         from trp.trp2_analyzeid import TAnalyzeIdDocumentSchema
+
         t_doc = TAnalyzeIdDocumentSchema().load(response)
         return parse_analyze_id_response(response)
     if "ExpenseDocuments" in response:
         from trp.trp2_expense import TAnalyzeExpenseDocumentSchema
+
         t_doc = TAnalyzeExpenseDocumentSchema().load(response)
         return parser_analyze_expense_response(response)
     else:
         from trp.trp2 import TDocumentSchema
+
         t_doc = TDocumentSchema().load(response)
         return parse_document_api_response(response)

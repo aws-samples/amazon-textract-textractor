@@ -1,16 +1,20 @@
 """
-Represents a single :class:`Line` Entity within the :class:`Document`. 
-The Textract API response returns groups of words as LINE BlockTypes. They contain :class:`Word` entities as children. 
+Represents a single :class:`Signature` Entity within the :class:`Document`. 
+The Textract API response returns signatures as SIGNATURE BlockTypes.
 
-This class contains the associated metadata with the :class:`Line` entity including the entity ID, 
-bounding box information, child words, page number, Page ID and confidence of detection.
+This class contains the associated metadata with the :class:`Signature` entity including the entity ID, 
+bounding box information, page number, Page ID and confidence of detection.
 """
 
 import logging
 from typing import List
+import uuid
+from textractor.data.text_linearization_config import TextLinearizationConfig
 
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
+from textractor.entities.line import Line
+from textractor.entities.word import Word
 
 
 class Signature(DocumentEntity):
@@ -46,12 +50,20 @@ class Signature(DocumentEntity):
         """
         return self._page
 
+    @property
+    def words(self):
+        """
+        :return: Returns an empty list
+        :rtype: list
+        """
+        return []
+
     @page.setter
     def page(self, page_num: int):
         """
-        Sets the page number attribute of the Signature entity.
+        Sets the page number attribute of the :class:`Signature` entity.
 
-        :param page_num: Page number where the Signature entity exists.
+        :param page_num: Page number where the :class:`Signature` entity exists.
         :type page_num: int
         """
         self._page = page_num
@@ -73,3 +85,10 @@ class Signature(DocumentEntity):
         :type page_id: str
         """
         self._page_id = page_id
+
+    def get_text_and_words(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ):
+        w = Word(entity_id=str(uuid.uuid4()), bbox=self.bbox, text=config.signature_token)
+        w.line = Line(entity_id=str(uuid.uuid4()), bbox=self.bbox, words=[w])
+        return config.signature_token, [w]
