@@ -110,7 +110,7 @@ class Adapter():
 
     def get_dict(self):
         return_dict: dict = {"AdapterId": self.adapter_id}
-        if self.alias:
+        if self.version:
             return_dict["Version"] = self.version
         if self.pages:
             return_dict["Pages"] = self.pages  # type: ignore
@@ -187,6 +187,8 @@ def generate_request_params(document_location: Optional[DocumentLocation] = None
             raise ValueError("QUERIES feature requested but not queries_config passed in.")
     if queries_config and queries_config.queries:
         params['QueriesConfig'] = queries_config.get_dict()
+    if adapters_config and adapters_config.adapters:
+        params['AdaptersConfig'] = adapters_config.get_dict()
     if client_request_token:
         params['ClientRequestToken'] = client_request_token
     if job_tag:
