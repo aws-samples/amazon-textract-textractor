@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3>=1,<2', 'botocore', 'amazon-textract-response-parser>=1,<2', 'tabulate>=0.9,<0.10']
+requirements = ['boto3>=1,<2', 'botocore', 'amazon-textract-response-parser>=0.1,<0.2', 'tabulate>=0.9,<0.10']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
