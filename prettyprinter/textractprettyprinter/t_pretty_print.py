@@ -551,7 +551,7 @@ def get_text_from_layout_json(textract_json: dict, **kwargs) -> Dict[str, str]:
     Returns:
     dict: A dictionary of pages in the format { 'page-number' : 'linearized-text' }.
     """
-    from t_pretty_print_layout import LinearizeLayout
+    from .t_pretty_print_layout import LinearizeLayout
     layout = LinearizeLayout(textract_json=textract_json, **kwargs)
     full_text = layout.get_text()
     
