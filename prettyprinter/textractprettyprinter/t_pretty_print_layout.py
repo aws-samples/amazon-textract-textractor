@@ -1,5 +1,8 @@
 import os
 import warnings
+import logging
+
+logger = logging.getLogger(__name__)
 
 class LinearizeLayout:
     def __init__(self, 
@@ -27,7 +30,7 @@ class LinearizeLayout:
         layouts = [x for x in self.j['Blocks'] if x['BlockType'].startswith('LAYOUT')]
         id2block = {x['Id']: x for x in self.j['Blocks']}
         if not layouts:
-            warnings.warn("No LAYOUT information found in Textract response. \
+            logger.warning("No LAYOUT information found in Textract response. \
                            Please use LAYOUT feature for AnalyzeDocument API call \
                            for optimum output")
         return layouts, id2block
@@ -135,7 +138,7 @@ class LinearizeLayout:
                     texts.append(tabulate(table_data, headers=header_list, tablefmt=tab_fmt))
                     continue
                 else:
-                    warnings.warn("LAYOUT_TABLE detected but TABLES feature was not provided in API call. \
+                    logger.warning("LAYOUT_TABLE detected but TABLES feature was not provided in API call. \
                                   Inlcuding TABLES feature may improve the layout output")
                     
             if block["BlockType"] == "LINE" and "Text" in block:
@@ -176,15 +179,19 @@ class LinearizeLayout:
             for page_number, content in page_texts.items():
                 file_name = f"{page_number}.txt"
                 s3_key = os.path.join(prefix, file_name)
+                logger.debug(f"Writing linearized text for page {page_number} to bucket {bucket} file {s3_key}")
                 s3.put_object(Body=content, 
                               Bucket=bucket, 
                               Key=s3_key)
         except ImportError:
+            logger.error("Could not import boto3 python package. \
+                          Please install it with `pip install boto3`.")
             raise ModuleNotFoundError(
                 "Could not import boto3 python package. "
                 "Please install it with `pip install boto3`."
             )
         except Exception as e:
+            logger.error(e)
             raise e
     
     def _save_to_files(self, page_texts: dict) -> None:
@@ -194,7 +201,7 @@ class LinearizeLayout:
         else:
             for page_number, content in page_texts.items():            
                 file_path = os.path.join(path, f"{page_number}.txt")
-                print(f"Writing page {page_number} in file {file_path}")
+                logger.debug(f"Writing linearized text for page {page_number} to file {file_path}")
                 with open(file_path, "w") as f:
                     f.write(content)
                 
