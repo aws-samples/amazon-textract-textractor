@@ -523,7 +523,7 @@ def convert_lending_from_trp2(trp2_doc: tl.TFullLendingDocument) -> List[List[st
                                   str(idx + 1)] + identity_detection)
     return page_list
 
-def convert_layout_json_to_text(textract_json: dict, **kwargs) -> Dict[str, str]:
+def get_text_from_layout_json(textract_json: dict, **kwargs) -> Dict[str, str]:
     """
     Generates a dictionary of linearized text from the Textract JSON response with LAYOUT, and optionally 
     writes linearized plain text files to local file system or Amazon S3. It can take either 
