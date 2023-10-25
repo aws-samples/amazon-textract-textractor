@@ -3,7 +3,7 @@ from trp.trp2 import TBlock, TBoundingBox, TDocument, TGeometry, TPoint
 from trp.trp2_analyzeid import TIdentityDocument
 from trp.trp2_expense import TExpense
 import trp.trp2_lending as tl
-from typing import List, Optional
+from typing import List, Optional, Dict
 from tabulate import tabulate
 from enum import Enum
 from io import StringIO
@@ -522,3 +522,37 @@ def convert_lending_from_trp2(trp2_doc: tl.TFullLendingDocument) -> List[List[st
                 page_list.append([f"{page_classification_max.value}_{page_number_max.value}",
                                   str(idx + 1)] + identity_detection)
     return page_list
+
+def get_text_from_layout_json(textract_json: dict, **kwargs) -> Dict[str, str]:
+    """
+    Generates a dictionary of linearized text from the Textract JSON response with LAYOUT, and optionally 
+    writes linearized plain text files to local file system or Amazon S3. It can take either 
+    per page JSON from AnalyzeDocument API, or a single combined JSON with all the pages
+    created from StartDocumentAnalysis output JSONs.
+
+    Parameters:
+    - textract_json (dict): The Textract response JSON from the AnalyzeDocument API call with LAYOUT feature.
+    - table_format (str, optional): Format of tables within the document. Supports all python-tabulate table formats.
+                                    See: https://github.com/gregbanks/python-tabulate. Defaults to "grid".
+    - exclude_figure_text (bool, optional): If set to True, excludes text extracted from figures in the document.
+                                           Defaults to False.
+    - exclude_page_header (bool, optional): If set to True, excludes the page header from the linearized text.
+                                           Defaults to False.
+    - exclude_page_footer (bool, optional): If set to True, excludes the page footer from the linearized text.
+                                           Defaults to False.
+    - exclude_page_number (bool, optional): If set to True, excludes the page number from the linearized text.
+                                           Defaults to False.
+    - skip_table (bool, optional): If set to True, skips including the table in the linearized text. Defaults to False.
+    - save_txt_path (str, optional): Path to save the output linearized text to files. Eithere local filesystem path
+                                     or Amazon S3 path can be specified in `s3://bucket_name/prefix/ format
+                                     Files will be saved in <page_number>.txt pattern.
+    - generate_markdown (bool, optional): If set to True, generates markdown formatted linearized text. Defaults to False.
+
+    Returns:
+    dict: A dictionary of pages in the format { 'page-number' : 'linearized-text' }.
+    """
+    from .t_pretty_print_layout import LinearizeLayout
+    layout = LinearizeLayout(textract_json=textract_json, **kwargs)
+    full_text = layout.get_text()
+    
+    return full_text
