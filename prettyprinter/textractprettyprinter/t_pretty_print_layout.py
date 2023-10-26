@@ -77,7 +77,9 @@ class LinearizeLayout:
         while stack:
             block_id, depth = stack.pop()
             block = id2block[block_id]
-            figure_geometries = [block['Geometry']['BoundingBox'] for block in self.j['Blocks'] if block['BlockType'] == 'LAYOUT_FIGURE']
+
+            figure_geometries = [geom['Geometry']['BoundingBox'] for geom in self.j['Blocks'] \
+                                 if geom['BlockType'] == 'LAYOUT_FIGURE' and geom.get('Page', 1) == block.get('Page', 1)]
             
             if self._validate_block_skip(block["BlockType"]):
                 continue
