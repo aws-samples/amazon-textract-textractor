@@ -19,6 +19,12 @@ from textractor.data.constants import TextTypes, SimilarityMetric, TextractFeatu
 
 from .utils import save_document_to_fixture_path
 
+try:
+    import sentence_transformers
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False 
+
 class TestPage(unittest.TestCase):
     def test_page(self):
         profile_name = "default"
@@ -88,128 +94,166 @@ class TestPage(unittest.TestCase):
         self.assertEqual(len(page.get_words_by_type(TextTypes.PRINTED)), 51)
         self.assertEqual(len(page.get_words_by_type(TextTypes.HANDWRITING)), 0)
 
-        self.assertIsInstance(
-            page.search_words(
-                keyword="Table",
-                top_k=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            ),
-            EntityList,
-        )
-        self.assertIsInstance(
-            page.search_words(
-                keyword="Table",
-                top_k=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            )[0],
-            Word,
-        )
-        self.assertIsInstance(
-            page.search_words(
-                keyword="Table",
-                top_k=5,
-                similarity_metric=SimilarityMetric.EUCLIDEAN,
-                similarity_threshold=0.6,
-            )[0],
-            Word,
-        )
-        self.assertIsInstance(
-            page.search_words(
-                keyword="Table",
-                top_k=5,
-                similarity_metric=SimilarityMetric.LEVENSHTEIN,
-                similarity_threshold=5,
-            )[0],
-            Word,
-        )
-        self.assertEqual(
-            len(
+        if SENTENCE_TRANSFORMERS_AVAILABLE:
+            self.assertIsInstance(
                 page.search_words(
                     keyword="Table",
                     top_k=5,
                     similarity_metric=SimilarityMetric.COSINE,
                     similarity_threshold=0.6,
-                )
-            ),
-            1
-        )
+                ),
+                EntityList,
+            )
+            self.assertIsInstance(
+                page.search_words(
+                    keyword="Table",
+                    top_k=5,
+                    similarity_metric=SimilarityMetric.COSINE,
+                    similarity_threshold=0.6,
+                )[0],
+                Word,
+            )
+            self.assertIsInstance(
+                page.search_words(
+                    keyword="Table",
+                    top_k=5,
+                    similarity_metric=SimilarityMetric.EUCLIDEAN,
+                    similarity_threshold=0.6,
+                )[0],
+                Word,
+            )
+            self.assertEqual(
+                len(
+                    page.search_words(
+                        keyword="Table",
+                        top_k=5,
+                        similarity_metric=SimilarityMetric.COSINE,
+                        similarity_threshold=0.6,
+                    )
+                ),
+                1
+            )
 
-        self.assertIsInstance(
-            page.search_lines(
-                keyword="Textractor",
-                top_k=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            ),
-            EntityList,
-        )
-        self.assertIsInstance(
-            page.search_lines(
-                keyword="Textractor",
-                top_k=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            )[0],
-            Line,
-        )
-        self.assertIsInstance(
-            page.search_lines(
-                keyword="Textractor",
-                top_k=5,
-                similarity_metric=SimilarityMetric.EUCLIDEAN,
-                similarity_threshold=0.6,
-            )[0],
-            Line,
-        )
-        self.assertIsInstance(
-            page.search_lines(
-                keyword="Textractor",
-                top_k=5,
-                similarity_metric=SimilarityMetric.LEVENSHTEIN,
-                similarity_threshold=5,
-            )[0],
-            Line,
-        )
-        self.assertEqual(
-            len(
+            self.assertIsInstance(
                 page.search_lines(
                     keyword="Textractor",
                     top_k=5,
                     similarity_metric=SimilarityMetric.COSINE,
                     similarity_threshold=0.6,
-                )
-            ),
-            2
-        )
+                ),
+                EntityList,
+            )
+            self.assertIsInstance(
+                page.search_lines(
+                    keyword="Textractor",
+                    top_k=5,
+                    similarity_metric=SimilarityMetric.COSINE,
+                    similarity_threshold=0.6,
+                )[0],
+                Line,
+            )
+            self.assertIsInstance(
+                page.search_lines(
+                    keyword="Textractor",
+                    top_k=5,
+                    similarity_metric=SimilarityMetric.EUCLIDEAN,
+                    similarity_threshold=0.6,
+                )[0],
+                Line,
+            )
+            self.assertEqual(
+                len(
+                    page.search_lines(
+                        keyword="Textractor",
+                        top_k=5,
+                        similarity_metric=SimilarityMetric.COSINE,
+                        similarity_threshold=0.6,
+                    )
+                ),
+                2
+            )
+
+            self.assertIsInstance(
+                page.get(
+                    key="date",
+                    top_k_matches=5,
+                    similarity_metric=SimilarityMetric.COSINE,
+                    similarity_threshold=0.6,
+                ),
+                EntityList,
+            )
+            self.assertIsInstance(
+                page.get(
+                    key="date",
+                    top_k_matches=5,
+                    similarity_metric=SimilarityMetric.COSINE,
+                    similarity_threshold=0.6,
+                )[0],
+                KeyValue,
+            )
+            self.assertIsInstance(
+                page.get(
+                    key="date",
+                    top_k_matches=5,
+                    similarity_metric=SimilarityMetric.EUCLIDEAN,
+                    similarity_threshold=0.6,
+                )[0],
+                KeyValue,
+            )
+            self.assertEqual(
+                len(
+                    page.get(
+                        key="date",
+                        top_k_matches=5,
+                        similarity_metric=SimilarityMetric.COSINE,
+                        similarity_threshold=0.6,
+                    )
+                ),
+                1
+            )
+            self.assertEqual(
+                len(page.directional_finder(
+                    word_1 = "key-values",
+                    word_2 = "table 1",
+                    prefix = "",
+                    direction=Direction.BELOW,
+                    entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
+                )),
+                3
+            )
+
+            self.assertEqual(len(page.directional_finder(
+                    word_1 = "key-values",
+                    word_2 = "",
+                    prefix = "",
+                    direction=Direction.LEFT,
+                    entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
+                )), 0)
+
+            self.assertEqual(len(page.directional_finder(
+                    word_1 = "key-values",
+                    word_2 = "",
+                    prefix = "",
+                    direction=Direction.RIGHT,
+                    entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
+                )), 3)
+
+            self.assertEqual(len(page.directional_finder(
+                    word_1 = "key-values",
+                    word_2 = "",
+                    prefix = "",
+                    direction=Direction.ABOVE,
+                    entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
+                )), 0)
 
         self.assertIsInstance(
-            page.get(
-                key="date",
-                top_k_matches=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            ),
-            EntityList,
-        )
-        self.assertIsInstance(
-            page.get(
-                key="date",
-                top_k_matches=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
+            page.search_words(
+                keyword="Table",
+                top_k=5,
+                similarity_metric=SimilarityMetric.LEVENSHTEIN,
+                similarity_threshold=5,
             )[0],
-            KeyValue,
-        )
-        self.assertIsInstance(
-            page.get(
-                key="date",
-                top_k_matches=5,
-                similarity_metric=SimilarityMetric.EUCLIDEAN,
-                similarity_threshold=0.6,
-            )[0],
-            KeyValue,
+            Word,
         )
         self.assertIsInstance(
             page.get(
@@ -220,52 +264,15 @@ class TestPage(unittest.TestCase):
             )[0],
             KeyValue,
         )
-        self.assertEqual(
-            len(
-                page.get(
-                    key="date",
-                    top_k_matches=5,
-                    similarity_metric=SimilarityMetric.COSINE,
-                    similarity_threshold=0.6,
-                )
-            ),
-            1
+        self.assertIsInstance(
+            page.search_lines(
+                keyword="Textractor",
+                top_k=5,
+                similarity_metric=SimilarityMetric.LEVENSHTEIN,
+                similarity_threshold=5,
+            )[0],
+            Line,
         )
-
-        self.assertEqual(
-            len(page.directional_finder(
-                word_1 = "key-values",
-                word_2 = "table 1",
-                prefix = "",
-                direction=Direction.BELOW,
-                entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-            )),
-            3
-        )
-
-        self.assertEqual(len(page.directional_finder(
-                word_1 = "key-values",
-                word_2 = "",
-                prefix = "",
-                direction=Direction.LEFT,
-                entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-            )), 0)
-
-        self.assertEqual(len(page.directional_finder(
-                word_1 = "key-values",
-                word_2 = "",
-                prefix = "",
-                direction=Direction.RIGHT,
-                entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-            )), 3)
-
-        self.assertEqual(len(page.directional_finder(
-                word_1 = "key-values",
-                word_2 = "",
-                prefix = "",
-                direction=Direction.ABOVE,
-                entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-            )), 0)
 
         save_file_path = os.path.join(current_directory, "Key-Values.csv")
         page.export_kv_to_csv(include_kv=True, include_checkboxes=True, filepath=save_file_path)

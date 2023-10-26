@@ -13,6 +13,12 @@ from textractor.data.constants import TextractFeatures, TextTypes, CellTypes
 
 from .utils import save_document_to_fixture_path
 
+try:
+    import sentence_transformers
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+
 class TestTable(unittest.TestCase):
     def test_table(self):
         # Insert credentials here to run test
@@ -60,9 +66,10 @@ class TestTable(unittest.TestCase):
         self.assertIn("table.xlsx", os.listdir(current_directory))
         os.remove(os.path.join(current_directory, "table.xlsx"))
 
-        self.assertEqual(table.get_columns_by_name(
-            ["Cell 1"], similarity_threshold=0.9
-        ).get_table_range(), (3, 1))
+        if SENTENCE_TRANSFORMERS_AVAILABLE:
+            self.assertEqual(table.get_columns_by_name(
+                ["Cell 1"], similarity_threshold=0.9
+            ).get_table_range(), (3, 1))
 
         cell = table.table_cells[0]
         self.assertEqual(cell.page, 1)

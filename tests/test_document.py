@@ -16,6 +16,12 @@ from textractor.exceptions import InvalidProfileNameError
 from textractor.entities.selection_element import SelectionElement
 from textractor.data.constants import TextTypes, SimilarityMetric, TextractFeatures, DirectionalFinderType, Direction
 
+try:
+    import sentence_transformers
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+
 class TestDocument(unittest.TestCase):
     def test_document_smoke_test(self):
         profile_name = "default"
@@ -76,33 +82,141 @@ class TestDocument(unittest.TestCase):
         self.assertEqual(len(document.get_words_by_type(TextTypes.PRINTED)), 51)
         self.assertEqual(len(document.get_words_by_type(TextTypes.HANDWRITING)), 0)
 
-        self.assertIsInstance(
-            document.search_words(
-                keyword="Table",
-                top_k=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            ),
-            EntityList
-        )
-        self.assertIsInstance(
-            document.search_words(
-                keyword="Table",
-                top_k=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            )[0],
-            Word
-        )
-        self.assertIsInstance(
-            document.search_words(
-                keyword="Table",
-                top_k=5,
-                similarity_metric=SimilarityMetric.EUCLIDEAN,
-                similarity_threshold=0.6,
-            )[0],
-            Word,
-        )
+
+        if SENTENCE_TRANSFORMERS_AVAILABLE:
+            self.assertIsInstance(
+                document.search_words(
+                    keyword="Table",
+                    top_k=5,
+                    similarity_metric=SimilarityMetric.COSINE,
+                    similarity_threshold=0.6,
+                ),
+                EntityList
+            )
+            self.assertIsInstance(
+                document.search_words(
+                    keyword="Table",
+                    top_k=5,
+                    similarity_metric=SimilarityMetric.COSINE,
+                    similarity_threshold=0.6,
+                )[0],
+                Word
+            )
+            self.assertIsInstance(
+                document.search_words(
+                    keyword="Table",
+                    top_k=5,
+                    similarity_metric=SimilarityMetric.EUCLIDEAN,
+                    similarity_threshold=0.6,
+                )[0],
+                Word,
+            )
+            self.assertEqual(
+                len(
+                    document.search_words(
+                        keyword="Table",
+                        top_k=5,
+                        similarity_metric=SimilarityMetric.COSINE,
+                        similarity_threshold=0.6,
+                    )
+                ),
+                1
+            )
+
+            self.assertIsInstance(
+                document.search_lines(
+                    keyword="Textractor",
+                    top_k=5,
+                    similarity_metric=SimilarityMetric.COSINE,
+                    similarity_threshold=0.6,
+                ),
+                EntityList,
+            )
+            self.assertIsInstance(
+                document.search_lines(
+                    keyword="Textractor",
+                    top_k=5,
+                    similarity_metric=SimilarityMetric.COSINE,
+                    similarity_threshold=0.6,
+                )[0],
+                Line,
+            )
+            self.assertIsInstance(
+                document.search_lines(
+                    keyword="Textractor",
+                    top_k=5,
+                    similarity_metric=SimilarityMetric.EUCLIDEAN,
+                    similarity_threshold=0.6,
+                )[0],
+                Line,
+            )
+            self.assertEqual(
+                len(
+                    document.search_lines(
+                        keyword="Textractor",
+                        top_k=5,
+                        similarity_metric=SimilarityMetric.COSINE,
+                        similarity_threshold=0.6,
+                    )
+                ),
+                2
+            )
+
+            self.assertIsInstance(
+                document.get(
+                    key="date",
+                    top_k_matches=5,
+                    similarity_metric=SimilarityMetric.COSINE,
+                    similarity_threshold=0.6,
+                ),
+                EntityList,
+            )
+            self.assertIsInstance(
+                document.get(
+                    key="date",
+                    top_k_matches=5,
+                    similarity_metric=SimilarityMetric.COSINE,
+                    similarity_threshold=0.6,
+                )[0],
+                KeyValue,
+            )
+            self.assertIsInstance(
+                document.get(
+                    key="date",
+                    top_k_matches=5,
+                    similarity_metric=SimilarityMetric.EUCLIDEAN,
+                    similarity_threshold=0.6,
+                )[0],
+                KeyValue,
+            )
+            self.assertEqual(len(document.directional_finder(
+                    word_1 = "key-values",
+                    word_2 = "table 1",
+                    page = 1,
+                    prefix = "",
+                    direction=Direction.BELOW,
+                    entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
+                )),
+                3
+            )
+
+            self.assertEqual(len(document.directional_finder(
+                    word_1 = "key-values",
+                    word_2 = "",
+                    page = 1,
+                    prefix = "",
+                    direction=Direction.RIGHT,
+                    entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
+                )), 1)
+
+            self.assertEqual(len(document.directional_finder(
+                    word_1 = "key-values",
+                    word_2 = "",
+                    page = 1,
+                    prefix = "",
+                    direction=Direction.LEFT,
+                    entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
+                )), 0)
         self.assertIsInstance(
             document.search_words(
                 keyword="Table",
@@ -112,45 +226,7 @@ class TestDocument(unittest.TestCase):
             )[0],
             Word,
         )
-        self.assertEqual(
-            len(
-                document.search_words(
-                    keyword="Table",
-                    top_k=5,
-                    similarity_metric=SimilarityMetric.COSINE,
-                    similarity_threshold=0.6,
-                )
-            ),
-            1
-        )
-
-        self.assertIsInstance(
-            document.search_lines(
-                keyword="Textractor",
-                top_k=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            ),
-            EntityList,
-        )
-        self.assertIsInstance(
-            document.search_lines(
-                keyword="Textractor",
-                top_k=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            )[0],
-            Line,
-        )
-        self.assertIsInstance(
-            document.search_lines(
-                keyword="Textractor",
-                top_k=5,
-                similarity_metric=SimilarityMetric.EUCLIDEAN,
-                similarity_threshold=0.6,
-            )[0],
-            Line,
-        )
+        
         self.assertIsInstance(
             document.search_lines(
                 keyword="Textractor",
@@ -160,45 +236,7 @@ class TestDocument(unittest.TestCase):
             )[0],
             Line,
         )
-        self.assertEqual(
-            len(
-                document.search_lines(
-                    keyword="Textractor",
-                    top_k=5,
-                    similarity_metric=SimilarityMetric.COSINE,
-                    similarity_threshold=0.6,
-                )
-            ),
-            2
-        )
-
-        self.assertIsInstance(
-            document.get(
-                key="date",
-                top_k_matches=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            ),
-            EntityList,
-        )
-        self.assertIsInstance(
-            document.get(
-                key="date",
-                top_k_matches=5,
-                similarity_metric=SimilarityMetric.COSINE,
-                similarity_threshold=0.6,
-            )[0],
-            KeyValue,
-        )
-        self.assertIsInstance(
-            document.get(
-                key="date",
-                top_k_matches=5,
-                similarity_metric=SimilarityMetric.EUCLIDEAN,
-                similarity_threshold=0.6,
-            )[0],
-            KeyValue,
-        )
+        
         self.assertIsInstance(
             document.get(
                 key="date",
@@ -208,46 +246,6 @@ class TestDocument(unittest.TestCase):
             )[0],
             KeyValue,
         )
-        self.assertEqual(
-            len(
-                document.get(
-                    key="date",
-                    top_k_matches=5,
-                    similarity_metric=SimilarityMetric.COSINE,
-                    similarity_threshold=0.6,
-                )
-            ),
-            1
-        )
-
-        self.assertEqual(len(document.directional_finder(
-                word_1 = "key-values",
-                word_2 = "table 1",
-                page = 1,
-                prefix = "",
-                direction=Direction.BELOW,
-                entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-            )),
-            3
-        )
-
-        self.assertEqual(len(document.directional_finder(
-                word_1 = "key-values",
-                word_2 = "",
-                page = 1,
-                prefix = "",
-                direction=Direction.RIGHT,
-                entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-            )), 1)
-
-        self.assertEqual(len(document.directional_finder(
-                word_1 = "key-values",
-                word_2 = "",
-                page = 1,
-                prefix = "",
-                direction=Direction.LEFT,
-                entities=[DirectionalFinderType.KEY_VALUE_SET, DirectionalFinderType.SELECTION_ELEMENT],
-            )), 0)
 
         save_file_path = os.path.join(current_directory, "Key-Values.csv")
         document.export_kv_to_csv(
