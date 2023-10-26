@@ -16,7 +16,7 @@ from copy import deepcopy
 
 from typing import List, Dict
 
-from textractor.exceptions import InputError
+from textractor.exceptions import InputError, MissingDependencyException
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.table_cell import TableCell
 from textractor.visualizers.entitylist import EntityList
@@ -472,10 +472,9 @@ class Table(DocumentEntity):
         try:
             from pandas import DataFrame
         except ImportError:
-            logging.info(
-                "pandas library is required for exporting tables to DataFrame objects"
+            raise MissingDependencyException(
+                "pandas library is required for exporting tables to DataFrame objects or markdown"
             )
-            return None
 
         assert (
             len(checkbox_string) == 2
