@@ -24,11 +24,15 @@ class LinearizeLayout:
         self.skip_table = skip_table
         self.save_txt_path = save_txt_path
         self.generate_markdown = generate_markdown
+        self.figures = []
         
     def _get_layout_blocks(self) -> tuple:
         """Get all blocks of type 'LAYOUT' and a dictionary of Ids mapped to their corresponding block."""
-        layouts = [x for x in self.j['Blocks'] if x['BlockType'].startswith('LAYOUT')]
+        layouts = [{"Id": x['Id'], "Page": x.get('Page',1)} for x in self.j['Blocks'] if x['BlockType'].startswith('LAYOUT')]
         id2block = {x['Id']: x for x in self.j['Blocks']}
+        self.figures = [{"page": block.get('Page', 1), "geometry": block['Geometry']['BoundingBox']} \
+                        for block in self.j['Blocks'] \
+                        if block['BlockType'] == 'LAYOUT_FIGURE']
         if not layouts:
             logger.warning("No LAYOUT information found in Textract response. \
                            Please use LAYOUT feature for AnalyzeDocument API call \
@@ -74,12 +78,10 @@ class LinearizeLayout:
     def _dfs(self, root, id2block):
         texts = []
         stack = [(root, 0)]
+
         while stack:
             block_id, depth = stack.pop()
             block = id2block[block_id]
-
-            figure_geometries = [geom['Geometry']['BoundingBox'] for geom in self.j['Blocks'] \
-                                 if geom['BlockType'] == 'LAYOUT_FIGURE' and geom.get('Page', 1) == block.get('Page', 1)]
             
             if self._validate_block_skip(block["BlockType"]):
                 continue
@@ -137,17 +139,19 @@ class LinearizeLayout:
                     tab_fmt = "pipe" if self.generate_markdown else self.table_format
                     '''If Markdown is enabled then default to pipe for tables'''
                     
-                    texts.append(tabulate(table_data, headers=header_list, tablefmt=tab_fmt))
+                    table_text = tabulate(table_data, headers=header_list, tablefmt=tab_fmt)
+                    yield table_text
                     continue
                 else:
                     logger.warning("LAYOUT_TABLE detected but TABLES feature was not provided in API call. \
                                   Inlcuding TABLES feature may improve the layout output")
                     
             if block["BlockType"] == "LINE" and "Text" in block:
-                if self.exclude_figure_text:
-                    if any(self._is_inside(block['Geometry']['BoundingBox'], figure_geom) for figure_geom in figure_geometries):
+                if self.exclude_figure_text and self.figures:
+                    if any(self._is_inside(block['Geometry']['BoundingBox'], figure_geom["geometry"]) \
+                           for figure_geom in self.figures if figure_geom["page"] == block.get("Page",1)):
                         continue
-                texts += block['Text'],
+                yield block['Text']
             elif block["BlockType"] in ["LAYOUT_TITLE", "LAYOUT_SECTION_HEADER"] and "Relationships" in block:
                 # Get the associated LINE text for the layout
                 line_texts = [id2block[line_id]['Text'] for line_id in block["Relationships"][0]['Ids']]
@@ -159,15 +163,13 @@ class LinearizeLayout:
                         combined_text = f"# {combined_text}"
                     elif block["BlockType"] == "LAYOUT_SECTION_HEADER":
                         combined_text = f"## {combined_text}"
-
-                texts += combined_text,
+                yield combined_text
                 
             if block["BlockType"].startswith('LAYOUT') and block["BlockType"] not in ["LAYOUT_TITLE", "LAYOUT_SECTION_HEADER"]:
                 if "Relationships" in block:
                     relationships = block["Relationships"]
                     children = [(x, depth + 1) for x in relationships[0]['Ids']]            
                     stack.extend(reversed(children))
-        return texts
     
     def _save_to_s3(self, page_texts: dict) -> None:
         try:
