@@ -29,7 +29,7 @@ from textractor.utils.geometry_util import get_indices
 from textractor.data.constants import SimilarityMetric, TextTypes, CellTypes, TableTypes
 from textractor.data.constants import (
     IS_COLUMN_HEAD,
-    IS_MERGED_CELL,
+    IS_MERGED_CELL
 )
 from textractor.utils.search_utils import SearchUtils, get_metadata_attr_name
 from textractor.utils.text_utils import group_elements_horizontally, linearize_children
@@ -233,17 +233,30 @@ class Table(DocumentEntity):
 
         return self.row_count, self.column_count
 
-    def strip_headers(self):
+    def strip_headers(self, column_headers: bool = True, in_table_title: bool = False, section_titles=False):
         """
         Returns a new :class:`Table` object after removing all cells that are marked as column headers in the table from the API response.
 
+        :param column_headers: Remove the column headers
+        :type column_headers: bool
+        :param in_table_title: Remove the in-table titles
+        :type in_table_title: bool
+        :param section_titles: Remove the in-table section titles
+        :type section_titles: bool
+        
         :return: Table object after removing the headers.
         :rtype: Table
         """
 
         table_cells = deepcopy(self.table_cells)
         table_cells = [
-            cell for cell in table_cells if not cell.metadata[IS_COLUMN_HEAD]
+            cell 
+            for cell in table_cells 
+            if not (
+                (cell.is_column_header and column_headers) or
+                (cell.is_title and in_table_title) or
+                (cell.is_section_title and section_titles)
+            )
         ]
 
         old_rows = set([cell.row_index for cell in table_cells])
@@ -431,10 +444,9 @@ class Table(DocumentEntity):
     def __getitem__(self, key):
         """
         Returns a new :class:`Table` with selected rows and columns. The table can be filtered using numpy indexing.
-        One-indexing followed. index 0 => automatically converted to 1.
 
         :param key: Tuple[rows, columns] with numpy indexing
-                    Eg: table[1:4, :] returns all columns of the first 3 rows of the Table.
+                    Eg: table[0:3, :] returns all columns of the first 3 rows of the Table.
 
         :return: Returns a new Table with selected rows and columns.
         :rtype: Table
@@ -463,12 +475,10 @@ class Table(DocumentEntity):
 
         table_rows = self._get_table_cells(row_wise=True, column_wise=False)
 
-        table_by_rows = {key - 1: table_rows[key] for key in table_rows.keys()}
-
         filtered_rows = {}
         for row_number in rows:
-            if row_number in table_by_rows.keys():
-                row_data = table_by_rows[row_number]
+            if row_number + 1 in table_rows.keys():
+                row_data = table_rows[row_number + 1]
                 col_cells = []
                 for col_number in cols:
                     col_cells.append(row_data[col_number])
@@ -585,6 +595,11 @@ class Table(DocumentEntity):
         else:
             return workbook
 
+    def get_text(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ):
+        return self.get_text_and_words(config)[0]
+
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ):
@@ -673,11 +688,11 @@ def _get_new_table_cells(rows, filtered_rows):
     :rtype: List
     """
 
-    rows = sorted([row + 1 for row in rows])
-    cols = sorted(list(set([cell.col_index for cell in filtered_rows[rows[0]]])))
+    rows = sorted([r + 1 for r in rows])
+    cols = sorted(list(set([cell.col_index for cell in filtered_rows[rows[0] - 1]])))
 
     new_row_range = list(range(1, len(rows) + 1))
-    new_col_range = list(range(1, len(filtered_rows[rows[0]]) + 1))
+    new_col_range = list(range(1, len(filtered_rows[rows[0] - 1]) + 1))
 
     row_index_map = dict(zip(rows, new_row_range))
     col_index_map = dict(zip(cols, new_col_range))

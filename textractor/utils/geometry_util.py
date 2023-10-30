@@ -33,6 +33,16 @@ def get_indices(numpy_indexing: str = ":", max_val=10) -> List[int]:
     assert isinstance(numpy_indexing, str)
     assert ":" in numpy_indexing or numpy_indexing.isdigit()
 
+    if numpy_indexing == ":":
+        numpy_indexing = "None:None"
+    if numpy_indexing == "None":
+        numpy_indexing = "None:None"
+    
+    if ":" not in numpy_indexing:
+        if int(numpy_indexing) > max_val:
+            raise IndexError()
+        return [int(numpy_indexing)]
+
     if numpy_indexing == "None:None:None":
         indices = list(range(0, max_val))
 
@@ -45,11 +55,18 @@ def get_indices(numpy_indexing: str = ":", max_val=10) -> List[int]:
             if return_indices[0] != "" and return_indices[0] != "None"
             else 0
         )
+
+        if start < 0:
+            start = max_val + start
+
         end = (
             int(return_indices[1])
             if return_indices[1] != "" and return_indices[1] != "None"
             else max_val
         )
+
+        if end < 0:
+            end = max_val + end
 
         index_range = list(range(start, end))
 
