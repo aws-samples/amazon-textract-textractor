@@ -123,6 +123,14 @@ class Layout(DocumentEntity):
             or (self.layout_type == LAYOUT_PAGE_NUMBER and config.hide_page_num_layout)
         ):
             return "", []
+        elif self.layout_type == LAYOUT_PAGE_NUMBER:
+            final_text, final_words = linearize_children(
+                self.children,
+                config,
+                no_new_lines=False,
+                is_layout_table=False,
+            )
+            return config.page_num_prefix + final_text + config.page_num_suffix, final_words
         elif self.layout_type == LAYOUT_LIST:
             final_text = config.list_layout_prefix
             final_words = []
