@@ -32,6 +32,12 @@ class TextLinearizationConfig:
     # Hide page numbers in the linearized output
     hide_page_num_layout: bool = False
 
+    # Prefix for page number layout elements
+    page_num_prefix: str = ""
+
+    # Suffix for page number layout elements
+    page_num_suffix: str = ""
+
     # Separator to use when combining elements within a text block
     same_paragraph_separator: str = " "
 
