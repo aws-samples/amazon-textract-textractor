@@ -8,131 +8,88 @@ class TextLinearizationConfig:
     The :class:`TextLinearizationConfig` object defines how a document is linearized into a text string
     """
 
-    # Include tables in the linearized output
-    linearize_table: bool = True
+    linearize_table: bool = True #: Include tables in the linearized output
 
-    # Include form key and values in the linearized output
-    linearize_key_values: bool = True
+    linearize_key_values: bool = True #: Include form key and values in the linearized output
 
-    # Removes new lines in leaf layout elements, this removes extra whitespace
-    remove_new_lines_in_leaf_elements: bool = True
+    remove_new_lines_in_leaf_elements: bool = True #: Removes new lines in leaf layout elements, this removes extra whitespace
 
-    # Removes extra whitespace
-    max_number_of_consecutive_new_lines: int = 2
+    max_number_of_consecutive_new_lines: int = 2 #: Removes extra whitespace
 
-    # Hide headers in the linearized output
-    hide_header_layout: bool = False
+    hide_header_layout: bool = False #: Hide headers in the linearized output
 
-    # Hide footers in the linearized output
-    hide_footer_layout: bool = False
+    hide_footer_layout: bool = False #: Hide footers in the linearized output
 
-    # Hide figures in the linearized output
-    hide_figure_layout: bool = False
+    hide_figure_layout: bool = False #: Hide figures in the linearized output
 
-    # Hide page numbers in the linearized output
-    hide_page_num_layout: bool = False
+    hide_page_num_layout: bool = False #: Hide page numbers in the linearized output
 
-    # Prefix for page number layout elements
-    page_num_prefix: str = ""
+    page_num_prefix: str = "" #: Prefix for page number layout elements
 
-    # Suffix for page number layout elements
-    page_num_suffix: str = ""
+    page_num_suffix: str = "" #: Suffix for page number layout elements
 
-    # Separator to use when combining elements within a text block
-    same_paragraph_separator: str = " "
+    same_paragraph_separator: str = " " #: Separator to use when combining elements within a text block
 
-    # Separator to use when combining linearized layout elements
-    layout_element_separator: str = os.linesep * 2
+    layout_element_separator: str = os.linesep * 2 #: Separator to use when combining linearized layout elements
 
-    # Separator for elements in a list layout
-    list_element_separator: str = os.linesep
+    list_element_separator: str = os.linesep #: Separator for elements in a list layout
 
-    # Prefix for list layout elements (parent)
-    list_layout_prefix: str = ""
+    list_layout_prefix: str = "" #: Prefix for list layout elements (parent)
 
-    # Suffix for list layout elements (parent)
-    list_layout_suffix: str = ""
+    list_layout_suffix: str = "" #: Suffix for list layout elements (parent)
 
-    # Prefix for elements in a list layout (children)
-    list_element_prefix: str = ""
+    list_element_prefix: str = "" #: Prefix for elements in a list layout (children)
 
-    # Suffix for elements in a list layout (children)
-    list_element_suffix: str = ""
+    list_element_suffix: str = "" #: Suffix for elements in a list layout (children)
 
-    # Prefix for title layout elements
-    title_prefix: str = ""
+    title_prefix: str = "" #: Prefix for title layout elements
 
-    # Suffix for title layout elements
-    title_suffix: str = ""
+    title_suffix: str = "" #: Suffix for title layout elements
 
-    # Prefix for table elements
-    table_layout_prefix: str = os.linesep * 2
+    table_layout_prefix: str = os.linesep * 2 #: Prefix for table elements
 
-    # Suffix for table elements
-    table_layout_suffix: str = os.linesep
+    table_layout_suffix: str = os.linesep #: Suffix for table elements
 
-    # Remove column headers from tables
-    table_remove_column_headers: bool = False
+    table_remove_column_headers: bool = False #: Remove column headers from tables
 
-    # How to represent tables in the linearized output. Choices are plaintext or markdown.
-    table_linearization_format: str = "plaintext"
+    table_linearization_format: str = "plaintext" #: How to represent tables in the linearized output. Choices are plaintext or markdown.
 
-    # Markdown tabulate format to use when table are linearized as markdown
-    table_tabulate_format: str = "github"
+    table_tabulate_format: str = "github" #: Markdown tabulate format to use when table are linearized as markdown
 
-    # Threshold below which tables will be rendered as words instead of using table layout
-    table_min_table_words: int = 0
+    table_min_table_words: int = 0 #: Threshold below which tables will be rendered as words instead of using table layout
 
-    # Table column separator, used when linearizing layout tables, not used if AnalyzeDocument was called with the TABLES feature
-    table_column_separator: str = "\t"
+    table_column_separator: str = "\t" #: Table column separator, used when linearizing layout tables, not used if AnalyzeDocument was called with the TABLES feature
 
-    # Table row separator
-    table_row_separator: str = os.linesep
+    table_row_separator: str = os.linesep #: Table row separator
 
-    # Prefix for section header layout elements
-    section_header_prefix: str = ""
+    section_header_prefix: str = "" #: Prefix for section header layout elements
 
-    # Suffix for section header layout elements
-    section_header_suffix: str = ""
+    section_header_suffix: str = "" #: Suffix for section header layout elements
 
-    # Prefix for text layout elements
-    text_prefix: str = ""
+    text_prefix: str = "" #: Prefix for text layout elements
 
-    # Suffix for text layout elements
-    text_suffix: str = ""
+    text_suffix: str = "" #: Suffix for text layout elements
 
-    # Prefix for key_value layout elements (not for individual key-value elements)
-    key_value_layout_prefix: str = os.linesep * 2
+    key_value_layout_prefix: str = os.linesep * 2 #: Prefix for key_value layout elements (not for individual key-value elements)
 
-    # Suffix for key_value layout elements (not for individual key-value elements)
-    key_value_layout_suffix: str = ""
+    key_value_layout_suffix: str = "" #: Suffix for key_value layout elements (not for individual key-value elements)
 
-    # Prefix for key elements
-    key_prefix: str = ""
+    key_prefix: str = "" #: Prefix for key elements
 
-    # Suffix for key elements
-    key_suffix: str = " "
+    key_suffix: str = " " #: Suffix for key elements
 
-    # Prefix for value elements
-    value_prefix: str = ""
+    value_prefix: str = "" #: Prefix for value elements
 
-    # Suffix for value elements
-    value_suffix: str = ""
+    value_suffix: str = "" #: Suffix for value elements
 
-    # Representation for selection element when selected
-    selection_element_selected: str = "[X]"
+    selection_element_selected: str = "[X]" #: Representation for selection element when selected
 
-    # Representation for selection element when not selected
-    selection_element_not_selected: str = "[ ]"
+    selection_element_not_selected: str = "[ ]" #: Representation for selection element when not selected
 
-    # How much the line below and above the current line should differ in width to be separated
-    heuristic_h_tolerance: float = 0.3
+    heuristic_h_tolerance: float = 0.3 #: How much the line below and above the current line should differ in width to be separated
 
-    # How much space is acceptable between two lines before splitting them. Expressed in multiple of min heights
-    heuristic_line_break_threshold: float = 0.9
+    heuristic_line_break_threshold: float = 0.9 #: How much space is acceptable between two lines before splitting them. Expressed in multiple of min heights
 
-    # How much vertical overlap is tolerated between two subsequent lines before merging them into a single line
-    heuristic_overlap_ratio: float = 0.5
+    heuristic_overlap_ratio: float = 0.5 #: How much vertical overlap is tolerated between two subsequent lines before merging them into a single line
 
-    # Signature representation in the linearized text
-    signature_token = "[SIGNATURE]"
+    signature_token = "[SIGNATURE]" #: Signature representation in the linearized text
