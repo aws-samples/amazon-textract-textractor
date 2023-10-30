@@ -47,7 +47,7 @@ class Table(DocumentEntity):
     def __init__(self, entity_id, bbox: BoundingBox):
         super().__init__(entity_id, bbox)
         self.table_cells: List[TableCell] = []
-        self.column_headers: Dict[str, List[TableCell]] = {}
+        self._column_headers: Dict[str, List[TableCell]] = {}
         self._title: TableTitle = None
         self._footers: TableFooter = []
         self._table_type: TableTypes = TableTypes.UNKNOWN
@@ -149,6 +149,26 @@ class Table(DocumentEntity):
         """
 
         self._footers = footers
+
+    @property
+    def column_headers(self) -> Dict[str, List[TableCell]]:
+        """
+        :return: Returns the column headers of the Table entity.
+        :rtype: Dict[str, List[TableCell]]
+        """
+
+        return self._column_headers
+    
+    @column_headers.setter
+    def column_headers(self, column_headers: Dict[str, List[TableCell]]):
+        """
+        Sets the column headers of the Table entity
+
+        :param column_headers: Column headers
+        :type column_headers: Dict[str, List[TableCell]]
+        """
+
+        self._column_headers = column_headers
 
     @property
     def page_id(self) -> str:
@@ -331,10 +351,10 @@ class Table(DocumentEntity):
                     header = " ".join([word.text for word in all_words])
                     filtered_cells[header] = all_merge_cells
 
-        if cell_type == CellTypes.COLUMN_HEADER and not self.column_headers:
-            self.column_headers = filtered_cells
+        if cell_type == CellTypes.COLUMN_HEADER and not self._column_headers:
+            self._column_headers = filtered_cells
 
-            if not self.column_headers:
+            if not self._column_headers:
                 logging.info("Column headers have not been identified in this table.")
 
         return filtered_cells
@@ -364,8 +384,8 @@ class Table(DocumentEntity):
             )
 
         table_columns = (
-            self.column_headers.keys()
-            if self.column_headers
+            self._column_headers.keys()
+            if self._column_headers
             else self.get_cells_by_type().keys()
         )
         column_indices = set()
@@ -390,7 +410,7 @@ class Table(DocumentEntity):
                     chosen_columns.append(table_column)
 
         for col in chosen_columns:
-            for cell in self.column_headers[col]:
+            for cell in self._column_headers[col]:
                 column_indices.add(cell.col_index)
 
         table_cells = deepcopy(self.table_cells)
