@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Constants" href="textractor.data.html" />
+    <link rel="next" title="Constants" href="textractor.data.constants.html" />
     <link rel="prev" title="Document Entities" href="textractor.entities.html" /> 
 </head>
 
@@ -54,7 +54,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-textractor.visualizers.entitylist">EntityList</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="textractor.data.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textractor.data.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textractor.data.text_linearization_config.html">TextLinearizationConfig</a></li>
 </ul>
 
         </div>
@@ -127,12 +128,12 @@ Use <code class="code docutils literal notranslate"><span class="pre">visualize(
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="textractor.visualizers.entitylist.EntityList.pretty_print">
-<span class="sig-name descname"><span class="pre">pretty_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.html#textractor.data.constants.TableFormat" title="textractor.data.constants.TableFormat"><span class="pre">TableFormat</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TableFormat.GITHUB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_geo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_page_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#textractor.visualizers.entitylist.EntityList.pretty_print" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pretty_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.data.constants.html#textractor.data.constants.TableFormat" title="textractor.data.constants.TableFormat"><span class="pre">TableFormat</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">TableFormat.GITHUB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_geo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_page_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#textractor.visualizers.entitylist.EntityList.pretty_print" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a formatted string output for each of the entities in the list according to its entity type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>table_format</strong> (<a class="reference internal" href="textractor.data.html#textractor.data.constants.TableFormat" title="textractor.data.constants.TableFormat"><em>TableFormat</em></a>) – Choose one of the defined TableFormat types to decorate the table output string. This is a predefined set of choices by the PyPI tabulate package. It is used only if there are KeyValues or Tables in the list of textractor.entities.</p></li>
+<li><p><strong>table_format</strong> (<a class="reference internal" href="textractor.data.constants.html#textractor.data.constants.TableFormat" title="textractor.data.constants.TableFormat"><em>TableFormat</em></a>) – Choose one of the defined TableFormat types to decorate the table output string. This is a predefined set of choices by the PyPI tabulate package. It is used only if there are KeyValues or Tables in the list of textractor.entities.</p></li>
 <li><p><strong>with_confidence</strong> (<em>bool</em>) – Flag to add the confidence of prediction to the entity string. default= False.</p></li>
 <li><p><strong>with_geo</strong> (<em>bool</em>) – Flag to add the bounding box information to the entity string. default= False.</p></li>
 <li><p><strong>with_page_number</strong> (<em>bool</em>) – Flag to add the page number to the entity string. default= False.</p></li>
@@ -178,7 +179,7 @@ Use <code class="code docutils literal notranslate"><span class="pre">visualize(
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="textractor.entities.html" class="btn btn-neutral float-left" title="Document Entities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="textractor.data.html" class="btn btn-neutral float-right" title="Constants" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="textractor.data.constants.html" class="btn btn-neutral float-right" title="Constants" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

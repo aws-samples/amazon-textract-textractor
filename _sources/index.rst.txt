@@ -67,5 +67,6 @@ API Reference
    textractor.parsers
    textractor.entities
    textractor.visualizers
-   textractor.data
+   textractor.data.constants
+   textractor.data.text_linearization_config
 

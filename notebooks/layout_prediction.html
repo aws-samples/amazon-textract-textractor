@@ -74,7 +74,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../textractor.parsers.html">Entity Parser</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.entities.html">Document Entities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../textractor.visualizers.html">Entity Visualization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../textractor.data.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.data.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.data.text_linearization_config.html">TextLinearizationConfig</a></li>
 </ul>
 
         </div>
@@ -690,7 +691,7 @@ We conduct an ablation study to determine the impact of each pre-training task o
 5
 </pre></div></div>
 </div>
-<p>The above is much better, avoiding the column overlap, but what if you want to remove the text extracted from figures which is not part of the main text and have specific header indicator for markdown rendering?</p>
+<p>The above is much better, avoiding the column overlap, but what if you want to remove the text extracted from figures which is not part of the main text and have specific header indicator for markdown rendering? To do so, we will leverage the <code class="docutils literal notranslate"><span class="pre">`TextLinearizationConfig</span></code> &lt;&gt;`__ object which has over 40 options to tailor the text linearization to your use case.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
