@@ -37,7 +37,7 @@ LAYOUT_TABLE = "LAYOUT_TABLE"
 LAYOUT_KEY_VALUE = "LAYOUT_KEY_VALUE"
 
 # This is not a base layout type, but a fake type for the text conversion logic
-# whne an API is called without the AnalyzeLayout API, all the elements will be LAYOUT_ENTITY
+# when an API is called without the AnalyzeLayout API, all the elements will be LAYOUT_ENTITY
 LAYOUT_ENTITY = "LAYOUT_ENTITY"
 
 # cell type attributes
