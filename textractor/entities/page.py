@@ -7,6 +7,7 @@ import os
 import string
 import logging
 import xlsxwriter
+from dataclasses import dataclass
 from typing import List, Tuple
 from copy import deepcopy
 from collections import defaultdict
@@ -42,6 +43,28 @@ from textractor.utils.geometry_util import sort_by_position
 from textractor.utils.search_utils import SearchUtils, jaccard_similarity
 from textractor.visualizers.entitylist import EntityList
 
+class PageLayout:
+    def __init__(
+        self,
+        titles: EntityList[Table] = EntityList([]),
+        headers: EntityList[Table] = EntityList([]),
+        footers: EntityList[Table] = EntityList([]),
+        section_headers: EntityList[Table] = EntityList([]),
+        page_numbers: EntityList[Table] = EntityList([]),
+        lists: EntityList[Table] = EntityList([]),
+        figures: EntityList[Table] = EntityList([]),
+        tables: EntityList[Table] = EntityList([]),
+        key_values: EntityList[Table] = EntityList([])
+    ):
+        self.titles = titles
+        self.headers = headers
+        self.footers = footers
+        self.section_headers = section_headers
+        self.page_numbers = page_numbers
+        self.lists = lists
+        self.figures = figures
+        self.tables = tables
+        self.key_values = key_values
 
 class Page(SpatialObject):
     """
@@ -187,6 +210,20 @@ class Page(SpatialObject):
         for w in words:
             combined_words += w
         return os.linesep.join(text), combined_words
+
+    @property
+    def page_layout(self) -> PageLayout:
+        return PageLayout(
+            titles=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_TITLE]),
+            headers=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_HEADER]),
+            footers=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_FOOTER]),
+            section_headers=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_SECTION_HEADER]),
+            page_numbers=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_PAGE_NUMBER]),
+            lists=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_LIST]),
+            figures=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_FIGURE]),
+            tables=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_TABLE]),
+            key_values=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_KEY_VALUE]),
+        )
 
     @property
     def key_values(self) -> EntityList[KeyValue]:
