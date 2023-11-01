@@ -87,6 +87,15 @@ Page
    :undoc-members:
    :show-inheritance:
 
+PageLayout
+-------------------------------
+
+.. automodule:: textractor.entities.page_layout
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 Document
 -----------------------------------
 

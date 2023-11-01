@@ -62,6 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.table">Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.table_cell">TableCell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.page">Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.page_layout">PageLayout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-textractor.entities.document">Document</a></li>
 </ul>
 </li>
@@ -1819,7 +1820,7 @@ to lowest similarity.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.page.Page.page_layout">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">page_layout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#textractor.entities.page.PageLayout" title="textractor.entities.page.PageLayout"><span class="pre">PageLayout</span></a></em><a class="headerlink" href="#textractor.entities.page.Page.page_layout" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">page_layout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#textractor.entities.page_layout.PageLayout" title="textractor.entities.page_layout.PageLayout"><span class="pre">PageLayout</span></a></em><a class="headerlink" href="#textractor.entities.page.Page.page_layout" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -1969,10 +1970,140 @@ from highest to lowest similarity.</p>
 
 </dd></dl>
 
+</section>
+<section id="module-textractor.entities.page_layout">
+<span id="pagelayout"></span><h2>PageLayout<a class="headerlink" href="#module-textractor.entities.page_layout" title="Permalink to this heading"></a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="textractor.entities.page.PageLayout">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.page.</span></span><span class="sig-name descname"><span class="pre">PageLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">titles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">footers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_numbers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lists</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#textractor.entities.table.Table" title="textractor.entities.table.Table"><span class="pre">Table</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.page.PageLayout" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="textractor.entities.page_layout.PageLayout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.page_layout.</span></span><span class="sig-name descname"><span class="pre">PageLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">titles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">footers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_headers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_numbers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lists</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.page_layout.PageLayout" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Object representation of the layout components detected in the table.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page_layout.PageLayout.figures">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">figures</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page_layout.PageLayout.figures" title="Permalink to this definition"></a></dt>
+<dd><p>Figures detected in the Page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>EntityList of figures detected in the page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[Layout]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page_layout.PageLayout.footers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">footers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page_layout.PageLayout.footers" title="Permalink to this definition"></a></dt>
+<dd><p>Footers detected in the Page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>EntityList of footers detected in the page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[Layout]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page_layout.PageLayout.headers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">headers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page_layout.PageLayout.headers" title="Permalink to this definition"></a></dt>
+<dd><p>Headers detected in the Page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>EntityList of headers detected in the page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[Layout]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page_layout.PageLayout.key_values">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key_values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page_layout.PageLayout.key_values" title="Permalink to this definition"></a></dt>
+<dd><p>KeyValues detected in the Page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>EntityList of keyvalues detected in the page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[Layout]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page_layout.PageLayout.lists">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lists</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page_layout.PageLayout.lists" title="Permalink to this definition"></a></dt>
+<dd><p>Lists detected in the Page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>EntityList of lists detected in the page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[Layout]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page_layout.PageLayout.page_numbers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">page_numbers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page_layout.PageLayout.page_numbers" title="Permalink to this definition"></a></dt>
+<dd><p>Page numbers detected in the Page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>EntityList of page numbers detected in the page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[Layout]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page_layout.PageLayout.section_headers">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">section_headers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page_layout.PageLayout.section_headers" title="Permalink to this definition"></a></dt>
+<dd><p>Section headers detected in the Page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>EntityList of section headers detected in the page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[Layout]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page_layout.PageLayout.tables">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tables</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page_layout.PageLayout.tables" title="Permalink to this definition"></a></dt>
+<dd><p>Tables detected in the Page. This includes Tables detected by the AnalyzeDocument Tables API if used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>EntityList of tables detected in the page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[Layout]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.page_layout.PageLayout.titles">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">titles</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList"><span class="pre">EntityList</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Layout</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#textractor.entities.page_layout.PageLayout.titles" title="Permalink to this definition"></a></dt>
+<dd><p>Titles detected in the Page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>EntityList of titles detected in the page</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList" title="textractor.visualizers.entitylist.EntityList">EntityList</a>[Layout]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
