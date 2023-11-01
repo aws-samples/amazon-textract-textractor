@@ -7,7 +7,6 @@ import os
 import string
 import logging
 import xlsxwriter
-from dataclasses import dataclass
 from typing import List, Tuple
 from copy import deepcopy
 from collections import defaultdict
@@ -18,6 +17,7 @@ from textractor.entities.line import Line
 from textractor.entities.table import Table
 from textractor.entities.signature import Signature
 from textractor.entities.layout import Layout
+from textractor.entities.page_layout import PageLayout
 from textractor.exceptions import InputError
 from textractor.entities.key_value import KeyValue
 from textractor.entities.query import Query
@@ -43,28 +43,6 @@ from textractor.utils.geometry_util import sort_by_position
 from textractor.utils.search_utils import SearchUtils, jaccard_similarity
 from textractor.visualizers.entitylist import EntityList
 
-class PageLayout:
-    def __init__(
-        self,
-        titles: EntityList[Table] = EntityList([]),
-        headers: EntityList[Table] = EntityList([]),
-        footers: EntityList[Table] = EntityList([]),
-        section_headers: EntityList[Table] = EntityList([]),
-        page_numbers: EntityList[Table] = EntityList([]),
-        lists: EntityList[Table] = EntityList([]),
-        figures: EntityList[Table] = EntityList([]),
-        tables: EntityList[Table] = EntityList([]),
-        key_values: EntityList[Table] = EntityList([])
-    ):
-        self.titles = titles
-        self.headers = headers
-        self.footers = footers
-        self.section_headers = section_headers
-        self.page_numbers = page_numbers
-        self.lists = lists
-        self.figures = figures
-        self.tables = tables
-        self.key_values = key_values
 
 class Page(SpatialObject):
     """
