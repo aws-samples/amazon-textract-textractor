@@ -99,7 +99,7 @@ class KeyValue(DocumentEntity):
         :rtype: Line
         """
         if not self._words:
-            logging.warning("Key contains no words objects.")
+            logging.info("Key contains no words objects.")
             return []
         return self._words
 
