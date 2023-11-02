@@ -1,0 +1,10 @@
+{
+    "textractFeatures": [
+        "QUERIES"
+    ],
+    "queriesConfig": [{
+        "text": "What is the applicant full name?",
+        "alias": "FULL_NAME",
+        "pages": ["*"]
+    }]
+}

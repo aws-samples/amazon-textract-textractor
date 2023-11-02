@@ -1,0 +1,15 @@
+{
+    "s3Path": "s3://amazon-textract-public-content/blogs/employeeapp20210510.png",
+    "textractFeatures": [
+        "QUERIES"
+    ],
+    "queriesConfig": [{
+            "text": "What is the applicant full name?",
+            "alias": "FULL_NAME"
+        },
+        {
+            "text": "What is the applicant last name?",
+            "alias": "LAST_NAME"
+        }
+    ]
+}
