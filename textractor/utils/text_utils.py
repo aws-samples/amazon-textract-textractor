@@ -132,6 +132,7 @@ def linearize_children(
                 result += config.table_layout_prefix + text_element
                 for w in words_element:
                     added_words.add(w.id)
+                words_output += words_element
             elif "KeyValue" in element.__class__.__name__ and len(words_element):
                 result += (
                     config.key_value_layout_prefix
@@ -140,6 +141,7 @@ def linearize_children(
                 )
                 for w in words_element:
                     added_words.add(w.id)
+                words_output += words_element
             elif prev_element is None:
                 result += text_element
                 words_output += words_element
