@@ -16,6 +16,7 @@ Examples
    notebooks/using_queries
    notebooks/layout_analysis
    notebooks/layout_analysis_for_text_linearization
+   notebooks/textractor_for_large_language_models
    notebooks/interfacing_with_trp2
    notebooks/signature_detection
    notebooks/going_further
