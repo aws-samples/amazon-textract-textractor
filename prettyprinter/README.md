@@ -78,7 +78,7 @@ In addition to `textract_json`, the `get_text_from_layout_json` function can tak
 Customers asked for the abilility to generate the layout.csv format, which can be downloaded when testing documents in the AWS Web Console.
 The method ``get_layout_csv_from_trp2```` generates for each page a list of the entries:
 
-* 'Page number,'Layout,'Text,'Reading Order,'Confidence score 
+'Page number,'Layout,'Text,'Reading Order,'Confidence score 
 * Page number: starting at 1, incrementing for eac page
 * Layout: the BlockType + a number indicating the sequence for this BlockType starting at 1 and for LAYOUT_LIST elements the string:  "- part of LAYOUT_LIST (index)" is added
 * Text: except for LAYOUT_LIST and LAYOUT_FIGURE the underlying text
@@ -102,3 +102,27 @@ with open(<some_test_file>) as input_fp:
     print(csv_output)
 ```
 
+Sample output
+|Page number|Layout|Text|Reading Order|BlockType|Confidence score|
+| - | -------------------------------------- | --------------------------------- | -- | --------------------- | ------------ |
+| 1 | LAYOUT_SECTION_HEADER 1                | Amazing Headline!...              | 0  | LAYOUT_SECTION_HEADER | 81.25        |
+| 1 | LAYOUT_TEXT 1                          | Lorem ipsum dolor sit amet, co... | 1  | LAYOUT_TEXT           | 99.755859375 |
+| 1 | LAYOUT_SECTION_HEADER 2                | Unbelievable stuff...             | 2  | LAYOUT_SECTION_HEADER | 90.478515625 |
+| 1 | LAYOUT_TEXT 2                          | Ut ultrices felis vel mi susci... | 3  | LAYOUT_TEXT           | 98.486328125 |
+| 1 | LAYOUT_LIST 1                          |                                   | 4  | LAYOUT_LIST           | 97.16796875  |
+| 1 | LAYOUT_TEXT 3 - part of LAYOUT_LIST 1  | Priority list item 1...           | 5  | LAYOUT_TEXT           | 97.8515625   |
+| 1 | LAYOUT_TEXT 4 - part of LAYOUT_LIST 1  | Priority list item 2...           | 6  | LAYOUT_TEXT           | 98.095703125 |
+| 1 | LAYOUT_TEXT 5 - part of LAYOUT_LIST 1  | Another list item 3...            | 7  | LAYOUT_TEXT           | 98.095703125 |
+| 1 | LAYOUT_TEXT 6 - part of LAYOUT_LIST 1  | And a total optional list item... | 8  | LAYOUT_TEXT           | 98.73046875  |
+| 1 | LAYOUT_LIST 2                          |                                   | 9  | LAYOUT_LIST           | 69.53125     |
+| 1 | LAYOUT_TEXT 7 - part of LAYOUT_LIST 2  | 1. But we...                      | 10 | LAYOUT_TEXT           | 95.751953125 |
+| 1 | LAYOUT_TEXT 8 - part of LAYOUT_LIST 2  | 2. can also...                    | 11 | LAYOUT_TEXT           | 96.923828125 |
+| 1 | LAYOUT_TEXT 9 - part of LAYOUT_LIST 2  | 3. do numbered...                 | 12 | LAYOUT_TEXT           | 97.36328125  |
+| 1 | LAYOUT_TEXT 10 - part of LAYOUT_LIST 2 | 4. lists...                       | 13 | LAYOUT_TEXT           | 96.6796875   |
+| 1 | LAYOUT_TEXT 11                         | congue ac. Phasellus mollis co... | 14 | LAYOUT_TEXT           | 96.044921875 |
+| 1 | LAYOUT_TEXT 12                         | Quisque a elementum diam. Null... | 15 | LAYOUT_TEXT           | 96.484375    |
+| 1 | LAYOUT_TEXT 13                         | Table Caption 1...                | 16 | LAYOUT_TEXT           | 86.865234375 |
+| 1 | LAYOUT_TABLE 1                         | Date Description Amount 12-12-... | 17 | LAYOUT_TABLE          | 96.435546875 |
+| 1 | LAYOUT_TEXT 14                         | Quisque dapibus varius ipsum, ... | 18 | LAYOUT_TEXT           | 93.06640625  |
+| 1 | LAYOUT_FIGURE 1                        |                                   | 19 | LAYOUT_FIGURE         | 94.3359375   |
+| 1 | LAYOUT_TEXT 15                         | Figure Caption 1...               | 20 | LAYOUT_TEXT           | 63.18359375  |
