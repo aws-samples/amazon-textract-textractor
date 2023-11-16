@@ -1,8 +1,12 @@
-from trp.trp2 import TDocumentSchema
+from trp.trp2 import TDocument, TDocumentSchema, TextractBlockTypes
+import trp.trp2 as t2
 import trp.trp2_lending as tl
 from textractprettyprinter.t_pretty_print import convert_form_to_list_trp2, convert_queries_to_list_trp2, get_tables_string, convert_lending_from_trp2, convert_signatures_to_list_trp2
+from textractprettyprinter import get_layout_csv_from_trp2
 import os
 import json
+import csv
+import io
 
 
 def test_pretty_with_tables():
@@ -94,3 +98,38 @@ def test_queries_bouding_box_issue():
         queries_as_list = convert_queries_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
         form_as_list = convert_form_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
         signature_as_list = convert_signatures_to_list_trp2(trp2_doc=trp2_doc)    #type: ignore
+
+
+def string_counter():
+    # Dictionary to keep track of the occurrences of each string
+    occurrences = {}
+
+    def counter(string):
+        # Increment the count for the given string
+        if string in occurrences:
+            occurrences[string] += 1
+        else:
+            occurrences[string] = 1
+
+        # Return the current count of the string
+        return occurrences[string]
+
+    return counter
+
+
+# Creating an instance of the counter
+
+
+def test_layout_csv(caplog):
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    input_filename = os.path.join(SCRIPT_DIR, "data/layout_csv_example.json")
+    with open(os.path.join(SCRIPT_DIR, input_filename)) as input_fp:
+        trp2_doc: TDocument = TDocumentSchema().load(json.load(input_fp))    # type: ignore
+        assert trp2_doc
+        layout_csv = get_layout_csv_from_trp2(trp2_doc)
+        csv_output = io.StringIO()
+        csv_writer = csv.writer(csv_output, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for page in layout_csv:
+            csv_writer.writerows(page)
+        # print(csv_output)
+        assert layout_csv[0][20][3] == "20"
