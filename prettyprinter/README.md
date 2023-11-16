@@ -71,3 +71,34 @@ In addition to `textract_json`, the `get_text_from_layout_json` function can tak
 - `skip_table` (bool, optional): If set to True, skips including the table in the linearized text. Defaults to `False`.
 - `save_txt_path` (str, optional): Path to save the output linearized text to files. Either a local file system path or Amazon S3 path can be specified in `s3://bucket_name/prefix/` format. Files will be saved with `<page_number>.txt` naming convention.
 - `generate_markdown` (bool, optional): If set to `True`, generates markdown formatted linearized text. Defaults to `False`.
+
+
+## Generate the layout.csv similar to the Textract Web Console
+
+Customers asked for the abilility to generate the layout.csv format, which can be downloaded when testing documents in the AWS Web Console.
+The method ``get_layout_csv_from_trp2```` generates for each page a list of the entries:
+
+* 'Page number,'Layout,'Text,'Reading Order,'Confidence score 
+* Page number: starting at 1, incrementing for eac page
+* Layout: the BlockType + a number indicating the sequence for this BlockType starting at 1 and for LAYOUT_LIST elements the string:  "- part of LAYOUT_LIST (index)" is added
+* Text: except for LAYOUT_LIST and LAYOUT_FIGURE the underlying text
+* Reading Order: increasing int for each LAYOUT element starting with 0
+* Confidence score: confidence in this being a LAYOUT element
+
+this can be used to generate a CSV (or another format). Below a sample how to generate a CSV.
+
+```python
+# taken from the test
+# generates the CSV in memory
+from textractprettyprinter import get_layout_csv_from_trp2
+
+with open(<some_test_file>) as input_fp:
+    trp2_doc: TDocument = TDocumentSchema().load(json.load(input_fp))
+    layout_csv = get_layout_csv_from_trp2(trp2_doc)
+    csv_output = io.StringIO()
+    csv_writer = csv.writer(csv_output, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    for page in layout_csv:
+        csv_writer.writerows(page)
+    print(csv_output)
+```
+

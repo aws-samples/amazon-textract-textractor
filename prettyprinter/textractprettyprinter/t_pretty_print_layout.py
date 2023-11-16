@@ -1,6 +1,8 @@
 import os
 import warnings
 import logging
+from trp.trp2 import TDocument
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -223,3 +225,93 @@ class LinearizeLayout:
         if self.save_txt_path:
             self._save_to_files(page_texts)
         return page_texts
+
+def string_counter():
+    # Dictionary to keep track of the occurrences of each string
+    occurrences = {}
+    def counter(string):
+        if string in occurrences:
+            occurrences[string] += 1
+        else:
+            occurrences[string] = 1
+        return occurrences[string]
+
+    return counter
+
+
+
+def get_layout_csv_from_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
+    """customers want to generate the layout.csv from the Amazon Textract Web Console download
+    This does generate for each page a list of the entries:
+    'Page number,'Layout,'Text,'Reading Order,'Confidence score 
+    Page number: starting at 1, incrementing for eac page
+    Layout: the BlockType + a number indicating the sequence for this BlockType starting at 1 and for LAYOUT_LIST elements the string:  "- part of LAYOUT_LIST (index)" is added
+    Text: except for LAYOUT_LIST and LAYOUT_FIGURE the underlying text
+    Reading Order: increasing int for each LAYOUT element starting with 0
+    Confidence score: confidence in this being a LAYOUT element
+    """
+    result_value:List[List[List[str]]] = list()
+
+    counter_instance = string_counter()
+    for page_number, page in enumerate(trp2_doc.pages):
+        page_result:List[List[str]] = list()
+        processed_ids = []
+        relationships: t2.TRelationship = page.get_relationships_for_type()
+        blocks = [trp2_doc.get_block_by_id(id) for id in relationships.ids if relationships.ids]
+        layout_blocks = [
+            block for block in blocks if block.block_type in [
+                "LAYOUT_TITLE", "LAYOUT_HEADER", "LAYOUT_FOOTER", "LAYOUT_SECTION_HEADER", "LAYOUT_PAGE_NUMBER",
+                "LAYOUT_LIST", "LAYOUT_FIGURE", "LAYOUT_TABLE", "LAYOUT_KEY_VALUE", "LAYOUT_TEXT"
+            ]
+        ]
+        for idx, layout_block in enumerate(layout_blocks):
+            # for lists the output is special, because the LAYOUT_TEXTs do have a reference to the LAYOUT_LIST in the text
+            # so we grab the list and process all children
+            # probably could make this "easier" by keeping track of the len of CHILD relationships in LAYOUT_LIST
+            # but wanted to see if I can prepare the lists in lists, which may happen one point in the future...
+            if layout_block.block_type == "LAYOUT_LIST":
+                # first print out the LAYOUT_LIST
+                block_type_count = counter_instance(layout_block.block_type)
+                page_result.append([str(page_number + 1), layout_block.block_type + " " + str(block_type_count), "", str(idx),
+                                              layout_block.block_type, str(layout_block.confidence)])
+
+                # print(page_number + 1, layout_block.block_type + " " + str(block_type_count), "", idx, layout_block.block_type)
+                list_context_name = layout_block.block_type + " " + str(block_type_count)
+                # now get the relationships
+                list_block_rel = layout_block.get_relationships_for_type()
+                if list_block_rel:
+                    # get the text relationships
+                    list_child_blocks = [trp2_doc.get_block_by_id(id) for id in list_block_rel.ids]
+                    for child_idx, list_child_block in enumerate(list_child_blocks):
+                        block_type_count = counter_instance(list_child_block.block_type)
+                        child_block_relation_text = list_child_block.block_type + " " + str(
+                            block_type_count) + " - part of " + list_context_name
+                        # get the text, meaning get all the child relationships
+                        layout_child_block_rel = list_child_block.get_relationships_for_type()
+                        layout_child_line_blocks = [
+                            trp2_doc.get_block_by_id(id) for id in layout_child_block_rel.ids
+                            if layout_child_block_rel.ids
+                        ]
+                        # get the text, but not for figures
+                        layout_text = trp2_doc.get_text_for_tblocks(
+                            layout_child_line_blocks) if list_child_block.block_type != "LAYOUT_FIGURE" else ""
+
+                        page_result.append([str(page_number + 1), child_block_relation_text, layout_text, str(idx + child_idx + 1), list_child_block.block_type, str(list_child_block.confidence)])
+                        # print(page_number + 1, child_block_relation_text, layout_text, idx + child_idx + 1,
+                        #         list_child_block.block_type)
+                        processed_ids.append(list_child_block.id)
+            elif layout_block.id not in processed_ids:
+                layout_block_rel = layout_block.get_relationships_for_type()
+                layout_blocks = [
+                    trp2_doc.get_block_by_id(id) for id in layout_block_rel.ids if layout_block_rel.ids
+                ]
+                # get the text, but not for figures
+                layout_text = trp2_doc.get_text_for_tblocks(
+                    layout_blocks) if layout_block.block_type != "LAYOUT_FIGURE" else ""
+                block_type_count = counter_instance(layout_block.block_type)
+                page_result.append([str(page_number + 1), layout_block.block_type + " " + str(block_type_count), layout_text, str(idx),
+                                              layout_block.block_type, str(layout_block.confidence)])
+                # print(page_number + 1, layout_block.block_type + " " + str(block_type_count), layout_text, idx, layout_block.block_type)
+
+        result_value.append(page_result)
+    return result_value
