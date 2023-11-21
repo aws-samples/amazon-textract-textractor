@@ -95,7 +95,9 @@ class Textractor:
                 "Unable to initiate Textractor. Either profile_name or region requires an input parameter."
             )
         if self.region_name is not None:
-            self.textract_client = self.session.client("textract", region_name=self.region_name)
+            self.textract_client = self.session.client(
+                "textract", region_name=self.region_name
+            )
         else:
             self.textract_client = self.session.client("textract")
         self.s3_client = self.session.client("s3")
@@ -573,6 +575,7 @@ class Textractor:
             TextractAPI.ANALYZE,
             textract_client=self.textract_client,
             images=images,
+            output_config=output_config,
         )
 
     def analyze_id(
