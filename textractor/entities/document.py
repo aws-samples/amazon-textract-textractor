@@ -258,7 +258,7 @@ class Document(SpatialObject):
         flattened_words = []
         for words in words_lists:
             flattened_words.extend(words)
-        return os.linesep.join(text), flattened_words
+        return config.layout_element_separator.join(text), flattened_words
 
     def page(self, page_no: int = 0):
         """
