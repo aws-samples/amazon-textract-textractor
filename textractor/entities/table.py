@@ -27,10 +27,7 @@ from textractor.entities.table_footer import TableFooter
 from textractor.entities.word import Word
 from textractor.utils.geometry_util import get_indices
 from textractor.data.constants import SimilarityMetric, TextTypes, CellTypes, TableTypes
-from textractor.data.constants import (
-    IS_COLUMN_HEAD,
-    IS_MERGED_CELL
-)
+from textractor.data.constants import IS_COLUMN_HEAD, IS_MERGED_CELL
 from textractor.utils.search_utils import SearchUtils, get_metadata_attr_name
 from textractor.utils.text_utils import group_elements_horizontally, linearize_children
 from textractor.data.text_linearization_config import TextLinearizationConfig
@@ -158,7 +155,7 @@ class Table(DocumentEntity):
         """
 
         return self._column_headers
-    
+
     @column_headers.setter
     def column_headers(self, column_headers: Dict[str, List[TableCell]]):
         """
@@ -233,7 +230,12 @@ class Table(DocumentEntity):
 
         return self.row_count, self.column_count
 
-    def strip_headers(self, column_headers: bool = True, in_table_title: bool = False, section_titles=False):
+    def strip_headers(
+        self,
+        column_headers: bool = True,
+        in_table_title: bool = False,
+        section_titles=False,
+    ):
         """
         Returns a new :class:`Table` object after removing all cells that are marked as column headers in the table from the API response.
 
@@ -243,19 +245,19 @@ class Table(DocumentEntity):
         :type in_table_title: bool
         :param section_titles: Remove the in-table section titles
         :type section_titles: bool
-        
+
         :return: Table object after removing the headers.
         :rtype: Table
         """
 
         table_cells = deepcopy(self.table_cells)
         table_cells = [
-            cell 
-            for cell in table_cells 
+            cell
+            for cell in table_cells
             if not (
-                (cell.is_column_header and column_headers) or
-                (cell.is_title and in_table_title) or
-                (cell.is_section_title and section_titles)
+                (cell.is_column_header and column_headers)
+                or (cell.is_title and in_table_title)
+                or (cell.is_section_title and section_titles)
             )
         ]
 
@@ -595,9 +597,7 @@ class Table(DocumentEntity):
         else:
             return workbook
 
-    def get_text(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ):
+    def get_text(self, config: TextLinearizationConfig = TextLinearizationConfig()):
         return self.get_text_and_words(config)[0]
 
     def get_text_and_words(

@@ -89,6 +89,8 @@ class Signature(DocumentEntity):
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ):
-        w = Word(entity_id=str(uuid.uuid4()), bbox=self.bbox, text=config.signature_token)
+        w = Word(
+            entity_id=str(uuid.uuid4()), bbox=self.bbox, text=config.signature_token
+        )
         w.line = Line(entity_id=str(uuid.uuid4()), bbox=self.bbox, words=[w])
         return config.signature_token, [w]

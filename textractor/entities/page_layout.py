@@ -1,10 +1,12 @@
 from textractor.entities.layout import Layout
 from textractor.visualizers.entitylist import EntityList
 
+
 class PageLayout:
     """
     Object representation of the layout components detected in the table.
     """
+
     def __init__(
         self,
         titles: EntityList[Layout] = EntityList([]),
@@ -15,7 +17,7 @@ class PageLayout:
         lists: EntityList[Layout] = EntityList([]),
         figures: EntityList[Layout] = EntityList([]),
         tables: EntityList[Layout] = EntityList([]),
-        key_values: EntityList[Layout] = EntityList([])
+        key_values: EntityList[Layout] = EntityList([]),
     ):
         self._titles = titles
         self._headers = headers
@@ -35,7 +37,7 @@ class PageLayout:
         :rtype: EntityList[Layout]
         """
         return self._titles
-    
+
     @property
     def headers(self) -> EntityList[Layout]:
         """Headers detected in the Page
@@ -44,7 +46,7 @@ class PageLayout:
         :rtype: EntityList[Layout]
         """
         return self._headers
-    
+
     @property
     def footers(self) -> EntityList[Layout]:
         """Footers detected in the Page
@@ -53,7 +55,7 @@ class PageLayout:
         :rtype: EntityList[Layout]
         """
         return self._footers
-    
+
     @property
     def section_headers(self) -> EntityList[Layout]:
         """Section headers detected in the Page
@@ -62,7 +64,7 @@ class PageLayout:
         :rtype: EntityList[Layout]
         """
         return self._section_headers
-    
+
     @property
     def page_numbers(self) -> EntityList[Layout]:
         """Page numbers detected in the Page
