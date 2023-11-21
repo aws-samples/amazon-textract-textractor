@@ -505,7 +505,8 @@ def _create_signature_objects(
             continue
         for signature in sorted(signatures.values(), key=lambda x: x.bbox.y):
             if (
-                layout.bbox.get_intersection(signature.bbox).area > THRESHOLD * signature.bbox.area
+                layout.bbox.get_intersection(signature.bbox).area
+                > THRESHOLD * signature.bbox.area
                 and signature not in signatures_added
             ):
                 layout.children.append(signature)

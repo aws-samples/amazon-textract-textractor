@@ -130,7 +130,10 @@ class Layout(DocumentEntity):
                 no_new_lines=False,
                 is_layout_table=False,
             )
-            return config.page_num_prefix + final_text + config.page_num_suffix, final_words
+            return (
+                config.page_num_prefix + final_text + config.page_num_suffix,
+                final_words,
+            )
         elif self.layout_type == LAYOUT_LIST:
             final_text = config.list_layout_prefix
             final_words = []

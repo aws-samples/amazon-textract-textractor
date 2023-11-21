@@ -182,7 +182,7 @@ class Page(SpatialObject):
 
         if not page_texts_and_words:
             return "", []
-    
+
         text, words = zip(*page_texts_and_words)
         combined_words = []
         for w in words:
@@ -192,15 +192,31 @@ class Page(SpatialObject):
     @property
     def page_layout(self) -> PageLayout:
         return PageLayout(
-            titles=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_TITLE]),
-            headers=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_HEADER]),
-            footers=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_FOOTER]),
-            section_headers=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_SECTION_HEADER]),
-            page_numbers=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_PAGE_NUMBER]),
+            titles=EntityList(
+                [l for l in self.layouts if l.layout_type == LAYOUT_TITLE]
+            ),
+            headers=EntityList(
+                [l for l in self.layouts if l.layout_type == LAYOUT_HEADER]
+            ),
+            footers=EntityList(
+                [l for l in self.layouts if l.layout_type == LAYOUT_FOOTER]
+            ),
+            section_headers=EntityList(
+                [l for l in self.layouts if l.layout_type == LAYOUT_SECTION_HEADER]
+            ),
+            page_numbers=EntityList(
+                [l for l in self.layouts if l.layout_type == LAYOUT_PAGE_NUMBER]
+            ),
             lists=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_LIST]),
-            figures=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_FIGURE]),
-            tables=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_TABLE]),
-            key_values=EntityList([l for l in self.layouts if l.layout_type == LAYOUT_KEY_VALUE]),
+            figures=EntityList(
+                [l for l in self.layouts if l.layout_type == LAYOUT_FIGURE]
+            ),
+            tables=EntityList(
+                [l for l in self.layouts if l.layout_type == LAYOUT_TABLE]
+            ),
+            key_values=EntityList(
+                [l for l in self.layouts if l.layout_type == LAYOUT_KEY_VALUE]
+            ),
         )
 
     @property
@@ -313,7 +329,8 @@ class Page(SpatialObject):
         """
         return EntityList(
             sorted(
-                self._leaf_layouts + self._container_layouts, key=lambda c: c.reading_order
+                self._leaf_layouts + self._container_layouts,
+                key=lambda c: c.reading_order,
             )
         )
 

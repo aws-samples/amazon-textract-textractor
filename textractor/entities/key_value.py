@@ -235,7 +235,7 @@ class KeyValue(DocumentEntity):
         )
         text = f"{config.key_prefix}{key_text}{key_suffix}{config.value_prefix}{value_text}{config.value_suffix}"
 
-        words += (key_words + value_words)
+        words += key_words + value_words
 
         for w in words:
             w.kv_id = str(self.id)

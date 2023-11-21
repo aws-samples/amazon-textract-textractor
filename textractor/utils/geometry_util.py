@@ -37,7 +37,7 @@ def get_indices(numpy_indexing: str = ":", max_val=10) -> List[int]:
         numpy_indexing = "None:None"
     if numpy_indexing == "None":
         numpy_indexing = "None:None"
-    
+
     if ":" not in numpy_indexing:
         if int(numpy_indexing) > max_val:
             raise IndexError()
