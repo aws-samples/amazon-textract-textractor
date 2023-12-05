@@ -238,17 +238,20 @@ def string_counter():
 
     return counter
 
-
-
 def get_layout_csv_from_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
-    """customers want to generate the layout.csv from the Amazon Textract Web Console download
+    """
+    Generate the layout.csv from the Amazon Textract Web Console download
     This does generate for each page a list of the entries:
-    'Page number,'Layout,'Text,'Reading Order,'Confidence score 
-    Page number: starting at 1, incrementing for eac page
-    Layout: the BlockType + a number indicating the sequence for this BlockType starting at 1 and for LAYOUT_LIST elements the string:  "- part of LAYOUT_LIST (index)" is added
-    Text: except for LAYOUT_LIST and LAYOUT_FIGURE the underlying text
-    Reading Order: increasing int for each LAYOUT element starting with 0
-    Confidence score: confidence in this being a LAYOUT element
+
+    'Page number','Layout','Text','Reading Order','Confidence score'
+
+    Page number     : Starting at 1, incrementing for each page
+    Layout          : The BlockType + a number indicating the sequence for 
+                      this BlockType starting at 1 and for LAYOUT_LIST elements 
+                      the string:  "- part of LAYOUT_LIST (index)" is added
+    Text            : The underlying text (except LAYOUT_LIST and LAYOUT_FIGURE )
+    Reading Order   : Increasing int for each LAYOUT element starting with 0
+    Confidence score: Confidence in this being a LAYOUT element
     """
     result_value:List[List[List[str]]] = list()
 
@@ -302,6 +305,12 @@ def get_layout_csv_from_trp2(trp2_doc: TDocument) -> List[List[List[str]]]:
                         processed_ids.append(list_child_block.id)
             elif layout_block.id not in processed_ids:
                 layout_block_rel = layout_block.get_relationships_for_type()
+
+                # Bug fix - #284
+                if layout_block_rel is None:
+                    logger.info (f'Block {layout_block} has no relationships')
+                    continue
+
                 layout_blocks = [
                     trp2_doc.get_block_by_id(id) for id in layout_block_rel.ids if layout_block_rel.ids
                 ]
