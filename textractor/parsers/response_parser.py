@@ -802,7 +802,7 @@ def _create_layout_objects(
                         if relationship["Type"] != "CHILD":
                             continue
                         container_layouts[-1].children[-1].add_children(
-                            [line_by_id[line_id] for line_id in relationship["Ids"]]
+                            [line_by_id[line_id] for line_id in relationship["Ids"] if line_id in line_by_id]
                         )
         else:
             leaf_layouts.append(
@@ -821,7 +821,7 @@ def _create_layout_objects(
                 if relationship["Type"] != "CHILD":
                     continue
                 leaf_layouts[-1].add_children(
-                    [line_by_id[line_id] for line_id in relationship["Ids"]]
+                    [line_by_id[line_id] for line_id in relationship["Ids"] if line_id in line_by_id]
                 )
 
     for layout in leaf_layouts + container_layouts:
