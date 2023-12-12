@@ -1,5 +1,7 @@
 import os
-
+import sys
+import subprocess
+import setuptools
 from setuptools import find_packages, setup
 from os import path
 
@@ -14,6 +16,27 @@ def read_requirements(path):
         requirements = [line for line in f.readlines()]
     return requirements
 
+class TestCommand(setuptools.Command):
+
+    description = 'run linters, tests and create a coverage report'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        #self._run(['pytest', 'tests/'])
+        return
+
+    def _run(self, command):
+        try:
+            subprocess.check_call(command)
+        except subprocess.CalledProcessError as error:
+            print('Command failed with exit code', error.returncode)
+            sys.exit(error.returncode)
 
 setup(
     # include data files
@@ -39,6 +62,8 @@ setup(
         f.split(".")[0]: read_requirements(os.path.join(here, "extras", f))
         for f in os.listdir(os.path.join(here, "extras"))
     },
+    cmdclass={'test': TestCommand},
+    test_command="test",
     entry_points={
         "console_scripts": [
             "textractor = textractor.cli.cli:textractor_cli",

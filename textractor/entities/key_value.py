@@ -8,6 +8,7 @@ bounding box information, value, existence of checkbox, page number, Page ID and
 
 import logging
 from typing import List
+import uuid
 
 from textractor.entities.word import Word
 from textractor.entities.value import Value
@@ -233,9 +234,24 @@ class KeyValue(DocumentEntity):
             if not (len(key_text) > len(s) and key_text[-len(s) :] == s)
             else " "
         )
-        text = f"{config.key_prefix}{key_text}{key_suffix}{config.value_prefix}{value_text}{config.value_suffix}"
+        if config.add_prefixes_and_suffixes_in_text:
+            text = f"{config.key_value_prefix}{config.key_prefix}{key_text}{key_suffix}{value_text}{config.key_value_suffix}"
+        else:
+            text = f"{key_text}{config.same_paragraph_separator}{value_text}"
 
-        words += key_words + value_words
+        if config.add_prefixes_and_suffixes_as_words:
+            words += [Word(str(uuid.uuid4()), self.bbox, config.key_value_prefix, is_structure=True)] if config.key_value_prefix else []
+            if key_words:
+                words += (
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(self.key), config.key_prefix, is_structure=True)] if config.key_prefix else []) +
+                    key_words +
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(self.key), config.key_suffix, is_structure=True)] if config.key_suffix else [])
+                )
+            if value_words: 
+                words += value_words
+            words += ([Word(str(uuid.uuid4()), self.bbox, config.key_value_suffix, is_structure=True)] if config.key_value_suffix else [])
+        else:
+            words += key_words + value_words
 
         for w in words:
             w.kv_id = str(self.id)

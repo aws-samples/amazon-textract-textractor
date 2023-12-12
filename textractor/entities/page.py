@@ -156,7 +156,7 @@ class Page(SpatialObject):
         :return: Tuple of page text and words
         :rtype: Tuple[str, List[Word]]
         """
-        unsorted_layouts = [l for l in self.layouts if l.reading_order == -1]
+        unsorted_layouts = [l for l in self.layouts if l.reading_order < 0]
         sorted_layouts = [l for l in self.layouts if l.reading_order >= 0]
         if unsorted_layouts:
             for unsorted_layout in sorted(

@@ -57,6 +57,8 @@ class Line(DocumentEntity):
         return " ".join([word.text for word in self.words])
 
     def get_text_and_words(self, config):
+        if not self.bbox:
+            self.bbox = BoundingBox.enclosing_bbox(self.words)
         for w in self.words:
             w.line_id = self.id
             w.line_bbox = self.bbox

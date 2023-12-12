@@ -33,11 +33,15 @@ class Word(DocumentEntity):
         text: str = "",
         text_type: TextTypes = TextTypes.PRINTED,
         confidence: float = 0,
+        is_clickable: bool = False,
+        is_structure: bool = False,
     ):
         super().__init__(entity_id, bbox)
         self._text = text
         self._text_type = text_type
         self.confidence = confidence / 100
+        self.is_clickable = is_clickable
+        self.is_structure = is_structure
         self._page = None
         self._page_id = None
         self.line = None

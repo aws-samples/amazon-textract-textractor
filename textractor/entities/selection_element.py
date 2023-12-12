@@ -71,8 +71,26 @@ class SelectionElement(Value):
             if self.status == SelectionStatus.SELECTED
             else config.selection_element_not_selected,
         )
+        w.is_clickable = True
         w.line = Line(entity_id=str(uuid.uuid4()), bbox=self.bbox, words=[w])
-        return w.text, [w]
+
+        words = [w]
+
+        if config.add_prefixes_and_suffixes_in_text:
+            text = config.value_prefix + w.text + config.value_suffix
+        else:
+            text = w.text
+            
+        if config.add_prefixes_and_suffixes_as_words:
+            words = (
+                ([Word(str(uuid.uuid4()), self.bbox, config.value_prefix, is_structure=True, is_clickable=True)] if config.value_prefix else []) +
+                words +
+                ([Word(str(uuid.uuid4()), self.bbox, config.value_suffix, is_structure=True, is_clickable=True)] if config.value_suffix else [])
+            )
+        for w in words:
+            w.value_id = str(self.id)
+            w.value_bbox = self.bbox
+        return text, words
 
     @property
     def page(self):
