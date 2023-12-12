@@ -129,15 +129,17 @@ def linearize_children(
         for idx, element in enumerate(sorted_group):
             text_element, words_element = element.get_text_and_words(config)
             if "Table" in element.__class__.__name__ and len(words_element):
-                result += config.table_layout_prefix + text_element
+                result += (
+                    config.table_layout_prefix if config.add_prefixes_and_suffixes_in_text else ""
+                ) + text_element
                 for w in words_element:
                     added_words.add(w.id)
                 words_output += words_element
             elif "KeyValue" in element.__class__.__name__ and len(words_element):
                 result += (
-                    config.key_value_layout_prefix
-                    + text_element
-                    + config.key_value_layout_suffix
+                    (config.key_value_layout_prefix if config.add_prefixes_and_suffixes_in_text else "") +
+                    text_element + 
+                    (config.key_value_layout_suffix if config.add_prefixes_and_suffixes_in_text else "")
                 )
                 for w in words_element:
                     added_words.add(w.id)

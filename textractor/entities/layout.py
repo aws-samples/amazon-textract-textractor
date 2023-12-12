@@ -5,6 +5,7 @@ The Textract API response returns groups of layout as LAYOUT_* BlockTypes.
 
 import os
 from typing import List, Tuple
+import uuid
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.line import Line
@@ -130,10 +131,20 @@ class Layout(DocumentEntity):
                 no_new_lines=False,
                 is_layout_table=False,
             )
-            return (
-                config.page_num_prefix + final_text + config.page_num_suffix,
-                final_words,
-            )
+            if config.add_prefixes_and_suffixes_as_words:
+                return (
+                    config.page_num_prefix + final_text + config.page_num_suffix,
+                    (
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), is_structure=True), config.page_num_prefix] if config.page_num_prefix else []) +
+                        final_words +
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), is_structure=True), config.page_num_suffix] if config.page_num_suffix else [])
+                    ),
+                )
+            else:
+                return (
+                    config.page_num_prefix + final_text + config.page_num_suffix,
+                    final_words,
+                )
         elif self.layout_type == LAYOUT_LIST:
             final_text = config.list_layout_prefix
             final_words = []
@@ -144,13 +155,14 @@ class Layout(DocumentEntity):
                 final_text += (
                     (
                         config.list_element_prefix
-                        if child_text[: len(config.list_element_prefix)]
-                        != config.list_element_prefix
-                        else ""
+                        if (
+                            child_text[: len(config.list_element_prefix)] != config.list_element_prefix and
+                            config.add_prefixes_and_suffixes_in_text
+                        ) else ""
                     )
                     + (
                         child_text.replace("\n", " ")
-                        if config.remove_new_lines_in_leaf_elements
+                        if config.remove_new_lines_in_leaf_elements 
                         else child_text
                     )
                     + (
@@ -159,20 +171,41 @@ class Layout(DocumentEntity):
                         else ""
                     )
                 )
-                final_words += child_words
+                if config.add_prefixes_and_suffixes_as_words:
+                    final_words += (
+                        ([Word(str(uuid.uuid4(), BoundingBox.enclosing_bbox(child_words)), config.list_element_prefix, is_structure=True)] if config.list_element_prefix else []) +
+                        child_words + 
+                        ([Word(str(uuid.uuid4(), BoundingBox.enclosing_bbox(child_words)), config.list_element_suffix, is_structure=True)] if config.list_element_suffix else [])
+                    )
+                else:
+                    final_words += child_words
             final_text += config.list_layout_suffix
         elif self.layout_type == LAYOUT_TITLE:
             final_text, final_words = linearize_children(
                 self.children, config, no_new_lines=True
             )
-            final_text = config.title_prefix + final_text + config.title_suffix
+            if config.add_prefixes_and_suffixes_in_text:
+                final_text = config.title_prefix + final_text + config.title_suffix
+            if config.add_prefixes_and_suffixes_as_words:
+                final_words = (
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.title_prefix, is_structure=True)] if config.title_prefix else []) + 
+                    final_words + 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.title_suffix, is_structure=True)] if config.title_suffix else []) 
+                )
         elif self.layout_type == LAYOUT_SECTION_HEADER:
             final_text, final_words = linearize_children(
                 self.children, config, no_new_lines=True
             )
-            final_text = (
-                config.section_header_prefix + final_text + config.section_header_suffix
-            )
+            if config.add_prefixes_and_suffixes_in_text:
+                final_text = (
+                    config.section_header_prefix + final_text + config.section_header_suffix
+                )
+            if config.add_prefixes_and_suffixes_as_words:
+                final_words = (
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.section_header_prefix, is_structure=True)] if config.title_prefix else []) + 
+                    final_words + 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.section_header_suffix, is_structure=True)] if config.title_suffix else []) 
+                )
         elif self.layout_type == LAYOUT_TEXT:
             final_text, final_words = linearize_children(
                 self.children,
@@ -188,7 +221,7 @@ class Layout(DocumentEntity):
             )
 
         while (
-            os.linesep * (config.max_number_of_consecutive_new_lines + 1) in final_text
+            config.layout_element_separator * (config.max_number_of_consecutive_new_lines + 1) in final_text
         ):
             final_text = final_text.replace(
                 "\n" * (config.max_number_of_consecutive_new_lines + 1),

@@ -9,6 +9,7 @@ and if it's a checkbox.
 """
 
 from typing import List
+import uuid
 
 from textractor.entities.word import Word
 from textractor.exceptions import InputError
@@ -168,6 +169,14 @@ class Value(DocumentEntity):
                 self.words,
                 config=config,
                 no_new_lines=config.remove_new_lines_in_leaf_elements,
+            )
+        if config.add_prefixes_and_suffixes_in_text:
+            text = config.value_prefix + text + config.value_suffix
+        if config.add_prefixes_and_suffixes_as_words:
+            words = (
+                ([Word(str(uuid.uuid4()), self.bbox, config.value_prefix, is_structure=True, is_clickable=(words and words[0] in [config.selection_element_selected, config.selection_element_not_selected]))] if config.value_prefix else []) +
+                words +
+                ([Word(str(uuid.uuid4()), self.bbox, config.value_suffix, is_structure=True, is_clickable=(words and words[0] in [config.selection_element_selected, config.selection_element_not_selected]))] if config.value_suffix else [])
             )
         for w in words:
             w.value_id = str(self.id)

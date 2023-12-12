@@ -66,7 +66,19 @@ class TextLinearizationConfig:
 
     table_column_separator: str = "\t"  #: Table column separator, used when linearizing layout tables, not used if AnalyzeDocument was called with the TABLES feature
 
+    table_prefix: str = ""
+
+    table_suffix: str = ""
+
     table_row_separator: str = os.linesep  #: Table row separator
+
+    table_row_prefix: str = "" #: Prefix for table row
+
+    table_row_suffix: str = "" #: Suffix for table row
+
+    table_cell_prefix: str = "" #: Prefix for table cell
+
+    table_cell_suffix: str = "" #: Suffix for table cell
 
     section_header_prefix: str = ""  #: Prefix for section header layout elements
 
@@ -81,6 +93,10 @@ class TextLinearizationConfig:
     )  #: Prefix for key_value layout elements (not for individual key-value elements)
 
     key_value_layout_suffix: str = ""  #: Suffix for key_value layout elements (not for individual key-value elements)
+
+    key_value_prefix: str = "" #: Prefix for key-value elements
+
+    key_value_suffix: str = "" #: Suffix for key-value elements
 
     key_prefix: str = ""  #: Prefix for key elements
 
@@ -104,4 +120,8 @@ class TextLinearizationConfig:
 
     heuristic_overlap_ratio: float = 0.5  #: How much vertical overlap is tolerated between two subsequent lines before merging them into a single line
 
-    signature_token = "[SIGNATURE]"  #: Signature representation in the linearized text
+    signature_token: str = "[SIGNATURE]"  #: Signature representation in the linearized text
+
+    add_prefixes_and_suffixes_as_words: bool = False #: Controls if the prefixes/suffixes will be inserted in the words returned by `get_text_and_words`
+
+    add_prefixes_and_suffixes_in_text: bool = True #: Controls if the prefixes/suffixes will be added to the linearized text

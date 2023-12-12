@@ -612,13 +612,50 @@ class Table(DocumentEntity):
         if len(words_) < config.table_min_table_words:
             return linearize_children(words_, config=config)
 
-        words = []
+        words = [Word(str(uuid.uuid4()), self.bbox, config.table_prefix)] if config.table_prefix else []
         cells = sorted(
             self.table_cells, key=lambda cell: (cell.row_index, cell.col_index)
         )
         for cell in cells:
             _, cell_words = cell.get_text_and_words(config)
-            words.extend(cell_words)
+            if config.add_prefixes_and_suffixes_as_words:
+                if config.table_cell_prefix:
+                    words.append(
+                        Word(
+                            str(uuid.uuid4()),
+                            BoundingBox.enclosing_bbox(cell_words) if any([c.bbox for c in cell_words]) else self.bbox,
+                            config.table_cell_prefix,
+                            is_structure=True
+                        )
+                    )
+                    words[-1].cell_id = cell.id
+                    words[-1].cell_bbox = cell.bbox
+                    words[-1].col_index = cell.col_index
+                    words[-1].col_span = cell.col_span
+                    words[-1].row_index = cell.row_index
+                    words[-1].row_span = cell.row_span
+
+                words.extend(cell_words)
+                if config.table_cell_suffix:
+                    words.append(
+                        Word(
+                            str(uuid.uuid4()),
+                            BoundingBox.enclosing_bbox(cell_words) if any([c.bbox for c in cell_words]) else self.bbox,
+                            config.table_cell_suffix,
+                            is_structure=True
+                        )
+                    )
+                    words[-1].cell_id = cell.id
+                    words[-1].cell_bbox = cell.bbox
+                    words[-1].col_index = cell.col_index
+                    words[-1].col_span = cell.col_span
+                    words[-1].row_index = cell.row_index
+                    words[-1].row_span = cell.row_span
+            else:
+                words.extend(cell_words)
+
+        if config.table_suffix:
+            words.append(Word(str(uuid.uuid4()), self.bbox, config.table_suffix))
 
         for w in words:
             w.table_id = str(self.id)
@@ -649,7 +686,11 @@ class Table(DocumentEntity):
                 text = (
                     text
                     + "\t".join(
-                        cell.text for cell in sorted(row, key=lambda c: c.col_index)
+                        (
+                            (config.table_cell_prefix + cell.text + config.table_cell_suffix)
+                            if config.add_prefixes_and_suffixes_in_text else
+                            cell.text
+                        ) for cell in sorted(row, key=lambda c: c.col_index)
                     )
                     + "\n"
                 )

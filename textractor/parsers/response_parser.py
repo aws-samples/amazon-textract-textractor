@@ -283,6 +283,7 @@ def _create_line_objects(
             for word in line_words:
                 word.line = lines[-1]
                 word.line_id = lines[-1].id
+                word.line_bbox = lines[-1].bbox
             lines[-1].raw_object = line
 
     for line in lines:
@@ -568,6 +569,7 @@ def _create_signature_objects(
         page.leaf_layouts.append(layout)
 
     return list(signatures_added)
+
 
 
 def _create_keyvalue_objects(
@@ -1256,8 +1258,9 @@ def parse_document_api_response(response: dict) -> Document:
             for c in [c for c in layout.children if not isinstance(c, Line)]:
                 for w in c.words:
                     if w.line_id in lines:
-                        lines[w.line_id].words.remove(w)
-                        if not lines[w.line_id].words:
+                        if w in lines[w.line_id].words:
+                            lines[w.line_id].words.remove(w)
+                        if not lines[w.line_id].words and lines[w.line_id] in layout.children:
                             layout.children.remove(lines[w.line_id])
                             continue
                         lines[w.line_id].bbox = BoundingBox.enclosing_bbox(

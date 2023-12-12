@@ -8,10 +8,10 @@ from typing import Any
 from textractor.entities.document import Document
 from textractor.parsers.response_parser import parse
 from textractor.data.constants import TextractAPI
-from textractor.utils.results_utils import results_exist
+from textractor.utils.results_utils import results_exist, get_full_json_from_output_config
 from textractcaller.t_call import (
+    get_job_response,
     get_full_json,
-    get_full_json_from_output_config,
     OutputConfig,
 )
 
@@ -41,44 +41,44 @@ class LazyDocument:
         self._document = None
         self._images = images
         self._output_config = output_config
-        self._polling_interval = 1
-        self._get_result_s3_timeout = 10
+        self._s3_polling_interval = 1
+        self._textract_polling_interval = 5
 
     @property
-    def polling_interval(self) -> int:
+    def s3_polling_interval(self) -> int:
         """Getter for the polling interval
 
         :return: Time between get_full_result calls
         :rtype: int
         """
-        return self._polling_interval
+        return self._s3_polling_interval
 
-    @polling_interval.setter
-    def polling_interval(self, polling_interval: int):
+    @s3_polling_interval.setter
+    def s3_polling_interval(self, s3_polling_interval: int):
         """Setter for the polling interval
 
         :param polling_interval: Time between get_full_result calls
         :type polling_interval: int
         """
-        self._polling_interval = polling_interval
+        self._s3_polling_interval = s3_polling_interval
 
     @property
-    def get_result_s3_timeout(self) -> int:
-        """Getter for the timeout when getting results from S3. This is useful as a final condition when the Textract call failed.
+    def textract_polling_interval(self) -> int:
+        """Getter for the polling interval
 
-        :return: Timeout in second to wait before calling Textract GetDocumentAnalysis
+        :return: Time between get_full_result calls
         :rtype: int
         """
-        return self._get_result_s3_timeout
+        return self._textract_polling_interval
 
-    @get_result_s3_timeout.setter
-    def get_result_s3_timeout(self, timeout: int):
-        """Setter for the timeout when getting results from S3.
+    @textract_polling_interval.setter
+    def textract_polling_interval(self, textract_polling_interval: int):
+        """Setter for the polling interval
 
-        :param timeout: Timeout in second to wait before calling Textract GetDocumentAnalysis
-        :type timeout: int
+        :param polling_interval: Time between get_full_result calls
+        :type polling_interval: int
         """
-        self._get_result_s3_timeout = timeout
+        self._textract_polling_interval = textract_polling_interval
 
     @property
     def document(self) -> Document:
@@ -106,10 +106,10 @@ class LazyDocument:
             "_textract_client",
             "_document",
             "_images",
-            "polling_interval",
-            "_polling_interval",
-            "get_result_s3_timeout",
-            "_get_result_s3_timeout",
+            "s3_polling_interval",
+            "_s3_polling_interval",
+            "textract_polling_interval",
+            "_textract_polling_interval",
             "_output_config",
         ]:
             return object.__getattribute__(self, __name)
@@ -125,17 +125,35 @@ class LazyDocument:
                     self._output_config.s3_prefix,
                     s3_client,
                 ):
-                    time.sleep(self._polling_interval)
-                    if time.time() - start > self._get_result_timeout:
-                        response = get_full_json(
-                            self.job_id,
-                            TextractAPI.TextractAPI_to_Textract_API(self._api)
+                    time.sleep(self._s3_polling_interval)
+                    if time.time() - start > self._textract_polling_interval:
+                        response = get_job_response(
+                            job_id=self.job_id,
+                            textract_api=TextractAPI.TextractAPI_to_Textract_API(self._api)
                             if isinstance(self._api, TextractAPI)
                             else self._api,
-                            self._textract_client,
-                            job_done_polling_interval=self._polling_interval,
+                            boto3_textract_client=self._textract_client,
                         )
-                        break
+                        job_status = response["JobStatus"]
+                        if job_status == "IN_PROGRESS":
+                            start = time.time()
+                            response = None
+                            continue
+                        elif job_status == "SUCCEEDED" and "NextToken" in response:
+                            response = get_full_json(
+                                self.job_id,
+                                TextractAPI.TextractAPI_to_Textract_API(self._api)
+                                if isinstance(self._api, TextractAPI)
+                                else self._api,
+                                self._textract_client,
+                                job_done_polling_interval=1,
+                            )
+                            break
+                        elif job_status == "SUCCEEDED":
+                            break
+                        else:
+                            raise Exception(f"Job failed with status: {job_status}\n{response}")
+                        
                 if not response:
                     response = get_full_json_from_output_config(
                         self._output_config,
@@ -151,7 +169,7 @@ class LazyDocument:
                     if isinstance(self._api, TextractAPI)
                     else self._api,
                     self._textract_client,
-                    job_done_polling_interval=self._polling_interval,
+                    job_done_polling_interval=self.textract_polling_interval,
                 )
             self._document = parse(response)
             if self._images is not None:
