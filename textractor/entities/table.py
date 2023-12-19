@@ -493,12 +493,12 @@ class Table(DocumentEntity):
 
         return new_table
 
-    def to_pandas(self, use_columns=False, checkbox_string="X ", config: TextLinearizationConfig = TextLinearizationConfig()):
+    def to_pandas(self, use_columns=False, config: TextLinearizationConfig = TextLinearizationConfig()):
         """
         Converts the table to a pandas DataFrame
 
         :param use_columns: If the first row of the table is made of column headers, use them for the pandas dataframe. Only supports single row header.
-        :param checkbox_string: first character is selected checkbox second character is non-selected checkbox
+        :param config: Text linearization configuration object for the table content
         :return:
         """
         try:
@@ -508,10 +508,6 @@ class Table(DocumentEntity):
                 "pandas library is required for exporting tables to DataFrame objects or markdown"
             )
 
-        assert (
-            len(checkbox_string) == 2
-        ), "Checkbox string needs to be exactly two characters"
-
         if use_columns:
             # Try to automatically get the columns if they are in the first row
             columns = []
@@ -519,7 +515,7 @@ class Table(DocumentEntity):
                 for cell in self.table_cells:
                     if cell.col_index == j and cell.row_index == 1:
                         if cell.is_column_header:
-                            columns.append(cell.text)
+                            columns.append(cell.get_text(config))
             if len(columns) == self.column_count:
                 use_columns = True
             else:
