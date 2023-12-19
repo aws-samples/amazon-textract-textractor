@@ -36,6 +36,7 @@ from textractor.entities.query import Query
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.selection_element import SelectionElement
 from textractor.entities.layout import Layout
+from textractor.utils.geometry_util import sort_by_position
 from textractor.data.constants import (
     LAYOUT_ENTITY,
     TABLE_FOOTER,
@@ -978,6 +979,7 @@ def _create_table_objects(
             w.col_index = table_cells[cell_id].col_index
         table_words.extend(cell_words)
         selection_child = [checkboxes[child_id] for child_id in selection_ids]
+        selection_child = sort_by_position(selection_child)
 
         table_cells[cell_id].words = cell_words
         if selection_child:
