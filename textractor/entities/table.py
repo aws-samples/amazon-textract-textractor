@@ -761,7 +761,6 @@ def _get_new_table_cells(rows, filtered_rows):
         if (cell_row, cell_col) in new_cells_dict.keys() and not cell.metadata[
             IS_MERGED_CELL
         ]:
-            new_cells_dict[(cell_row, cell_col)].words = list(cell.words)
             new_cells_dict[(cell_row, cell_col)].add_children(list(cell.children))
 
         else:
