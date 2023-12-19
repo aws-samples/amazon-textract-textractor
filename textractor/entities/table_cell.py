@@ -9,7 +9,7 @@ Represents a single :class:`TableCell:class:` object. The :class:`TableCell` obj
 """
 
 import os
-from typing import List
+from typing import List, Tuple
 
 from textractor.entities.word import Word
 from textractor.exceptions import InputError
@@ -199,17 +199,7 @@ class TableCell(DocumentEntity):
         :return words: List of Word objects, each representing a word within the TableCell.
         :rtype: list
         """
-        return EntityList(self._words)
-
-    @words.setter
-    def words(self, words: List[Word]):
-        """
-        Add Word objects to the :class:`TableCell`.
-
-        :param words: List of Word objects, each representing a word within the TableCell. No specific ordering is assumed as it is ordered internally.
-        :type words: list
-        """
-        self._words = words
+        return EntityList(self.get_text_and_words()[1])
 
     @property
     def checkboxes(self):
@@ -226,23 +216,31 @@ class TableCell(DocumentEntity):
         :return: Text in the cell
         :rtype: str
         """
-        return " ".join(
-            [
-                " ".join([str(c) for c in self.checkboxes]),
-                " ".join([w.text for w in self.words]),
-            ]
-        )
+        return self.get_text()
+
+    def get_text(self, config: TextLinearizationConfig = TextLinearizationConfig()) -> str:
+        """Return the text in the cell as one space-separated string
+        
+        :return: Text in the cell
+        :rtype: str
+        """
+        return self.get_text_and_words(config)[0]
 
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ) -> str:
+    ) -> Tuple[str, List]:
         """Returns the text in the cell as one space-separated string
 
         :return: Text in the cell
-        :rtype: str, List
+        :rtype: Tuple[str, List]
         """
-        text = linearize_children(self.words, config=config, no_new_lines=True)
-        return text, self.words
+        texts = []
+        words = []
+        for child in self.children:
+            child_text, child_words = child.get_text_and_words(config)
+            texts.append(child_text)
+            words += child_words
+        return " ".join(texts), words
 
     @property
     def table_id(self):

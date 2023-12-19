@@ -174,9 +174,37 @@ class Value(DocumentEntity):
             text = config.value_prefix + text + config.value_suffix
         if config.add_prefixes_and_suffixes_as_words:
             words = (
-                ([Word(str(uuid.uuid4()), self.bbox, config.value_prefix, is_structure=True, is_clickable=(words and words[0] in [config.selection_element_selected, config.selection_element_not_selected]))] if config.value_prefix else []) +
+                (
+                    [
+                        Word(
+                            str(uuid.uuid4()),
+                            self.bbox,
+                            config.value_prefix,
+                            is_structure=True,
+                            is_clickable=(
+                                bool(words) and words[0] in [config.selection_element_selected, config.selection_element_not_selected]
+                            )
+                        )
+                    ]
+                    if config.value_prefix else
+                    []
+                ) +
                 words +
-                ([Word(str(uuid.uuid4()), self.bbox, config.value_suffix, is_structure=True, is_clickable=(words and words[0] in [config.selection_element_selected, config.selection_element_not_selected]))] if config.value_suffix else [])
+                (
+                    [
+                        Word(
+                            str(uuid.uuid4()),
+                            self.bbox,
+                            config.value_suffix,
+                            is_structure=True,
+                            is_clickable=(
+                                bool(words) and words[0] in [config.selection_element_selected, config.selection_element_not_selected]
+                            )
+                        )
+                    ]
+                    if config.value_suffix else
+                    []
+                )
             )
         for w in words:
             w.value_id = str(self.id)

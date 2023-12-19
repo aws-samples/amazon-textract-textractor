@@ -137,6 +137,14 @@ class Word(DocumentEntity):
         """
         self._page_id = page_id
 
+    @property
+    def words(self):
+        """Returns itself
+
+        :rtype: Word
+        """
+        return [self]
+
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ):

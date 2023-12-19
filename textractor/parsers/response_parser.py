@@ -662,77 +662,24 @@ def _create_keyvalue_objects(
 
     key_values = list(keys.values())
     for kv in key_values:
+        kv.bbox = BoundingBox.enclosing_bbox([kv.bbox, kv.value.bbox])
         kv.page = page.page_num
         kv.page_id = page.id
 
-    kv_added = set()
-    for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
-        if layout.layout_type == LAYOUT_ENTITY:
-            continue
-        for kv in sorted(key_values, key=lambda x: x.bbox.y):
-            if (
-                layout.bbox.get_intersection(kv.bbox).area > THRESHOLD * kv.bbox.area
-                and kv not in kv_added
-            ):
-                layout.children.append(kv)
-                kv_added.add(kv)
-                key_values.remove(kv)
+    #kv_added = set()
+    #for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
+    #    if layout.layout_type == LAYOUT_ENTITY:
+    #        continue
+    #    for kv in sorted(key_values, key=lambda x: x.bbox.y):
+    #        if (
+    #            layout.bbox.get_intersection(kv.bbox).area > THRESHOLD * kv.bbox.area
+    #            and kv not in kv_added
+    #        ):
+    #            layout.children.append(kv)
+    #            kv_added.add(kv)
+    #            key_values.remove(kv)
 
-    kv_layouts = []
-    for kv in key_values:
-        if kv not in kv_added:
-            kv_added.add(kv)
-            layout = Layout(
-                entity_id=kv.id,
-                bbox=kv.bbox,
-                label=LAYOUT_KEY_VALUE,
-                reading_order=-1,
-            )
-            layout.children.append(kv)
-            layout.page = page.page_num
-            layout.page_id = page.id
-            kv_layouts.append(layout)
-
-    layouts_to_remove = []
-    for layout in page.leaf_layouts:
-        layouts_that_intersect = []
-        for kv_layout in kv_layouts:
-            intersection = layout.bbox.get_intersection(kv_layout.bbox).area
-            if intersection:
-                layouts_that_intersect.append(kv_layout)
-        words_in_sub_layouts = set()
-        for i, intersect_layout in enumerate(
-            sorted(layouts_that_intersect, key=lambda l: (l.bbox.y, l.bbox.x))
-        ):
-            intersect_layout.reading_order = (
-                (layout.reading_order + (i + 1) * 0.1)
-                if intersect_layout.reading_order == -1
-                else min(
-                    intersect_layout.reading_order, layout.reading_order + (i + 1) * 0.1
-                )
-            )
-            for w in intersect_layout.children[0].words:
-                words_in_sub_layouts.add(w.id)
-        if words_in_sub_layouts:
-            remaining_words = []
-            for w in layout.words:
-                if w.id not in words_in_sub_layouts:
-                    remaining_words.append(w)
-            if remaining_words:
-                layout.bbox = BoundingBox.enclosing_bbox(
-                    [w.bbox for w in remaining_words]
-                )
-                layout._children = list(set([w.line for w in remaining_words]))
-            else:
-                layouts_to_remove.append(layout)
-
-    for layout in layouts_to_remove:
-        page.leaf_layouts.remove(layout)
-
-    for layout in kv_layouts:
-        page.leaf_layouts.append(layout)
-
-    return list(kv_added), kv_words, selection_elements
+    return key_values, kv_words, selection_elements
 
 
 def _create_layout_objects(
@@ -892,6 +839,7 @@ def _create_table_objects(
     id_entity_map: Dict[str, List[str]],
     entity_id_map: Dict[str, List[str]],
     existing_words: Dict[str, Word],
+    key_values: Dict[str, KeyValue],
     checkboxes: Dict[str, SelectionElement],
     page: Page,
 ) -> Tuple[List[Table], List[Word]]:
@@ -955,6 +903,7 @@ def _create_table_objects(
     merged_child_ids = sum([ids for ids in merged_child_map.values()], [])
 
     table_words = []
+    added_key_values = set()
     for cell_id, cell in all_table_cells_info.items():
         children = _get_relationship_ids(cell, relationship="CHILD")
         cell_word_ids = [
@@ -977,11 +926,53 @@ def _create_table_objects(
             w.row_index = table_cells[cell_id].row_index
             w.col_index = table_cells[cell_id].col_index
         table_words.extend(cell_words)
-        selection_child = [checkboxes[child_id] for child_id in selection_ids]
 
-        table_cells[cell_id].words = cell_words
-        if selection_child:
-            table_cells[cell_id].add_children(selection_child)
+        table_cells[cell_id].add_children(cell_words)
+
+        for kv_id, kv in key_values.items():
+            if kv_id in added_key_values:
+                continue
+            if BoundingBox.center_is_inside(kv.bbox, table_cells[cell_id].bbox):
+                try:
+                    if not kv.words:
+                        added_key_values.add(kv_id)
+                        continue
+                    i = table_cells[cell_id]._children.index(kv.words[0])
+                    table_cells[cell_id]._children.insert(i, kv)
+                    for w in kv.words:
+                        try:
+                            table_cells[cell_id]._children.remove(w)
+                        except ValueError:
+                            continue
+                    added_key_values.add(kv_id)
+                except ValueError:
+                    # Word is not in the table cells words
+                    continue
+        
+        for child_id in selection_ids:
+            if checkboxes[child_id].key_id in added_key_values:
+                continue
+            # This is a KeyValue
+            if checkboxes[child_id].key_id is not None:
+                kv = key_values[checkboxes[child_id].key_id]
+                try:
+                    if not kv.words:
+                        added_key_values.add(kv_id)
+                        continue
+                    i = table_cells[cell_id]._children.index(kv.words[0])
+                    table_cells[cell_id]._children.insert(i, kv)
+                    for w in kv.words:
+                        try:
+                            table_cells[cell_id]._children.remove(w)
+                        except ValueError:
+                            continue
+                    added_key_values.add(checkboxes[child_id].key_id)
+                except ValueError:
+                    # Word is not in the table cells words
+                    continue
+            # This is just a checkbox
+            else:
+                table_cells[cell_id]._children.append(checkboxes[child_id])
 
         # update metadata
         meta_info = cell.get("EntityTypes", [])
@@ -1063,12 +1054,12 @@ def _create_table_objects(
 
     # Assign tables to layout elements
     table_added = set()
-    # for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
-    #    if layout.layout_type == LAYOUT_TABLE:
-    #        for table in sorted(list(tables.values()), key=lambda x: x.bbox.y):
-    #            if layout.bbox.get_intersection(table.bbox).area > THRESHOLD*table.bbox.area and table not in table_added:
-    #                layout.children.append(table)
-    #                table_added.add(table)
+    for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
+        if layout.layout_type == LAYOUT_TABLE:
+            for table in sorted(list(tables.values()), key=lambda x: x.bbox.y):
+                if layout.bbox.get_intersection(table.bbox).area > THRESHOLD*table.bbox.area and table not in table_added:
+                    layout.children.append(table)
+                    table_added.add(table)
 
     tables_layout = []
     for table in tables.values():
@@ -1128,7 +1119,7 @@ def _create_table_objects(
     for table in tables:
         table.page = page.page_num
         table.page_id = page.id
-    return tables, table_words
+    return tables, table_words, added_key_values
 
 
 def parse_document_api_response(response: dict) -> Document:
@@ -1216,16 +1207,79 @@ def parse_document_api_response(response: dict) -> Document:
         for checkbox in checkboxes:
             id_entity_map[checkbox.id] = SELECTION_ELEMENT
 
-        tables, table_words = _create_table_objects(
+        tables, table_words, kv_added = _create_table_objects(
             entity_id_map[TABLE],
             id_json_map,
             id_entity_map,
             entity_id_map,
             existing_words,
+            {kv.id:kv for kv in key_values},
             selection_elements,
             page,
         )
         page.tables = tables
+
+        kv_layouts = []
+        for kv in key_values:
+            if kv.id not in kv_added:
+                kv_added.add(kv.id)
+                layout = Layout(
+                    entity_id=kv.id,
+                    bbox=kv.bbox,
+                    label=LAYOUT_KEY_VALUE,
+                    reading_order=-1,
+                )
+                layout.children.append(kv)
+                layout.page = page.page_num
+                layout.page_id = page.id
+                kv_layouts.append(layout)
+#
+        layouts_to_remove = []
+        for layout in page.leaf_layouts:
+            layouts_that_intersect = []
+            for kv_layout in kv_layouts:
+                intersection = layout.bbox.get_intersection(kv_layout.bbox).area
+                if intersection:
+                    layouts_that_intersect.append(kv_layout)
+            words_in_sub_layouts = set()
+            for i, intersect_layout in enumerate(
+                sorted(layouts_that_intersect, key=lambda l: (l.bbox.y, l.bbox.x))
+            ):
+                intersect_layout.reading_order = (
+                    (layout.reading_order + (i + 1) * 0.1)
+                    if intersect_layout.reading_order == -1
+                    else min(
+                        intersect_layout.reading_order, layout.reading_order + (i + 1) * 0.1
+                    )
+                )
+                for w in intersect_layout.children[0].words:
+                    words_in_sub_layouts.add(w.id)
+            if words_in_sub_layouts:
+                if layout.layout_type == LAYOUT_TABLE:
+                    for cell in layout._children:
+                        for w in words_in_sub_layouts:
+                            try:
+                                cell._children.remove(w)
+                            except ValueError:
+                                continue
+                else:
+                    remaining_words = []
+                    for w in layout.words:
+                        if w.id not in words_in_sub_layouts:
+                            remaining_words.append(w)
+                    if remaining_words:
+                        layout.bbox = BoundingBox.enclosing_bbox(
+                            [w.bbox for w in remaining_words]
+                        )
+                        layout._children = list(set([w.line for w in remaining_words]))
+                    else:
+                        layouts_to_remove.append(layout)
+
+        for layout in layouts_to_remove:
+            page.leaf_layouts.remove(layout)
+
+        for layout in kv_layouts:
+            page.leaf_layouts.append(layout)
 
         all_words = table_words + kv_words + line_words
         for word in all_words:
@@ -1260,8 +1314,9 @@ def parse_document_api_response(response: dict) -> Document:
                     if w.line_id in lines:
                         if w in lines[w.line_id].words:
                             lines[w.line_id].words.remove(w)
-                        if not lines[w.line_id].words and lines[w.line_id] in layout.children:
-                            layout.children.remove(lines[w.line_id])
+                        if not lines[w.line_id].words:
+                            if lines[w.line_id] in layout.children:
+                                layout.children.remove(lines[w.line_id])
                             continue
                         lines[w.line_id].bbox = BoundingBox.enclosing_bbox(
                             lines[w.line_id].words
@@ -1269,7 +1324,6 @@ def parse_document_api_response(response: dict) -> Document:
 
     document.pages = sorted(list(pages.values()), key=lambda x: x.page_num)
     return document
-
 
 def parse_analyze_id_response(response):
     id_documents = []
