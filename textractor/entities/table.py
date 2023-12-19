@@ -659,10 +659,7 @@ class Table(DocumentEntity):
         if config.table_linearization_format == "markdown":
             df = self.to_pandas(
                 use_columns=True,
-                checkbox_string=[
-                    config.selection_element_selected,
-                    config.selection_element_not_selected,
-                ],
+                config=config
             )
             has_column = any([isinstance(c, str) for c in df.columns])
             if config.table_remove_column_headers:
@@ -780,7 +777,6 @@ def _get_new_table_cells(rows, filtered_rows):
                         new_cell_siblings.append(new_cells_dict[(new_row, new_col)])
 
                 new_cells_dict[(cell_row, cell_col)].siblings = new_cell_siblings
-                new_cells_dict[(cell_row, cell_col)].words = cell_words
                 new_cells_dict[(cell_row, cell_col)].add_children(cell_children)
 
                 for sibling in new_cells_dict[(cell_row, cell_col)].siblings:
