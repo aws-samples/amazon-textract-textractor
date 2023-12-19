@@ -493,7 +493,7 @@ class Table(DocumentEntity):
 
         return new_table
 
-    def to_pandas(self, use_columns=False, checkbox_string="X "):
+    def to_pandas(self, use_columns=False, checkbox_string="X ", config: TextLinearizationConfig = TextLinearizationConfig()):
         """
         Converts the table to a pandas DataFrame
 
@@ -531,9 +531,7 @@ class Table(DocumentEntity):
         table = [["" for _ in range(self.column_count)] for _ in range(self.row_count)]
 
         for cell in self.table_cells:
-            table[cell.row_index - 1][cell.col_index - 1] = " ".join(
-                [checkbox_string[0 if c.is_selected() else 1] for c in cell.checkboxes]
-            ) + " ".join([w.text for w in cell.words])
+            table[cell.row_index - 1][cell.col_index - 1] = cell.get_text(config)
 
         return DataFrame(
             table[1:] if use_columns else table,

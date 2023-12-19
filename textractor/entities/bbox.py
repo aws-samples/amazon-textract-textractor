@@ -217,6 +217,28 @@ class BoundingBox(SpatialObject):
                 y2 = max(y2, bbox.y + bbox.height)
         return BoundingBox(x1, y1, x2 - x1, y2 - y1, spatial_object=spatial_object)
 
+    @classmethod
+    def is_inside(cls, bbox_a, bbox_b):
+        """Returns true if Bounding Box A is within Bounding Box B
+        """
+        return (
+            bbox_a.x >= bbox_b.x and
+            (bbox_a.x + bbox_a.width) <= (bbox_b.x + bbox_b.width) and
+            bbox_a.y >= bbox_b.y and
+            (bbox_a.y + bbox_a.height) <= (bbox_b.y + bbox_b.height)
+        )
+
+    @classmethod
+    def center_is_inside(cls, bbox_a, bbox_b):
+        """Returns true if the center point of Bounding Box A is within Bounding Box B
+        """
+        return (
+            (bbox_a.x + bbox_a.width / 2) >= bbox_b.x and
+            (bbox_a.x + bbox_a.width / 2) <= (bbox_b.x + bbox_b.width) and
+            (bbox_a.y + bbox_a.height / 2) >= bbox_b.y and
+            (bbox_a.y + bbox_a.height / 2) <= (bbox_b.y + bbox_b.height)
+        )
+
     @property
     def area(self):
         """

@@ -9,7 +9,6 @@ import uuid
 
 from typing import List
 from textractor.data.text_linearization_config import TextLinearizationConfig
-from textractor.entities.value import Value
 from textractor.entities.word import Word
 from textractor.entities.line import Line
 from textractor.entities.bbox import BoundingBox
@@ -17,7 +16,7 @@ from textractor.data.constants import SELECTED, NOT_SELECTED, SelectionStatus
 from textractor.entities.document_entity import DocumentEntity
 
 
-class SelectionElement(Value):
+class SelectionElement(DocumentEntity):
     """
     To create a new :class:`SelectionElement` object we need the following:
 
@@ -76,17 +75,8 @@ class SelectionElement(Value):
 
         words = [w]
 
-        if config.add_prefixes_and_suffixes_in_text:
-            text = config.value_prefix + w.text + config.value_suffix
-        else:
-            text = w.text
+        text = w.text
             
-        if config.add_prefixes_and_suffixes_as_words:
-            words = (
-                ([Word(str(uuid.uuid4()), self.bbox, config.value_prefix, is_structure=True, is_clickable=True)] if config.value_prefix else []) +
-                words +
-                ([Word(str(uuid.uuid4()), self.bbox, config.value_suffix, is_structure=True, is_clickable=True)] if config.value_suffix else [])
-            )
         for w in words:
             w.value_id = str(self.id)
             w.value_bbox = self.bbox
