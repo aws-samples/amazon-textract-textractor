@@ -337,7 +337,7 @@ class TableCell(DocumentEntity):
         if self.metadata.get(IS_MERGED_CELL, False):
             entities = {
                 (cell.row_index, cell.col_index): sorted(
-                    cell.words + cell.children, key=lambda x: (x.bbox.x, x.bbox.y)
+                    cell.words, key=lambda x: (x.bbox.x, x.bbox.y)
                 )
                 for cell in sorted(
                     self.siblings, key=lambda x: (x.row_index, x.col_index)
@@ -358,7 +358,7 @@ class TableCell(DocumentEntity):
             entity_repr = "".join(entity_repr)
 
         else:
-            entities = self.words + self.children
+            entities = self.words
             entity_repr = " ".join([entity.__repr__() for entity in entities])
 
         entity_string = f"<Cell: ({self.row_index},{self.col_index}), Span: ({self.row_span}, {self.col_span}), Column Header: { self.is_column_header}, "
