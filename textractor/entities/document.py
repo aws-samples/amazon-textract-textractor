@@ -560,20 +560,20 @@ class Document(SpatialObject):
             logging.warning("Document does not contain key-values.")
         elif include_kv:
             for kv in self.key_values:
-                keys.append(kv.key.__repr__())
-                values.append(kv.value.__repr__())
+                keys.append(" ".join([w.text for w in kv.key]))
+                values.append(kv.value.get_text())
 
         if include_checkboxes and not self.checkboxes:
             logging.warning("Document does not contain checkbox elements.")
         elif include_checkboxes:
             for kv in self.checkboxes:
-                keys.append(kv.key.__repr__())
+                keys.append(" ".join([w.text for w in kv.key]))
                 values.append(kv.value.children[0].status.name)
 
         with open(filepath, "w") as f:
-            f.write(f"Key,Value{os.linesep}")
+            f.write(f"Key;Value{os.linesep}")
             for k, v in zip(keys, values):
-                f.write(f"{k},{v}{os.linesep}")
+                f.write(f"{k};{v}{os.linesep}")
 
         logging.info(
             f"csv file stored at location {os.path.join(os.getcwd(),filepath)}"

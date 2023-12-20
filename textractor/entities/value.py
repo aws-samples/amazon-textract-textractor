@@ -158,6 +158,11 @@ class Value(DocumentEntity):
 
         return EntityList([word for word in self.words if word.text_type == text_type])
 
+    def get_text(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ) -> str:
+        return self.get_text_and_words(config)[0]
+
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ):
