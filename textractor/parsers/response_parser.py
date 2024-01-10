@@ -1260,8 +1260,9 @@ def parse_document_api_response(response: dict) -> Document:
                     if w.line_id in lines:
                         if w in lines[w.line_id].words:
                             lines[w.line_id].words.remove(w)
-                        if not lines[w.line_id].words and lines[w.line_id] in layout.children:
-                            layout.children.remove(lines[w.line_id])
+                        if not lines[w.line_id].words:
+                            if lines[w.line_id] in layout.children:
+                                layout.children.remove(lines[w.line_id])
                             continue
                         lines[w.line_id].bbox = BoundingBox.enclosing_bbox(
                             lines[w.line_id].words
