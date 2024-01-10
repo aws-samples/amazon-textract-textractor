@@ -34,6 +34,10 @@ class TextLinearizationConfig:
         " "  #: Separator to use when combining elements within a text block
     )
 
+    same_layout_element_separator: str = (
+        "\n" #: Separator to use when two elements are in the same layout element
+    )
+
     layout_element_separator: str = (
         os.linesep * 2
     )  #: Separator to use when combining linearized layout elements
@@ -79,6 +83,16 @@ class TextLinearizationConfig:
     table_cell_prefix: str = "" #: Prefix for table cell
 
     table_cell_suffix: str = "" #: Suffix for table cell
+
+    table_cell_header_prefix: str = "" #: Prefix for header cell
+
+    table_cell_header_suffix: str = "" #: Suffix for header cell
+
+    table_cell_empty_cell_placeholder: str = "" #: Placeholder for empty cells
+
+    header_prefix: str = ""  #: Prefix for header layout elements
+
+    header_suffix: str = ""  #: Suffix for header layout elements
 
     section_header_prefix: str = ""  #: Prefix for section header layout elements
 

@@ -192,6 +192,20 @@ class Layout(DocumentEntity):
                     final_words + 
                     ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.title_suffix, is_structure=True)] if config.title_suffix else []) 
                 )
+        elif self.layout_type == LAYOUT_HEADER:
+            final_text, final_words = linearize_children(
+                self.children, config, no_new_lines=True
+            )
+            if config.add_prefixes_and_suffixes_in_text:
+                final_text = (
+                    config.header_prefix + final_text + config.header_suffix
+                )
+            if config.add_prefixes_and_suffixes_as_words:
+                final_words = (
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.header_prefix, is_structure=True)] if config.title_prefix else []) + 
+                    final_words + 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.header_suffix, is_structure=True)] if config.title_suffix else []) 
+                )
         elif self.layout_type == LAYOUT_SECTION_HEADER:
             final_text, final_words = linearize_children(
                 self.children, config, no_new_lines=True

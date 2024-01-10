@@ -607,46 +607,54 @@ class Table(DocumentEntity):
             return linearize_children(words_, config=config)
 
         words = [Word(str(uuid.uuid4()), self.bbox, config.table_prefix)] if config.table_prefix else []
-        cells = sorted(
-            self.table_cells, key=lambda cell: (cell.row_index, cell.col_index)
-        )
-        for cell in cells:
-            _, cell_words = cell.get_text_and_words(config)
-            if config.add_prefixes_and_suffixes_as_words:
-                if config.table_cell_prefix:
-                    words.append(
-                        Word(
-                            str(uuid.uuid4()),
-                            BoundingBox.enclosing_bbox(cell_words) if any([c.bbox for c in cell_words]) else self.bbox,
-                            config.table_cell_prefix,
-                            is_structure=True
+        rows = sorted([(key, list(group)) for key, group in itertools.groupby(
+            self.table_cells, key=lambda cell: cell.row_index
+        )], key=lambda r: r[0])
+        for _, cells in rows:
+            if config.table_row_prefix and config.add_prefixes_and_suffixes_as_words:
+                words.append(Word(str(uuid.uuid4()), self.bbox, config.table_row_prefix))
+            for cell in sorted(cells, key=lambda c: c.col_index):
+                _, cell_words = cell.get_text_and_words(config)
+                if config.add_prefixes_and_suffixes_as_words:
+                    if config.table_cell_prefix or (config.table_cell_header_prefix and cell.is_column_header):
+                        words.append(
+                            Word(
+                                str(uuid.uuid4()),
+                                BoundingBox.enclosing_bbox(cell_words) if any([c.bbox for c in cell_words]) else self.bbox,
+                                config.table_cell_header_prefix if cell.is_column_header and config.table_cell_header_prefix else config.table_cell_prefix,
+                                is_structure=True
+                            )
                         )
-                    )
-                    words[-1].cell_id = cell.id
-                    words[-1].cell_bbox = cell.bbox
-                    words[-1].col_index = cell.col_index
-                    words[-1].col_span = cell.col_span
-                    words[-1].row_index = cell.row_index
-                    words[-1].row_span = cell.row_span
+                        words[-1].cell_id = cell.id
+                        words[-1].cell_bbox = cell.bbox
+                        words[-1].col_index = cell.col_index
+                        words[-1].col_span = cell.col_span
+                        words[-1].row_index = cell.row_index
+                        words[-1].row_span = cell.row_span
 
-                words.extend(cell_words)
-                if config.table_cell_suffix:
-                    words.append(
-                        Word(
-                            str(uuid.uuid4()),
-                            BoundingBox.enclosing_bbox(cell_words) if any([c.bbox for c in cell_words]) else self.bbox,
-                            config.table_cell_suffix,
-                            is_structure=True
+                    words.extend(cell_words)
+                    if not cell_words and config.table_cell_empty_cell_placeholder:
+                        words.append(Word(str(uuid.uuid4()), cell.bbox, config.table_cell_empty_cell_placeholder))
+
+                    if config.table_cell_suffix or (config.table_cell_header_suffix and cell.is_column_header):
+                        words.append(
+                            Word(
+                                str(uuid.uuid4()),
+                                BoundingBox.enclosing_bbox(cell_words) if any([c.bbox for c in cell_words]) else self.bbox,
+                                config.table_cell_header_suffix if cell.is_column_header and config.table_cell_header_suffix else config.table_cell_suffix,
+                                is_structure=True
+                            )
                         )
-                    )
-                    words[-1].cell_id = cell.id
-                    words[-1].cell_bbox = cell.bbox
-                    words[-1].col_index = cell.col_index
-                    words[-1].col_span = cell.col_span
-                    words[-1].row_index = cell.row_index
-                    words[-1].row_span = cell.row_span
-            else:
-                words.extend(cell_words)
+                        words[-1].cell_id = cell.id
+                        words[-1].cell_bbox = cell.bbox
+                        words[-1].col_index = cell.col_index
+                        words[-1].col_span = cell.col_span
+                        words[-1].row_index = cell.row_index
+                        words[-1].row_span = cell.row_span
+                else:
+                    words.extend(cell_words)
+            if config.table_row_suffix and config.add_prefixes_and_suffixes_as_words:
+                words.append(Word(str(uuid.uuid4()), self.bbox, config.table_row_suffix))
 
         if config.table_suffix:
             words.append(Word(str(uuid.uuid4()), self.bbox, config.table_suffix))
@@ -676,13 +684,19 @@ class Table(DocumentEntity):
             for _, row in rows:
                 text = (
                     text
+                    + (config.table_row_prefix if config.add_prefixes_and_suffixes_in_text else "")
                     + "\t".join(
                         (
-                            (config.table_cell_prefix + cell.text + config.table_cell_suffix)
+                            (
+                                (config.table_cell_header_prefix if config.table_cell_header_prefix and cell.is_column_header else config.table_cell_prefix) +
+                                (cell.text or config.table_cell_empty_cell_placeholder) +
+                                (config.table_cell_header_suffix if config.table_cell_header_suffix and cell.is_column_header else config.table_cell_suffix)
+                            )
                             if config.add_prefixes_and_suffixes_in_text else
-                            cell.text
+                            (cell.text or config.table_cell_empty_cell_placeholder)
                         ) for cell in sorted(row, key=lambda c: c.col_index)
                     )
+                    + (config.table_row_suffix if config.add_prefixes_and_suffixes_in_text else "")
                     + "\n"
                 )
 

@@ -33,7 +33,6 @@ from textractor.entities.table_cell import TableCell
 from textractor.entities.table_title import TableTitle
 from textractor.entities.table_footer import TableFooter
 from textractor.entities.query import Query
-from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.selection_element import SelectionElement
 from textractor.entities.layout import Layout
 from textractor.data.constants import (
@@ -61,14 +60,7 @@ from textractor.data.constants import (
     QUERY,
     SIGNATURE,
     LAYOUT,
-    LAYOUT_TEXT,
-    LAYOUT_TITLE,
-    LAYOUT_HEADER,
-    LAYOUT_FOOTER,
-    LAYOUT_SECTION_HEADER,
-    LAYOUT_PAGE_NUMBER,
     LAYOUT_LIST,
-    LAYOUT_FIGURE,
     LAYOUT_TABLE,
     LAYOUT_KEY_VALUE,
 )
@@ -284,6 +276,7 @@ def _create_line_objects(
                 word.line = lines[-1]
                 word.line_id = lines[-1].id
                 word.line_bbox = lines[-1].bbox
+            lines[-1]._children = line_words
             lines[-1].raw_object = line
 
     for line in lines:
@@ -657,7 +650,7 @@ def _create_keyvalue_objects(
         # find a place to add selection elements for keys
 
         keys[key_id].key = key_words
-        # keys[key_id].add_children([values[key_value_id_map[key_id]]])
+        keys[key_id].add_children(key_words)
         kv_words.extend(key_words)
 
     key_values = list(keys.values())
@@ -1058,7 +1051,10 @@ def _create_table_objects(
         if layout.layout_type == LAYOUT_TABLE:
             for table in sorted(list(tables.values()), key=lambda x: x.bbox.y):
                 if layout.bbox.get_intersection(table.bbox).area > THRESHOLD*table.bbox.area and table not in table_added:
+                    for w in table.words:
+                        layout.remove(w)
                     layout.children.append(table)
+                    layout.bbox = BoundingBox.enclosing_bbox(layout.children)
                     table_added.add(table)
 
     tables_layout = []
@@ -1095,17 +1091,12 @@ def _create_table_objects(
                 )
             )
             for w in intersect_layout.children[0].words:
-                words_in_sub_layouts.add(w.id)
+                words_in_sub_layouts.add(w)
         if words_in_sub_layouts:
-            remaining_words = []
-            for w in layout.words:
-                if w.id not in words_in_sub_layouts:
-                    remaining_words.append(w)
-            if remaining_words:
-                layout.bbox = BoundingBox.enclosing_bbox(
-                    [w.bbox for w in remaining_words]
-                )
-                layout._children = list(set([w.line for w in remaining_words]))
+            for word in words_in_sub_layouts:
+                layout.remove(word)
+            if layout._children:
+                layout.bbox = BoundingBox.enclosing_bbox(layout._children)
             else:
                 layouts_to_remove.append(layout)
 
@@ -1219,6 +1210,21 @@ def parse_document_api_response(response: dict) -> Document:
         )
         page.tables = tables
 
+
+        for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
+            if layout.layout_type == LAYOUT_ENTITY:
+                continue
+            for kv in sorted(key_values, key=lambda x: x.bbox.y):
+                if (
+                    layout.bbox.get_intersection(kv.bbox).area > THRESHOLD * kv.bbox.area
+                    and kv not in kv_added
+                ):
+                    for w in kv.words:
+                        layout.remove(w)
+                    layout.children.append(kv)
+                    kv_added.add(kv)
+                    key_values.remove(kv)
+
         kv_layouts = []
         for kv in key_values:
             if kv.id not in kv_added:
@@ -1233,7 +1239,7 @@ def parse_document_api_response(response: dict) -> Document:
                 layout.page = page.page_num
                 layout.page_id = page.id
                 kv_layouts.append(layout)
-#
+
         layouts_to_remove = []
         for layout in page.leaf_layouts:
             layouts_that_intersect = []
@@ -1253,27 +1259,9 @@ def parse_document_api_response(response: dict) -> Document:
                     )
                 )
                 for w in intersect_layout.children[0].words:
-                    words_in_sub_layouts.add(w.id)
-            if words_in_sub_layouts:
-                if layout.layout_type == LAYOUT_TABLE:
-                    for cell in layout._children:
-                        for w in words_in_sub_layouts:
-                            try:
-                                cell._children.remove(w)
-                            except ValueError:
-                                continue
-                else:
-                    remaining_words = []
-                    for w in layout.words:
-                        if w.id not in words_in_sub_layouts:
-                            remaining_words.append(w)
-                    if remaining_words:
-                        layout.bbox = BoundingBox.enclosing_bbox(
-                            [w.bbox for w in remaining_words]
-                        )
-                        layout._children = list(set([w.line for w in remaining_words]))
-                    else:
-                        layouts_to_remove.append(layout)
+                    words_in_sub_layouts.add(w)
+            for word in words_in_sub_layouts:
+                layout.remove(word)
 
         for layout in layouts_to_remove:
             page.leaf_layouts.remove(layout)
@@ -1307,20 +1295,20 @@ def parse_document_api_response(response: dict) -> Document:
         page.signatures = signatures
 
         # We now have to go through each layout and update its children to avoid duplication.
-        for layout in page.leaf_layouts + page.container_layouts:
-            lines = {c.id: c for c in layout.children if isinstance(c, Line)}
-            for c in [c for c in layout.children if not isinstance(c, Line)]:
-                for w in c.words:
-                    if w.line_id in lines:
-                        if w in lines[w.line_id].words:
-                            lines[w.line_id].words.remove(w)
-                        if not lines[w.line_id].words:
-                            if lines[w.line_id] in layout.children:
-                                layout.children.remove(lines[w.line_id])
-                            continue
-                        lines[w.line_id].bbox = BoundingBox.enclosing_bbox(
-                            lines[w.line_id].words
-                        )
+        #for layout in page.leaf_layouts + page.container_layouts:
+        #    lines = {c.id: c for c in layout.children if isinstance(c, Line)}
+        #    for c in [c for c in layout.children if not isinstance(c, Line)]:
+        #        for w in c.words:
+        #            if w.line_id in lines:
+        #                if w in lines[w.line_id].words:
+        #                    lines[w.line_id].words.remove(w)
+        #                if not lines[w.line_id].words:
+        #                    if lines[w.line_id] in layout.children:
+        #                        layout.children.remove(lines[w.line_id])
+        #                    continue
+        #                lines[w.line_id].bbox = BoundingBox.enclosing_bbox(
+        #                    lines[w.line_id].words
+        #                )
 
     document.pages = sorted(list(pages.values()), key=lambda x: x.page_num)
     return document
@@ -1479,17 +1467,8 @@ def parse(response: dict) -> Document:
     :rtype: Document
     """
     if "IdentityDocuments" in response:
-        from trp.trp2_analyzeid import TAnalyzeIdDocumentSchema
-
-        t_doc = TAnalyzeIdDocumentSchema().load(response)
         return parse_analyze_id_response(response)
     if "ExpenseDocuments" in response:
-        from trp.trp2_expense import TAnalyzeExpenseDocumentSchema
-
-        t_doc = TAnalyzeExpenseDocumentSchema().load(response)
         return parser_analyze_expense_response(response)
     else:
-        from trp.trp2 import TDocumentSchema
-
-        t_doc = TDocumentSchema().load(response)
         return parse_document_api_response(response)

@@ -187,7 +187,7 @@ class Page(SpatialObject):
         combined_words = []
         for w in words:
             combined_words += w
-        return os.linesep.join(text), combined_words
+        return config.layout_element_separator.join(text), combined_words
 
     @property
     def page_layout(self) -> PageLayout:
