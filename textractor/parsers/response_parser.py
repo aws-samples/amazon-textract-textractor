@@ -65,7 +65,7 @@ from textractor.data.constants import (
     LAYOUT_KEY_VALUE,
 )
 
-THRESHOLD = 0.8
+THRESHOLD = 0.95
 
 
 def _create_document_object(response: dict) -> Document:
@@ -373,9 +373,12 @@ def _create_value_objects(
         val_child_ids = _get_relationship_ids(values_info[val_id], relationship="CHILD")
         for child_id in val_child_ids:
             if id_json_map[child_id]["BlockType"] == WORD:
-                values[val_id].words += _create_word_objects(
+                words = _create_word_objects(
                     [child_id], id_json_map, existing_words, page
                 )
+                values[val_id].words += words
+                values[val_id].add_children(words)
+
             elif id_json_map[child_id]["BlockType"] == SIGNATURE:
                 continue
             else:
@@ -651,6 +654,7 @@ def _create_keyvalue_objects(
 
         keys[key_id].key = key_words
         keys[key_id].add_children(key_words)
+        keys[key_id].add_children([keys[key_id].value])
         kv_words.extend(key_words)
 
     key_values = list(keys.values())
@@ -921,27 +925,9 @@ def _create_table_objects(
         table_words.extend(cell_words)
 
         table_cells[cell_id].add_children(cell_words)
-
-        for kv_id, kv in key_values.items():
-            if kv_id in added_key_values:
-                continue
-            if BoundingBox.center_is_inside(kv.bbox, table_cells[cell_id].bbox):
-                try:
-                    if not kv.words:
-                        added_key_values.add(kv_id)
-                        continue
-                    i = table_cells[cell_id]._children.index(kv.words[0])
-                    table_cells[cell_id]._children.insert(i, kv)
-                    for w in kv.words:
-                        try:
-                            table_cells[cell_id]._children.remove(w)
-                        except ValueError:
-                            continue
-                    added_key_values.add(kv_id)
-                except ValueError:
-                    # Word is not in the table cells words
-                    continue
         
+        # There are two types of selection elements, one comes from Tables, the other for KVs
+        # This tries to reconcile both and to insert the selection element in the right place
         for child_id in selection_ids:
             if checkboxes[child_id].key_id in added_key_values:
                 continue
@@ -950,7 +936,7 @@ def _create_table_objects(
                 kv = key_values[checkboxes[child_id].key_id]
                 try:
                     if not kv.words:
-                        added_key_values.add(kv_id)
+                        added_key_values.add(kv.id)
                         continue
                     i = table_cells[cell_id]._children.index(kv.words[0])
                     table_cells[cell_id]._children.insert(i, kv)
@@ -971,6 +957,17 @@ def _create_table_objects(
         meta_info = cell.get("EntityTypes", [])
         merged_info = [MERGED_CELL] if cell_id in merged_child_ids else []
         table_cells[cell_id]._update_response_metadata(meta_info + merged_info)
+
+    # This is problematic because a KV will usually not be within a single cell, but instead
+    # cover multiple cells (usually one for key, one for value)
+    for kv_id, kv in key_values.items():
+        if kv_id in added_key_values:
+            continue
+        for table in page_tables:
+            table = tables[table["Id"]]
+            # If the kv is in the table bbox, we just drop it entirely
+            if all([w in table_words for w in kv.words]):
+                added_key_values.add(kv_id)
 
     # optimize code
     for merge_id, child_cells in merged_child_map.items():
@@ -1044,6 +1041,7 @@ def _create_table_objects(
                     break
 
         tables[table["Id"]].add_cells(children_cells)
+        tables[table["Id"]].add_children(children_cells)
 
     # Assign tables to layout elements
     table_added = set()
@@ -1126,13 +1124,13 @@ def parse_document_api_response(response: dict) -> Document:
     """
     document = _create_document_object(response)
 
-    id_entity_map, id_json_map, entity_id_map, layout_order_map, existing_words = (
+    id_entity_map, id_json_map, entity_id_map, existing_words = (
         {},
         {},
         defaultdict(list),
         {},
-        {},
     )
+    # Create de entity id map for faster lookup
     for block in response["Blocks"]:
         id_entity_map[block["Id"]] = block["BlockType"]
         id_json_map[block["Id"]] = block
@@ -1141,13 +1139,15 @@ def parse_document_api_response(response: dict) -> Document:
         else:
             entity_id_map[block["BlockType"]].append(block["Id"])
 
+    # Create the empty pages
     pages, page_elements = _create_page_objects(response)
     assert len(pages) == response["DocumentMetadata"]["Pages"]
 
+    # Fill the page with the detected entities
     for page_json in page_elements:
-        entities = {}
         page = pages[page_json["Id"]]
 
+        # Creating lines
         lines, line_words = _create_line_objects(
             entity_id_map[LINE], id_json_map, existing_words, page
         )
@@ -1155,6 +1155,7 @@ def parse_document_api_response(response: dict) -> Document:
 
         line_by_id = {l.id: l for l in page.lines}
 
+        # Creating layouts
         container_layouts, leaf_layouts = _create_layout_objects(
             entity_id_map[LAYOUT],
             id_json_map,
@@ -1163,6 +1164,7 @@ def parse_document_api_response(response: dict) -> Document:
             page,
         )
 
+        # If no layouts were created, we create fake layouts
         if not container_layouts and not leaf_layouts:
             # We are in a scenario where the LAYOUT API was not called. We will fake wrap
             # all the lines to get a good linearized output regardless.
@@ -1181,6 +1183,7 @@ def parse_document_api_response(response: dict) -> Document:
         page._container_layouts.extend(container_layouts)
         page._leaf_layouts.extend(leaf_layouts)
 
+        # Create key value objects
         key_values, kv_words, selection_elements = _create_keyvalue_objects(
             entity_id_map[KEY_VALUE_SET],
             id_json_map,
@@ -1192,39 +1195,55 @@ def parse_document_api_response(response: dict) -> Document:
         kvs = [kv for kv in key_values if not kv.contains_checkbox]
         checkboxes = [kv for kv in key_values if kv.contains_checkbox]
 
+        # For backward compatibility reason we split kvs and checkboxes under two attributes
         page.key_values = kvs
         page.checkboxes = checkboxes
 
         for checkbox in checkboxes:
             id_entity_map[checkbox.id] = SELECTION_ELEMENT
 
+        # Create the table objects
         tables, table_words, kv_added = _create_table_objects(
             entity_id_map[TABLE],
             id_json_map,
             id_entity_map,
             entity_id_map,
             existing_words,
+            # We pass the KeyValue objects because there will be overlap and we need to make
+            # sure that the layout children are unique.
             {kv.id:kv for kv in key_values},
             selection_elements,
             page,
         )
         page.tables = tables
 
-
+        # Using the kv_added returned by _create_table_objects, we try to match the remaining KVs
+        # to existing layout elements.
         for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
             if layout.layout_type == LAYOUT_ENTITY:
                 continue
             for kv in sorted(key_values, key=lambda x: x.bbox.y):
                 if (
                     layout.bbox.get_intersection(kv.bbox).area > THRESHOLD * kv.bbox.area
-                    and kv not in kv_added
+                    and kv.id not in kv_added
                 ):
+                    # Ignore if the KV is already overlapping with a table
+                    if any([w.cell_id for w in kv.words]):
+                        kv_added.add(kv.id)
+                        continue
+                    # Removing the duplicate words
                     for w in kv.words:
                         layout.remove(w)
+                    # Adding the KV to the layout children (order is not relevant)
                     layout.children.append(kv)
-                    kv_added.add(kv)
+                    kv_added.add(kv.id)
                     key_values.remove(kv)
 
+        
+        page.leaf_layouts = [l for l in page.leaf_layouts if l.children]
+
+        # We create layout elements for the KeyValues that did not match to a layout element in the
+        # previous step
         kv_layouts = []
         for kv in key_values:
             if kv.id not in kv_added:
@@ -1240,17 +1259,26 @@ def parse_document_api_response(response: dict) -> Document:
                 layout.page_id = page.id
                 kv_layouts.append(layout)
 
+        # We update the existing layout elements to avoid overlap, this should only happen to
+        # a few KV layouts as the previous step will have caught most overlap.
         layouts_to_remove = []
+        kv_layouts_to_ignore = []
+        layouts_that_intersect = defaultdict(list)
         for layout in page.leaf_layouts:
-            layouts_that_intersect = []
             for kv_layout in kv_layouts:
                 intersection = layout.bbox.get_intersection(kv_layout.bbox).area
                 if intersection:
-                    layouts_that_intersect.append(kv_layout)
+                    layouts_that_intersect[layout].append(kv_layout)
+        for layout, intersections in layouts_that_intersect.items():
             words_in_sub_layouts = set()
             for i, intersect_layout in enumerate(
-                sorted(layouts_that_intersect, key=lambda l: (l.bbox.y, l.bbox.x))
+                sorted(intersections, key=lambda l: (l.bbox.y, l.bbox.x))
             ):
+                # If a new KV layout intersected with more than one layout, we ignore it
+                if sum([intersect_layout in intsects for intsects in layouts_that_intersect.values()]) > 1:
+                    kv_layouts_to_ignore.append(intersect_layout)
+                    continue
+                # We assign a slightly higher reading order to the intersected layout
                 intersect_layout.reading_order = (
                     (layout.reading_order + (i + 1) * 0.1)
                     if intersect_layout.reading_order == -1
@@ -1258,17 +1286,25 @@ def parse_document_api_response(response: dict) -> Document:
                         intersect_layout.reading_order, layout.reading_order + (i + 1) * 0.1
                     )
                 )
+                # We take only the first child as the intersected layout will only have the KV as
+                # its child. 
                 for w in intersect_layout.children[0].words:
                     words_in_sub_layouts.add(w)
             for word in words_in_sub_layouts:
                 layout.remove(word)
+            if not layout.children:
+                layouts_to_remove.append(layout)
 
+        # Clean up layouts that became empty due to the previous step. 
         for layout in layouts_to_remove:
             page.leaf_layouts.remove(layout)
 
+        # Add the new KV layouts to the page
         for layout in kv_layouts:
-            page.leaf_layouts.append(layout)
+            if layout not in kv_layouts_to_ignore:
+                page.leaf_layouts.append(layout)
 
+        # Set the page word, create lines for orphaned words
         all_words = table_words + kv_words + line_words
         for word in all_words:
             if word.line is None:
@@ -1284,33 +1320,27 @@ def parse_document_api_response(response: dict) -> Document:
 
         page.words = list(all_words.values())
 
+        # Create query objects
         queries = _create_query_objects(
             entity_id_map[QUERY], id_json_map, entity_id_map, page
         )
         page.queries = queries
 
+        # Create signature objects
         signatures = _create_signature_objects(
             entity_id_map[SIGNATURE], id_json_map, entity_id_map, page
         )
         page.signatures = signatures
 
-        # We now have to go through each layout and update its children to avoid duplication.
-        #for layout in page.leaf_layouts + page.container_layouts:
-        #    lines = {c.id: c for c in layout.children if isinstance(c, Line)}
-        #    for c in [c for c in layout.children if not isinstance(c, Line)]:
-        #        for w in c.words:
-        #            if w.line_id in lines:
-        #                if w in lines[w.line_id].words:
-        #                    lines[w.line_id].words.remove(w)
-        #                if not lines[w.line_id].words:
-        #                    if lines[w.line_id] in layout.children:
-        #                        layout.children.remove(lines[w.line_id])
-        #                    continue
-        #                lines[w.line_id].bbox = BoundingBox.enclosing_bbox(
-        #                    lines[w.line_id].words
-        #                )
+        # Final clean up of the layout objects
+        word_set = set()
+        for layout in sorted(page.leaf_layouts, key=lambda l: l.reading_order):
+            layout.visit(word_set)
+            if not layout.children:
+                page.leaf_layouts.remove(layout)
 
     document.pages = sorted(list(pages.values()), key=lambda x: x.page_num)
+    document.response = response
     return document
 
 def parse_analyze_id_response(response):
@@ -1450,7 +1480,6 @@ def parser_analyze_expense_response(response):
         document.pages[summary_field["PageNumber"] - 1].expense_documents.append(
             expense_document
         )
-    del response["Blocks"]
     document.response = response
     return document
 

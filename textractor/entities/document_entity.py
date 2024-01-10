@@ -174,6 +174,16 @@ class DocumentEntity(ABC):
             self.bbox = BoundingBox.enclosing_bbox(self._children)
         return True
 
+    def visit(self, word_set):
+        for c in list(self._children):
+            if c.__class__.__name__ == "Word":
+                if c.id in word_set:
+                    self._children.remove(c)
+                else:
+                    word_set.add(c.id)
+            else:
+                c.visit(word_set)
+
     def visualize(self, *args, **kwargs) -> EntityList:
         """
         Returns the object's children in a visualization EntityList object
