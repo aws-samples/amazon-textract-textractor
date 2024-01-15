@@ -512,12 +512,15 @@ class Table(DocumentEntity):
             # Try to automatically get the columns if they are in the first row
             columns = []
             processed_cells = set()
+            is_header_count = 0
             for j in range(1, self.column_count + 1):
                 for cell in self.table_cells:
-                    if cell.col_index == j and cell.row_index == 1 and cell.is_column_header and cell not in processed_cells:
+                    if cell.col_index == j and cell.row_index == 1 and cell not in processed_cells:
                         if cell.siblings:
                             children = []
                             for sib in cell.siblings:
+                                if sib.is_column_header:
+                                    is_header_count += 1
                                 children.extend(sib.children)
                                 processed_cells.add(sib)
                             text, _ = linearize_children(children, config=config, no_new_lines=True)
@@ -526,9 +529,12 @@ class Table(DocumentEntity):
                             for _ in range(last_col - first_col):
                                 columns.append("")
                         else:
+                            if cell.is_column_header:
+                                is_header_count += 1
                             text = cell.get_text(config)
                             columns.append(text)
-            if len(columns) == self.column_count:
+            # If we have the correct number of column and at least half the row is tagged as a header
+            if len(columns) == self.column_count and is_header_count / len(columns) >= config.table_column_header_threshold:
                 use_columns = True
             else:
                 use_columns = False
