@@ -514,7 +514,7 @@ class Table(DocumentEntity):
             processed_cells = set()
             for j in range(1, self.column_count + 1):
                 for cell in self.table_cells:
-                    if cell.col_index == j and cell.row_index == 1 and cell.is_column_header:
+                    if cell.col_index == j and cell.row_index == 1 and cell.is_column_header and cell not in processed_cells:
                         if cell.siblings:
                             children = []
                             for sib in cell.siblings:
@@ -728,24 +728,36 @@ class Table(DocumentEntity):
         else:
             text = ""
             rows = itertools.groupby(self.table_cells, key=lambda cell: cell.row_index)
+            processed_cells = set()
             for _, row in rows:
-                text = (
-                    text
-                    + (config.table_row_prefix if config.add_prefixes_and_suffixes_in_text else "")
-                    + "\t".join(
+                text += (config.table_row_prefix if config.add_prefixes_and_suffixes_in_text else "")
+                for cell in sorted(row, key=lambda c: c.col_index):
+                    if cell in processed_cells:
+                        text += "\t"
+                        continue
+                    # Siblings includes the current cell
+                    if cell.siblings:
+                        children = []
+                        for sib in cell.siblings:
+                            children.extend(sib.children)
+                            processed_cells.add(sib)
+                        cell_text, _ = linearize_children(children, config=config, no_new_lines=True)
+                    else:
+                        cell_text, _ = cell.get_text_and_words(config)
+                    text += (
                         (
-                            (
-                                (config.table_cell_header_prefix if config.table_cell_header_prefix and cell.is_column_header else config.table_cell_prefix) +
-                                (cell.text or config.table_cell_empty_cell_placeholder) +
-                                (config.table_cell_header_suffix if config.table_cell_header_suffix and cell.is_column_header else config.table_cell_suffix)
-                            )
-                            if config.add_prefixes_and_suffixes_in_text else
-                            (cell.text or config.table_cell_empty_cell_placeholder)
-                        ) for cell in sorted(row, key=lambda c: c.col_index)
-                    )
-                    + (config.table_row_suffix if config.add_prefixes_and_suffixes_in_text else "")
-                    + "\n"
-                )
+                            (config.table_cell_header_prefix if config.table_cell_header_prefix and cell.is_column_header else config.table_cell_prefix) +
+                            (cell_text or config.table_cell_empty_cell_placeholder) +
+                            (config.table_cell_header_suffix if config.table_cell_header_suffix and cell.is_column_header else config.table_cell_suffix)
+                        )
+                        if config.add_prefixes_and_suffixes_in_text else
+                        (cell_text or config.table_cell_empty_cell_placeholder)
+                    ) 
+                    text += "\t"
+                if text and text[-1] == "\t":
+                    text = text[:-1]
+                text += (config.table_row_suffix if config.add_prefixes_and_suffixes_in_text else "")
+                text += "\n"
 
         return text, words
 

@@ -204,6 +204,9 @@ def _create_word_objects(
         if word_id in existing_words:
             words.append(existing_words[word_id])
         else:
+            # FIXME: This could be gated
+            if not word_id in id_json_map:
+                continue
             elem = id_json_map[word_id]
             word = Word(
                 entity_id=elem["Id"],
@@ -351,10 +354,14 @@ def _create_value_objects(
     :return: Dictionary mapping value_ids to Value objects.
     :rtype: Dict[str, Value]
     """
-    values_info = {value_id: id_json_map[value_id] for value_id in value_ids}
+    # FIXME: This could be gated
+    values_info = {value_id: id_json_map.get(value_id, None) for value_id in value_ids}
 
     values = {}
     for block_id, block in values_info.items():
+        # FIXME: This should be gated
+        if block is None:
+            continue
         values[block_id] = Value(
             entity_id=block_id,
             bbox=BoundingBox.from_normalized_dict(
@@ -372,6 +379,9 @@ def _create_value_objects(
     for val_id in values.keys():
         val_child_ids = _get_relationship_ids(values_info[val_id], relationship="CHILD")
         for child_id in val_child_ids:
+            # FIXME: This should be gated
+            if child_id not in id_json_map:
+                continue
             if id_json_map[child_id]["BlockType"] == WORD:
                 words = _create_word_objects(
                     [child_id], id_json_map, existing_words, page
@@ -437,7 +447,7 @@ def _create_query_result_objects(
 ) -> Dict[str, QueryResult]:
     page_query_results = []
     for query_result_id in query_result_ids:
-        if query_result_id in page.child_ids:
+        if query_result_id in page.child_ids and query_result_id in id_json_map:
             page_query_results.append(id_json_map[query_result_id])
 
     query_results = {}
@@ -621,8 +631,12 @@ def _create_keyvalue_objects(
             bbox=BoundingBox.from_normalized_dict(
                 block["Geometry"]["BoundingBox"], spatial_object=page
             ),
-            contains_checkbox=values[key_value_id_map[block["Id"]]].contains_checkbox,
-            value=values[key_value_id_map[block["Id"]]],
+            # FIXME: Should be gated
+            contains_checkbox=(
+                key_value_id_map[block["Id"]] in values and
+                values[key_value_id_map[block["Id"]]].contains_checkbox
+            ),
+            value=values.get(key_value_id_map[block["Id"]]),
             confidence=block["Confidence"],
         )
         keys[block["Id"]].raw_object = block
@@ -630,6 +644,8 @@ def _create_keyvalue_objects(
     # Add words and children (Value Object) to KeyValue object
     kv_words = []
     for key_id in keys.keys():
+        if keys[key_id].value is None:
+            continue
         keys[key_id].value.key_id = key_id
         if keys[key_id].contains_checkbox:
             keys[key_id].value.children[0].key_id = key_id
@@ -641,7 +657,8 @@ def _create_keyvalue_objects(
         key_word_ids = [
             child_id
             for child_id in key_child_ids
-            if id_json_map[child_id]["BlockType"] == WORD
+            # FIXME: This should be gated
+            if child_id in id_json_map and id_json_map[child_id]["BlockType"] == WORD
         ]
         key_words = _create_word_objects(
             key_word_ids, id_json_map, existing_words, page
@@ -659,7 +676,7 @@ def _create_keyvalue_objects(
 
     key_values = list(keys.values())
     for kv in key_values:
-        kv.bbox = BoundingBox.enclosing_bbox([kv.bbox, kv.value.bbox])
+        kv.bbox = BoundingBox.enclosing_bbox([kv.bbox] + ([kv.value.bbox] if kv.value is not None else []))
         kv.page = page.page_num
         kv.page_id = page.id
 
@@ -751,6 +768,8 @@ def _create_layout_objects(
                             [line_by_id[line_id] for line_id in relationship["Ids"] if line_id in line_by_id]
                         )
         else:
+            if block["BlockType"] in (LAYOUT_KEY_VALUE):
+                continue
             leaf_layouts.append(
                 Layout(
                     entity_id=block["Id"],
@@ -801,7 +820,8 @@ def _create_table_cell_objects(
     all_table_cells_info = {}
     for table in page_tables:
         for cell_id in _get_relationship_ids(table, relationship="CHILD"):
-            if id_entity_map[cell_id] == CELL:
+            # FIXME: This should be gated
+            if cell_id in id_entity_map and id_entity_map[cell_id] == CELL:
                 all_table_cells_info[cell_id] = id_json_map[cell_id]
 
     table_cells = {}
@@ -903,13 +923,15 @@ def _create_table_objects(
     added_key_values = set()
     for cell_id, cell in all_table_cells_info.items():
         children = _get_relationship_ids(cell, relationship="CHILD")
+        # FIXME: This should be gated
         cell_word_ids = [
-            child_id for child_id in children if id_entity_map[child_id] == WORD
+            child_id for child_id in children if (child_id in id_entity_map and id_entity_map[child_id] == WORD)
         ]
+        # FIXME: This should be gated
         selection_ids = [
             child_id
             for child_id in children
-            if id_entity_map[child_id] == SELECTION_ELEMENT
+            if child_id in id_entity_map and id_entity_map[child_id] == SELECTION_ELEMENT
         ]
 
         cell_words = _create_word_objects(
@@ -974,14 +996,17 @@ def _create_table_objects(
         for child_id in child_cells:
             if child_id in table_cells.keys():
                 table_cells[child_id].parent_cell_id = merge_id
+                # FIXME: This should be gated
                 table_cells[child_id].siblings = [
-                    table_cells[cid] for cid in child_cells
+                    table_cells[cid] for cid in child_cells if cid in table_cells
                 ]  # CHECK IF IDS ARE BETTER THAN INSTANCES
 
     # Create table title (if exists)
     for table in page_tables:
         children = _get_relationship_ids(table, relationship="TABLE_TITLE")
         for child_id in children:
+            if child_id not in id_json_map:
+                continue
             tables[table["Id"]].title = TableTitle(
                 entity_id=child_id,
                 bbox=BoundingBox.from_normalized_dict(
@@ -993,7 +1018,8 @@ def _create_table_objects(
                 id_json_map[child_id], relationship="CHILD"
             )
             tables[table["Id"]].title.words = _create_word_objects(
-                [child_id for child_id in children if id_entity_map[child_id] == WORD],
+                # FIXME: This should be gated
+                [child_id for child_id in children if (child_id in id_entity_map and id_entity_map[child_id] == WORD)],
                 id_json_map,
                 existing_words,
                 page,
@@ -1003,6 +1029,8 @@ def _create_table_objects(
     for table in page_tables:
         children = _get_relationship_ids(table, relationship="TABLE_FOOTER")
         for child_id in children:
+            if child_id not in id_json_map:
+                continue
             tables[table["Id"]].footers.append(
                 TableFooter(
                     entity_id=child_id,
@@ -1016,7 +1044,7 @@ def _create_table_objects(
                 id_json_map[child_id], relationship="CHILD"
             )
             tables[table["Id"]].footers[-1].words = _create_word_objects(
-                [child_id for child_id in children if id_entity_map[child_id] == WORD],
+                [child_id for child_id in children if child_id in id_entity_map and id_entity_map[child_id] == WORD],
                 id_json_map,
                 existing_words,
                 page,
@@ -1027,13 +1055,19 @@ def _create_table_objects(
         children = _get_relationship_ids(table, relationship="CHILD")
         children_cells = []
         for child_id in children:
+            # FIXME: This should be gated
+            if child_id not in table_cells:
+                continue
             children_cells.append(table_cells[child_id])
-            if table_cells[child_id].is_title:
+            if table_cells[child_id].is_title and tables[table["Id"]].title is not None:
                 tables[table["Id"]].title.is_floating = False
         # FIXME: This will be slow and there should be a better way to do it.
-        words = set(
-            [w.id for child_id in children for w in table_cells[child_id].words]
-        )
+        words = set()
+        for child_id in children:
+            if child_id not in table_cells:
+                continue
+            for w in table_cells[child_id].words:
+                words.add(w.id)
         for footer in tables[table["Id"]].footers:
             for w in footer.words:
                 if w.id in words:

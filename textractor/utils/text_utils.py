@@ -108,12 +108,14 @@ def linearize_children(
     lines = set([w.line for w in words_in_elements])
     new_lines = []
     for line in lines:
+        if line is None:
+            continue
         new_lines.append(
             Line(
                 line.id,
                 line.bbox,
                 sorted(
-                    [w for w in words_in_elements if w.line.id == line.id],
+                    [w for w in words_in_elements if w.line is not None and w.line.id == line.id],
                     key=lambda x: x.bbox.x,
                 ),
             )
