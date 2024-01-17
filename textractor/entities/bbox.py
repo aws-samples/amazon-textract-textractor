@@ -2,6 +2,7 @@
 on the image of the document page."""
 
 from abc import ABC
+import logging
 import math
 from typing import Tuple, List
 
@@ -205,10 +206,13 @@ class BoundingBox(SpatialObject):
                     "bboxes must be of type List[BoundingBox] or of type List[DocumentEntity]"
                 )
 
-        x1, y1, x2, y2 = float("inf"), float("inf"), float("-inf"), float("-inf")
-        assert any(
-            [bbox is not None for bbox in bboxes]
-        ), "At least one bounding box needs to be non-null"
+        x1, y1, x2, y2 = float("inf"), float("inf"), float("-inf"), float("-inf")\
+        
+        # FIXME: This should not happen
+        if not any([bbox is not None for bbox in bboxes]):
+            logging.warning("At least one bounding box needs to be non-null")
+            return BoundingBox(0, 0, 1, 1, spatial_object=spatial_object)            
+        
         for bbox in bboxes:
             if bbox is not None:
                 x1 = min(x1, bbox.x)
