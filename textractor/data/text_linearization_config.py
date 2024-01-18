@@ -8,8 +8,6 @@ class TextLinearizationConfig:
     The :class:`TextLinearizationConfig` object defines how a document is linearized into a text string
     """
 
-    linearize_table: bool = True  #: Include tables in the linearized output
-
     linearize_key_values: bool = (
         True  #: Include form key and values in the linearized output
     )
@@ -23,6 +21,8 @@ class TextLinearizationConfig:
     hide_footer_layout: bool = False  #: Hide footers in the linearized output
 
     hide_figure_layout: bool = False  #: Hide figures in the linearized output
+
+    hide_table_layout: bool = False #: Hide tables in the linearized output
 
     hide_page_num_layout: bool = False  #: Hide page numbers in the linearized output
 
