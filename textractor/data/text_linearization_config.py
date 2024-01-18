@@ -8,10 +8,6 @@ class TextLinearizationConfig:
     The :class:`TextLinearizationConfig` object defines how a document is linearized into a text string
     """
 
-    linearize_key_values: bool = (
-        True  #: Include form key and values in the linearized output
-    )
-
     remove_new_lines_in_leaf_elements: bool = True  #: Removes new lines in leaf layout elements, this removes extra whitespace
 
     max_number_of_consecutive_new_lines: int = 2  #: Removes extra whitespace
