@@ -50,6 +50,38 @@ jobs:
         with:
           name: textractor-lambda-p310
           path: lambda_layer/
+  lambda-build-p311:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.11:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=.
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p311
+          path: lambda_layer/
+  lambda-build-p312:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.12:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=.
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p312
+          path: lambda_layer/
   lambda-build-p38-pandas:
     runs-on: ubuntu-latest
     container: public.ecr.aws/sam/build-python3.8:latest
@@ -100,6 +132,40 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: textractor-lambda-p310-pandas
+          path: lambda_layer/
+  lambda-build-p311-pandas:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.11:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=. && \
+          pip3 install pandas --target=.
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p311-pandas
+          path: lambda_layer/
+  lambda-build-p312-pandas:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.12:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=. && \
+          pip3 install pandas --target=.
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p312-pandas
           path: lambda_layer/
   lambda-build-p38-pdf:
     runs-on: ubuntu-latest
@@ -215,4 +281,82 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: textractor-lambda-p310-pdf
+          path: lambda_layer/
+  lambda-build-p311-pdf:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.11:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install Poppler
+        run: yum install -y poppler-utils which mlocate openjpeg-devel libjpeg-devel fontconfig-devel libtiff-devel libpng-devel && updatedb && mkdir -p lambda_layer/python/bin
+      - name: Copy dependencies
+        run: |
+          cp /usr/lib64/libpoppler.so* lambda_layer/python/bin/ && \
+          cp $(which pdftoppm) lambda_layer/python/bin/ && \
+          cp $(which pdfinfo) lambda_layer/python/bin/ && \
+          cp $(which pdftocairo) lambda_layer/python/bin/ && \
+          cp /usr/lib64/libjpeg.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libopenjpeg.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libpng.so* lambda_layer/python/bin/ && \
+          cp /lib64/libz.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libfreetype.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libfontconfig.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libnss3.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libsmime3.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/liblcms2.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libtiff.so* lambda_layer/python/bin/ && \
+          cp /lib64/libexpat.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libjbig.so* lambda_layer/python/bin/
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=. && \
+          pip3 install pdf2image --target=. && \
+          cd .. \
+          && zip -r /textractor.zip python/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p311-pdf
+          path: lambda_layer/
+  lambda-build-p312-pdf:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.12:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install Poppler
+        run: yum install -y poppler-utils which mlocate openjpeg-devel libjpeg-devel fontconfig-devel libtiff-devel libpng-devel && updatedb && mkdir -p lambda_layer/python/bin
+      - name: Copy dependencies
+        run: |
+          cp /usr/lib64/libpoppler.so* lambda_layer/python/bin/ && \
+          cp $(which pdftoppm) lambda_layer/python/bin/ && \
+          cp $(which pdfinfo) lambda_layer/python/bin/ && \
+          cp $(which pdftocairo) lambda_layer/python/bin/ && \
+          cp /usr/lib64/libjpeg.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libopenjpeg.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libpng.so* lambda_layer/python/bin/ && \
+          cp /lib64/libz.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libfreetype.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libfontconfig.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libnss3.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libsmime3.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/liblcms2.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libtiff.so* lambda_layer/python/bin/ && \
+          cp /lib64/libexpat.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libjbig.so* lambda_layer/python/bin/
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=. && \
+          pip3 install pdf2image --target=. && \
+          cd .. \
+          && zip -r /textractor.zip python/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p312-pdf
           path: lambda_layer/
