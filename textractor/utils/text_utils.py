@@ -134,7 +134,7 @@ def linearize_children(
                 element1.bbox.x - element2.bbox.x
             ) <= config.heuristic_h_tolerance * element1.bbox.width and abs(
                 element1.bbox.y + element1.bbox.height - element2.bbox.y
-            ) <= config.heuristic_overlap_ratio * min(
+            ) <= config.heuristic_line_break_threshold * min(
                 element1.bbox.height, element2.bbox.height
             )
         return False
