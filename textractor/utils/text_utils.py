@@ -1,3 +1,4 @@
+from functools import cmp_to_key
 import os
 from typing import List, Tuple
 
@@ -7,6 +8,26 @@ from textractor.entities.line import Line
 from textractor.entities.word import Word
 from textractor.entities.document_entity import DocumentEntity
 
+def compare_bounding_box(a, b):
+    ha = a.bbox.height
+    hb = b.bbox.height
+
+    delta = (ha + hb) / 3.5
+
+    ay_mid = a.bbox.y + (ha / 2.0)
+    by_mid = b.bbox.y + (hb / 2.0)
+
+    if abs(ay_mid - by_mid) < delta:
+        if a.bbox.x > b.bbox.x:
+            return 1
+        else:
+            return -1
+
+    else:
+        if ay_mid > by_mid:
+            return 1
+        else:
+            return -1
 
 def group_elements_horizontally(
     elements: List[DocumentEntity], overlap_ratio: float = 0.5
@@ -21,7 +42,7 @@ def group_elements_horizontally(
     :return: DocumentEntity sub-groups
     :rtype: List[List[DocumentEntity]]
     """
-    sorted_elements = sorted(elements, key=lambda element: element.bbox.y)
+    sorted_elements = sorted(elements, key=cmp_to_key(compare_bounding_box))
 
     def vertical_overlap(line1, line2):
         top = max(line1.bbox.y, line2.bbox.y)
@@ -41,10 +62,7 @@ def group_elements_horizontally(
 
     current_group = [sorted_elements[0]]
     for element in sorted_elements[1:]:
-        if (
-            "Table" in element.__class__.__name__
-            or "KeyValue" in element.__class__.__name__
-        ):
+        if "Table" in element.__class__.__name__:
             if current_group:
                 grouped_elements.append(current_group)
             grouped_elements.append([element])
@@ -87,12 +105,14 @@ def linearize_children(
     lines = set([w.line for w in words_in_elements])
     new_lines = []
     for line in lines:
+        if line is None:
+            continue
         new_lines.append(
             Line(
                 line.id,
                 line.bbox,
                 sorted(
-                    [w for w in words_in_elements if w.line.id == line.id],
+                    [w for w in words_in_elements if w.line is not None and w.line.id == line.id],
                     key=lambda x: x.bbox.x,
                 ),
             )
@@ -111,7 +131,7 @@ def linearize_children(
                 element1.bbox.x - element2.bbox.x
             ) <= config.heuristic_h_tolerance * element1.bbox.width and abs(
                 element1.bbox.y + element1.bbox.height - element2.bbox.y
-            ) <= config.heuristic_overlap_ratio * min(
+            ) <= config.heuristic_line_break_threshold * min(
                 element1.bbox.height, element2.bbox.height
             )
         return False
@@ -136,7 +156,12 @@ def linearize_children(
                     added_words.add(w.id)
                 words_output += words_element
             elif "KeyValue" in element.__class__.__name__ and len(words_element):
-                result += (
+                separator = (
+                    config.same_paragraph_separator
+                    if prev_element and part_of_same_paragraph(prev_element, element, config) else
+                    config.same_layout_element_separator
+                )
+                result += separator + (
                     (config.key_value_layout_prefix if config.add_prefixes_and_suffixes_in_text else "") +
                     text_element + 
                     (config.key_value_layout_suffix if config.add_prefixes_and_suffixes_in_text else "")
@@ -156,7 +181,7 @@ def linearize_children(
                 result += config.same_paragraph_separator + text_element
                 words_output += words_element
             else:
-                result += config.layout_element_separator + text_element
+                result += config.same_layout_element_separator + text_element
                 words_output += words_element
 
             # FIXME: Seems like this would be mostly needed
@@ -165,6 +190,8 @@ def linearize_children(
 
         if is_layout_table:
             result += config.table_row_separator
+        else:
+            result += config.same_layout_element_separator
 
         # We make a dummy line element with the bbox from the previous group
         prev_element = Line(

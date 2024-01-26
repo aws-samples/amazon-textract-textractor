@@ -511,12 +511,30 @@ class Table(DocumentEntity):
         if use_columns:
             # Try to automatically get the columns if they are in the first row
             columns = []
+            processed_cells = set()
+            is_header_count = 0
             for j in range(1, self.column_count + 1):
                 for cell in self.table_cells:
-                    if cell.col_index == j and cell.row_index == 1:
-                        if cell.is_column_header:
-                            columns.append(cell.get_text(config))
-            if len(columns) == self.column_count:
+                    if cell.col_index == j and cell.row_index == 1 and cell not in processed_cells:
+                        if cell.siblings:
+                            children = []
+                            for sib in cell.siblings:
+                                if sib.is_column_header:
+                                    is_header_count += 1
+                                children.extend(sib.children)
+                                processed_cells.add(sib)
+                            text, _ = linearize_children(children, config=config, no_new_lines=True)
+                            columns.append(text)
+                            _, first_col, _, last_col = cell._get_merged_cell_range()
+                            for _ in range(last_col - first_col):
+                                columns.append("")
+                        else:
+                            if cell.is_column_header:
+                                is_header_count += 1
+                            text = cell.get_text(config)
+                            columns.append(text)
+            # If we have the correct number of column and at least half the row is tagged as a header
+            if len(columns) == self.column_count and is_header_count / len(columns) >= config.table_column_header_threshold:
                 use_columns = True
             else:
                 use_columns = False
@@ -526,8 +544,19 @@ class Table(DocumentEntity):
 
         table = [["" for _ in range(self.column_count)] for _ in range(self.row_count)]
 
+        processed_cells = set()
         for cell in self.table_cells:
-            table[cell.row_index - 1][cell.col_index - 1] = cell.get_text(config)
+            if cell in processed_cells:
+                continue
+            if cell.siblings:
+                children = []
+                for sib in cell.siblings:
+                    children.extend(sib.children)
+                    processed_cells.add(sib)
+                text, _ = linearize_children(children, config=config, no_new_lines=True)
+            else:
+                text = cell.get_text(config)
+            table[cell.row_index - 1][cell.col_index - 1] = text
 
         return DataFrame(
             table[1:] if use_columns else table,
@@ -607,46 +636,78 @@ class Table(DocumentEntity):
             return linearize_children(words_, config=config)
 
         words = [Word(str(uuid.uuid4()), self.bbox, config.table_prefix)] if config.table_prefix else []
-        cells = sorted(
-            self.table_cells, key=lambda cell: (cell.row_index, cell.col_index)
-        )
-        for cell in cells:
-            _, cell_words = cell.get_text_and_words(config)
-            if config.add_prefixes_and_suffixes_as_words:
-                if config.table_cell_prefix:
-                    words.append(
-                        Word(
-                            str(uuid.uuid4()),
-                            BoundingBox.enclosing_bbox(cell_words) if any([c.bbox for c in cell_words]) else self.bbox,
-                            config.table_cell_prefix,
-                            is_structure=True
+        rows = sorted([(key, list(group)) for key, group in itertools.groupby(
+            self.table_cells, key=lambda cell: cell.row_index
+        )], key=lambda r: r[0])
+        processed_cells = set()
+        for _, cells in rows:
+            if config.table_row_prefix and config.add_prefixes_and_suffixes_as_words:
+                words.append(Word(str(uuid.uuid4()), self.bbox, config.table_row_prefix))
+            for cell in sorted(cells, key=lambda c: c.col_index):
+                if cell in processed_cells:
+                    continue
+                # Siblings includes the current cell
+                if cell.siblings:
+                    first_row, first_col, last_row, last_col = cell._get_merged_cell_range()
+                    cell_id = cell.id
+                    cell_bbox = cell.bbox
+                    col_index = first_col
+                    col_span = last_col - first_col + 1
+                    row_index = first_row
+                    row_span = last_row - first_row + 1
+                    children = []
+                    for sib in cell.siblings:
+                        children.extend(sib.children)
+                        processed_cells.add(sib)
+                    _, cell_words = linearize_children(children, config=config, no_new_lines=True)
+                else:
+                    cell_id = cell.id
+                    cell_bbox = cell.bbox
+                    col_index = cell.col_index
+                    col_span = cell.col_span
+                    row_index = cell.row_index
+                    row_span = cell.row_span
+                    _, cell_words = cell.get_text_and_words(config)
+                if config.add_prefixes_and_suffixes_as_words:
+                    if config.table_cell_prefix or (config.table_cell_header_prefix and cell.is_column_header):
+                        words.append(
+                            Word(
+                                str(uuid.uuid4()),
+                                BoundingBox.enclosing_bbox(cell_words) if any([c.bbox for c in cell_words]) else self.bbox,
+                                config.table_cell_header_prefix if cell.is_column_header and config.table_cell_header_prefix else config.table_cell_prefix,
+                                is_structure=True
+                            )
                         )
-                    )
-                    words[-1].cell_id = cell.id
-                    words[-1].cell_bbox = cell.bbox
-                    words[-1].col_index = cell.col_index
-                    words[-1].col_span = cell.col_span
-                    words[-1].row_index = cell.row_index
-                    words[-1].row_span = cell.row_span
+                        words[-1].cell_id = cell_id
+                        words[-1].cell_bbox = cell_bbox
+                        words[-1].col_index = col_index
+                        words[-1].col_span = col_span
+                        words[-1].row_index = row_index
+                        words[-1].row_span = row_span
 
-                words.extend(cell_words)
-                if config.table_cell_suffix:
-                    words.append(
-                        Word(
-                            str(uuid.uuid4()),
-                            BoundingBox.enclosing_bbox(cell_words) if any([c.bbox for c in cell_words]) else self.bbox,
-                            config.table_cell_suffix,
-                            is_structure=True
+                    words.extend(cell_words)
+                    if not cell_words and config.table_cell_empty_cell_placeholder:
+                        words.append(Word(str(uuid.uuid4()), cell_bbox, config.table_cell_empty_cell_placeholder))
+
+                    if config.table_cell_suffix or (config.table_cell_header_suffix and cell.is_column_header):
+                        words.append(
+                            Word(
+                                str(uuid.uuid4()),
+                                BoundingBox.enclosing_bbox(cell_words) if any([c.bbox for c in cell_words]) else self.bbox,
+                                config.table_cell_header_suffix if cell.is_column_header and config.table_cell_header_suffix else config.table_cell_suffix,
+                                is_structure=True
+                            )
                         )
-                    )
-                    words[-1].cell_id = cell.id
-                    words[-1].cell_bbox = cell.bbox
-                    words[-1].col_index = cell.col_index
-                    words[-1].col_span = cell.col_span
-                    words[-1].row_index = cell.row_index
-                    words[-1].row_span = cell.row_span
-            else:
-                words.extend(cell_words)
+                        words[-1].cell_id = cell_id
+                        words[-1].cell_bbox = cell_bbox
+                        words[-1].col_index = col_index
+                        words[-1].col_span = col_span
+                        words[-1].row_index = row_index
+                        words[-1].row_span = row_span
+                else:
+                    words.extend(cell_words)
+            if config.table_row_suffix and config.add_prefixes_and_suffixes_as_words:
+                words.append(Word(str(uuid.uuid4()), self.bbox, config.table_row_suffix))
 
         if config.table_suffix:
             words.append(Word(str(uuid.uuid4()), self.bbox, config.table_suffix))
@@ -673,18 +734,36 @@ class Table(DocumentEntity):
         else:
             text = ""
             rows = itertools.groupby(self.table_cells, key=lambda cell: cell.row_index)
+            processed_cells = set()
             for _, row in rows:
-                text = (
-                    text
-                    + "\t".join(
+                text += (config.table_row_prefix if config.add_prefixes_and_suffixes_in_text else "")
+                for cell in sorted(row, key=lambda c: c.col_index):
+                    if cell in processed_cells:
+                        text += "\t"
+                        continue
+                    # Siblings includes the current cell
+                    if cell.siblings:
+                        children = []
+                        for sib in cell.siblings:
+                            children.extend(sib.children)
+                            processed_cells.add(sib)
+                        cell_text, _ = linearize_children(children, config=config, no_new_lines=True)
+                    else:
+                        cell_text, _ = cell.get_text_and_words(config)
+                    text += (
                         (
-                            (config.table_cell_prefix + cell.text + config.table_cell_suffix)
-                            if config.add_prefixes_and_suffixes_in_text else
-                            cell.text
-                        ) for cell in sorted(row, key=lambda c: c.col_index)
-                    )
-                    + "\n"
-                )
+                            (config.table_cell_header_prefix if config.table_cell_header_prefix and cell.is_column_header else config.table_cell_prefix) +
+                            (cell_text or config.table_cell_empty_cell_placeholder) +
+                            (config.table_cell_header_suffix if config.table_cell_header_suffix and cell.is_column_header else config.table_cell_suffix)
+                        )
+                        if config.add_prefixes_and_suffixes_in_text else
+                        (cell_text or config.table_cell_empty_cell_placeholder)
+                    ) 
+                    text += "\t"
+                if text and text[-1] == "\t":
+                    text = text[:-1]
+                text += (config.table_row_suffix if config.add_prefixes_and_suffixes_in_text else "")
+                text += "\n"
 
         return text, words
 

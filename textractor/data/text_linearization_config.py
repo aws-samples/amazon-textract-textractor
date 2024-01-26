@@ -8,12 +8,6 @@ class TextLinearizationConfig:
     The :class:`TextLinearizationConfig` object defines how a document is linearized into a text string
     """
 
-    linearize_table: bool = True  #: Include tables in the linearized output
-
-    linearize_key_values: bool = (
-        True  #: Include form key and values in the linearized output
-    )
-
     remove_new_lines_in_leaf_elements: bool = True  #: Removes new lines in leaf layout elements, this removes extra whitespace
 
     max_number_of_consecutive_new_lines: int = 2  #: Removes extra whitespace
@@ -24,6 +18,8 @@ class TextLinearizationConfig:
 
     hide_figure_layout: bool = False  #: Hide figures in the linearized output
 
+    hide_table_layout: bool = False #: Hide tables in the linearized output
+
     hide_page_num_layout: bool = False  #: Hide page numbers in the linearized output
 
     page_num_prefix: str = ""  #: Prefix for page number layout elements
@@ -32,6 +28,10 @@ class TextLinearizationConfig:
 
     same_paragraph_separator: str = (
         " "  #: Separator to use when combining elements within a text block
+    )
+
+    same_layout_element_separator: str = (
+        "\n" #: Separator to use when two elements are in the same layout element
     )
 
     layout_element_separator: str = (
@@ -58,6 +58,8 @@ class TextLinearizationConfig:
 
     table_remove_column_headers: bool = False  #: Remove column headers from tables
 
+    table_column_header_threshold: float = 0.9 #: Threshold for a row to be selected as header when rendering as markdown. 0.9 means that 90% of the cells must have the is_header_cell flag. 
+
     table_linearization_format: str = "plaintext"  #: How to represent tables in the linearized output. Choices are plaintext or markdown.
 
     table_tabulate_format: str = "github"  #: Markdown tabulate format to use when table are linearized as markdown
@@ -80,6 +82,16 @@ class TextLinearizationConfig:
 
     table_cell_suffix: str = "" #: Suffix for table cell
 
+    table_cell_header_prefix: str = "" #: Prefix for header cell
+
+    table_cell_header_suffix: str = "" #: Suffix for header cell
+
+    table_cell_empty_cell_placeholder: str = "" #: Placeholder for empty cells
+
+    header_prefix: str = ""  #: Prefix for header layout elements
+
+    header_suffix: str = ""  #: Suffix for header layout elements
+
     section_header_prefix: str = ""  #: Prefix for section header layout elements
 
     section_header_suffix: str = ""  #: Suffix for section header layout elements
@@ -88,9 +100,7 @@ class TextLinearizationConfig:
 
     text_suffix: str = ""  #: Suffix for text layout elements
 
-    key_value_layout_prefix: str = (
-        os.linesep * 2
-    )  #: Prefix for key_value layout elements (not for individual key-value elements)
+    key_value_layout_prefix: str = ""  #: Prefix for key_value layout elements (not for individual key-value elements)
 
     key_value_layout_suffix: str = ""  #: Suffix for key_value layout elements (not for individual key-value elements)
 

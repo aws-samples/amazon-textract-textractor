@@ -40,9 +40,9 @@ class Line(DocumentEntity):
     ):
         super().__init__(entity_id, bbox)
         if words is not None and len(words) > 0:
-            self.words: List[Word] = sorted(words, key=lambda x: (x.bbox.x, x.bbox.y))
+            self._children: List[Word] = sorted(words, key=lambda x: (x.bbox.x, x.bbox.y))
         else:
-            self.words = []
+            self._children = []
 
         self.confidence = confidence / 100
         self._page = None
@@ -55,6 +55,14 @@ class Line(DocumentEntity):
         :rtype: str
         """
         return " ".join([word.text for word in self.words])
+
+    @property
+    def words(self):
+        """
+        :return: Returns the line's children
+        :rtype: List[Word]
+        """
+        return self._children
 
     def get_text_and_words(self, config):
         if not self.bbox:

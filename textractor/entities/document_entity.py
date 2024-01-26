@@ -149,6 +149,41 @@ class DocumentEntity(ABC):
         """
         return self._children
 
+    def remove(self, entity):
+        """
+        Recursively removes an entity from the child tree of a document entity and update its bounding box
+
+        :param entity: Entity
+        :type entity: DocumentEntity
+        """
+
+        for c in self._children:
+            if entity == c:
+                # Element was found in children
+                break
+            if not c.__class__.__name__ == "Word" and c.remove(entity):
+                # Element was found and removed in grand-children
+                if not c.children:
+                    self._children.remove(c)
+                return True
+        else:
+            # Element was not found
+            return False
+        self._children.remove(c)
+        if self._children:
+            self.bbox = BoundingBox.enclosing_bbox(self._children)
+        return True
+
+    def visit(self, word_set):
+        for c in list(self._children):
+            if c.__class__.__name__ == "Word":
+                if c.id in word_set:
+                    self._children.remove(c)
+                else:
+                    word_set.add(c.id)
+            else:
+                c.visit(word_set)
+
     def visualize(self, *args, **kwargs) -> EntityList:
         """
         Returns the object's children in a visualization EntityList object

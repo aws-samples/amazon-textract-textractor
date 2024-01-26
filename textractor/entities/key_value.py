@@ -88,7 +88,7 @@ class KeyValue(DocumentEntity):
         :return words: List of Word objects, each representing a word within the KeyValue entity.
         :rtype: EntityList[Word]
         """
-        value_words = self.value.words if not self.contains_checkbox else []
+        value_words = self.value.words if self.value is not None and not self.contains_checkbox else []
         return EntityList(
             sorted(self._words + value_words, key=lambda x: x.bbox.x + x.bbox.y)
         )
@@ -224,7 +224,7 @@ class KeyValue(DocumentEntity):
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ):
         key_text, key_words = " ".join([w.text for w in self.key]), self.key
-        value_text, value_words = self.value.get_text_and_words(config)
+        value_text, value_words = self.value.get_text_and_words(config) if self.value else ("", "")
         words = []
         if not len(key_text) and not len(value_text):
             return "", []

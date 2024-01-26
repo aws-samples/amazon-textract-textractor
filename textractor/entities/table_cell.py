@@ -234,13 +234,8 @@ class TableCell(DocumentEntity):
         :return: Text in the cell
         :rtype: Tuple[str, List]
         """
-        texts = []
-        words = []
-        for child in self.children:
-            child_text, child_words = child.get_text_and_words(config)
-            texts.append(child_text)
-            words += child_words
-        return " ".join(texts), words
+        text, words = linearize_children(self.children, config=config, no_new_lines=True)
+        return text, words
 
     @property
     def table_id(self):
