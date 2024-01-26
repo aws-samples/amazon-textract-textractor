@@ -635,7 +635,6 @@ class Textractor:
     def analyze_expense(
         self,
         file_source: Union[str, List[Image.Image], List[str]],
-        s3_output_path: str = "",
         save_image: bool = True,
     ):
         """Make a call to the SYNC AnalyzeExpense API, implicitly parses the response and produces a :class:`Document` object.
@@ -643,8 +642,6 @@ class Textractor:
 
         :param file_source: Path to a file stored locally, on an S3 bucket or PIL Image
         :type file_source: Union[str, List[Image.Image], List[str]]
-        :param s3_output_path: S3 output path. When used the job output is save to the given S3 path, defaults to ""
-        :type s3_output_path: str, optional
         :param save_image: Whether to keep the file source as PIL Images inside the returned Document object, defaults to False
         :type save_image: bool, optional
         :raises IncorrectMethodException: Raised when the file source type is incompatible with the Textract API being called
@@ -682,11 +679,7 @@ class Textractor:
             images = []
             raise InputError("Input file_source format not supported.")
 
-        if not s3_output_path:
-            output_config = None
-        else:
-            bucket, prefix = s3_path_to_bucket_and_prefix(s3_output_path)
-            output_config = OutputConfig(s3_bucket=bucket, s3_prefix=prefix)
+        output_config = None
 
         try:
             response = call_textract_expense(
