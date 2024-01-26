@@ -100,9 +100,7 @@ class TextLinearizationConfig:
 
     text_suffix: str = ""  #: Suffix for text layout elements
 
-    key_value_layout_prefix: str = (
-        os.linesep * 2
-    )  #: Prefix for key_value layout elements (not for individual key-value elements)
+    key_value_layout_prefix: str = ""  #: Prefix for key_value layout elements (not for individual key-value elements)
 
     key_value_layout_suffix: str = ""  #: Suffix for key_value layout elements (not for individual key-value elements)
 

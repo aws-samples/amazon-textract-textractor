@@ -768,8 +768,6 @@ def _create_layout_objects(
                             [line_by_id[line_id] for line_id in relationship["Ids"] if line_id in line_by_id]
                         )
         else:
-            if block["BlockType"] in (LAYOUT_KEY_VALUE):
-                continue
             leaf_layouts.append(
                 Layout(
                     entity_id=block["Id"],

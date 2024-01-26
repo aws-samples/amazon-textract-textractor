@@ -62,10 +62,7 @@ def group_elements_horizontally(
 
     current_group = [sorted_elements[0]]
     for element in sorted_elements[1:]:
-        if (
-            "Table" in element.__class__.__name__
-            or "KeyValue" in element.__class__.__name__
-        ):
+        if "Table" in element.__class__.__name__:
             if current_group:
                 grouped_elements.append(current_group)
             grouped_elements.append([element])
@@ -184,7 +181,7 @@ def linearize_children(
                 result += config.same_paragraph_separator + text_element
                 words_output += words_element
             else:
-                result += config.layout_element_separator + text_element
+                result += config.same_layout_element_separator + text_element
                 words_output += words_element
 
             # FIXME: Seems like this would be mostly needed
@@ -193,6 +190,8 @@ def linearize_children(
 
         if is_layout_table:
             result += config.table_row_separator
+        else:
+            result += config.same_layout_element_separator
 
         # We make a dummy line element with the bbox from the previous group
         prev_element = Line(
