@@ -6,6 +6,7 @@ Use ResponseParser's parse function to handle API response and convert them to D
 
 import logging
 import uuid
+from copy import deepcopy
 from typing import Any, List, Dict, Tuple
 from collections import defaultdict
 from textractor.entities.identity_document import IdentityDocument
@@ -1183,9 +1184,9 @@ def parse_document_api_response(response: dict) -> Document:
         lines, line_words = _create_line_objects(
             entity_id_map[LINE], id_json_map, existing_words, page
         )
-        page.lines = lines
+        page.lines = deepcopy(lines)
 
-        line_by_id = {l.id: l for l in page.lines}
+        line_by_id = {l.id: l for l in lines}
 
         # Creating layouts
         container_layouts, leaf_layouts = _create_layout_objects(
