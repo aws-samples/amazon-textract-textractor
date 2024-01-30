@@ -213,6 +213,9 @@ class BoundingBox(SpatialObject):
             logging.warning("At least one bounding box needs to be non-null")
             return BoundingBox(0, 0, 1, 1, spatial_object=spatial_object)            
         
+        if spatial_object is None:
+            spatial_object = bboxes[0].spatial_object
+
         for bbox in bboxes:
             if bbox is not None:
                 x1 = min(x1, bbox.x)
