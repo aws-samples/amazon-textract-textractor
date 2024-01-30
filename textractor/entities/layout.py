@@ -203,9 +203,9 @@ class Layout(DocumentEntity):
                 )
             if config.add_prefixes_and_suffixes_as_words:
                 final_words = (
-                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.header_prefix, is_structure=True)] if config.title_prefix else []) + 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.header_prefix, is_structure=True)] if config.header_prefix else []) + 
                     final_words + 
-                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.header_suffix, is_structure=True)] if config.title_suffix else []) 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.header_suffix, is_structure=True)] if config.header_suffix else []) 
                 )
         elif self.layout_type == LAYOUT_SECTION_HEADER:
             final_text, final_words = linearize_children(
@@ -217,9 +217,9 @@ class Layout(DocumentEntity):
                 )
             if config.add_prefixes_and_suffixes_as_words:
                 final_words = (
-                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.section_header_prefix, is_structure=True)] if config.title_prefix else []) + 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.section_header_prefix, is_structure=True)] if config.section_header_prefix else []) + 
                     final_words + 
-                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.section_header_suffix, is_structure=True)] if config.title_suffix else []) 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.section_header_suffix, is_structure=True)] if config.section_header_suffix else []) 
                 )
         elif self.layout_type == LAYOUT_TEXT:
             final_text, final_words = linearize_children(
@@ -234,6 +234,29 @@ class Layout(DocumentEntity):
                 no_new_lines=False,
                 is_layout_table=self.layout_type == LAYOUT_TABLE,
             )
+
+            if config.add_prefixes_and_suffixes_in_text:
+                if self.layout_type == LAYOUT_TABLE:
+                    final_text = (
+                        config.table_layout_prefix + final_text + config.table_layout_suffix
+                    )
+                elif self.layout_type == LAYOUT_KEY_VALUE:
+                    final_text = (
+                        config.table_layout_prefix + final_text + config.table_layout_suffix
+                    )
+            if config.add_prefixes_and_suffixes_as_words:
+                if self.layout_type == LAYOUT_TABLE:
+                    final_words = (
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.table_layout_prefix, is_structure=True)] if config.table_layout_prefix else []) + 
+                        final_words + 
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.table_layout_suffix, is_structure=True)] if config.table_layout_suffix else []) 
+                    )
+                elif self.layout_type == LAYOUT_KEY_VALUE:
+                    final_words = (
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.key_value_layout_prefix, is_structure=True)] if config.key_value_layout_prefix else []) + 
+                        final_words + 
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.key_value_layout_suffix, is_structure=True)] if config.key_value_layout_suffix else []) 
+                    )
 
         while (
             config.layout_element_separator * (config.max_number_of_consecutive_new_lines + 1) in final_text

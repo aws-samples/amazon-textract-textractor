@@ -9,6 +9,7 @@ from tests.utils import get_fixture_path
 
 from textractor import Textractor
 from textractor.data.constants import TextractFeatures
+from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.entities.document import Document
 from textractor.exceptions import InvalidProfileNameError, S3FilePathMissing
 from textractor.utils.s3_utils import upload_to_s3, delete_from_s3
@@ -85,3 +86,165 @@ class TestGetTextAndWords(unittest.TestCase):
             word_ids = set([w.id for w in words])
 
             self.assertTrue(original_word_set.issubset(word_ids))
+
+    def test_table_prefixes_and_suffixes_in_text(self):
+        if os.environ.get("CALL_TEXTRACT"):
+            document = self.extractor.analyze_document(
+                os.path.join(self.current_directory, "fixtures/single-page-1.png"),
+                features=[
+                    TextractFeatures.LAYOUT,
+                    TextractFeatures.TABLES,
+                    TextractFeatures.FORMS,
+                    TextractFeatures.SIGNATURES
+                ]
+            )
+            with open(get_fixture_path(), "w") as f:
+                json.dump(document.response, f)
+        else:
+            document = Document.open(get_fixture_path())
+
+        config = TextLinearizationConfig(
+            title_prefix = "<title>",  #: Prefix for title layout elements
+            title_suffix = "</title>",  #: Suffix for title layout elements
+            table_layout_prefix = "<table_layout>",  #: Prefix for table elements
+            table_layout_suffix = "</table_layout>",  #: Suffix for table elements
+            table_prefix = "<table>",
+            table_suffix = "</table>",
+            table_row_prefix = "<tr>",  #: Prefix for table row
+            table_row_suffix = "</tr>",  #: Suffix for table row
+            table_cell_prefix = "<td>",  #: Prefix for table cell
+            table_cell_suffix = "</td>",  #: Suffix for table cell
+            table_cell_header_prefix = "<th>",  #: Prefix for header cell
+            table_cell_header_suffix = "</th>",  #: Suffix for header cell
+            header_prefix = "<header>",  #: Prefix for header layout elements
+            header_suffix = "</header>",  #: Suffix for header layout elements
+            section_header_prefix = "<section_header>",  #: Prefix for section header layout elements
+            section_header_suffix = "</section_header>",  #: Suffix for section header layout elements
+            text_prefix = "<text>",  #: Prefix for text layout elements
+            text_suffix = "</text>",  #: Suffix for text layout elements
+            key_value_layout_prefix = "<kv_layout>",  #: Prefix for key_value layout elements (not for individual key-value elements)
+            key_value_layout_suffix = "</kv_layout>",  #: Suffix for key_value layout elements (not for individual key-value elements)
+            key_value_prefix = "<kv>",  #: Prefix for key-value elements
+            key_value_suffix = "</kv>",  #: Suffix for key-value elements
+            key_prefix = "<key>",  #: Prefix for key elements
+            key_suffix = "</key>",  #: Suffix for key elements
+            value_prefix = "<value>",  #: Prefix for value elements
+            value_suffix = "</value>",  #: Suffix for value elements
+            add_prefixes_and_suffixes_in_text=True,
+            add_prefixes_and_suffixes_as_words=True,
+        )
+
+        text, _ = document.get_text_and_words(config)
+
+        for token in [
+            "<title>",
+            "</title>",
+            "<table>",
+            "</table>",
+            "<table_layout>",
+            "</table_layout>",
+            "<tr>",
+            "</tr>",
+            "<td>",
+            "</td>",
+            # Sample does not have header cells
+            #"<th>",
+            #"</th>",
+            # Sample does not have header
+            #"<header>",
+            #"</header>",
+            "<section_header>",
+            "</section_header>",
+            # Sample does not have header
+            #"<kv_layout>",
+            #"</kv_layout>",
+            "<kv>",
+            "</kv>",
+            "<key>",
+            "</key>",
+            "<value>",
+            "</value>",
+        ]:
+            self.assertTrue(token in text, f"{token} is not in text")
+
+    def test_table_prefixes_and_suffixes_in_words(self):
+        if os.environ.get("CALL_TEXTRACT"):
+            document = self.extractor.analyze_document(
+                os.path.join(self.current_directory, "fixtures/single-page-1.png"),
+                features=[
+                    TextractFeatures.LAYOUT,
+                    TextractFeatures.TABLES,
+                    TextractFeatures.FORMS,
+                    TextractFeatures.SIGNATURES
+                ]
+            )
+            with open(get_fixture_path(), "w") as f:
+                json.dump(document.response, f)
+        else:
+            document = Document.open(get_fixture_path())
+
+        config = TextLinearizationConfig(
+            title_prefix = "<title>",  #: Prefix for title layout elements
+            title_suffix = "</title>",  #: Suffix for title layout elements
+            table_layout_prefix = "<table_layout>",  #: Prefix for table elements
+            table_layout_suffix = "</table_layout>",  #: Suffix for table elements
+            table_prefix = "<table>",
+            table_suffix = "</table>",
+            table_row_prefix = "<tr>",  #: Prefix for table row
+            table_row_suffix = "</tr>",  #: Suffix for table row
+            table_cell_prefix = "<td>",  #: Prefix for table cell
+            table_cell_suffix = "</td>",  #: Suffix for table cell
+            table_cell_header_prefix = "<th>",  #: Prefix for header cell
+            table_cell_header_suffix = "</th>",  #: Suffix for header cell
+            header_prefix = "<header>",  #: Prefix for header layout elements
+            header_suffix = "</header>",  #: Suffix for header layout elements
+            section_header_prefix = "<section_header>",  #: Prefix for section header layout elements
+            section_header_suffix = "</section_header>",  #: Suffix for section header layout elements
+            text_prefix = "<text>",  #: Prefix for text layout elements
+            text_suffix = "</text>",  #: Suffix for text layout elements
+            key_value_layout_prefix = "<kv_layout>",  #: Prefix for key_value layout elements (not for individual key-value elements)
+            key_value_layout_suffix = "</kv_layout>",  #: Suffix for key_value layout elements (not for individual key-value elements)
+            key_value_prefix = "<kv>",  #: Prefix for key-value elements
+            key_value_suffix = "</kv>",  #: Suffix for key-value elements
+            key_prefix = "<key>",  #: Prefix for key elements
+            key_suffix = "</key>",  #: Suffix for key elements
+            value_prefix = "<value>",  #: Prefix for value elements
+            value_suffix = "</value>",  #: Suffix for value elements
+            add_prefixes_and_suffixes_in_text=True,
+            add_prefixes_and_suffixes_as_words=True,
+        )
+
+        _, words = document.get_text_and_words(config)
+
+        words = [w.text for w in words]
+
+        for token in [
+            "<title>",
+            "</title>",
+            "<table>",
+            "</table>",
+            "<table_layout>",
+            "</table_layout>",
+            "<tr>",
+            "</tr>",
+            "<td>",
+            "</td>",
+            # Sample does not have header cells
+            #"<th>",
+            #"</th>",
+            # Sample does not have header
+            #"<header>",
+            #"</header>",
+            "<section_header>",
+            "</section_header>",
+            # Sample does not have header
+            #"<kv_layout>",
+            #"</kv_layout>",
+            "<kv>",
+            "</kv>",
+            "<key>",
+            "</key>",
+            "<value>",
+            "</value>",
+        ]:
+            self.assertTrue(token in words, f"{token} is not in text")
