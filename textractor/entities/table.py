@@ -716,6 +716,8 @@ class Table(DocumentEntity):
             w.table_id = str(self.id)
             w.table_bbox = self.bbox
 
+
+        text = (config.table_prefix if config.add_prefixes_and_suffixes_in_text else "")
         # Markdown
         if config.table_linearization_format == "markdown":
             df = self.to_pandas(
@@ -727,12 +729,11 @@ class Table(DocumentEntity):
                 headers = df.columns if has_column else []
             else:
                 headers = df.columns
-            text = df.to_markdown(
+            text += df.to_markdown(
                 index=False, tablefmt=config.table_tabulate_format, headers=headers
             )
         # Plaintext
         else:
-            text = ""
             rows = itertools.groupby(self.table_cells, key=lambda cell: cell.row_index)
             processed_cells = set()
             for _, row in rows:
@@ -764,7 +765,7 @@ class Table(DocumentEntity):
                     text = text[:-1]
                 text += (config.table_row_suffix if config.add_prefixes_and_suffixes_in_text else "")
                 text += "\n"
-
+        text += (config.table_suffix if config.add_prefixes_and_suffixes_in_text else "")
         return text, words
 
     def to_txt(self):

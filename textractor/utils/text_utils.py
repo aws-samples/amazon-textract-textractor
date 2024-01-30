@@ -149,9 +149,7 @@ def linearize_children(
         for idx, element in enumerate(sorted_group):
             text_element, words_element = element.get_text_and_words(config)
             if "Table" in element.__class__.__name__ and len(words_element):
-                result += (
-                    config.table_layout_prefix if config.add_prefixes_and_suffixes_in_text else ""
-                ) + text_element
+                result += text_element
                 for w in words_element:
                     added_words.add(w.id)
                 words_output += words_element
@@ -161,11 +159,7 @@ def linearize_children(
                     if prev_element and part_of_same_paragraph(prev_element, element, config) else
                     config.same_layout_element_separator
                 )
-                result += separator + (
-                    (config.key_value_layout_prefix if config.add_prefixes_and_suffixes_in_text else "") +
-                    text_element + 
-                    (config.key_value_layout_suffix if config.add_prefixes_and_suffixes_in_text else "")
-                )
+                result += separator + text_element
                 for w in words_element:
                     added_words.add(w.id)
                 words_output += words_element
