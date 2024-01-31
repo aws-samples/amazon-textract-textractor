@@ -13,8 +13,6 @@ from copy import deepcopy
 from collections import defaultdict
 from PIL import Image
 
-from trp.trp2 import TDocument, TDocumentSchema
-
 from textractor.entities.expense_document import ExpenseDocument
 from textractor.entities.identity_document import IdentityDocument
 from textractor.entities.word import Word
@@ -295,13 +293,15 @@ class Document(SpatialObject):
             ]
         )
 
-    def to_trp2(self) -> TDocument:
+    def to_trp2(self):
         """
         Parses the response to the trp2 format for backward compatibility
 
         :return: TDocument object that can be used with the older Textractor libraries
         :rtype: TDocument
         """
+        from trp.trp2 import TDocument, TDocumentSchema
+        
         if not self._trp2_document:
             self._trp2_document = TDocumentSchema().load(self.response)
         return self._trp2_document
