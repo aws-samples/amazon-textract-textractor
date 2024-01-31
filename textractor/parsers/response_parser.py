@@ -1367,10 +1367,13 @@ def parse_document_api_response(response: dict) -> Document:
 
         # Final clean up of the layout objects
         word_set = set()
-        for layout in sorted(page.leaf_layouts, key=lambda l: l.reading_order):
+        for layout in sorted(page.layouts, key=lambda l: l.reading_order):
             layout.visit(word_set)
             if not layout.children:
-                page.leaf_layouts.remove(layout)
+                try:
+                    page.leaf_layouts.remove(layout)
+                except:
+                    page.container_layouts.remove(layout)
 
     document.pages = sorted(list(pages.values()), key=lambda x: x.page_num)
     document.response = response

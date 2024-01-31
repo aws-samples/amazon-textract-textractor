@@ -242,7 +242,7 @@ class Layout(DocumentEntity):
                     )
                 elif self.layout_type == LAYOUT_KEY_VALUE:
                     final_text = (
-                        config.table_layout_prefix + final_text + config.table_layout_suffix
+                        config.key_value_layout_prefix + final_text + config.key_value_layout_suffix
                     )
             if config.add_prefixes_and_suffixes_as_words:
                 if self.layout_type == LAYOUT_TABLE:
