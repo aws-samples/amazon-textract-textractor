@@ -15,6 +15,7 @@ Examples
    notebooks/using_analyze_id
    notebooks/using_queries
    notebooks/layout_analysis
+   notebooks/tabular_data_linearization
    notebooks/layout_analysis_for_text_linearization
    notebooks/textractor_for_large_language_models
    notebooks/interfacing_with_trp2
