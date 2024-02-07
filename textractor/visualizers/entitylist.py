@@ -618,6 +618,13 @@ def _draw_bbox(
     :rtype: PIL.Image
     """
     image = entities[0].bbox.spatial_object.image
+    if image is None:
+        for e in entities:
+            if e.bbox.spatial_object.image is not None:
+                image = e.bbox.spatial_object.image
+                break
+        else:
+            raise Exception("Could not find an entity with an associated image!")
     image = image.convert("RGBA")
     overlay = Image.new("RGBA", image.size, (255, 255, 255, 0))
     drw = ImageDraw.Draw(overlay, "RGBA")
