@@ -93,7 +93,7 @@ class LinearizeLayout:
                 table_data = []
                 # Find the matching TABLE block for the LAYOUT_TABLE
                 table_block = None
-                for potential_table in [b for b in self.j['Blocks'] if b['BlockType'] == 'TABLE']:
+                for potential_table in [b for b in self.j['Blocks'] if b['BlockType'] == 'TABLE' and b.get('Page',1) == block.get('Page', 1)]:
                     if self._geometry_match(block['Geometry']['BoundingBox'], potential_table['Geometry']['BoundingBox']):
                         table_block = potential_table
                         break
