@@ -27,7 +27,7 @@ if sys.argv[-1] == 'publish':
 
 setup(name='amazon-textract-prettyprinter',
       packages=['textractprettyprinter'],
-      version='0.1.8',
+      version='0.1.9',
       description='Amazon Textract Helper tools for pretty printing',
       install_requires=requirements,
       long_description_content_type='text/markdown',
