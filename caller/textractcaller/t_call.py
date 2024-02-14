@@ -532,6 +532,7 @@ def call_textract(
     call_mode: Textract_Call_Mode = Textract_Call_Mode.DEFAULT,
     boto3_textract_client=None,
     job_done_polling_interval=1,
+    mime_type: str = None, 
 ) -> dict:
     """
     calls Textract and returns a response (either full json as string (json.dumps)or the job_id when return_job_id=True)
@@ -550,6 +551,7 @@ def call_textract(
     job_tag: passed down to Textract API
     boto_3_textract_client: pass in boto3 client (to overcome missing region in environmnent, e. g.)
     job_done_polling_interval: when using async (pdf document of force_async_api,
+    mime_type: will set the "file extension". [ 'application/pdf', 'image/png', 'image/jpeg', 'image/tiff' ]
     the implementation polls every x seconds (1 second by default))
     returns: dict with either Textract response or async API response (incl. the JobId)
     raises LimitExceededException when receiving LimitExceededException from Textract API.
@@ -578,8 +580,8 @@ def call_textract(
         ext: str = ""
         _, ext = os.path.splitext(input_document)
         ext = ext.lower()
+        is_pdf: bool = (ext is not None and ext.lower() in only_async_suffixes) or (mime_type == 'application/pdf')
 
-        is_pdf: bool = ext != None and ext.lower() in only_async_suffixes
         if is_pdf and not is_s3_document:
             raise ValueError("PDF only supported when located on S3")
         if not is_s3_document and force_async_api:
