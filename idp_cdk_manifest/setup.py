@@ -1,6 +1,7 @@
 import os
 import sys
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 
 def read(fname):
@@ -29,7 +30,7 @@ setup(name='amazon-textract-idp-cdk-manifest',
       packages=find_packages(exclude=['tests']),
       include_package_data=True,
       exclude_package_data={"": ["test_*.py", "__pycache__"]},
-      version='0.0.1',
+      version='0.0.2',
       description='Amazon Textract IDP CDK Manifest',
       install_requires=requirements,
       extras_require={'testing': ['pytest']},
@@ -47,5 +48,8 @@ setup(name='amazon-textract-idp-cdk-manifest',
           'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: 3.8',
           'Programming Language :: Python :: 3.9',
+          'Programming Language :: Python :: 3.10',
+          'Programming Language :: Python :: 3.11',
+          'Programming Language :: Python :: 3.12',
       ],
       python_requires='>=3.7')

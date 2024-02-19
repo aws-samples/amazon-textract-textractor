@@ -1,13 +1,14 @@
 import os
 import sys
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'Pillow', 'pypdf>=3.1,<4.0']
+requirements = ['boto3', 'botocore', 'Pillow', 'pypdf>=3.1,<5.0']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
@@ -29,7 +30,7 @@ setup(name='amazon-textract-pipeline-pagedimensions',
       packages=find_packages(exclude=['tests']),
       include_package_data=True,
       exclude_package_data={"": ["test_*.py", "__pycache__"]},
-      version='0.0.9',
+      version='0.0.10',
       description='Amazon Textract Pipeline Component to add page dimensions to page block types',
       install_requires=requirements,
       scripts=['bin/amazon-textract-pipeline-pagedimensions'],
@@ -49,5 +50,7 @@ setup(name='amazon-textract-pipeline-pagedimensions',
           'Programming Language :: Python :: 3.8',
           'Programming Language :: Python :: 3.9',
           'Programming Language :: Python :: 3.10',
+          'Programming Language :: Python :: 3.11',
+          'Programming Language :: Python :: 3.12',
       ],
       python_requires='>=3.6')
