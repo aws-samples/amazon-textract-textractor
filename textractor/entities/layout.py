@@ -266,4 +266,12 @@ class Layout(DocumentEntity):
                 "\n" * config.max_number_of_consecutive_new_lines,
             )
 
+        while config.max_number_of_consecutive_spaces and (
+            " " * (config.max_number_of_consecutive_spaces + 1) in final_text
+        ):
+            final_text = final_text.replace(
+                " " * (config.max_number_of_consecutive_spaces + 1),
+                " " * config.max_number_of_consecutive_spaces,
+            )
+
         return final_text, final_words
