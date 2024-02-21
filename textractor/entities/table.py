@@ -514,10 +514,10 @@ class Table(DocumentEntity):
         row_offset = 0
 
         columns = None
+        processed_cells = set()
         if use_columns:
             # Try to automatically get the columns if they are in the first row
-            columns = ["" for _ in range(self.column_count)]
-            processed_cells = set()
+            columns = [[] for _ in range(self.column_count)]
             is_header_count = 0
             for _, row in rows:
                 if not any([c.is_column_header for c in row]):
@@ -542,12 +542,16 @@ class Table(DocumentEntity):
                                 children.extend(sib.children)
                                 processed_cells.add(sib)
                             text, _ = linearize_children(children, config=config, no_new_lines=True)
-                            columns[i] += text
+                            columns[i].append(text)
                         else:
                             if cell.is_column_header:
                                 is_header_count += 1
                             text = cell.get_text(config)
-                            columns[i] += text
+                            columns[i].append(text)
+                    elif config.table_cell_empty_cell_placeholder:
+                        columns[i].append(config.table_cell_empty_cell_placeholder)
+                    else:
+                        columns[i].append("")
                 row_offset += 1
             # If we have the correct number of column and at least half the row is tagged as a header
             if len(columns) == self.column_count and is_header_count / len(columns) >= config.table_column_header_threshold:
@@ -558,12 +562,17 @@ class Table(DocumentEntity):
                     f"The number of column header cell do not match the column count, ignoring them, {len(columns)} vs {self.column_count}"
                 )
 
-        if columns:
+        if columns and config.table_flatten_headers:
+            columns = ["".join(c) for c in columns]
             table = [columns]
+        elif columns:
+            # We reset the row offset as only the first line will be taken as header
+            columns = [c[0] for c in columns]
+            table = [columns]
+            row_offset = 1
         else:
             table = []
 
-        processed_cells = set()
         for _, row in rows[row_offset:]:
             table.append([])
             for cell in row:
