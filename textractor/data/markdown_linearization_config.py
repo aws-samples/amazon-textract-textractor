@@ -15,3 +15,5 @@ class MarkdownLinearizationConfig(TextLinearizationConfig):
     table_linearization_format: str = "markdown"
 
     section_header_prefix: str = "## "
+
+    table_remove_column_headers: bool = True

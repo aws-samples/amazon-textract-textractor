@@ -24,7 +24,6 @@ from textractor.entities.signature import Signature
 from textractor.exceptions import InputError
 from textractor.entities.key_value import KeyValue
 from textractor.entities.bbox import SpatialObject
-from textractor.data.constants import SelectionStatus
 from textractor.utils.s3_utils import download_from_s3
 from textractor.visualizers.entitylist import EntityList
 from textractor.data.constants import (
@@ -33,12 +32,12 @@ from textractor.data.constants import (
     Direction,
     DirectionalFinderType,
 )
-from textractor.entities.selection_element import SelectionElement
-from textractor.utils.search_utils import SearchUtils, jaccard_similarity
+from textractor.utils.search_utils import SearchUtils
 from textractor.data.text_linearization_config import TextLinearizationConfig
+from textractor.entities.linearizable import Linearizable
 
 
-class Document(SpatialObject):
+class Document(SpatialObject, Linearizable):
     """
     Represents the description of a single document, as it would appear in the input to the Textract API.
     Document serves as the root node of the object model hierarchy,
@@ -243,11 +242,6 @@ class Document(SpatialObject):
         :type pages: List[Page]
         """
         self._pages = sorted(pages, key=lambda x: x.page_num)
-
-    def get_text(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ) -> str:
-        return self.get_text_and_words(config)[0]
 
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()

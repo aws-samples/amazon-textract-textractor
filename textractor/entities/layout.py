@@ -92,19 +92,6 @@ class Layout(DocumentEntity):
         _, words = self.get_text_and_words(config)
         return words
 
-    def get_text(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ) -> str:
-        """
-        Returns the layout object text
-
-        :param config: Text linearization configuration object, defaults to TextLinearizationConfig()
-        :type config: TextLinearizationConfig, optional
-        :return: Linearized layout object text
-        :rtype: str
-        """
-        return self.get_text_and_words(config)[0]
-
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ) -> Tuple[str, List[Word]]:

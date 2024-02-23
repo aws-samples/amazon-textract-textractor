@@ -669,9 +669,6 @@ class Table(DocumentEntity):
         
         return self.get_text(HTMLLinearizationConfig())
 
-    def get_text(self, config: TextLinearizationConfig = TextLinearizationConfig()):
-        return self.get_text_and_words(config)[0]
-
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ):
@@ -867,7 +864,7 @@ class Table(DocumentEntity):
             )
             has_column = any([isinstance(c, str) for c in df.columns])
             if config.table_remove_column_headers:
-                headers = df.columns if has_column else []
+                headers = df.columns if has_column else ["" for c in df.columns]
             else:
                 headers = df.columns
             table = df.to_markdown(

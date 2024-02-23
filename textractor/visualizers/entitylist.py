@@ -25,6 +25,8 @@ from textractor.data.constants import (
     AnalyzeExpenseFields,
 )
 from textractor.exceptions import EntityListCreationError, NoImageException
+from textractor.entities.linearizable import Linearizable
+from textractor.data.text_linearization_config import TextLinearizationConfig
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +35,7 @@ present_path = os.path.abspath(os.path.dirname(__file__))
 T = TypeVar("T")
 
 
-class EntityList(list, Generic[T]):
+class EntityList(list, Generic[T], Linearizable):
     """
     Creates a list type object, initially empty but extended with the list passed in objs.
 
@@ -485,6 +487,13 @@ class EntityList(list, Generic[T]):
     def __add__(self, list2):
         return EntityList([*self, *list2])
 
+    def get_text_and_words(self, config: TextLinearizationConfig = TextLinearizationConfig()):
+        text, words = "", []
+        for entity in self:
+            entity_text, entity_words = entity.get_text_and_words(config)
+            text += entity_text
+            words.extend(entity_words)
+        return text, words
 
 def _convert_form_to_list(
     form_objects,
