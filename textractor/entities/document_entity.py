@@ -193,6 +193,18 @@ class DocumentEntity(ABC):
         """
         return EntityList(self).visualize(*args, **kwargs)
 
+    def get_text(
+        self, config: TextLinearizationConfig = TextLinearizationConfig()
+    ) -> str:
+        """
+        Returns the linearized text of the entity
+
+        :return: Linearized text of the entity
+        :rtype: str
+        """
+        text, _ = self.get_text_and_words(config=config)
+        return text
+
     @abstractmethod
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()

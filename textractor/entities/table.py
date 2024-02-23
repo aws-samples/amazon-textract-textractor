@@ -31,6 +31,7 @@ from textractor.data.constants import IS_COLUMN_HEAD, IS_MERGED_CELL
 from textractor.utils.search_utils import SearchUtils, get_metadata_attr_name
 from textractor.utils.text_utils import group_elements_horizontally, linearize_children
 from textractor.data.text_linearization_config import TextLinearizationConfig
+from textractor.data.html_linearization_config import HTMLLinearizationConfig
 
 
 class Table(DocumentEntity):
@@ -665,19 +666,8 @@ class Table(DocumentEntity):
         :return: Table as an HTML string.
         :rtype: str
         """
-        config = TextLinearizationConfig(
-            table_prefix="<table>",
-            table_suffix="</table>",
-            table_row_prefix="<tr>",
-            table_row_suffix="</tr>",
-            table_cell_header_prefix="<th>",  
-            table_cell_header_suffix="</th>",  
-            table_cell_prefix="<td>",
-            table_cell_suffix="</td>",
-            table_column_separator="",
-            add_prefixes_and_suffixes_in_text=True,
-        )
-        return self.get_text(config)
+        
+        return self.get_text(HTMLLinearizationConfig())
 
     def get_text(self, config: TextLinearizationConfig = TextLinearizationConfig()):
         return self.get_text_and_words(config)[0]
