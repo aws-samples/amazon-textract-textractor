@@ -68,6 +68,10 @@ class TextLinearizationConfig:
 
     table_tabulate_remove_extra_hyphens: bool = False  #: By default markdown tables will have N hyphens to preserve alignement, this reduces the number of hyphens to 1, which is the minimum number allowed by the GitHub Markdown spec
 
+    table_duplicate_text_in_merged_cells: bool = False #: Duplicate text in merged cells to preserve line alignment
+
+    table_flatten_headers: bool = False #: Flatten table headers into a single row, unmerging the cells horizontally
+
     table_min_table_words: int = 0  #: Threshold below which tables will be rendered as words instead of using table layout
 
     table_column_separator: str = "\t"  #: Table column separator, used when linearizing layout tables, not used if AnalyzeDocument was called with the TABLES feature
@@ -147,7 +151,3 @@ class TextLinearizationConfig:
     add_prefixes_and_suffixes_as_words: bool = False #: Controls if the prefixes/suffixes will be inserted in the words returned by `get_text_and_words`
 
     add_prefixes_and_suffixes_in_text: bool = True #: Controls if the prefixes/suffixes will be added to the linearized text
-
-    duplicate_text_in_merged_cells: bool = False #: Duplicate text in merged cells to preserve line alignment
-
-    table_flatten_headers: bool = False #: Flatten table headers into a single row, unmerging the cells horizontally

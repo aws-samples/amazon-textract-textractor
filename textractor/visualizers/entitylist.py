@@ -105,7 +105,7 @@ class EntityList(list, Generic[T], Linearizable):
                     self._add_expense_document_to_list(new_entity_list, entity)
                 else:
                     new_entity_list.append(entity)
-            return EntityList(list(set(new_entity_list))).visualize(
+            return EntityList(list(dict.fromkeys(new_entity_list).keys())).visualize(
                 with_text=with_text,
                 with_words=with_words,
                 with_confidence=with_confidence,
@@ -131,7 +131,7 @@ class EntityList(list, Generic[T], Linearizable):
 
         for page in list(entities_pagewise.keys()):
             # Deduplication
-            entities_pagewise[page] = list(set(entities_pagewise[page]))
+            entities_pagewise[page] = list(dict.fromkeys(entities_pagewise[page]).keys())
 
         for page in entities_pagewise.keys():
             visualized_images[page] = _draw_bbox(
@@ -488,12 +488,12 @@ class EntityList(list, Generic[T], Linearizable):
         return EntityList([*self, *list2])
 
     def get_text_and_words(self, config: TextLinearizationConfig = TextLinearizationConfig()):
-        text, words = "", []
+        texts, words = [], []
         for entity in self:
             entity_text, entity_words = entity.get_text_and_words(config)
-            text += entity_text
+            texts.append(entity_text)
             words.extend(entity_words)
-        return text, words
+        return config.layout_element_separator.join(texts), words
 
 def _convert_form_to_list(
     form_objects,

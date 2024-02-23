@@ -527,7 +527,7 @@ class Table(DocumentEntity):
                 for i, cell in enumerate(row):
                     if (
                         cell not in processed_cells or
-                        config.duplicate_text_in_merged_cells or
+                        config.table_duplicate_text_in_merged_cells or
                         config.table_flatten_headers
                     ):
                         if cell.siblings:
@@ -581,7 +581,7 @@ class Table(DocumentEntity):
                 if cell.siblings:
                     children = []
                     first_row, first_col, last_row, last_col = cell._get_merged_cell_range()
-                    if (cell.col_index == first_col and cell.row_index == first_row) or config.duplicate_text_in_merged_cells:
+                    if (cell.col_index == first_col and cell.row_index == first_row) or config.table_duplicate_text_in_merged_cells:
                         for sib in cell.siblings:
                             children.extend(sib.children)
                             processed_cells.add(sib)
@@ -698,7 +698,7 @@ class Table(DocumentEntity):
                 for i, cell in enumerate(row):
                     if (
                         cell not in processed_cells or
-                        config.duplicate_text_in_merged_cells or
+                        config.table_duplicate_text_in_merged_cells or
                         config.table_flatten_headers
                     ):
                         if cell.siblings:
@@ -763,7 +763,7 @@ class Table(DocumentEntity):
                     row_index = first_row
                     row_span = last_row - first_row + 1
                     children = []
-                    if (cell.col_index == first_col and cell.row_index == first_row) or config.duplicate_text_in_merged_cells:
+                    if (cell.col_index == first_col and cell.row_index == first_row) or config.table_duplicate_text_in_merged_cells:
                         for sib in cell.siblings:
                             children.extend(sib.children)
                             processed_cells.add(sib)
@@ -887,7 +887,7 @@ class Table(DocumentEntity):
                     for i, cell in enumerate(row):
                         if (
                             cell not in processed_cells or
-                            config.duplicate_text_in_merged_cells or
+                            config.table_duplicate_text_in_merged_cells or
                             config.table_flatten_headers
                         ):
                             if cell.siblings:
@@ -932,7 +932,7 @@ class Table(DocumentEntity):
                     # Siblings includes the current cell
                     if cell.siblings:
                         first_row, first_col, last_row, last_col = cell._get_merged_cell_range()
-                        if (cell.col_index == first_col and cell.row_index == first_row) or config.duplicate_text_in_merged_cells:
+                        if (cell.col_index == first_col and cell.row_index == first_row) or config.table_duplicate_text_in_merged_cells:
                             for sib in cell.siblings:
                                 children.extend(sib.children)
                                 processed_cells.add(sib)
