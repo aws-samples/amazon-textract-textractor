@@ -10,6 +10,18 @@ class HTMLLinearizationConfig(TextLinearizationConfig):
     For a description of the parameters see :class:`TextLinearizationConfig`.
     """
 
+    title_prefix: str = "<h1>"
+
+    title_suffix: str = "</h1>"
+
+    section_header_prefix: str = "<h2>"
+
+    section_header_suffix: str = "</h2>"
+
+    text_prefix: str = "<p>"
+
+    text_suffix: str = "</p>"
+
     table_prefix: str = "<table>"
 
     table_suffix: str = "</table>"
