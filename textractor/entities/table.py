@@ -659,6 +659,26 @@ class Table(DocumentEntity):
         else:
             return workbook
 
+    def to_html(self) -> str:
+        """Returns the table in the HTML format
+
+        :return: Table as an HTML string.
+        :rtype: str
+        """
+        config = TextLinearizationConfig(
+            table_prefix="<table>",
+            table_suffix="</table>",
+            table_row_prefix="<tr>",
+            table_row_suffix="</tr>",
+            table_cell_header_prefix="<th>",  
+            table_cell_header_suffix="</th>",  
+            table_cell_prefix="<td>",
+            table_cell_suffix="</td>",
+            table_column_separator="",
+            add_prefixes_and_suffixes_in_text=True,
+        )
+        return self.get_text(config)
+
     def get_text(self, config: TextLinearizationConfig = TextLinearizationConfig()):
         return self.get_text_and_words(config)[0]
 
