@@ -562,10 +562,10 @@ class Table(DocumentEntity):
                     f"The number of column header cell do not match the column count, ignoring them, {len(columns)} vs {self.column_count}"
                 )
 
-        if columns and config.table_flatten_headers:
+        if any([c for c in columns]) and config.table_flatten_headers:
             columns = ["".join(c) for c in columns]
             table = [columns]
-        elif columns:
+        elif any([c for c in columns]):
             # We reset the row offset as only the first line will be taken as header
             columns = [c[0] for c in columns]
             table = [columns]
@@ -711,6 +711,8 @@ class Table(DocumentEntity):
                             _, words = cell.get_text_and_words(config)
                             columns[i].extend(words)
                             columns_bbox[i].append(cell.bbox)
+                    elif config.table_cell_empty_cell_placeholder:
+                        columns[i].append(Word(str(uuid.uuid4()), cell.bbox, config.table_cell_empty_cell_placeholder))
                 row_offset += 1
             if columns:
                 columns_bbox = [BoundingBox.enclosing_bbox(cbb) for cbb in columns_bbox]
@@ -846,7 +848,6 @@ class Table(DocumentEntity):
             w.table_id = str(self.id)
             w.table_bbox = self.bbox
 
-
         text = (config.table_prefix if config.add_prefixes_and_suffixes_in_text else "")
         # Markdown
         if config.table_linearization_format == "markdown":
@@ -897,8 +898,12 @@ class Table(DocumentEntity):
                             else:
                                 text = cell.get_text(config)
                                 columns[i] += text
+                        elif config.table_cell_empty_cell_placeholder:
+                            columns[i] += config.table_cell_empty_cell_placeholder
+                        else:
+                            columns[i] += ""
                     row_offset += 1
-                if columns:
+                if any(columns):
                     text += config.table_row_prefix if config.add_prefixes_and_suffixes_in_text else ""
                     for column in columns:
                         text += (
@@ -910,9 +915,9 @@ class Table(DocumentEntity):
                             if config.add_prefixes_and_suffixes_in_text else
                             (column or config.table_cell_empty_cell_placeholder)
                         )
-                        text += "\t"
+                        text += config.table_column_separator
                     text += (config.table_row_suffix if config.add_prefixes_and_suffixes_in_text else "")
-                    text += "\n"
+                    text += config.table_row_separator
                     
             for _, row in rows[row_offset:]:
                 text += (config.table_row_prefix if config.add_prefixes_and_suffixes_in_text else "")
@@ -938,17 +943,18 @@ class Table(DocumentEntity):
                     text += (
                         (
                             (config.table_cell_header_prefix if config.table_cell_header_prefix and cell.is_column_header else config.table_cell_prefix) +
-                            (cell_text or config.table_cell_empty_cell_placeholder) +
+                            # Removes trailing whitespace in cell_text
+                            (cell_text.strip() or config.table_cell_empty_cell_placeholder) +
                             (config.table_cell_header_suffix if config.table_cell_header_suffix and cell.is_column_header else config.table_cell_suffix)
                         )
                         if config.add_prefixes_and_suffixes_in_text else
                         (cell_text or config.table_cell_empty_cell_placeholder)
                     ) 
-                    text += "\t"
-                if text and text[-1] == "\t":
+                    text += config.table_column_separator
+                if text and text[-1] == config.table_column_separator:
                     text = text[:-1]
                 text += (config.table_row_suffix if config.add_prefixes_and_suffixes_in_text else "")
-                text += "\n"
+                text += config.table_row_separator
         text += (config.table_suffix if config.add_prefixes_and_suffixes_in_text else "")
         return text, words
 

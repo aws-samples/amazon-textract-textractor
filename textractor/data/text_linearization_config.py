@@ -62,7 +62,7 @@ class TextLinearizationConfig:
 
     table_column_header_threshold: float = 0.9 #: Threshold for a row to be selected as header when rendering as markdown. 0.9 means that 90% of the cells must have the is_header_cell flag. 
 
-    table_linearization_format: str = "plaintext"  #: How to represent tables in the linearized output. Choices are plaintext or markdown.
+    table_linearization_format: str = "plaintext"  #: How to represent tables in the linearized output. Choices are plaintext, markdown or HTML.
 
     table_tabulate_format: str = "github"  #: Markdown tabulate format to use when table are linearized as markdown
 
