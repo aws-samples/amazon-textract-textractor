@@ -603,13 +603,15 @@ class Table(DocumentEntity):
             columns=columns if use_columns else None,
         )
 
-    def to_csv(self, config: TextLinearizationConfig = TextLinearizationConfig()) -> str:
+    def to_csv(self, use_columns = False, config: TextLinearizationConfig = TextLinearizationConfig()) -> str:
         """Returns the table in the Comma-Separated-Value (CSV) format
 
+        :param use_columns: If the first row of the table is made of column headers, use them for the pandas dataframe. Only supports single row header.
+        :param config: Text linearization configuration object for the table content
         :return: Table as a CSV string.
         :rtype: str
         """
-        return self.to_pandas(config).to_csv()
+        return self.to_pandas(use_columns=use_columns, config=config).to_csv()
 
     def to_excel(self, filepath=None, workbook=None, save_workbook=True):
         """
