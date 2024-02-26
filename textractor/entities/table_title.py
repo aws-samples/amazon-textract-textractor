@@ -11,6 +11,7 @@ from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
 from textractor.entities.word import Word
+from textractor.utils.text_utils import linearize_children
 from textractor.visualizers.entitylist import EntityList
 
 
@@ -122,4 +123,5 @@ class TableTitle(DocumentEntity):
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ):
-        return " ".join(self.words), self.words
+        text, words = linearize_children(self.words, config=config)
+        return text, words
