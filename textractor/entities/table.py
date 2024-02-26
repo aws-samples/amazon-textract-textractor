@@ -563,10 +563,10 @@ class Table(DocumentEntity):
                     f"The number of column header cell do not match the column count, ignoring them, {len(columns)} vs {self.column_count}"
                 )
 
-        if any([c for c in columns]) and config.table_flatten_headers:
+        if columns and any([c for c in columns]) and config.table_flatten_headers:
             columns = ["".join(c) for c in columns]
             table = [columns]
-        elif any([c for c in columns]):
+        elif columns and any([c for c in columns]):
             # We reset the row offset as only the first line will be taken as header
             columns = [c[0] for c in columns]
             table = [columns]
@@ -603,13 +603,13 @@ class Table(DocumentEntity):
             columns=columns if use_columns else None,
         )
 
-    def to_csv(self) -> str:
+    def to_csv(self, config: TextLinearizationConfig = TextLinearizationConfig()) -> str:
         """Returns the table in the Comma-Separated-Value (CSV) format
 
         :return: Table as a CSV string.
         :rtype: str
         """
-        return self.to_pandas().to_csv()
+        return self.to_pandas(config).to_csv()
 
     def to_excel(self, filepath=None, workbook=None, save_workbook=True):
         """
