@@ -92,19 +92,6 @@ class Layout(DocumentEntity):
         _, words = self.get_text_and_words(config)
         return words
 
-    def get_text(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ) -> str:
-        """
-        Returns the layout object text
-
-        :param config: Text linearization configuration object, defaults to TextLinearizationConfig()
-        :type config: TextLinearizationConfig, optional
-        :return: Linearized layout object text
-        :rtype: str
-        """
-        return self.get_text_and_words(config)[0]
-
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ) -> Tuple[str, List[Word]]:
@@ -264,6 +251,14 @@ class Layout(DocumentEntity):
             final_text = final_text.replace(
                 "\n" * (config.max_number_of_consecutive_new_lines + 1),
                 "\n" * config.max_number_of_consecutive_new_lines,
+            )
+
+        while config.max_number_of_consecutive_spaces and (
+            " " * (config.max_number_of_consecutive_spaces + 1) in final_text
+        ):
+            final_text = final_text.replace(
+                " " * (config.max_number_of_consecutive_spaces + 1),
+                " " * config.max_number_of_consecutive_spaces,
             )
 
         return final_text, final_words
