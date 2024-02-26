@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document Linearization to Markdown or HTML with Textractor &mdash; amazon-textract-textractor 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Textractor for Large Language Models (LLM)" href="textractor_for_large_language_models.html" />
+    <link rel="prev" title="Using Layout Analysis for Text Linearization" href="layout_analysis_for_text_linearization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> amazon-textract-textractor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_in_lambda.html">Using Textractor in AWS Lambda</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simple_ocr.html">Using Textract OCR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parsing_an_existing_response.html">Parsing an existing response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction_to_searching.html">Introduction to searching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualizing_results.html">Visualizing Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="finding_words_within_a_document.html">Word Occurence within Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporting_form_data.html">Exporting Form Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="table_data_to_various_formats.html">Table data extraction to Excel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_analyze_expense.html">Using AnalyzeExpense</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_analyze_id.html">Using AnalyzeID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_queries.html">Using Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layout_analysis.html">Using Layout Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tabular_data_linearization.html">Tabular data linearization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tabular_data_linearization_continued.html">Tabular data linearization (Continued)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layout_analysis_for_text_linearization.html">Using Layout Analysis for Text Linearization</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Document Linearization to Markdown or HTML with Textractor</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calling-Textract">Calling Textract</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#All-entities-can-be-linearized">All entities can be linearized</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="textractor_for_large_language_models.html">Textractor for Large Language Models (LLM)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interfacing_with_trp2.html">Interfacing with trp2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="signature_detection.html">Signature Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="going_further.html">Going further</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../commandline.html">CLI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.html">Textract Caller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.parsers.html">Entity Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.entities.html">Document Entities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.visualizers.html">Entity Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.data.constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../textractor.data.text_linearization_config.html">TextLinearizationConfig</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">amazon-textract-textractor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../examples.html">Examples</a> &raquo;</li>
+      <li>Document Linearization to Markdown or HTML with Textractor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/document_linearization_to_markdown_or_html.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars and line breaks on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+    white-space: pre;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.jp-RenderedHTMLCommon thead,
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+.jp-RenderedHTMLCommon th,
+div.rendered_html th {
+  font-weight: bold;
+}
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.jp-RenderedHTMLCommon tbody tr:hover,
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="Document-Linearization-to-Markdown-or-HTML-with-Textractor">
+<h1>Document Linearization to Markdown or HTML with Textractor<a class="headerlink" href="#Document-Linearization-to-Markdown-or-HTML-with-Textractor" title="Permalink to this heading"></a></h1>
+<p>This example goes deeper on text linearization in Textractor. Text linearization is the conversion for a 2D document with words, lines, layouts and tables into a text string.</p>
+<section id="Installation">
+<h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
+<p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor</span></code></p>
+<p>There are various sets of dependencies available to tailor your installation to your use case. The base package will have sensible default, but you may want to install the PDF extra dependencies if your workflow uses PDFs with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">amazon-textract-textractor[pdf]</span></code>. You can read more on extra dependencies <a class="reference external" href="https://aws-samples.github.io/amazon-textract-textractor/installation.html">in the documentation</a></p>
+</section>
+<section id="Calling-Textract">
+<h2>Calling Textract<a class="headerlink" href="#Calling-Textract" title="Permalink to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">textractor</span> <span class="kn">import</span> <span class="n">Textractor</span>
+<span class="kn">from</span> <span class="nn">textractor.visualizers.entitylist</span> <span class="kn">import</span> <span class="n">EntityList</span>
+<span class="kn">from</span> <span class="nn">textractor.data.constants</span> <span class="kn">import</span> <span class="n">TextractFeatures</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/paystub.jpg&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+<span class="n">image</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_document_linearization_to_markdown_or_html_2_0.png" src="../_images/notebooks_document_linearization_to_markdown_or_html_2_0.png" />
+</div>
+</div>
+<p>We can Textract’s AnalyzeDocument API on this image. For the best possible extraction, we recommend using at least the <code class="docutils literal notranslate"><span class="pre">LAYOUT</span></code>, <code class="docutils literal notranslate"><span class="pre">TABLES</span></code> and <code class="docutils literal notranslate"><span class="pre">SIGNATURES</span></code> features to achieve the best possible reading order. OCR is always included with any AnalyzeDocument call. In this case we will also include <code class="docutils literal notranslate"><span class="pre">FORMS</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">region_name</span><span class="o">=</span><span class="s2">&quot;us-west-2&quot;</span><span class="p">)</span>
+
+<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">LAYOUT</span><span class="p">,</span> <span class="n">TextractFeatures</span><span class="o">.</span><span class="n">TABLES</span><span class="p">,</span> <span class="n">TextractFeatures</span><span class="o">.</span><span class="n">FORMS</span><span class="p">,</span> <span class="n">TextractFeatures</span><span class="o">.</span><span class="n">SIGNATURES</span><span class="p">],</span>
+    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Base linearization <code class="docutils literal notranslate"><span class="pre">.get_text()</span></code> is always available on all components of a document:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CO.     FILE    DEPT.   CLOCK   NUMBER
+ABC     126543  123456  12345   00000000
+
+</pre></div></div>
+</div>
+<p>However you can also use <code class="docutils literal notranslate"><span class="pre">.to_html()</span></code> and <code class="docutils literal notranslate"><span class="pre">.to_markdown()</span></code> to obtain the HTML and Markdown output respectively.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_html</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;table&gt;&lt;tr&gt;&lt;th&gt;CO.&lt;/th&gt;&lt;th&gt;FILE&lt;/th&gt;&lt;th&gt;DEPT.&lt;/th&gt;&lt;th&gt;CLOCK&lt;/th&gt;&lt;th&gt;NUMBER&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ABC&lt;/td&gt;&lt;td&gt;126543&lt;/td&gt;&lt;td&gt;123456&lt;/td&gt;&lt;td&gt;12345&lt;/td&gt;&lt;td&gt;00000000&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+| CO.    |   FILE  |   DEPT.  |   CLOCK  |   NUMBER  |
+|--------|---------|----------|----------|-----------|
+| ABC    | 126543  |  123456  |   12345  | 00000000  |
+</pre></div></div>
+</div>
+<p>Both the HTML and Markdown options will use the table cell types to identify headers automatically.</p>
+<p>You can apply your own configuration by building a <code class="docutils literal notranslate"><span class="pre">TextLinearizationConfig</span></code> object. Both <code class="docutils literal notranslate"><span class="pre">to_html()</span></code> and <code class="docutils literal notranslate"><span class="pre">.to_markdown()</span></code> are actually implemented as <code class="docutils literal notranslate"><span class="pre">TextLinearizationConfig</span></code> objects themselves. Say you wanted not to have header cells <code class="docutils literal notranslate"><span class="pre">&lt;th&gt;</span></code> in your table output, you could change the <code class="docutils literal notranslate"><span class="pre">HTMLLinearizationConfig</span></code> object and call <code class="docutils literal notranslate"><span class="pre">.get_text()</span></code> with it.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor.data.html_linearization_config</span> <span class="kn">import</span> <span class="n">HTMLLinearizationConfig</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">HTMLLinearizationConfig</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">table_cell_header_prefix</span> <span class="o">=</span> <span class="s2">&quot;&lt;td&gt;&quot;</span>
+<span class="n">config</span><span class="o">.</span><span class="n">table_cell_header_suffix</span> <span class="o">=</span> <span class="s2">&quot;&lt;/td&gt;&quot;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;CO.&lt;/td&gt;&lt;td&gt;FILE&lt;/td&gt;&lt;td&gt;DEPT.&lt;/td&gt;&lt;td&gt;CLOCK&lt;/td&gt;&lt;td&gt;NUMBER&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ABC&lt;/td&gt;&lt;td&gt;126543&lt;/td&gt;&lt;td&gt;123456&lt;/td&gt;&lt;td&gt;12345&lt;/td&gt;&lt;td&gt;00000000&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</pre></div></div>
+</div>
+</section>
+<section id="All-entities-can-be-linearized">
+<h2>All entities can be linearized<a class="headerlink" href="#All-entities-can-be-linearized" title="Permalink to this heading"></a></h2>
+<p>This is not limited to tables, all entities have the <code class="docutils literal notranslate"><span class="pre">.get_text()</span></code>, <code class="docutils literal notranslate"><span class="pre">.to_html()</span></code> and <code class="docutils literal notranslate"><span class="pre">.to_markdown()</span></code> methods.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+| CO.    |   FILE  |   DEPT.  |   CLOCK  |   NUMBER  |
+|--------|---------|----------|----------|-----------|
+| ABC    | 126543  |  123456  |   12345  | 00000000  |
+
+|                |           |
+|----------------|-----------|
+| Period ending: | 7/18/2008 |
+| Pay date:      | 7/25/2008 |
+
+|          |                       |
+|----------|-----------------------|
+| Federal: | 3. $25 Additional Tax |
+| State:   | 2                     |
+| Local:   | 2                     |
+
+| Earnings    | rate      | hours    | this period    | year to date    |
+|-------------|-----------|----------|----------------|-----------------|
+| Regular     | 10.00     | 32.00    | 320.00         | 16,640.00       |
+| Overtime    | 15.00     | 1.00     | 15.00          | 780.00          |
+| Holiday     | 10.00     | 8.00     | 80.00          | 4,160.00        |
+| Tuition     |           |          | 37.43          | 1,946.80        |
+|             | Gross Pay |          | $ 452.43       | 23,526.80       |
+
+| Other Benefits and Information    | this period    | total to date    |
+|-----------------------------------|----------------|------------------|
+| Group Term Life                   | 0.51           | 27.00            |
+| Loan Amt Paid                     |                | 840.00           |
+| Vac Hrs                           |                | 40.00            |
+| Sick Hrs                          |                | 16.00            |
+| Title                             | Operator       |                  |
+
+|            |                              |         |          |
+|------------|------------------------------|---------|----------|
+| Deductions | Statutory Federal Income Tax | -40.60  | 2,111.20 |
+|            | Social Security Tax          | -28.05  | 1,458.60 |
+|            | Medicare Tax                 | -6.56   | 341.12   |
+|            | NY State Income Tax          | -8.43   | 438.36   |
+|            | NYC Income Tax               | -5.94   | 308.88   |
+|            | NY SUI/SDI Tax Other         | -0.60   | 31.20    |
+|            | Bond                         | -5.00   | 100.00   |
+|            | 401(k)                       | -28.85* | 1,500.20 |
+|            | Stock Plan                   | -15.00  | 150.00   |
+|            | Life Insurance               | -5.00   | 50.00    |
+|            | Loan                         | -30.00  | 150.00   |
+|            | Adjustment                   |         |          |
+|            | Life Insurance               | + 13.50 |          |
+|            |                              |         |          |
+|            | Net Pay                      | $291.90 |          |
+
+|                       |             |
+|-----------------------|-------------|
+| Payroll check number: | 0000000000  |
+| Pay date:             | 7/25/2008   |
+| Social Security No.   | 987-65-4321 |
+
+|                      |                                           |         |
+|----------------------|-------------------------------------------|---------|
+| Pay to the order of: | JOHN STILES                               |         |
+| This amount:         | TWO HUNDRED NINETY-ONE AND 90/100 DOLLARS | $291.90 |
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">key_values</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CO. ABC
+
+CLOCK 12345
+
+FILE 126543
+
+DEPT. 123456
+
+NUMBER 00000000
+
+Period ending: 7/18/2008
+
+Pay date: 7/25/2008
+
+Social Security Number: 987-65-4321
+
+Taxable Marital Status: Married
+
+Federal: 3. $25 Additional Tax
+
+JOHN STILES 101 MAIN STREET ANYTOWN, USA 12345
+
+State: 2
+
+Local: 2
+
+total to date 27.00
+
+Loan Amt Paid 840.00
+
+Vac Hrs 40.00
+
+Gross Pay $ 452.43
+
+Sick Hrs 16.00
+
+Title Operator
+
+HOURLY RATE HAS BEEN CHANGED FROM $8.00
+
+PER HOUR. $10.00
+
+Life Insurance + 13.50
+
+Net Pay $291.90
+
+Your federal wages this period are $386.15
+
+Payroll check number: 0000000000
+
+Pay date: 7/25/2008
+
+ANY COMPANY CORP. 475 ANY AVENUE ANYTOWN, USA 10101
+
+Social Security No. 987-65-4321
+
+Pay to the order of: JOHN STILES
+
+This amount: TWO HUNDRED NINETY-ONE AND 90/100 DOLLARS $291.90
+
+VOID AFTER 00 DAYS Authorized AUTHORIZED SIGNATURE Signature
+
+BANK NAME STREET ADDRESS CITY STATE ZIP SAMPLE NON-NEGOTIABLE VOID VOID VOID
+</pre></div></div>
+</div>
+<p>What if you are passing this to an LLM and would like to properly split key and values? You can use a custom <code class="docutils literal notranslate"><span class="pre">TextLinearizationConfig</span></code> to add special tokens that will act as a delimiter.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">textractor.data.text_linearization_config</span> <span class="kn">import</span> <span class="n">TextLinearizationConfig</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">TextLinearizationConfig</span><span class="p">(</span>
+    <span class="n">key_prefix</span><span class="o">=</span><span class="s2">&quot;&lt;key&gt;&quot;</span><span class="p">,</span>
+    <span class="n">key_suffix</span><span class="o">=</span><span class="s2">&quot;&lt;/key&gt;&quot;</span><span class="p">,</span>
+    <span class="n">value_prefix</span><span class="o">=</span><span class="s2">&quot;&lt;value&gt;&quot;</span><span class="p">,</span>
+    <span class="n">value_suffix</span><span class="o">=</span><span class="s2">&quot;&lt;/value&gt;&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">key_values</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;key&gt;CO.&lt;/key&gt;&lt;value&gt;ABC &lt;/value&gt;
+
+&lt;key&gt;CLOCK&lt;/key&gt;&lt;value&gt;12345 &lt;/value&gt;
+
+&lt;key&gt;FILE&lt;/key&gt;&lt;value&gt;126543 &lt;/value&gt;
+
+&lt;key&gt;DEPT.&lt;/key&gt;&lt;value&gt;123456 &lt;/value&gt;
+
+&lt;key&gt;NUMBER&lt;/key&gt;&lt;value&gt;00000000 &lt;/value&gt;
+
+&lt;key&gt;Period ending:&lt;/key&gt;&lt;value&gt;7/18/2008 &lt;/value&gt;
+
+&lt;key&gt;Pay date:&lt;/key&gt;&lt;value&gt;7/25/2008 &lt;/value&gt;
+
+&lt;key&gt;Social Security Number:&lt;/key&gt;&lt;value&gt;987-65-4321 &lt;/value&gt;
+
+&lt;key&gt;Taxable Marital Status:&lt;/key&gt;&lt;value&gt;Married &lt;/value&gt;
+
+&lt;key&gt;Federal:&lt;/key&gt;&lt;value&gt;3. $25 Additional Tax &lt;/value&gt;
+
+&lt;key&gt;JOHN STILES&lt;/key&gt;&lt;value&gt;101 MAIN STREET ANYTOWN, USA 12345 &lt;/value&gt;
+
+&lt;key&gt;State:&lt;/key&gt;&lt;value&gt;2 &lt;/value&gt;
+
+&lt;key&gt;Local:&lt;/key&gt;&lt;value&gt;2 &lt;/value&gt;
+
+&lt;key&gt;total to date&lt;/key&gt;&lt;value&gt;27.00 &lt;/value&gt;
+
+&lt;key&gt;Loan Amt Paid&lt;/key&gt;&lt;value&gt;840.00 &lt;/value&gt;
+
+&lt;key&gt;Vac Hrs&lt;/key&gt;&lt;value&gt;40.00 &lt;/value&gt;
+
+&lt;key&gt;Gross Pay&lt;/key&gt;&lt;value&gt;$ 452.43 &lt;/value&gt;
+
+&lt;key&gt;Sick Hrs&lt;/key&gt;&lt;value&gt;16.00 &lt;/value&gt;
+
+&lt;key&gt;Title&lt;/key&gt;&lt;value&gt;Operator &lt;/value&gt;
+
+&lt;key&gt;HOURLY RATE HAS BEEN CHANGED FROM&lt;/key&gt;&lt;value&gt;$8.00 &lt;/value&gt;
+
+&lt;key&gt;PER HOUR.&lt;/key&gt;&lt;value&gt;$10.00 &lt;/value&gt;
+
+&lt;key&gt;Life Insurance&lt;/key&gt;&lt;value&gt;+ 13.50 &lt;/value&gt;
+
+&lt;key&gt;Net Pay&lt;/key&gt;&lt;value&gt;$291.90 &lt;/value&gt;
+
+&lt;key&gt;Your federal wages this period are&lt;/key&gt;&lt;value&gt;$386.15 &lt;/value&gt;
+
+&lt;key&gt;Payroll check number:&lt;/key&gt;&lt;value&gt;0000000000 &lt;/value&gt;
+
+&lt;key&gt;Pay date:&lt;/key&gt;&lt;value&gt;7/25/2008 &lt;/value&gt;
+
+&lt;key&gt;ANY COMPANY CORP.&lt;/key&gt;&lt;value&gt;475 ANY AVENUE ANYTOWN, USA 10101 &lt;/value&gt;
+
+&lt;key&gt;Social Security No.&lt;/key&gt;&lt;value&gt;987-65-4321 &lt;/value&gt;
+
+&lt;key&gt;Pay to the order of:&lt;/key&gt;&lt;value&gt;JOHN STILES &lt;/value&gt;
+
+&lt;key&gt;This amount:&lt;/key&gt;&lt;value&gt;TWO HUNDRED NINETY-ONE AND 90/100 DOLLARS $291.90 &lt;/value&gt;
+
+&lt;key&gt;VOID AFTER 00 DAYS&lt;/key&gt;&lt;value&gt;Authorized AUTHORIZED SIGNATURE Signature &lt;/value&gt;
+
+&lt;key&gt;BANK NAME STREET ADDRESS CITY STATE ZIP&lt;/key&gt;&lt;value&gt;SAMPLE NON-NEGOTIABLE VOID VOID VOID &lt;/value&gt;
+</pre></div></div>
+</div>
+<p>We can now combine all the above to get a specially tailored output for your workflow</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">HTMLLinearizationConfig</span><span class="p">(</span>
+    <span class="n">table_cell_header_prefix</span> <span class="o">=</span> <span class="s2">&quot;&lt;td&gt;&quot;</span><span class="p">,</span>
+    <span class="n">table_cell_header_suffix</span> <span class="o">=</span> <span class="s2">&quot;&lt;/td&gt;&quot;</span><span class="p">,</span>
+    <span class="n">key_prefix</span><span class="o">=</span><span class="s2">&quot;&lt;key&gt;&quot;</span><span class="p">,</span>
+    <span class="n">key_suffix</span><span class="o">=</span><span class="s2">&quot;&lt;/key&gt;&quot;</span><span class="p">,</span>
+    <span class="n">value_prefix</span><span class="o">=</span><span class="s2">&quot;&lt;value&gt;&quot;</span><span class="p">,</span>
+    <span class="n">value_suffix</span><span class="o">=</span><span class="s2">&quot;&lt;/value&gt;&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1
+
+
+
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;CO.&lt;/td&gt;&lt;td&gt;FILE&lt;/td&gt;&lt;td&gt;DEPT.&lt;/td&gt;&lt;td&gt;CLOCK&lt;/td&gt;&lt;td&gt;NUMBER&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ABC&lt;/td&gt;&lt;td&gt;126543&lt;/td&gt;&lt;td&gt;123456&lt;/td&gt;&lt;td&gt;12345&lt;/td&gt;&lt;td&gt;00000000&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+
+
+ANY COMPANY CORP. 475 ANY AVENUE ANYTOWN, USA 10101
+
+&lt;h2&gt;Earnings Statement &lt;/h2&gt;
+
+
+
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;Period ending:&lt;/td&gt;&lt;td&gt;7/18/2008&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Pay date:&lt;/td&gt;&lt;td&gt;7/25/2008&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+
+
+ &lt;key&gt;Social Security Number:&lt;/key&gt;&lt;value&gt;987-65-4321 &lt;/value&gt; &lt;key&gt;Taxable Marital Status:&lt;/key&gt;&lt;value&gt;Married &lt;/value&gt; Exemptions/Allowances:
+
+
+
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;Federal:&lt;/td&gt;&lt;td&gt;3. $25 Additional Tax&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;State:&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Local:&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+
+
+ &lt;key&gt;JOHN STILES&lt;/key&gt;&lt;value&gt;101 MAIN STREET ANYTOWN, USA 12345 &lt;/value&gt;
+
+
+
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;Earnings&lt;/td&gt;&lt;td&gt;rate&lt;/td&gt;&lt;td&gt;hours&lt;/td&gt;&lt;td&gt;this period&lt;/td&gt;&lt;td&gt;year to date&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Regular&lt;/td&gt;&lt;td&gt;10.00&lt;/td&gt;&lt;td&gt;32.00&lt;/td&gt;&lt;td&gt;320.00&lt;/td&gt;&lt;td&gt;16,640.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Overtime&lt;/td&gt;&lt;td&gt;15.00&lt;/td&gt;&lt;td&gt;1.00&lt;/td&gt;&lt;td&gt;15.00&lt;/td&gt;&lt;td&gt;780.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Holiday&lt;/td&gt;&lt;td&gt;10.00&lt;/td&gt;&lt;td&gt;8.00&lt;/td&gt;&lt;td&gt;80.00&lt;/td&gt;&lt;td&gt;4,160.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Tuition&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;37.43&lt;/td&gt;&lt;td&gt;1,946.80&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Gross Pay&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;$ 452.43&lt;/td&gt;&lt;td&gt;23,526.80&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;Deductions&lt;/td&gt;&lt;td&gt;Statutory Federal Income Tax&lt;/td&gt;&lt;td&gt;-40.60&lt;/td&gt;&lt;td&gt;2,111.20&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Social Security Tax&lt;/td&gt;&lt;td&gt;-28.05&lt;/td&gt;&lt;td&gt;1,458.60&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Medicare Tax&lt;/td&gt;&lt;td&gt;-6.56&lt;/td&gt;&lt;td&gt;341.12&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;NY State Income Tax&lt;/td&gt;&lt;td&gt;-8.43&lt;/td&gt;&lt;td&gt;438.36&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;NYC Income Tax&lt;/td&gt;&lt;td&gt;-5.94&lt;/td&gt;&lt;td&gt;308.88&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;NY SUI/SDI Tax Other&lt;/td&gt;&lt;td&gt;-0.60&lt;/td&gt;&lt;td&gt;31.20&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Bond&lt;/td&gt;&lt;td&gt;-5.00&lt;/td&gt;&lt;td&gt;100.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;401(k)&lt;/td&gt;&lt;td&gt;-28.85*&lt;/td&gt;&lt;td&gt;1,500.20&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Stock Plan&lt;/td&gt;&lt;td&gt;-15.00&lt;/td&gt;&lt;td&gt;150.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Life Insurance&lt;/td&gt;&lt;td&gt;-5.00&lt;/td&gt;&lt;td&gt;50.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Loan&lt;/td&gt;&lt;td&gt;-30.00&lt;/td&gt;&lt;td&gt;150.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Adjustment&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Life Insurance&lt;/td&gt;&lt;td&gt;+ 13.50&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Net Pay&lt;/td&gt;&lt;td&gt;$291.90&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+*Excluded from federal taxable wages
+
+
+
+ &lt;key&gt;Your federal wages this period are&lt;/key&gt;&lt;value&gt;$386.15 &lt;/value&gt;
+
+
+
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;Other Benefits and Information&lt;/td&gt;&lt;td&gt;this period&lt;/td&gt;&lt;td&gt;total to date&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Group Term Life&lt;/td&gt;&lt;td&gt;0.51&lt;/td&gt;&lt;td&gt;27.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Loan Amt Paid&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;840.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Vac Hrs&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;40.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Sick Hrs&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;16.00&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Title&lt;/td&gt;&lt;td&gt;Operator&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+
+
+&lt;h2&gt;Important Notes &lt;/h2&gt;
+
+EFFECTIVE THIS PAY PERIOD YOUR REGULAR &lt;key&gt;HOURLY RATE HAS BEEN CHANGED FROM&lt;/key&gt;&lt;value&gt;$8.00 &lt;/value&gt; TO &lt;key&gt;PER HOUR.&lt;/key&gt;&lt;value&gt;$10.00 &lt;/value&gt;
+
+WE WILL BE STARTING OUR UNITED WAY FUND DRIVE SOON AND LOOK FORWARD TO YOUR PARTICIPATION.
+
+ESTS8ET03
+
+ &lt;key&gt;ANY COMPANY CORP.&lt;/key&gt;&lt;value&gt;475 ANY AVENUE ANYTOWN, USA 10101 &lt;/value&gt;
+
+
+
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;Payroll check number:&lt;/td&gt;&lt;td&gt;0000000000&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Pay date:&lt;/td&gt;&lt;td&gt;7/25/2008&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Social Security No.&lt;/td&gt;&lt;td&gt;987-65-4321&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+
+
+
+
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;Pay to the order of:&lt;/td&gt;&lt;td&gt;JOHN STILES&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;This amount:&lt;/td&gt;&lt;td&gt;TWO HUNDRED NINETY-ONE AND 90/100 DOLLARS&lt;/td&gt;&lt;td&gt;$291.90&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+
+
+20 APP 1933 $ 1000.000 2001
+
+SAMPLE NON-NEGOTIABLE VOID VOID VOID &lt;key&gt;VOID AFTER 00 DAYS&lt;/key&gt;&lt;value&gt;Authorized AUTHORIZED SIGNATURE Signature &lt;/value&gt;
+
+[SIGNATURE]
+
+
+BANK NAME STREET ADDRESS CITY STATE ZIP
+
+001379⑈ ⑆122000496⑆4040110157⑈
+
+THEORIGINALDOCUMENTHASAREFLECTIVEWATERMARKONTHEBAOK.
+</pre></div></div>
+</div>
+</section>
+<section id="Conclusion">
+<h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
+<p>In this tutorial, we have shown how the +50 configuration options of <code class="docutils literal notranslate"><span class="pre">TextLinearizationConfig</span></code> can be used to produce an output specifically tailored to your workflow.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="layout_analysis_for_text_linearization.html" class="btn btn-neutral float-left" title="Using Layout Analysis for Text Linearization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="textractor_for_large_language_models.html" class="btn btn-neutral float-right" title="Textractor for Large Language Models (LLM)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Amazon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -394,23 +394,9 @@
 </li>
       <li><a href="textractor.entities.html#textractor.entities.table.Table.get_table_range">get_table_range() (textractor.entities.table.Table method)</a>
 </li>
-      <li><a href="textractor.entities.html#textractor.entities.document.Document.get_text">get_text() (textractor.entities.document.Document method)</a>
-
-      <ul>
-        <li><a href="textractor.entities.html#textractor.entities.page.Page.get_text">(textractor.entities.page.Page method)</a>
-</li>
-        <li><a href="textractor.entities.html#textractor.entities.table.Table.get_text">(textractor.entities.table.Table method)</a>
-</li>
-        <li><a href="textractor.entities.html#textractor.entities.table_cell.TableCell.get_text">(textractor.entities.table_cell.TableCell method)</a>
-</li>
-        <li><a href="textractor.entities.html#textractor.entities.value.Value.get_text">(textractor.entities.value.Value method)</a>
-</li>
-      </ul></li>
       <li><a href="textractor.entities.html#textractor.entities.document.Document.get_text_and_words">get_text_and_words() (textractor.entities.document.Document method)</a>
 
       <ul>
-        <li><a href="textractor.entities.html#textractor.entities.document_entity.DocumentEntity.get_text_and_words">(textractor.entities.document_entity.DocumentEntity method)</a>
-</li>
         <li><a href="textractor.entities.html#textractor.entities.key_value.KeyValue.get_text_and_words">(textractor.entities.key_value.KeyValue method)</a>
 </li>
         <li><a href="textractor.entities.html#textractor.entities.line.Line.get_text_and_words">(textractor.entities.line.Line method)</a>
@@ -426,6 +412,8 @@
         <li><a href="textractor.entities.html#textractor.entities.value.Value.get_text_and_words">(textractor.entities.value.Value method)</a>
 </li>
         <li><a href="textractor.entities.html#textractor.entities.word.Word.get_text_and_words">(textractor.entities.word.Word method)</a>
+</li>
+        <li><a href="textractor.visualizers.html#textractor.visualizers.entitylist.EntityList.get_text_and_words">(textractor.visualizers.entitylist.EntityList method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -653,6 +641,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.max_number_of_consecutive_new_lines">max_number_of_consecutive_new_lines (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
+</li>
+      <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.max_number_of_consecutive_spaces">max_number_of_consecutive_spaces (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
 </li>
       <li><a href="textractor.data.constants.html#textractor.data.constants.TableFormat.MEDIAWIKI">MEDIAWIKI (textractor.data.constants.TableFormat attribute)</a>
 </li>
@@ -1011,19 +1001,31 @@
 </li>
       <li><a href="textractor.data.constants.html#textractor.data.constants.TextractType.TABLE_CELL">TABLE_CELL (textractor.data.constants.TextractType attribute)</a>
 </li>
+      <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_cell_cross_merge_cell_placeholder">table_cell_cross_merge_cell_placeholder (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
+</li>
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_cell_empty_cell_placeholder">table_cell_empty_cell_placeholder (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
 </li>
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_cell_header_prefix">table_cell_header_prefix (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
 </li>
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_cell_header_suffix">table_cell_header_suffix (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
 </li>
+      <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_cell_left_merge_cell_placeholder">table_cell_left_merge_cell_placeholder (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
+</li>
+      <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_cell_merge_cell_placeholder">table_cell_merge_cell_placeholder (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
+</li>
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_cell_prefix">table_cell_prefix (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
 </li>
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_cell_suffix">table_cell_suffix (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
 </li>
+      <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_cell_top_merge_cell_placeholder">table_cell_top_merge_cell_placeholder (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
+</li>
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_column_header_threshold">table_column_header_threshold (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
 </li>
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_column_separator">table_column_separator (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
+</li>
+      <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_duplicate_text_in_merged_cells">table_duplicate_text_in_merged_cells (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
+</li>
+      <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_flatten_headers">table_flatten_headers (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.table_cell.TableCell.table_id">table_id (textractor.entities.table_cell.TableCell property)</a>
 </li>
@@ -1048,6 +1050,8 @@
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_suffix">table_suffix (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
 </li>
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_tabulate_format">table_tabulate_format (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
+</li>
+      <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig.table_tabulate_remove_extra_hyphens">table_tabulate_remove_extra_hyphens (textractor.data.text_linearization_config.TextLinearizationConfig attribute)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.table.Table.table_type">table_type (textractor.entities.table.Table property)</a>
 </li>
@@ -1103,14 +1107,14 @@
 </li>
       <li><a href="textractor.data.text_linearization_config.html#textractor.data.text_linearization_config.TextLinearizationConfig">TextLinearizationConfig (class in textractor.data.text_linearization_config)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textractor.data.constants.html#textractor.data.constants.TextractAPI.Textract_API_to_TextractAPI">Textract_API_to_TextractAPI() (textractor.data.constants.TextractAPI class method)</a>
 </li>
       <li><a href="textractor.data.constants.html#textractor.data.constants.TextractAPI">TextractAPI (class in textractor.data.constants)</a>
 </li>
       <li><a href="textractor.data.constants.html#textractor.data.constants.TextractAPI.TextractAPI_to_Textract_API">TextractAPI_to_Textract_API() (textractor.data.constants.TextractAPI class method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="textractor.data.constants.html#textractor.data.constants.TextractFeatures">TextractFeatures (class in textractor.data.constants)</a>
 </li>
       <li><a href="textractor.html#textractor.textractor.Textractor">Textractor (class in textractor.textractor)</a>
@@ -1249,6 +1253,8 @@
       <li><a href="textractor.entities.html#textractor.entities.table.Table.to_csv">to_csv() (textractor.entities.table.Table method)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.table.Table.to_excel">to_excel() (textractor.entities.table.Table method)</a>
+</li>
+      <li><a href="textractor.entities.html#textractor.entities.table.Table.to_html">to_html() (textractor.entities.table.Table method)</a>
 </li>
       <li><a href="textractor.entities.html#textractor.entities.table.Table.to_pandas">to_pandas() (textractor.entities.table.Table method)</a>
 </li>

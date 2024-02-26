@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tabular data linearization &mdash; amazon-textract-textractor 1.0.0 documentation</title>
+  <title>Tabular data linearization (Continued) &mdash; amazon-textract-textractor 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
@@ -23,8 +23,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Tabular data linearization (Continued)" href="tabular_data_linearization_continued.html" />
-    <link rel="prev" title="Using Layout Analysis" href="layout_analysis.html" /> 
+    <link rel="next" title="Using Layout Analysis for Text Linearization" href="layout_analysis_for_text_linearization.html" />
+    <link rel="prev" title="Tabular data linearization" href="tabular_data_linearization.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,13 +57,13 @@
 <li class="toctree-l2"><a class="reference internal" href="using_analyze_id.html">Using AnalyzeID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="using_queries.html">Using Queries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layout_analysis.html">Using Layout Analysis</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Tabular data linearization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tabular_data_linearization.html">Tabular data linearization</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tabular data linearization (Continued)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Calling-Textract">Calling Textract</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Conclusion">Conclusion</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="tabular_data_linearization_continued.html">Tabular data linearization (Continued)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layout_analysis_for_text_linearization.html">Using Layout Analysis for Text Linearization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="document_linearization_to_markdown_or_html.html">Document Linearization to Markdown or HTML with Textractor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="textractor_for_large_language_models.html">Textractor for Large Language Models (LLM)</a></li>
@@ -98,9 +98,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../examples.html">Examples</a> &raquo;</li>
-      <li>Tabular data linearization</li>
+      <li>Tabular data linearization (Continued)</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/notebooks/tabular_data_linearization.ipynb.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/notebooks/tabular_data_linearization_continued.ipynb.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -387,9 +387,9 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="Tabular-data-linearization">
-<h1>Tabular data linearization<a class="headerlink" href="#Tabular-data-linearization" title="Permalink to this heading"></a></h1>
-<p>This example shows how to table-aware linearization in Textractor can preserve cell text integrity and improve retrieval in a question answering task.</p>
+<section id="Tabular-data-linearization-(Continued)">
+<h1>Tabular data linearization (Continued)<a class="headerlink" href="#Tabular-data-linearization-(Continued)" title="Permalink to this heading"></a></h1>
+<p>This example shows how to table-aware linearization in Textractor can apply various transformations on the table to improve QA performance.</p>
 <section id="Installation">
 <h2>Installation<a class="headerlink" href="#Installation" title="Permalink to this heading"></a></h2>
 <p>To begin, install the <code class="docutils literal notranslate"><span class="pre">amazon-textract-textractor</span></code> package using pip.</p>
@@ -412,54 +412,24 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/multiline_cells.jpeg&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/vbat.png&quot;</span><span class="p">)</span>
 <span class="n">image</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_tabular_data_linearization_2_0.png" src="../_images/notebooks_tabular_data_linearization_2_0.png" />
+<img alt="../_images/notebooks_tabular_data_linearization_continued_2_0.png" src="../_images/notebooks_tabular_data_linearization_continued_2_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">region_name</span><span class="o">=</span><span class="s2">&quot;us-west-2&quot;</span><span class="p">)</span>
-
-<span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">detect_document_text</span><span class="p">(</span>
-    <span class="n">file_source</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
-    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">raw_text</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">TextLinearizationConfig</span><span class="p">(</span><span class="n">max_number_of_consecutive_new_lines</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">raw_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Guidance and Manufacturer&#39;s Declaration - Electromagnetic Immunity   The MiniMed 640G insulin pump is intended for use in the electromagnetic   environment specified below. The customer or the user of the MiniMed insulin   pump should assure that it is used in such an environment.   Immunity Test   IEC 60601 Test   Compliance   Electromagnetic   Level   Level   Environment -   Guidance   Electrostatic discharge   +8 kV contact   +30 kV air   For use in a typical   (ESD)   15 kV air   (&lt;5% relative   domestic, commercial,   IEC 61000-4-2   humidity)   or hospital   environment.   Electrical fast transient/   +2 kV for power   Not applicable   Requirement does not   burst   supply lines   apply to this battery   IEC 61000-4-4   +1 kV for input/   powered device.   output lines   Surge   +1 kV line(s) to   Not applicable   Requirement does not   IEC 61000-4-5   line(s)   apply to this battery   2 kV line(s) to   powered device.   earth   Voltage dips, short   &lt;5% UT   Not applicable   Requirement does not   interruptions and   (&gt;95% dip in UT   apply to this battery   voltage variations on   ) for 0.5 cycle   powered device.   power supply lines   IEC 61000-4-11   Power frequency   400 A/m   400 A/m   Power frequency   (50/60 Hz) magnetic   (continuous   magnetic fields should   field   field at 60   be at levels   IEC 61000-4-8   seconds)   characteristic of a   typical location in a   4000 A/m (short   4000 A/m   typical commercial or   duration at 3   hospital environment.   seconds)   Note: UT is the a.c. mains voltage prior to application of the test level.   Product specifications and safety information   263
-</pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">extractor</span> <span class="o">=</span> <span class="n">Textractor</span><span class="p">(</span><span class="n">region_name</span><span class="o">=</span><span class="s2">&quot;us-west-2&quot;</span><span class="p">)</span>
@@ -473,7 +443,7 @@ Guidance and Manufacturer&#39;s Declaration - Electromagnetic Immunity   The Min
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
@@ -481,100 +451,182 @@ Guidance and Manufacturer&#39;s Declaration - Electromagnetic Immunity   The Min
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_tabular_data_linearization_6_0.png" src="../_images/notebooks_tabular_data_linearization_6_0.png" />
+<img alt="../_images/notebooks_tabular_data_linearization_continued_4_0.png" src="../_images/notebooks_tabular_data_linearization_continued_4_0.png" />
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table_aware_text</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">TextLinearizationConfig</span><span class="p">(</span><span class="n">table_linearization_format</span><span class="o">=</span><span class="s1">&#39;markdown&#39;</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">table_aware_text</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markdown_table</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">TextLinearizationConfig</span><span class="p">(</span><span class="n">table_linearization_format</span><span class="o">=</span><span class="s1">&#39;markdown&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-| 0                                                                                                                                                                                                                | 1                                                                               | 2                                  | 3                                                                                                                                         |
-|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| Guidance and Manufacturer&#39;s Declaration - Electromagnetic Immunity                                                                                                                                               |                                                                                 |                                    |                                                                                                                                           |
-| The MiniMed 640G insulin pump is intended for use in the electromagnetic environment specified below. The customer or the user of the MiniMed insulin pump should assure that it is used in such an environment. |                                                                                 |                                    |                                                                                                                                           |
-| Immunity Test                                                                                                                                                                                                    | IEC 60601 Test Level                                                            | Compliance Level                   | Electromagnetic Environment - Guidance                                                                                                    |
-| Electrostatic discharge (ESD) IEC 61000-4-2                                                                                                                                                                      | +8 kV contact 15 kV air                                                         | +30 kV air (&lt;5% relative humidity) | For use in a typical domestic, commercial, or hospital environment.                                                                       |
-| Electrical fast transient/ burst IEC 61000-4-4                                                                                                                                                                   | +2 kV for power supply lines +1 kV for input/ output lines                      | Not applicable                     | Requirement does not apply to this battery powered device.                                                                                |
-| Surge IEC 61000-4-5                                                                                                                                                                                              | +1 kV line(s) to line(s) 2 kV line(s) to earth                                  | Not applicable                     | Requirement does not apply to this battery powered device.                                                                                |
-| Voltage dips, short interruptions and voltage variations on power supply lines IEC 61000-4-11                                                                                                                    | &lt;5% UT (&gt;95% dip in UT ) for 0.5 cycle                                          | Not applicable                     | Requirement does not apply to this battery powered device.                                                                                |
-| Power frequency (50/60 Hz) magnetic field IEC 61000-4-8                                                                                                                                                          | 400 A/m (continuous field at 60 seconds) 4000 A/m (short duration at 3 seconds) | 400 A/m 4000 A/m                   | Power frequency magnetic fields should be at levels characteristic of a typical location in a typical commercial or hospital environment. |
-</pre></div></div>
-</div>
-<p>The above is a table in the markdown format, we can paste in in a new cell to see it rendered properly. Note that we set <code class="docutils literal notranslate"><span class="pre">table_column_header_threshold=0.5</span></code> otherwise the top row would not be identified as a header due to the first cell not being a header itself (see in blue above).</p>
+<p>Let’s visualize the markdown output:</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 45%" />
-<col style="width: 17%" />
+<col style="width: 9%" />
+<col style="width: 23%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 4%" />
+<col style="width: 3%" />
+<col style="width: 3%" />
+<col style="width: 4%" />
 <col style="width: 7%" />
-<col style="width: 30%" />
+<col style="width: 7%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 3%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>0</p></th>
 <th class="head"><p>1</p></th>
 <th class="head"><p>2</p></th>
 <th class="head"><p>3</p></th>
+<th class="head"><p>4</p></th>
+<th class="head"><p>5</p></th>
+<th class="head"><p>6</p></th>
+<th class="head"><p>7</p></th>
+<th class="head"><p>8</p></th>
+<th class="head"><p>9</p></th>
+<th class="head"><p>10</p></th>
+<th class="head"><p>11</p></th>
+<th class="head"><p>12</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Guidance and Manufacturer’s Declaration - Electromagnetic Immunity</p></td>
+<tr class="row-even"><td><p>Symbol</p></td>
+<td><p>Parameter</p></td>
+<td><p>Conditions</p></td>
+<td></td>
+<td><p>Typ</p></td>
 <td></td>
 <td></td>
 <td></td>
-</tr>
-<tr class="row-odd"><td><p>The MiniMed 640G insulin pump is intended for use in the electromagnetic environment specified below. The customer or the user of the MiniMed insulin pump should assure that it is used in such an environment.</p></td>
+<td><p>Max(1)</p></td>
 <td></td>
 <td></td>
 <td></td>
+<td><p>Unit</p></td>
 </tr>
-<tr class="row-even"><td><p>Immunity Test</p></td>
-<td><p>IEC 60601 Test Level</p></td>
-<td><p>Compliance Level</p></td>
-<td><p>Electromagnetic Environment - Guidance</p></td>
+<tr class="row-odd"><td><p></p></td>
+<td></td>
+<td><p>Backup SRAM</p></td>
+<td><p>RTC and LSE</p></td>
+<td><p>1.2 V</p></td>
+<td><p>2V</p></td>
+<td><p>3V</p></td>
+<td><p>3.4 V</p></td>
+<td><p>3 y</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p>Electrostatic discharge (ESD) IEC 61000-4-2</p></td>
-<td><p>+8 kV contact 15 kV air</p></td>
-<td><p>+30 kV air (&lt;5% relative humidity)</p></td>
-<td><p>For use in a typical domestic, commercial, or hospital environment.</p></td>
+<tr class="row-even"><td><p></p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>Tj=25 °C</p></td>
+<td><p>Tj=85 °C</p></td>
+<td><p>Tj=105 °C</p></td>
+<td><p>Tj=125 °C</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p>Electrical fast transient/ burst IEC 61000-4-4</p></td>
-<td><p>+2 kV for power supply lines +1 kV for input/ output lines</p></td>
-<td><p>Not applicable</p></td>
-<td><p>Requirement does not apply to this battery powered device.</p></td>
+<tr class="row-odd"><td><p>IDD (VBAT)</p></td>
+<td><p>Supply current in VBAT mode</p></td>
+<td><p>OFF</p></td>
+<td><p>OFF</p></td>
+<td><p>0,02</p></td>
+<td><p>0,02</p></td>
+<td><p>0,03</p></td>
+<td><p>0,05</p></td>
+<td><p>0,5</p></td>
+<td><p>4,1</p></td>
+<td><p>10</p></td>
+<td><p>24</p></td>
+<td><p>UA</p></td>
 </tr>
-<tr class="row-odd"><td><p>Surge IEC 61000-4-5</p></td>
-<td><p>+1 kV line(s) to line(s) 2 kV line(s) to earth</p></td>
-<td><p>Not applicable</p></td>
-<td><p>Requirement does not apply to this battery powered device.</p></td>
+<tr class="row-even"><td><p></p></td>
+<td></td>
+<td><p>ON</p></td>
+<td><p>OFF</p></td>
+<td><p>1,33</p></td>
+<td><p>1,45</p></td>
+<td><p>1,58</p></td>
+<td><p>1,7</p></td>
+<td><p>4,4</p></td>
+<td><p>22</p></td>
+<td><p>48</p></td>
+<td><p>87</p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p>Voltage dips, short interruptions and voltage variations on power supply lines IEC 61000-4-11</p></td>
-<td><p>&lt;5% UT (&gt;95% dip in UT ) for 0.5 cycle</p></td>
-<td><p>Not applicable</p></td>
-<td><p>Requirement does not apply to this battery powered device.</p></td>
+<tr class="row-odd"><td><p></p></td>
+<td></td>
+<td><p>OFF</p></td>
+<td><p>ON</p></td>
+<td><p>0,46</p></td>
+<td><p>0,57</p></td>
+<td><p>0,75</p></td>
+<td><p>0,87</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td></td>
 </tr>
-<tr class="row-odd"><td><p>Power frequency (50/60 Hz) magnetic field IEC 61000-4-8</p></td>
-<td><p>400 A/m (continuous field at 60 seconds) 4000 A/m (short duration at 3 seconds)</p></td>
-<td><p>400 A/m 4000 A/m</p></td>
-<td><p>Power frequency magnetic fields should be at levels characteristic of a typical location in a typical commercial or hospital environment.</p></td>
+<tr class="row-even"><td><p></p></td>
+<td></td>
+<td><p>ON</p></td>
+<td><p>ON</p></td>
+<td><p>1,77</p></td>
+<td><p>2</p></td>
+<td><p>2,3</p></td>
+<td><p>2,5</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td></td>
 </tr>
 </tbody>
 </table>
-<p>With the two versions of this tables, we then ask Claude questions pertaining to the document</p>
+<p>Markdown does not support merged cells. This is problematic as we see that the “Oversampling” columns end up mostly empty. Let’s test Claude v2 on that table representation.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
@@ -607,35 +659,19 @@ Guidance and Manufacturer&#39;s Declaration - Electromagnetic Immunity   The Min
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">question</span> <span class="o">=</span> <span class="s2">&quot;What is the compliance level for IEC 61000-4-2?&quot;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">question</span> <span class="o">=</span> <span class="s2">&quot;What is the max supply current at 125°C if both Backup SRAM and RTC and LSE are OFF? Answer in one line&quot;</span>
 </pre></div>
 </div>
 </div>
-<p>IEC 61000-4-2 is the electrostatic discharge test, the correct answer is +30 kV air (&lt;5% relative humidity).</p>
+<p>The correct answer is 24uA</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">pages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">crop</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">430</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebooks_tabular_data_linearization_14_0.png" src="../_images/notebooks_tabular_data_linearization_14_0.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">get_response_from_claude</span><span class="p">(</span><span class="n">raw_text</span><span class="p">,</span> <span class="n">question</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">get_response_from_claude</span><span class="p">(</span><span class="n">markdown_table</span><span class="p">,</span> <span class="n">question</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -644,23 +680,181 @@ Guidance and Manufacturer&#39;s Declaration - Electromagnetic Immunity   The Min
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- Based on the document, the compliance level for IEC 61000-4-2 (Electrostatic discharge) is:
-
-+8 kV contact
-+30 kV air
-15 kV air (&lt;5% relative humidity)
+ 0.05 UA
 </pre></div></div>
 </div>
-<p>We see that Claude using the raw text is unable to extract the correct answer as the <code class="docutils literal notranslate"><span class="pre">IEC</span> <span class="pre">60601</span> <span class="pre">Test</span> <span class="pre">Level</span></code> and <code class="docutils literal notranslate"><span class="pre">Compliance</span> <span class="pre">Level</span> <span class="pre">are</span> <span class="pre">interlaced</span></code>, with the resulting text being:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Electrostatic discharge   +8 kV contact   +30 kV air   For use in a typical   (ESD)   15 kV air   (&lt;5% relative   domestic, commercial,   IEC 61000-4-2   humidity)   or hospital   environment.
+<p>We see that Claude using the text is unable to extract the correct answer. However we can change the <code class="docutils literal notranslate"><span class="pre">TextLinearizationConfig</span></code> to duplicate text in merged cells:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
 </pre></div>
 </div>
-<p>If instead we use the table-aware linearization, the answer is available and properly aligned in the text, leading to a proper extraction:</p>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markdown_table_with_duplication</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">TextLinearizationConfig</span><span class="p">(</span><span class="n">table_linearization_format</span><span class="o">=</span><span class="s1">&#39;markdown&#39;</span><span class="p">,</span> <span class="n">table_duplicate_text_in_merged_cells</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>Let’s visualize the markdown output:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 21%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 5%" />
+<col style="width: 4%" />
+<col style="width: 4%" />
+<col style="width: 5%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 4%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>0</p></th>
+<th class="head"><p>1</p></th>
+<th class="head"><p>2</p></th>
+<th class="head"><p>3</p></th>
+<th class="head"><p>4</p></th>
+<th class="head"><p>5</p></th>
+<th class="head"><p>6</p></th>
+<th class="head"><p>7</p></th>
+<th class="head"><p>8</p></th>
+<th class="head"><p>9</p></th>
+<th class="head"><p>10</p></th>
+<th class="head"><p>11</p></th>
+<th class="head"><p>12</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Symbol</p></td>
+<td><p>Parameter</p></td>
+<td><p>Conditions</p></td>
+<td><p>Conditions</p></td>
+<td><p>Typ</p></td>
+<td><p>Typ</p></td>
+<td><p>Typ</p></td>
+<td><p>Typ</p></td>
+<td><p>Max(1)</p></td>
+<td><p>Max(1)</p></td>
+<td><p>Max(1)</p></td>
+<td><p>Max(1)</p></td>
+<td><p>Unit</p></td>
+</tr>
+<tr class="row-odd"><td><p>Symbol</p></td>
+<td><p>Parameter</p></td>
+<td><p>Backup SRAM</p></td>
+<td><p>RTC and LSE</p></td>
+<td><p>1.2 V</p></td>
+<td><p>2V</p></td>
+<td><p>3V</p></td>
+<td><p>3.4 V</p></td>
+<td><p>3 y</p></td>
+<td><p>3 y</p></td>
+<td><p>3 y</p></td>
+<td><p>3 y</p></td>
+<td><p>Unit</p></td>
+</tr>
+<tr class="row-even"><td><p>Symbol</p></td>
+<td><p>Parameter</p></td>
+<td><p>Backup SRAM</p></td>
+<td><p>RTC and LSE</p></td>
+<td><p>1.2 V</p></td>
+<td><p>2V</p></td>
+<td><p>3V</p></td>
+<td><p>3.4 V</p></td>
+<td><p>Tj=25 °C</p></td>
+<td><p>Tj=85 °C</p></td>
+<td><p>Tj=105 °C</p></td>
+<td><p>Tj=125 °C</p></td>
+<td><p>Unit</p></td>
+</tr>
+<tr class="row-odd"><td><p>IDD (VBAT)</p></td>
+<td><p>Supply current in VBAT mode</p></td>
+<td><p>OFF</p></td>
+<td><p>OFF</p></td>
+<td><p>0,02</p></td>
+<td><p>0,02</p></td>
+<td><p>0,03</p></td>
+<td><p>0,05</p></td>
+<td><p>0,5</p></td>
+<td><p>4,1</p></td>
+<td><p>10</p></td>
+<td><p>24</p></td>
+<td><p>UA</p></td>
+</tr>
+<tr class="row-even"><td><p>IDD (VBAT)</p></td>
+<td><p>Supply current in VBAT mode</p></td>
+<td><p>ON</p></td>
+<td><p>OFF</p></td>
+<td><p>1,33</p></td>
+<td><p>1,45</p></td>
+<td><p>1,58</p></td>
+<td><p>1,7</p></td>
+<td><p>4,4</p></td>
+<td><p>22</p></td>
+<td><p>48</p></td>
+<td><p>87</p></td>
+<td><p>UA</p></td>
+</tr>
+<tr class="row-odd"><td><p>IDD (VBAT)</p></td>
+<td><p>Supply current in VBAT mode</p></td>
+<td><p>OFF</p></td>
+<td><p>ON</p></td>
+<td><p>0,46</p></td>
+<td><p>0,57</p></td>
+<td><p>0,75</p></td>
+<td><p>0,87</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UA</p></td>
+</tr>
+<tr class="row-even"><td><p>IDD (VBAT)</p></td>
+<td><p>Supply current in VBAT mode</p></td>
+<td><p>ON</p></td>
+<td><p>ON</p></td>
+<td><p>1,77</p></td>
+<td><p>2</p></td>
+<td><p>2,3</p></td>
+<td><p>2,5</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>UA</p></td>
+</tr>
+</tbody>
+</table>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">get_response_from_claude</span><span class="p">(</span><span class="n">table_aware_text</span><span class="p">,</span> <span class="n">question</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">get_response_from_claude</span><span class="p">(</span><span class="n">markdown_table_with_duplication</span><span class="p">,</span> <span class="n">question</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -669,10 +863,316 @@ Guidance and Manufacturer&#39;s Declaration - Electromagnetic Immunity   The Min
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
- Based on the document, the compliance level for IEC 61000-4-2 (Electrostatic discharge (ESD)) is:
-+30 kV air (&lt;5% relative humidity)
+ 24 UA
 </pre></div></div>
 </div>
+<p>Let’s now try something different</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;../../../tests/fixtures/vbat2.png&quot;</span><span class="p">)</span>
+<span class="n">image</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_tabular_data_linearization_continued_19_0.png" src="../_images/notebooks_tabular_data_linearization_continued_19_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">analyze_document</span><span class="p">(</span>
+    <span class="n">file_source</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+    <span class="n">features</span><span class="o">=</span><span class="p">[</span><span class="n">TextractFeatures</span><span class="o">.</span><span class="n">TABLES</span><span class="p">],</span>
+    <span class="n">save_image</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_tabular_data_linearization_continued_21_0.png" src="../_images/notebooks_tabular_data_linearization_continued_21_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markdown_table_2</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span>
+    <span class="n">TextLinearizationConfig</span><span class="p">(</span>
+        <span class="n">table_linearization_format</span><span class="o">=</span><span class="s1">&#39;markdown&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 19%" />
+<col style="width: 32%" />
+<col style="width: 8%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 6%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symbol</p></th>
+<th class="head"><p>Parameter</p></th>
+<th class="head"><p>Conditions</p></th>
+<th class="head"><p>Typ</p></th>
+<th class="head"></th>
+<th class="head"></th>
+<th class="head"><p>Max ¹</p></th>
+<th class="head"></th>
+<th class="head"><p>Unit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+<td><p>TA=25°C</p></td>
+<td></td>
+<td></td>
+<td><p>TA=85°C</p></td>
+<td><p>TA=105 °C</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td></td>
+<td><p>VDD = 1.8 V</p></td>
+<td><p>VDD 2.4 V</p></td>
+<td><p>VDD 3.3 V</p></td>
+<td><p>VDD 3.6 V</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>’DD_VBAT</p></td>
+<td><p>Backup domain supply current</p></td>
+<td><p>Backup SRAM ON, low-speed oscillator and RTC ON</p></td>
+<td><p>1.29</p></td>
+<td><p>1.42</p></td>
+<td><p>1.68</p></td>
+<td><p>12</p></td>
+<td><p>19</p></td>
+<td><p>UA</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td><p>Backup SRAM OFF, low-speed oscillator and RTC ON</p></td>
+<td><p>0.62</p></td>
+<td><p>0.73</p></td>
+<td><p>0.96</p></td>
+<td><p>8</p></td>
+<td><p>10</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td></td>
+<td><p>Backup SRAM ON, RTC OFF</p></td>
+<td><p>0.79</p></td>
+<td><p>0.81</p></td>
+<td><p>0.86</p></td>
+<td><p>9</p></td>
+<td><p>16</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td><p>Backup SRAM OFF, RTC OFF</p></td>
+<td><p>0.10</p></td>
+<td><p>0.10</p></td>
+<td><p>0.10</p></td>
+<td><p>5</p></td>
+<td><p>7</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markdown_table_flattened_headers_2</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span>
+    <span class="n">TextLinearizationConfig</span><span class="p">(</span>
+        <span class="n">table_linearization_format</span><span class="o">=</span><span class="s1">&#39;markdown&#39;</span><span class="p">,</span>
+        <span class="n">table_flatten_headers</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 13%" />
+<col style="width: 21%" />
+<col style="width: 12%" />
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 12%" />
+<col style="width: 13%" />
+<col style="width: 3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symbol</p></th>
+<th class="head"><p>Parameter</p></th>
+<th class="head"><p>Conditions</p></th>
+<th class="head"><p>Typ TA=25°C VDD = 1.8 V</p></th>
+<th class="head"><p>Typ TA=25°C VDD 2.4 V</p></th>
+<th class="head"><p>Typ TA=25°C VDD 3.3 V</p></th>
+<th class="head"><p>Max ¹ TA=85°C VDD 3.6 V</p></th>
+<th class="head"><p>Max ¹ TA=105 °C VDD 3.6 V</p></th>
+<th class="head"><p>Unit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>’DD_VBAT</p></td>
+<td><p>Backup domain supply current</p></td>
+<td><p>Backup SRAM ON, low-speed oscillator and RTC ON</p></td>
+<td><p>1.29</p></td>
+<td><p>1.42</p></td>
+<td><p>1.68</p></td>
+<td><p>12</p></td>
+<td><p>19</p></td>
+<td><p>UA</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td><p>Backup SRAM OFF, low-speed oscillator and RTC ON</p></td>
+<td><p>0.62</p></td>
+<td><p>0.73</p></td>
+<td><p>0.96</p></td>
+<td><p>8</p></td>
+<td><p>10</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td></td>
+<td><p>Backup SRAM ON, RTC OFF</p></td>
+<td><p>0.79</p></td>
+<td><p>0.81</p></td>
+<td><p>0.86</p></td>
+<td><p>9</p></td>
+<td><p>16</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td><p>Backup SRAM OFF, RTC OFF</p></td>
+<td><p>0.1</p></td>
+<td><p>0.1</p></td>
+<td><p>0.1</p></td>
+<td><p>5</p></td>
+<td><p>7</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Combining it all together</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[91]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markdown_table_flattened_headers_duplicated_text_2</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span>
+    <span class="n">TextLinearizationConfig</span><span class="p">(</span>
+        <span class="n">table_linearization_format</span><span class="o">=</span><span class="s1">&#39;markdown&#39;</span><span class="p">,</span>
+        <span class="n">table_flatten_headers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">table_duplicate_text_in_merged_cells</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 13%" />
+<col style="width: 21%" />
+<col style="width: 12%" />
+<col style="width: 11%" />
+<col style="width: 11%" />
+<col style="width: 12%" />
+<col style="width: 13%" />
+<col style="width: 3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symbol</p></th>
+<th class="head"><p>Parameter</p></th>
+<th class="head"><p>Conditions</p></th>
+<th class="head"><p>Typ TA=25°C VDD = 1.8 V</p></th>
+<th class="head"><p>Typ TA=25°C VDD 2.4 V</p></th>
+<th class="head"><p>Typ TA=25°C VDD 3.3 V</p></th>
+<th class="head"><p>Max ¹ TA=85°C VDD 3.6 V</p></th>
+<th class="head"><p>Max ¹ TA=105 °C VDD 3.6 V</p></th>
+<th class="head"><p>Unit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>’DD_VBAT</p></td>
+<td><p>Backup domain supply current</p></td>
+<td><p>Backup SRAM ON, low-speed oscillator and RTC ON</p></td>
+<td><p>1.29</p></td>
+<td><p>1.42</p></td>
+<td><p>1.68</p></td>
+<td><p>12</p></td>
+<td><p>19</p></td>
+<td><p>UA</p></td>
+</tr>
+<tr class="row-odd"><td><p>’DD_VBAT</p></td>
+<td><p>Backup domain supply current</p></td>
+<td><p>Backup SRAM OFF, low-speed oscillator and RTC ON</p></td>
+<td><p>0.62</p></td>
+<td><p>0.73</p></td>
+<td><p>0.96</p></td>
+<td><p>8</p></td>
+<td><p>10</p></td>
+<td><p>UA</p></td>
+</tr>
+<tr class="row-even"><td><p>’DD_VBAT</p></td>
+<td><p>Backup domain supply current</p></td>
+<td><p>Backup SRAM ON, RTC OFF</p></td>
+<td><p>0.79</p></td>
+<td><p>0.81</p></td>
+<td><p>0.86</p></td>
+<td><p>9</p></td>
+<td><p>16</p></td>
+<td><p>UA</p></td>
+</tr>
+<tr class="row-odd"><td><p>’DD_VBAT</p></td>
+<td><p>Backup domain supply current</p></td>
+<td><p>Backup SRAM OFF, RTC OFF</p></td>
+<td><p>0.1</p></td>
+<td><p>0.1</p></td>
+<td><p>0.1</p></td>
+<td><p>5</p></td>
+<td><p>7</p></td>
+<td><p>UA</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="Conclusion">
 <h2>Conclusion<a class="headerlink" href="#Conclusion" title="Permalink to this heading"></a></h2>
@@ -684,8 +1184,8 @@ Guidance and Manufacturer&#39;s Declaration - Electromagnetic Immunity   The Min
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="layout_analysis.html" class="btn btn-neutral float-left" title="Using Layout Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tabular_data_linearization_continued.html" class="btn btn-neutral float-right" title="Tabular data linearization (Continued)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tabular_data_linearization.html" class="btn btn-neutral float-left" title="Tabular data linearization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="layout_analysis_for_text_linearization.html" class="btn btn-neutral float-right" title="Using Layout Analysis for Text Linearization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
