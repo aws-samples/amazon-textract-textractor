@@ -31,17 +31,17 @@ class SpatialObject(ABC):
 class BoundingBox(SpatialObject):
     """
     Represents the bounding box of an object in the format of a dataclass with (x, y, width, height). \
-    By default :class:`BoundingBox` is set to work with denormalized co-ordinates: :math:`x in [0, docwidth]` and :math:`y in [0, docheight]`. \
-    Use the as_normalized_dict function to obtain BoundingBox with normalized co-ordinates: :math:`x in [0, 1]` and :math:`y in [0, 1]`. \
+    By default :class:`BoundingBox` is set to work with denormalized co-ordinates: :math:`x \in [0, docwidth]` and :math:`y \in [0, docheight]`. \
+    Use the as_normalized_dict function to obtain BoundingBox with normalized co-ordinates: :math:`x \in [0, 1]` and :math:`y \in [0, 1]`. \\
 
-    Create a BoundingBox like shown below: \
+    Create a BoundingBox like shown below: \\
 
-    * Directly:             :code:`bb = BoundingBox(x, y, width, height)` \
+    * Directly:             :code:`bb = BoundingBox(x, y, width, height)` \\
     * From dict:            :code:`bb = BoundingBox.from_dict(bb_dict)` where :code:`bb_dict = {'x': x, 'y': y, 'width': width, 'height': height}` \
 
-    Use a BoundingBox like shown below: \
+    Use a BoundingBox like shown below: \\
 
-    * Directly:            :code:`print('The top left is: ' + str(bb.x) + ' ' + str(bb.y))` \
+    * Directly:            :code:`print('The top left is: ' + str(bb.x) + ' ' + str(bb.y))` \\
     * Convert to dict:     :code:`bb_dict = bb.as_dict()` returns :code:`{'x': x, 'y': y, 'width': width, 'height': height}`
     """
 
