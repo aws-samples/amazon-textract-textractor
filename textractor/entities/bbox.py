@@ -1,10 +1,10 @@
 """BoundingBox class contains all the co-ordinate information for a :class:`DocumentEntity`. This class is mainly useful to locate the entity
 on the image of the document page."""
 
+from abc import ABC
 import logging
 import math
-from abc import ABC
-from typing import List, Tuple
+from typing import Tuple, List
 
 try:
     import numpy as np
@@ -12,8 +12,8 @@ except ImportError:
     # Used in an export_as_numpy function which won't be called if the user doesn't have numpy.
     pass
 
-from dataclasses import dataclass
 from typing import Dict
+from dataclasses import dataclass
 
 
 class SpatialObject(ABC):
