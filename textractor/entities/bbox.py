@@ -37,7 +37,7 @@ class BoundingBox(SpatialObject):
     Create a BoundingBox like shown below: \\
 
     * Directly:             :code:`bb = BoundingBox(x, y, width, height)` \\
-    * From dict:            :code:`bb = BoundingBox.from_dict(bb_dict)` where :code:`bb_dict = {'x': x, 'y': y, 'width': width, 'height': height}` \
+    * From dict:            :code:`bb = BoundingBox.from_dict(bb_dict)` where :code:`bb_dict = {'x': x, 'y': y, 'width': width, 'height': height}` \\
 
     Use a BoundingBox like shown below: \\
 
