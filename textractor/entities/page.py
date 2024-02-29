@@ -42,9 +42,10 @@ from textractor.entities.selection_element import SelectionElement
 from textractor.utils.geometry_util import sort_by_position
 from textractor.utils.search_utils import SearchUtils, jaccard_similarity
 from textractor.visualizers.entitylist import EntityList
+from textractor.entities.linearizable import Linearizable
 
 
-class Page(SpatialObject):
+class Page(SpatialObject, Linearizable):
     """
     Creates a new document, ideally representing a single item in the dataset.
 
@@ -131,19 +132,6 @@ class Page(SpatialObject):
         :rtype: str
         """
         return self.get_text()
-
-    def get_text(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ) -> str:
-        """
-        Returns the page text
-
-        :param config: Text linearization configuration object, defaults to TextLinearizationConfig()
-        :type config: TextLinearizationConfig, optional
-        :return: Linearized page text
-        :rtype: str
-        """
-        return self.get_text_and_words(config)[0]
 
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()

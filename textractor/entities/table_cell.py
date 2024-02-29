@@ -218,14 +218,6 @@ class TableCell(DocumentEntity):
         """
         return self.get_text()
 
-    def get_text(self, config: TextLinearizationConfig = TextLinearizationConfig()) -> str:
-        """Return the text in the cell as one space-separated string
-        
-        :return: Text in the cell
-        :rtype: str
-        """
-        return self.get_text_and_words(config)[0]
-
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ) -> Tuple[str, List]:

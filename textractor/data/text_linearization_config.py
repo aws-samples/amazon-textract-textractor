@@ -12,6 +12,8 @@ class TextLinearizationConfig:
 
     max_number_of_consecutive_new_lines: int = 2  #: Removes extra whitespace
 
+    max_number_of_consecutive_spaces: int = None  #: Removes extra whitespace (None skips whitespace removal)
+
     hide_header_layout: bool = False  #: Hide headers in the linearized output
 
     hide_footer_layout: bool = False  #: Hide footers in the linearized output
@@ -56,13 +58,19 @@ class TextLinearizationConfig:
 
     table_layout_suffix: str = os.linesep  #: Suffix for table elements
 
-    table_remove_column_headers: bool = False  #: Remove column headers from tables
+    table_remove_column_headers: bool = False  #: Remove pandas index column headers from tables
 
     table_column_header_threshold: float = 0.9 #: Threshold for a row to be selected as header when rendering as markdown. 0.9 means that 90% of the cells must have the is_header_cell flag. 
 
-    table_linearization_format: str = "plaintext"  #: How to represent tables in the linearized output. Choices are plaintext or markdown.
+    table_linearization_format: str = "plaintext"  #: How to represent tables in the linearized output. Choices are plaintext, markdown or HTML.
 
     table_tabulate_format: str = "github"  #: Markdown tabulate format to use when table are linearized as markdown
+
+    table_tabulate_remove_extra_hyphens: bool = False  #: By default markdown tables will have N hyphens to preserve alignement, this reduces the number of hyphens to 1, which is the minimum number allowed by the GitHub Markdown spec
+
+    table_duplicate_text_in_merged_cells: bool = False #: Duplicate text in merged cells to preserve line alignment
+
+    table_flatten_headers: bool = False #: Flatten table headers into a single row, unmerging the cells horizontally
 
     table_min_table_words: int = 0  #: Threshold below which tables will be rendered as words instead of using table layout
 
@@ -87,6 +95,14 @@ class TextLinearizationConfig:
     table_cell_header_suffix: str = "" #: Suffix for header cell
 
     table_cell_empty_cell_placeholder: str = "" #: Placeholder for empty cells
+
+    table_cell_merge_cell_placeholder: str = "" #: Placeholder for merged cell
+
+    table_cell_left_merge_cell_placeholder: str = "" #: Placeholder for left merge cell (L) see: 
+
+    table_cell_top_merge_cell_placeholder: str = "" #: Placeholder for left merge cell (T)
+
+    table_cell_cross_merge_cell_placeholder: str = "" #: Placeholder for left merge cell (X)
 
     header_prefix: str = ""  #: Prefix for header layout elements
 

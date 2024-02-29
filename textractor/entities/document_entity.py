@@ -6,9 +6,11 @@ from typing import Dict, List, Tuple
 from textractor.entities.bbox import BoundingBox
 from textractor.visualizers.entitylist import EntityList
 from textractor.data.text_linearization_config import TextLinearizationConfig
+from textractor.data.html_linearization_config import HTMLLinearizationConfig
+from textractor.data.markdown_linearization_config import MarkdownLinearizationConfig
+from textractor.entities.linearizable import Linearizable
 
-
-class DocumentEntity(ABC):
+class DocumentEntity(Linearizable, ABC):
     """
     An interface for all document entities within the document body, composing the
     hierarchy of the document object model.
@@ -193,14 +195,3 @@ class DocumentEntity(ABC):
         """
         return EntityList(self).visualize(*args, **kwargs)
 
-    @abstractmethod
-    def get_text_and_words(
-        self, config: TextLinearizationConfig = TextLinearizationConfig()
-    ) -> Tuple[str, List]:
-        """
-        Used for linearization, returns the linearized text of the entity and the matching words
-
-        :return: Tuple of text and word list
-        :rtype: Tuple[str, List[Word]]
-        """
-        pass

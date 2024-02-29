@@ -36,6 +36,7 @@ def download_from_s3(client, s3_path: str, **extra_args):
 
     f = BytesIO()
     client.download_fileobj(bucket, prefix, f)
+    f.seek(0)
     return f
 
 
