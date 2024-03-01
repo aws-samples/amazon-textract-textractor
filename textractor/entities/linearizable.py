@@ -22,6 +22,16 @@ class Linearizable(ABC):
         text, _ = self.get_text_and_words(config=config)
         return text
 
+    @property
+    def text(self) -> str:
+        """
+        Maps to .get_text()
+
+        :return: Returns the linearized text of the entity
+        :rtype: str
+        """
+        return self.get_text()
+
     def to_html(
         self
     ) -> str:
