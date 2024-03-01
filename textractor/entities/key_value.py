@@ -96,8 +96,8 @@ class KeyValue(DocumentEntity):
     @property
     def key(self):
         """
-        :return: Returns :class:`Line` object associated with the key.
-        :rtype: Line
+        :return: Returns :class:`EntityList[Word]` object (a list of words) associated with the key.
+        :rtype: EntityList[Word]
         """
         if not self._words:
             logging.info("Key contains no words objects.")
