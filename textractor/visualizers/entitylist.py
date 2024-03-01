@@ -489,11 +489,16 @@ class EntityList(list, Generic[T], Linearizable):
 
     def get_text_and_words(self, config: TextLinearizationConfig = TextLinearizationConfig()):
         texts, words = [], []
+        separator = (
+            config.same_paragraph_separator
+            if all([entity.__class__.__name__ == "Word" for entity in self]) else
+            config.layout_element_separator
+        )
         for entity in self:
             entity_text, entity_words = entity.get_text_and_words(config)
             texts.append(entity_text)
             words.extend(entity_words)
-        return config.layout_element_separator.join(texts), words
+        return separator.join(texts), words
 
 def _convert_form_to_list(
     form_objects,

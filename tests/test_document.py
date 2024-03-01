@@ -82,6 +82,7 @@ class TestDocument(unittest.TestCase):
         self.assertEqual(len(document.get_words_by_type(TextTypes.PRINTED)), 51)
         self.assertEqual(len(document.get_words_by_type(TextTypes.HANDWRITING)), 0)
 
+        self.assertEqual(document.key_values[0].key.text, "Name of package:")
 
         if SENTENCE_TRANSFORMERS_AVAILABLE:
             self.assertIsInstance(

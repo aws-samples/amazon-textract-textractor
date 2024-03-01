@@ -46,7 +46,7 @@ class KeyValue(DocumentEntity):
     ):
         super().__init__(entity_id, bbox)
 
-        self._words: List[Word] = []
+        self._words: EntityList[Word] = []
         self.contains_checkbox = contains_checkbox
         self.confidence = confidence / 100
         self._value: Value = value
@@ -96,8 +96,8 @@ class KeyValue(DocumentEntity):
     @property
     def key(self):
         """
-        :return: Returns :class:`Line` object associated with the key.
-        :rtype: Line
+        :return: Returns :class:`EntityList[Word]` object (a list of words) associated with the key.
+        :rtype: EntityList[Word]
         """
         if not self._words:
             logging.info("Key contains no words objects.")
@@ -113,7 +113,7 @@ class KeyValue(DocumentEntity):
         No specific ordering is assumed.
         :type words: list
         """
-        self._words = words
+        self._words = EntityList(words)
 
     @property
     def value(self) -> Value:
