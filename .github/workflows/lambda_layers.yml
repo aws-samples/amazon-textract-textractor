@@ -66,6 +66,22 @@ jobs:
         with:
           name: textractor-lambda-p311
           path: lambda_layer/
+  lambda-build-p312:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.12:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=.
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p312
+          path: lambda_layer/
   lambda-build-p38-pandas:
     runs-on: ubuntu-latest
     container: public.ecr.aws/sam/build-python3.8:latest
