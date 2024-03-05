@@ -14,13 +14,15 @@ class TextLinearizationConfig:
 
     max_number_of_consecutive_spaces: int = None  #: Removes extra whitespace (None skips whitespace removal)
 
-    hide_header_layout: bool = False  #: Hide headers in the linearized output
+    hide_header_layout: bool = False  #: Hide headers layouts in the linearized output
 
-    hide_footer_layout: bool = False  #: Hide footers in the linearized output
+    hide_footer_layout: bool = False  #: Hide footers layouts in the linearized output
 
-    hide_figure_layout: bool = False  #: Hide figures in the linearized output
+    hide_figure_layout: bool = False  #: Hide figures layouts in the linearized output
 
-    hide_table_layout: bool = False #: Hide tables in the linearized output
+    hide_table_layout: bool = False #: Hide tables layouts in the linearized output
+
+    hide_key_value_layout: bool = False #: Hide key-value layouts in the linearized output
 
     hide_page_num_layout: bool = False  #: Hide page numbers in the linearized output
 

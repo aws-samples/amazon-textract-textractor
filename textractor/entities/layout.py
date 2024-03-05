@@ -110,6 +110,7 @@ class Layout(DocumentEntity):
             or (self.layout_type == LAYOUT_FIGURE and config.hide_figure_layout)
             or (self.layout_type == LAYOUT_PAGE_NUMBER and config.hide_page_num_layout)
             or (self.layout_type == LAYOUT_TABLE and config.hide_table_layout)
+            or (self.layout_type == LAYOUT_KEY_VALUE and config.hide_key_value_layout)
         ):
             return "", []
         elif self.layout_type == LAYOUT_PAGE_NUMBER:
