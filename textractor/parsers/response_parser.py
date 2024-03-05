@@ -650,7 +650,11 @@ def _create_keyvalue_objects(
         keys[key_id].value.key_id = key_id
         if keys[key_id].contains_checkbox:
             keys[key_id].value.children[0].key_id = key_id
-            keys[key_id].selection_status = keys[key_id].value.children[0].status
+            keys[key_id].selection_status = [
+                c
+                for c in keys[key_id].value.children
+                if c.__class__.__name__ == "SelectionElement"
+            ][0].status
         else:
             kv_words.extend(values[key_value_id_map[key_id]].words)
 
@@ -1347,6 +1351,8 @@ def parse_document_api_response(response: dict) -> Document:
                     words=[word],
                     confidence=word.confidence,
                 )
+                line.page = page.page_num
+                line.page_id = page.id
                 word.line = line
                 page.lines.append(line)
         all_words = {word.id: word for word in all_words}
