@@ -319,7 +319,7 @@ class CLIPrint(Enum):
     EXPENSES = 5
     SIGNATURES = 6
     IDS = 7
-
+    LAYOUTS = 8
 
 class CLIOverlay(Enum):
     ALL = 0
@@ -328,4 +328,5 @@ class CLIOverlay(Enum):
     TABLES = 3
     FORMS = 4
     QUERIES = 5
-    SIGNATURE = 6
+    SIGNATURES = 6
+    LAYOUTS = 7

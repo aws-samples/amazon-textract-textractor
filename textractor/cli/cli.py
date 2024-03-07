@@ -427,6 +427,8 @@ def textractor_cli():
                 print(out.signatures.pretty_print())
             if "ALL" in args.print or "IDS" in args.print:
                 print(out.identity_documents.pretty_print())
+            if "ALL" in args.print or "LAYOUTS" in args.print:
+                print(out.layouts.pretty_print())
 
         if args.linearize is not None:
             if args.linearize_config_path is not None:
@@ -450,6 +452,8 @@ def textractor_cli():
                 entity_list += out.queries
             if "ALL" in args.overlay or "SIGNATURES" in args.overlay:
                 entity_list += out.signatures
+            if "ALL" in args.overlay or "LAYOUTS" in args.overlay:
+                entity_list += out.layouts
             image = entity_list.visualize(
                 with_text=True,
                 font_size_ratio=args.font_size_ratio,
