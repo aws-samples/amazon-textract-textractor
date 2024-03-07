@@ -21,6 +21,7 @@ from textractor.entities.page import Page
 from textractor.entities.table import Table
 from textractor.entities.query import Query
 from textractor.entities.signature import Signature
+from textractor.entities.layout import Layout
 from textractor.exceptions import InputError
 from textractor.entities.key_value import KeyValue
 from textractor.entities.bbox import SpatialObject
@@ -191,6 +192,16 @@ class Document(SpatialObject, Linearizable):
         :rtype: EntityList[Signature]
         """
         return EntityList(sum([page.signatures for page in self.pages], []))
+
+    @property
+    def layouts(self) -> EntityList[Layout]:
+        """
+        Returns all the :class:`Layout` objects present in the Document
+
+        :return: List of Layout objects
+        :rtype: EntityList[Layout]
+        """
+        return EntityList(sum([page.layouts for page in self.pages], []))
 
     @property
     def identity_document(self) -> EntityList[IdentityDocument]:
