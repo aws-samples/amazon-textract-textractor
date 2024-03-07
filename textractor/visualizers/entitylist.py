@@ -141,7 +141,7 @@ class EntityList(list, Generic[T], Linearizable):
                 font_size_ratio,
             )
 
-        images = list(visualized_images.values())
+        images = [image.convert("RGB") for image in visualized_images.values()]
         images = images if len(images) != 1 else images[0]
         return images
 
