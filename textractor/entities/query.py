@@ -111,4 +111,4 @@ class Query(DocumentEntity):
         :return: Tuple of text and word list
         :rtype: Tuple[str, List[Word]]
         """
-        return "", []
+        return f"{self.query} {self.result.answer}", []
