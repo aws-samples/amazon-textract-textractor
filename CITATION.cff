@@ -1,0 +1,25 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Amazon Textractor
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Edouard
+    family-names: Belval
+    affiliation: AWS AI
+  - given-names: Thomas
+    family-names: Delteil
+    affiliation: AWS AI
+  - given-names: Martin
+    family-names: Schade
+    affiliation: AWS AI
+  - given-names: Srividhya
+    family-names: Radhakrishna
+    affiliation: AWS AI
+repository-code: 'https://github.com/aws-samples/amazon-textract-textractor'
+url: 'https://aws-samples.github.io/amazon-textract-textractor/'
+license: Apache-2.0
