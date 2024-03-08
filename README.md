@@ -117,6 +117,22 @@ This library was made possible by the work of Srividhya Radhakrishna ([@srividh-
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
+## Citing
+
+Textractor can be cited using:
+
+```
+@software{amazontextractor,
+  author = {Belval, Edouard and Delteil, Thomas and Schade, Martin and Radhakrishna, Srividhya},
+  title = {{Amazon Textractor}},
+  url = {https://github.com/aws-samples/amazon-textract-textractor},
+  version = {1.7.5},
+  year = {2024}
+}
+```
+
+Or using the CITATION.cff file. 
+
 ## License
 
 This library is licensed under the Apache 2.0 License.
