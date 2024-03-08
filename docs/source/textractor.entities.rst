@@ -15,6 +15,22 @@ BoundingBox
    :undoc-members:
    :show-inheritance:
 
+Document
+-----------------------------------
+
+.. automodule:: textractor.entities.document
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+LazyDocument
+-----------------------------------
+
+.. automodule:: textractor.entities.lazy_document
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 DocumentEntity
 -------------------------------------------
 
@@ -35,6 +51,62 @@ Line
 -------------------------------
 
 .. automodule:: textractor.entities.line
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Page
+-------------------------------
+
+.. automodule:: textractor.entities.page
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+PageLayout
+-----------------------------------
+
+.. automodule:: textractor.entities.page_layout
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Layout
+-----------------------------------
+
+.. automodule:: textractor.entities.layout
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Table
+--------------------------------
+
+.. automodule:: textractor.entities.table
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+TableCell
+--------------------------------------
+
+.. automodule:: textractor.entities.table_cell
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+TableTitle
+--------------------------------------
+
+.. automodule:: textractor.entities.table_title
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+TableFooter
+--------------------------------------
+
+.. automodule:: textractor.entities.table_footer
    :members:
    :undoc-members:
    :show-inheritance:
@@ -63,44 +135,66 @@ SelectionElement
    :undoc-members:
    :show-inheritance:
 
-Table
---------------------------------
-
-.. automodule:: textractor.entities.table
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TableCell
---------------------------------------
-
-.. automodule:: textractor.entities.table_cell
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Page
--------------------------------
-
-.. automodule:: textractor.entities.page
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-PageLayout
--------------------------------
-
-.. automodule:: textractor.entities.page_layout
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-Document
+Query
 -----------------------------------
 
-.. automodule:: textractor.entities.document
+.. automodule:: textractor.entities.query
    :members:
    :undoc-members:
    :show-inheritance:
 
+QueryResult
+-----------------------------------
+
+.. automodule:: textractor.entities.query_result
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Signature
+-----------------------------------
+
+.. automodule:: textractor.entities.signature
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ExpenseDocument
+-----------------------------------
+
+.. automodule:: textractor.entities.expense_document
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Expense
+-----------------------------------
+
+.. automodule:: textractor.entities.expense_field
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+IdentityDocument
+-----------------------------------
+
+.. automodule:: textractor.entities.identity_document
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+IdentityField
+-----------------------------------
+
+.. automodule:: textractor.entities.identity_field
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Linearizable
+-----------------------------------
+
+.. automodule:: textractor.entities.linearizable
+   :members:
+   :undoc-members:
+   :show-inheritance:
