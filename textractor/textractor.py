@@ -22,6 +22,7 @@ import os
 import boto3
 import logging
 import uuid
+from functools import partial
 from PIL import Image
 from copy import deepcopy
 from typing import List, Union
@@ -36,7 +37,7 @@ from textractcaller import (
 from textractcaller.t_call import Textract_Call_Mode, Textract_API, get_full_json
 
 try:
-    from pdf2image import convert_from_bytes, convert_from_path
+    from pdf2image import convert_from_bytes, convert_from_path, pdfinfo_from_bytes, pdfinfo_from_path
 
     IS_PDF2IMAGE_INSTALLED = True
 except ImportError:
@@ -51,6 +52,7 @@ from textractor.entities.document import Document
 from textractor.entities.lazy_document import LazyDocument
 from textractor.parsers import response_parser
 from textractor.utils.s3_utils import upload_to_s3, s3_path_to_bucket_and_prefix
+from textractor.utils.lazy_object import LazyObject
 from textractor.exceptions import (
     InputError,
     RegionMismatchError,
@@ -149,6 +151,69 @@ class Textractor:
             raise UnhandledCaseException(f"Could not get any images from {filepath}")
 
         return images
+
+    def _get_document_lazy_images_from_path(self, filepath: str) -> List[Union[LazyObject, Image.Image]]:
+        """
+        Same as :code:`_get_document_images_from_path` but returns LazyObjects instead to defer the evaluation.
+
+        :param filepath: filepath to the document stored locally or on an S3 bucket.
+        :type filepath: str, required
+        :return: Returns a list of LazyObject or possibly images if the filepath is an image
+        :rtype: List[Union[LazyObject, Image.Image]]
+        """
+        images = []
+        if "s3://" in filepath:
+            edit_filepath = filepath.replace("s3://", "")
+            bucket = edit_filepath.split("/")[0]
+            key = edit_filepath[edit_filepath.index("/") + 1 :]
+
+            s3_client = (
+                boto3.session.Session(profile_name=self.profile_name).client("s3")
+                if self.profile_name is not None
+                else boto3.session.Session(region_name=self.region_name).client("s3")
+            )
+            file_obj = s3_client.get_object(Bucket=bucket, Key=key).get("Body").read()
+            if filepath.lower().endswith(".pdf"):
+                if IS_PDF2IMAGE_INSTALLED:
+                    pdf_info = pdfinfo_from_bytes(bytearray(file_obj))
+                    if "Pages" in pdf_info:
+                        images = [
+                            LazyObject(partial(convert_from_bytes, bytearray(file_obj), first_page=i+1, last_page=i+1))
+                            for i in range(pdf_info["Pages"])
+                        ]
+                    # pdfinfo failed, let's try to get the pages directly
+                    else:
+                        images = convert_from_bytes(bytearray(file_obj))
+                else:
+                    raise MissingDependencyException(
+                        "pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call."
+                    )
+            else:
+                images = [Image.open(io.BytesIO(bytearray(file_obj)))]
+
+        else:
+            if filepath.lower().endswith(".pdf"):
+                if IS_PDF2IMAGE_INSTALLED:
+                    pdf_info = pdfinfo_from_path(filepath)
+                    if "Pages" in pdf_info:
+                        images = [
+                            LazyObject(partial(convert_from_path, filepath, first_page=i+1, last_page=i+1))
+                            for i in range(pdf_info["Pages"])
+                        ]
+                    # pdfinfo failed, let's try to get the pages directly
+                    else:
+                        images = convert_from_path(filepath)
+                else:
+                    raise MissingDependencyException(
+                        "pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call."
+                    )
+            else:
+                images = [Image.open(filepath)]
+
+        if not images:
+            raise UnhandledCaseException(f"Could not get any images from {filepath}")
+
+        return images 
 
     def detect_document_text(
         self, file_source, s3_output_path: str = "", save_image: bool = True
