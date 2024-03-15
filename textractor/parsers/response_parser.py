@@ -116,7 +116,11 @@ def _filter_by_entity(
     return {
         block["Id"]: block
         for block in block_json
-        if block["EntityTypes"][0] == entity_type
+        if (
+            "EntityTypes" in block and
+            len(block["EntityTypes"]) and
+            block["EntityTypes"][0] == entity_type
+        )
     }
 
 
@@ -829,6 +833,7 @@ def _create_table_cell_objects(
 
     table_cells = {}
     for elem_id, elem in all_table_cells_info.items():
+        entity_types = elem.get("EntityTypes", []) or []
         table_cells[elem_id] = TableCell(
             entity_id=elem_id,
             bbox=BoundingBox.from_normalized_dict(
@@ -839,11 +844,11 @@ def _create_table_cell_objects(
             row_span=elem["RowSpan"],
             col_span=elem["ColumnSpan"],
             confidence=elem["Confidence"],
-            is_column_header=COLUMN_HEADER in elem.get("EntityTypes", []),
-            is_title=TABLE_TITLE in elem.get("EntityTypes", []),
-            is_footer=TABLE_FOOTER in elem.get("EntityTypes", []),
-            is_summary=TABLE_SUMMARY in elem.get("EntityTypes", []),
-            is_section_title=TABLE_SECTION_TITLE in elem.get("EntityTypes", []),
+            is_column_header=COLUMN_HEADER in entity_types,
+            is_title=TABLE_TITLE in entity_types,
+            is_footer=TABLE_FOOTER in entity_types,
+            is_summary=TABLE_SUMMARY in entity_types,
+            is_section_title=TABLE_SECTION_TITLE in entity_types,
         )
         table_cells[elem_id].raw_object = elem
 
@@ -897,9 +902,9 @@ def _create_table_objects(
             ),
         )
         # Setting table type based on the entity types present in the table
-        if TABLE_STRUCTURED in val.get("EntityTypes", []):
+        if TABLE_STRUCTURED in (val.get("EntityTypes", []) or []):
             tables[val["Id"]].table_type = TableTypes.STRUCTURED
-        elif TABLE_SEMI_STRUCTURED in val.get("EntityTypes", []):
+        elif TABLE_SEMI_STRUCTURED in (val.get("EntityTypes", []) or []):
             tables[val["Id"]].table_type = TableTypes.SEMI_STRUCTURED
         else:
             tables[val["Id"]].table_type = TableTypes.UNKNOWN
@@ -979,7 +984,7 @@ def _create_table_objects(
                 table_cells[cell_id]._children.append(checkboxes[child_id])
 
         # update metadata
-        meta_info = cell.get("EntityTypes", [])
+        meta_info = cell.get("EntityTypes", []) or []
         merged_info = [MERGED_CELL] if cell_id in merged_child_ids else []
         table_cells[cell_id]._update_response_metadata(meta_info + merged_info)
 
