@@ -461,8 +461,8 @@ def _create_query_result_objects(
             entity_id=block["Id"],
             confidence=block["Confidence"],
             result_bbox=BoundingBox.from_normalized_dict(
-                block.get(
-                    "Geometry",
+                (
+                    block.get("Geometry") or
                     {
                         "BoundingBox": {
                             "Width": 1.0,
@@ -470,7 +470,7 @@ def _create_query_result_objects(
                             "Left": 0.0,
                             "Top": 0.0,
                         }
-                    },
+                    }
                 )["BoundingBox"],
                 spatial_object=page,
             ),
