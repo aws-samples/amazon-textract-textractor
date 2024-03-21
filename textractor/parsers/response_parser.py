@@ -752,7 +752,7 @@ def _create_layout_objects(
                 )
             )
             parsed_blocks.add(block["Id"])
-            for relationship in block.get("Relationships", []):
+            for relationship in (block.get("Relationships", []) or []):
                 if relationship["Type"] != "CHILD":
                     continue
                 for leaf_id in relationship["Ids"]:
@@ -770,7 +770,7 @@ def _create_layout_objects(
                         )
                     )
                     container_layouts[-1].children[-1].raw_object = block
-                    for relationship in block.get("Relationships", []):
+                    for relationship in (block.get("Relationships", []) or []):
                         if relationship["Type"] != "CHILD":
                             continue
                         container_layouts[-1].children[-1].add_children(
@@ -789,7 +789,7 @@ def _create_layout_objects(
                 )
             )
             leaf_layouts[-1].raw_object = block
-            for relationship in block.get("Relationships", []):
+            for relationship in (block.get("Relationships", []) or []):
                 if relationship["Type"] != "CHILD":
                     continue
                 leaf_layouts[-1].add_children(
