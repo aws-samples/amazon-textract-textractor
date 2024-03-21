@@ -41,7 +41,7 @@ class TestCommand(setuptools.Command):
 setup(
     # include data files
     name="amazon-textract-textractor",
-    version="1.7.7",
+    version="1.7.8",
     license="Apache 2.0",
     description="A package to use AWS Textract services.",
     url="https://github.com/aws-samples/amazon-textract-textractor",
