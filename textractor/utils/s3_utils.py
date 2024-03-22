@@ -56,7 +56,7 @@ def upload_to_s3(
     bucket, prefix = s3_path_to_bucket_and_prefix(s3_path)
     if isinstance(file_source, Image.Image):
         fake_file = BytesIO()
-        file_source.save(fake_file, format="PNG")
+        file_source.save(fake_file, format="PNG", compression_level=3)
         fake_file.seek(0)
         client.upload_fileobj(fake_file, bucket, prefix, extra_args)
     elif isinstance(file_source, bytes):

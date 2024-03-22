@@ -45,7 +45,7 @@ except ImportError:
 
 from textractor.data.constants import (
     TextractAPI,
-    TextractFeatures,
+    TextractFeatures
 )
 from textractor.entities.document import Document
 from textractor.entities.lazy_document import LazyDocument
@@ -842,6 +842,8 @@ def _image_to_byte_array(image: Image) -> bytes:
     :rtype: bytes
     """
     img_byte_arr = io.BytesIO()
-    image.convert("RGB").save(img_byte_arr, format="JPEG")
+    # We use PNG has using JPEG is lossy and causes accuracy issues with Textract
+    # We use compression level 3 to help with latency
+    image.convert("RGBA").save(img_byte_arr, format="PNG", compression_level=3)
     img_byte_arr = img_byte_arr.getvalue()
     return img_byte_arr
