@@ -842,6 +842,7 @@ def _image_to_byte_array(image: Image) -> bytes:
     :rtype: bytes
     """
     img_byte_arr = io.BytesIO()
-    image.convert("RGB").save(img_byte_arr, format="JPEG")
+    # We set quality to 95 and subsampling to 0 because the pillow defaults are very low resolution
+    image.convert("RGB").save(img_byte_arr, format="JPEG", quality=95, subsampling=0)
     img_byte_arr = img_byte_arr.getvalue()
     return img_byte_arr
