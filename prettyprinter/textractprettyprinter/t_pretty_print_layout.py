@@ -108,7 +108,11 @@ class LinearizeLayout:
                             for cell_id in cell_rel['Ids']:
                                 cell_block = id2block[cell_id]
                                 if "Relationships" in cell_block:
-                                    cell_text = " ".join([id2block[line_id]['Text'] for line_id in cell_block["Relationships"][0]['Ids']])
+                                    cell_text = " ".join([
+                                        id2block[line_id]['Text']
+                                        for line_id in cell_block["Relationships"][0]['Ids']
+                                        if 'Text' in id2block[line_id]
+                                    ])
                                     row_idx = cell_block['RowIndex']
                                     col_idx = cell_block['ColumnIndex']
                                     max_row = max(max_row, row_idx)
