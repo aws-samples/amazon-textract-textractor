@@ -174,7 +174,7 @@ def is_tiff(filename: str) -> bool:
         return True
     return False
 
-def parse_s3_url(url: str) -> Tuple[str, Optional[str]]:
+def parse_s3_url(url: str) -> Tuple[str, str]:
     if url.lower().startswith("s3://"):
         url_parts = url[5:].split("/", 1)
         bucket = url_parts[0]
