@@ -1,4 +1,4 @@
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Tuple
 from enum import Enum
 import os
 from dataclasses import dataclass, field
@@ -174,6 +174,16 @@ def is_tiff(filename: str) -> bool:
         return True
     return False
 
+def parse_s3_url(url: str) -> Tuple[str, str]:
+    if url.lower().startswith("s3://"):
+        url_parts = url[5:].split("/", 1)
+        bucket = url_parts[0]
+        key = url_parts[1] if len(url_parts) > 1 else None
+        if not key:
+            raise ValueError(f"Missing object key in S3 path {url}")    
+        return bucket, key
+    else:
+        raise ValueError("URL must be in s3://bucket/path/to/file format")
 
 def generate_request_params(
     document_location: Optional[DocumentLocation] = None,
@@ -489,7 +499,9 @@ def call_textract_lending(
     boto3_textract_client=None,
 ):
     if len(input_document) > 7 and input_document.lower().startswith("s3://"):
-        s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+        # Fix #345
+        # s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+        s3_bucket, s3_key = parse_s3_url(url=input_document)
     else:
         raise Exception("input_document needs to be an S3 URL.")
 
@@ -576,7 +588,9 @@ def call_textract(
     if isinstance(input_document, str):
         if len(input_document) > 7 and input_document.lower().startswith("s3://"):
             is_s3_document = True
-            s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+            # Fix #345
+            # s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+            s3_bucket, s3_key = parse_s3_url(url=input_document)
         ext: str = ""
         _, ext = os.path.splitext(input_document)
         ext = ext.lower()
@@ -747,7 +761,9 @@ def call_textract_analyzeid(
         if isinstance(input_document, str):
             if len(input_document) > 7 and input_document.lower().startswith("s3://"):
                 logger.debug("processing s3")
-                s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+                # Fix #345
+                # s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+                s3_bucket, s3_key = parse_s3_url(url=input_document)
                 document_pages_param.append(
                     DocumentPage(
                         s3_object=DocumentLocation(
@@ -793,7 +809,9 @@ def call_textract_expense(
     if isinstance(input_document, str):
         if len(input_document) > 7 and input_document.lower().startswith("s3://"):
             is_s3_document = True
-            s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+            # Fix #345
+            # s3_bucket, s3_key = input_document.replace("s3://", "").split("/", 1)
+            s3_bucket, s3_key = parse_s3_url(url=input_document)
         ext: str = ""
         _, ext = os.path.splitext(input_document)
         ext = ext.lower()
