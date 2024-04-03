@@ -1,4 +1,4 @@
-name: Release
+name: Release Caller
 
 on:
   workflow_run:
@@ -44,8 +44,9 @@ jobs:
       # Make docs
       - name: Build sdist and wheels
         run: |
-          cd caller && python3 setup.py bdist_wheel
-          cd caller && python3 setup.py sdist
+          cd caller
+          python3 setup.py bdist_wheel
+          python3 setup.py sdist
 
       # Upload to PyPI
       - name: Publish distribution to PyPI
