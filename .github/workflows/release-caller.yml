@@ -48,7 +48,6 @@ jobs:
           python3 setup.py bdist_wheel
           python3 setup.py sdist
           mv dist ..
-          mv sdist ..
 
       # Upload to PyPI
       - name: Publish distribution to PyPI
