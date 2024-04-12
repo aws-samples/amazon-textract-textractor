@@ -342,8 +342,12 @@ def textractor_cli():
         parser.print_help()
         return
 
-    if args.profile_name is None and args.region_name is None and os.environ.get("AWS_REGION"):
-        args.region_name = os.environ.get("AWS_REGION")
+    if (
+        args.profile_name is None and
+        args.region_name is None and
+        (os.environ.get("AWS_REGION") or os.environ.get("AWS_DEFAULT_REGION"))
+    ):
+        args.region_name = os.environ.get("AWS_REGION") or os.environ.get("AWS_DEFAULT_REGION")
     elif args.profile_name is None and args.region_name is None:
         args.profile_name = "default"
 

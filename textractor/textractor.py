@@ -90,6 +90,10 @@ class Textractor:
             self.session = boto3.session.Session(profile_name=self.profile_name)
         elif self.region_name is not None:
             self.session = boto3.session.Session(region_name=self.region_name)
+        elif os.environ.get("AWS_REGION") or os.environ.get("AWS_DEFAULT_REGION"):
+            # We support both AWS_REGION and AWS_DEFAULT_REGION, with AWS_REGION having precedence.
+            self.region_name = os.environ.get("AWS_REGION") or os.environ.get("AWS_DEFAULT_REGION")
+            self.session = boto3.session.Session(region_name=self.region_name)
         else:
             raise InputError(
                 "Unable to initiate Textractor. Either profile_name or region requires an input parameter."
