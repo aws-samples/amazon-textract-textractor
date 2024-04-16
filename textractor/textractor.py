@@ -242,7 +242,7 @@ class Textractor:
         client_request_token: str = "",
         job_tag: str = "",
         save_image: bool = True,
-    ):
+    ) -> LazyDocument:
         """
         Make a call to the ASYNC StartDocumentTextDetection API.
 
@@ -259,9 +259,12 @@ class Textractor:
         :type client_request_token: str, optional
         :param job_tag: An identifier that you specify that's included in the completion notification published to the Amazon SNS topic.
         :type job_tag: str, optional
+        :param save_image: Flag to indicate if document images are to be stored within the Document object. This is optional
+                            and necessary only if the customer wants to visualize bounding boxes for their document entities.
+        :type save_image: bool
 
-        :return: Returns a job id which can be used to fetch the results
-        :rtype: str
+        :return: Lazy-loaded Document object
+        :rtype: LazyDocument
         """
 
         original_file_source = file_source
