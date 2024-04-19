@@ -38,6 +38,7 @@ from textractor.entities.selection_element import SelectionElement
 from textractor.entities.layout import Layout
 from textractor.data.constants import (
     LAYOUT_ENTITY,
+    LAYOUT_FIGURE,
     TABLE_FOOTER,
     TABLE_TITLE,
     COLUMN_HEADER,
@@ -1282,7 +1283,7 @@ def parse_document_api_response(response: dict) -> Document:
                     key_values.remove(kv)
 
         
-        page.leaf_layouts = [l for l in page.leaf_layouts if l.children]
+        page.leaf_layouts = [l for l in page.leaf_layouts if l.children or l.layout_type == LAYOUT_FIGURE]
 
         # We create layout elements for the KeyValues that did not match to a layout element in the
         # previous step
@@ -1334,7 +1335,7 @@ def parse_document_api_response(response: dict) -> Document:
                     words_in_sub_layouts.add(w)
             for word in words_in_sub_layouts:
                 layout.remove(word)
-            if not layout.children:
+            if not layout.children and layout.layout_type != LAYOUT_FIGURE:
                 layouts_to_remove.append(layout)
 
         # Clean up layouts that became empty due to the previous step. 
@@ -1380,7 +1381,7 @@ def parse_document_api_response(response: dict) -> Document:
         word_set = set()
         for layout in sorted(page.layouts, key=lambda l: l.reading_order):
             layout.visit(word_set)
-            if not layout.children:
+            if not layout.children and layout.layout_type != LAYOUT_FIGURE:
                 try:
                     page.leaf_layouts.remove(layout)
                 except:
