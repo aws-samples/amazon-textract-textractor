@@ -134,6 +134,10 @@ class TextLinearizationConfig:
 
     value_suffix: str = ""  #: Suffix for value elements
 
+    figure_layout_prefix: str = "" #: Prefix for figure layout elements 
+    
+    figure_layout_suffix: str = "" #: Suffix for figure layout elements
+
     selection_element_selected: str = (
         "[X]"  #: Representation for selection element when selected
     )
