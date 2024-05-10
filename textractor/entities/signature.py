@@ -38,7 +38,7 @@ class Signature(DocumentEntity):
         confidence: float = 0,
     ):
         super().__init__(entity_id, bbox)
-        self.confidence = confidence / 100
+        self.confidence_score = confidence / 100
         self._page = None
         self._page_id = None
 

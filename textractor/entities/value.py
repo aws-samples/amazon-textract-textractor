@@ -38,7 +38,7 @@ class Value(DocumentEntity):
         self._words: List[Word] = []
         self._key_id = None
         self._contains_checkbox = False
-        self.confidence = confidence / 100
+        self.confidence_score = confidence / 100
         self._page = None
         self._page_id = None
 

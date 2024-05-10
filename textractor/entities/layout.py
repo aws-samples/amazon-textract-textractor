@@ -42,7 +42,7 @@ class Layout(DocumentEntity):
     ):
         super().__init__(entity_id, bbox)
         self.reading_order = reading_order
-        self.confidence = confidence / 100
+        self.confidence_score = confidence / 100
         self.layout_type = label
         self._page = None
         self._page_id = None

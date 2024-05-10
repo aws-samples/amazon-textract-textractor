@@ -39,7 +39,7 @@ class QueryResult(DocumentEntity):
         super().__init__(entity_id, result_bbox)
 
         self.answer = answer
-        self.confidence = confidence / 100
+        self.confidence_score = confidence / 100
         self._page = None
         self._page_id = None
 

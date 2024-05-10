@@ -151,6 +151,27 @@ class DocumentEntity(Linearizable, ABC):
         """
         return self._children
 
+    @property
+    def confidence(self) -> float:
+        """
+        Returns the object confidence as predicted by Textract. If the confidence is not available, returns None
+
+        :return: Prediction confidence for a document entity, between 0 and 1
+        :rtype: float
+        """
+        
+        # Needed for backward compatibility
+        if hasattr(self, "confidence_score"):
+            return self.confidence_score
+    
+        # Uses the raw response
+        if not hasattr(self, "raw_object"):
+            return None
+        confidence = self.raw_object.get("Confidence")
+        if confidence is None:
+            return None            
+        return confidence / 100
+
     def remove(self, entity):
         """
         Recursively removes an entity from the child tree of a document entity and update its bounding box
@@ -194,4 +215,3 @@ class DocumentEntity(Linearizable, ABC):
         :rtype: EntityList
         """
         return EntityList(self).visualize(*args, **kwargs)
-
