@@ -273,3 +273,8 @@ class TestDocument(unittest.TestCase):
         self.assertIsInstance(document.return_duplicates(), dict)
         self.assertIsInstance(document.return_duplicates()[1], list)
         self.assertIsInstance(document.return_duplicates()[1][0], EntityList)
+
+        for page in document.pages:
+            for layout in page.layouts:
+                for child in layout.children:
+                    self.assertIsNotNone(child.confidence, "Child confidence was None")

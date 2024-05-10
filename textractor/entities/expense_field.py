@@ -51,10 +51,6 @@ class Expense(DocumentEntity):
         return self._text
 
     @property
-    def confidence(self):
-        return self._confidence
-
-    @property
     def geometry(self):
         return self._bbox
 

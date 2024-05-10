@@ -44,7 +44,7 @@ class Line(DocumentEntity):
         else:
             self._children = []
 
-        self.confidence = confidence / 100
+        self._confidence = confidence / 100
         self._page = None
         self._page_id = None
 
