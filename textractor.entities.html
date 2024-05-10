@@ -926,6 +926,20 @@ i.e. unique id and bounding box.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.confidence">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">confidence</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.confidence" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the object confidence as predicted by Textract. If the confidence is not available, returns None</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Prediction confidence for a document entity, between 0 and 1</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.document_entity.DocumentEntity.height">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">height</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#textractor.entities.document_entity.DocumentEntity.height" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
@@ -3279,11 +3293,6 @@ Dynamically added properties to enable ease of discovery</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">textractor.entities.expense_field.</span></span><span class="sig-name descname"><span class="pre">Expense</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#textractor.entities.bbox.BoundingBox" title="textractor.entities.bbox.BoundingBox"><span class="pre">BoundingBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.expense_field.Expense" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#textractor.entities.document_entity.DocumentEntity" title="textractor.entities.document_entity.DocumentEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentEntity</span></code></a></p>
 <p>Holds the Key or the Value of an Expense</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="textractor.entities.expense_field.Expense.confidence">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">confidence</span></span><a class="headerlink" href="#textractor.entities.expense_field.Expense.confidence" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="textractor.entities.expense_field.Expense.geometry">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">geometry</span></span><a class="headerlink" href="#textractor.entities.expense_field.Expense.geometry" title="Permalink to this definition"></a></dt>
