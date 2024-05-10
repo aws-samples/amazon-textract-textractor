@@ -69,7 +69,7 @@ class TableCell(DocumentEntity):
         self._row_span: int = int(row_span)
         self._col_span: int = int(col_span)
         self._words: List[Word] = []
-        self.confidence_score = confidence / 100
+        self._confidence = confidence / 100
         self._page = None
         self._page_id = None
         self._is_column_header = is_column_header

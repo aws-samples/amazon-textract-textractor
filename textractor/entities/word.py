@@ -39,7 +39,7 @@ class Word(DocumentEntity):
         super().__init__(entity_id, bbox)
         self._text = text
         self._text_type = text_type
-        self.confidence_score = confidence / 100
+        self._confidence = confidence / 100
         self.is_clickable = is_clickable
         self.is_structure = is_structure
         self._page = None

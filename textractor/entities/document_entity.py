@@ -161,8 +161,8 @@ class DocumentEntity(Linearizable, ABC):
         """
         
         # Needed for backward compatibility
-        if hasattr(self, "confidence_score"):
-            return self.confidence_score
+        if hasattr(self, "_confidence"):
+            return self._confidence
     
         # Uses the raw response
         if not hasattr(self, "raw_object"):

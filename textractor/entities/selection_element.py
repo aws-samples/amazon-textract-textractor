@@ -41,7 +41,7 @@ class SelectionElement(DocumentEntity):
         self.key_id = None
         self.value_id = None
         self.status = status
-        self.confidence_score = confidence / 100
+        self._confidence = confidence / 100
         self._page = None
         self._page_id = None
 
