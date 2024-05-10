@@ -248,3 +248,39 @@ class TestGetTextAndWords(unittest.TestCase):
             "</value>",
         ]:
             self.assertTrue(token in words, f"{token} is not in text")
+
+    def test_figure_layout_prefixes_and_suffixes_in_text_words(self):
+        if os.environ.get("CALL_TEXTRACT"):
+            document = self.extractor.analyze_document(
+                os.path.join(self.current_directory, "fixtures/matrix.png"),
+                features=[
+                    TextractFeatures.LAYOUT,
+                ]
+            )
+            with open(get_fixture_path(), "w") as f:
+                json.dump(document.response, f)
+        else:
+            document = Document.open(get_fixture_path())
+
+        config = TextLinearizationConfig(
+            figure_layout_prefix = "<figure>",  #: Prefix for figure elements
+            figure_layout_suffix = "</figure>",  #: Suffix for figure elements
+            add_prefixes_and_suffixes_in_text=True,
+            add_prefixes_and_suffixes_as_words=True,
+        )
+
+        text, words = document.get_text_and_words(config)
+
+        for token in [
+            "<figure>",
+            "</figure>",
+        ]:
+            self.assertTrue(token in text, f"{token} is not in text")
+
+        words = [w.text for w in words]
+
+        for token in [
+            "<figure>",
+            "</figure>",
+        ]:
+            self.assertTrue(token in words, f"{token} is not in words")

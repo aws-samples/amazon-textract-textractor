@@ -232,6 +232,10 @@ class Layout(DocumentEntity):
                     final_text = (
                         config.key_value_layout_prefix + final_text + config.key_value_layout_suffix
                     )
+                elif self.layout_type == LAYOUT_FIGURE:
+                    final_text = (
+                        config.figure_layout_prefix + final_text + config.figure_layout_suffix
+                    )
             if config.add_prefixes_and_suffixes_as_words:
                 if self.layout_type == LAYOUT_TABLE:
                     final_words = (
@@ -244,6 +248,12 @@ class Layout(DocumentEntity):
                         ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.key_value_layout_prefix, is_structure=True)] if config.key_value_layout_prefix else []) + 
                         final_words + 
                         ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.key_value_layout_suffix, is_structure=True)] if config.key_value_layout_suffix else []) 
+                    )
+                elif self.layout_type == LAYOUT_FIGURE:
+                    final_words = (
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.figure_layout_prefix, is_structure=True)] if config.figure_layout_prefix else []) + 
+                        final_words + 
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.figure_layout_suffix, is_structure=True)] if config.figure_layout_suffix else []) 
                     )
 
         while (
