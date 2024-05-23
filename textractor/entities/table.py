@@ -933,6 +933,7 @@ class Table(DocumentEntity):
                 for cell in sorted(row, key=lambda c: c.col_index):
                     # Siblings includes the current cell
                     if cell.siblings:
+                        children = []
                         first_row, first_col, last_row, last_col = cell._get_merged_cell_range()
                         if (cell.col_index == first_col and cell.row_index == first_row) or config.table_duplicate_text_in_merged_cells:
                             for sib in cell.siblings:
