@@ -215,6 +215,9 @@ class Layout(DocumentEntity):
                 config,
                 no_new_lines=True,
             )
+            final_text = (
+                config.text_prefix + final_text + config.text_suffix
+            )
         else:
             final_text, final_words = linearize_children(
                 self.children,
@@ -235,6 +238,14 @@ class Layout(DocumentEntity):
                 elif self.layout_type == LAYOUT_FIGURE:
                     final_text = (
                         config.figure_layout_prefix + final_text + config.figure_layout_suffix
+                    )
+                elif self.layout_type == LAYOUT_ENTITY:
+                    final_text = (
+                        config.entity_layout_prefix + final_text + config.entity_layout_suffix
+                    )
+                elif self.layout_type == LAYOUT_FOOTER:
+                    final_text = (
+                        config.footer_layout_prefix + final_text + config.footer_layout_suffix
                     )
             if config.add_prefixes_and_suffixes_as_words:
                 if self.layout_type == LAYOUT_TABLE:

@@ -64,7 +64,12 @@ class TextLinearizationConfig:
 
     table_column_header_threshold: float = 0.9 #: Threshold for a row to be selected as header when rendering as markdown. 0.9 means that 90% of the cells must have the is_header_cell flag. 
 
-    table_linearization_format: str = "plaintext"  #: How to represent tables in the linearized output. Choices are plaintext, markdown or HTML.
+    table_linearization_format: str = "plaintext"  #: How to represent tables in the linearized output. Choices are plaintext, markdown or html.
+
+    table_add_title_as_caption: bool = False #: When using html linearization format, adds the title inside the table as <caption></caption>
+
+    # FIXME
+    table_add_footer_as_paragraph: bool = False 
 
     table_tabulate_format: str = "github"  #: Markdown tabulate format to use when table are linearized as markdown
 
@@ -77,6 +82,8 @@ class TextLinearizationConfig:
     table_min_table_words: int = 0  #: Threshold below which tables will be rendered as words instead of using table layout
 
     table_column_separator: str = "\t"  #: Table column separator, used when linearizing layout tables, not used if AnalyzeDocument was called with the TABLES feature
+
+    table_flatten_semi_structured_as_plaintext: bool = False #: Ignores table structure for SEMI_STRUCTURED tables and returns them as text
 
     table_prefix: str = ""
 
@@ -134,9 +141,17 @@ class TextLinearizationConfig:
 
     value_suffix: str = ""  #: Suffix for value elements
 
+    entity_layout_prefix: str = "" #: Prefix for LAYOUT_ENTITY elements (layout elements without a predicted layout type)
+
+    entity_layout_suffix: str = "" #: Suffix for LAYOUT_ENTITY elements (layout elements without a predicted layout type)
+
     figure_layout_prefix: str = "" #: Prefix for figure layout elements 
     
     figure_layout_suffix: str = "" #: Suffix for figure layout elements
+
+    footer_layout_prefix: str = "" #: Prefix for figure layout elements 
+     
+    footer_layout_suffix: str = "" #: Suffix for figure layout elements
 
     selection_element_selected: str = (
         "[X]"  #: Representation for selection element when selected

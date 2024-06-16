@@ -48,7 +48,7 @@ class KeyValue(DocumentEntity):
 
         self._words: EntityList[Word] = []
         self.contains_checkbox = contains_checkbox
-        self.confidence_score = confidence / 100
+        self._confidence = confidence / 100
         self._value: Value = value
         self.selection_status = False
         self._page = None
