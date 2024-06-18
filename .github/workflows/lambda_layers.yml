@@ -193,7 +193,8 @@ jobs:
           cp /usr/lib64/liblcms2.so* lambda_layer/python/bin/ && \
           cp /usr/lib64/libtiff.so* lambda_layer/python/bin/ && \
           cp /lib64/libexpat.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libjbig.so* lambda_layer/python/bin/
+          cp /usr/lib64/libjbig.so* lambda_layer/python/bin/ && \
+          cp /usr/lib64/libpng16.so* lambda_layer/python/bin/
       - name: Install and build
         run: |
           mkdir -p lambda_layer/python && \
