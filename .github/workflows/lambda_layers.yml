@@ -340,20 +340,33 @@ jobs:
           cp $(which pdftoppm) lambda_layer/python/bin/ && \
           cp $(which pdfinfo) lambda_layer/python/bin/ && \
           cp $(which pdftocairo) lambda_layer/python/bin/ && \
-          cp /usr/lib64/libjpeg.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libopenjpeg.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libpng.so* lambda_layer/python/bin/ && \
-          cp /lib64/libz.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libfreetype.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libfontconfig.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libnss3.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libsmime3.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/liblcms2.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libtiff.so* lambda_layer/python/bin/ && \
-          cp /lib64/libexpat.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libjbig.so* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libopenjp2.so.* lambda_layer/python/bin/ && \
-          cp /usr/lib64/libpng16.so* lambda_layer/python/bin/
+          cp /usr/lib64/libfreetype.so.6 lambda_layer/python/bin && \
+          cp /usr/lib64/libfontconfig.so.1 lambda_layer/python/bin && \
+          cp /usr/lib64/libjpeg.so.62 lambda_layer/python/bin && \
+          cp /usr/lib64/libopenjp2.so.7 lambda_layer/python/bin && \
+          cp /usr/lib64/liblcms2.so.2 lambda_layer/python/bin && \
+          cp /usr/lib64/libpng16.so.16 lambda_layer/python/bin && \
+          cp /usr/lib64/libtiff.so.5 lambda_layer/python/bin && \
+          cp /usr/lib64/libsmime3.so lambda_layer/python/bin && \
+          cp /usr/lib64/libnss3.so lambda_layer/python/bin && \
+          cp /usr/lib64/libplc4.so lambda_layer/python/bin && \
+          cp /usr/lib64/libnspr4.so lambda_layer/python/bin && \
+          cp /usr/lib64/libm.so.6 lambda_layer/python/bin && \
+          cp /usr/lib64/libbz2.so.1 lambda_layer/python/bin && \
+          cp /usr/lib64/libz.so.1 lambda_layer/python/bin && \
+          cp /usr/lib64/libharfbuzz.so.0 lambda_layer/python/bin && \
+          cp /usr/lib64/libbrotlidec.so.1 lambda_layer/python/bin && \
+          cp /usr/lib64/libxml2.so.2 lambda_layer/python/bin && \
+          cp /usr/lib64/libwebp.so.7 lambda_layer/python/bin && \
+          cp /usr/lib64/libzstd.so.1 lambda_layer/python/bin && \
+          cp /usr/lib64/libjbig.so.2.1 lambda_layer/python/bin && \
+          cp /usr/lib64/libnssutil3.so lambda_layer/python/bin && \
+          cp /usr/lib64/libplds4.so lambda_layer/python/bin && \
+          cp /usr/lib64/libglib-2.0.so.0 lambda_layer/python/bin && \
+          cp /usr/lib64/libgraphite2.so.3 lambda_layer/python/bin && \
+          cp /usr/lib64/libbrotlicommon.so.1 lambda_layer/python/bin && \
+          cp /usr/lib64/liblzma.so.5 lambda_layer/python/bin && \
+          cp /usr/lib64/libpcre2-8.so.0 lambda_layer/python/bin
       - name: Install and build
         run: |
           mkdir -p lambda_layer/python && \
