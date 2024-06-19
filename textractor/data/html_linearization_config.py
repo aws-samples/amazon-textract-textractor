@@ -14,6 +14,10 @@ class HTMLLinearizationConfig(TextLinearizationConfig):
 
     title_suffix: str = "</h1>"
 
+    header_prefix: str = "<h1>"
+    
+    header_suffix: str = "</h1>"
+    
     section_header_prefix: str = "<h2>"
 
     section_header_suffix: str = "</h2>"
@@ -21,6 +25,10 @@ class HTMLLinearizationConfig(TextLinearizationConfig):
     text_prefix: str = "<p>"
 
     text_suffix: str = "</p>"
+
+    entity_layout_prefix: str = "<p>"
+
+    entity_layout_suffix: str = "</p>"
 
     table_prefix: str = "<table>"
 
@@ -39,3 +47,35 @@ class HTMLLinearizationConfig(TextLinearizationConfig):
     table_cell_suffix: str = "</td>"
 
     table_column_separator: str = ""
+
+    table_linearization_format: str = "html"
+    
+    table_add_title_as_caption: bool = True
+    
+    table_add_footer_as_paragraph: bool = True
+
+    table_column_separator: str = ""
+
+    list_layout_prefix: str = "<div>"
+    
+    list_layout_suffix: str = "</div>"
+    
+    table_layout_prefix: str = "<div>"
+
+    table_layout_suffix: str = "</div>"
+    
+    key_value_layout_prefix: str = "<div>"
+
+    key_value_layout_suffix: str = "</div>"
+    
+    figure_layout_prefix: str = "<div>"
+     
+    figure_layout_suffix: str = "</div>"
+
+    footer_layout_prefix: str = "<div>"
+     
+    footer_layout_suffix: str = "</div>"
+
+    page_num_prefix: str = "<div>"
+    
+    page_num_suffix: str = "</div>"

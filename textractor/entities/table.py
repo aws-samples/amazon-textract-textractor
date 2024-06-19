@@ -876,12 +876,40 @@ class Table(DocumentEntity):
                 while "-" * 2 in table:
                     table = table.replace("--", "-")
             text += table
-        # Plaintext
+        # Plaintext or HTML
         else:
+            local_config = deepcopy(config)
+            # FIXME: The cyclomatic complexity of doing things like this will be unsustainable.
+            if local_config.table_flatten_semi_structured_as_plaintext and self.table_type == TableTypes.SEMI_STRUCTURED:
+                text = "<p>"
+                if config.table_linearization_format == "html":
+                    local_config.table_prefix = "<p>"
+                    local_config.table_suffix = "</p>"
+                else:
+                    local_config.table_prefix = ""
+                    local_config.table_suffix = ""
+                local_config.table_linearization_format = "plaintext"
+                local_config.table_row_prefix = ""
+                local_config.table_row_suffix = ""
+                local_config.table_cell_header_prefix = ""
+                local_config.table_cell_header_suffix = ""
+                local_config.table_cell_prefix = ""
+                local_config.table_cell_suffix = " "
+            elif local_config.table_linearization_format == "html":
+                local_config.table_prefix = "<table>"
+                local_config.table_suffix = "</table>"
+                local_config.table_row_prefix = "<tr>"
+                local_config.table_row_suffix = "</tr>"
+                local_config.table_cell_header_prefix = "<th>"
+                local_config.table_cell_header_suffix = "</th>"
+                local_config.table_cell_prefix = "<td>"
+                local_config.table_cell_suffix = "</td>"
+                
             row_offset = 0
             processed_cells = set()
-            if config.table_flatten_headers:
+            if local_config.table_flatten_headers:
                 columns = ["" for _ in range(len(rows[0][1]))]
+                column_spans = [1 for _ in range(len(rows[0][1]))]
                 for _, row in rows:
                     if not any([c.is_column_header for c in row]):
                         # There is not header in that row, we are done
@@ -889,83 +917,124 @@ class Table(DocumentEntity):
                     for i, cell in enumerate(row):
                         if (
                             cell not in processed_cells or
-                            config.table_duplicate_text_in_merged_cells or
-                            config.table_flatten_headers
+                            local_config.table_duplicate_text_in_merged_cells or
+                            local_config.table_flatten_headers
                         ):
                             if cell.siblings:
                                 # This handles the edge case where we are flattening the headers
                                 # so we want to duplicate the cell text but only in its first row
-                                first_row, _, _, _ = cell._get_merged_cell_range()
+                                first_row, first_col, _, last_col = cell._get_merged_cell_range()
+                                # We always compute the colspan, but we will discard them if config.table_duplicate_text_in_merged_cells is True
+                                column_spans[i] = last_col - first_col + 1
                                 if cell in processed_cells and first_row != cell.row_index:
                                     continue
                                 children = []
                                 for sib in cell.siblings:
                                     children.extend(sib.children)
                                     processed_cells.add(sib)
-                                text, _ = linearize_children(children, config=config, no_new_lines=True)
+                                text, _ = linearize_children(children, config=local_config, no_new_lines=True)
                                 columns[i] += text
                             else:
-                                text = cell.get_text(config)
+                                text = cell.get_text(local_config)
                                 columns[i] += text
-                        elif config.table_cell_empty_cell_placeholder:
-                            columns[i] += config.table_cell_empty_cell_placeholder
+                        elif local_config.table_cell_empty_cell_placeholder and local_config.table_linearization_format != "html":
+                            columns[i] += local_config.table_cell_empty_cell_placeholder
                         else:
                             columns[i] += ""
+                            column_spans[i] = 0
                     row_offset += 1
                 if any(columns):
-                    text += config.table_row_prefix if config.add_prefixes_and_suffixes_in_text else ""
-                    for column in columns:
+                    text += local_config.table_row_prefix if local_config.add_prefixes_and_suffixes_in_text else ""
+                    for column, column_span in zip(columns, column_spans):
+                        if column_span == 0:
+                            continue
+                        
+                        if local_config.table_linearization_format == "html":
+                            prefix = f'<th colspan="{column_span}">'
+                        else:
+                            prefix = (local_config.table_cell_header_prefix if local_config.table_cell_header_prefix else local_config.table_cell_prefix)
+                        # We don't have any rowspan logic here as the flattened header will have rowspan=1 always.
                         text += (
                             (
-                                (config.table_cell_header_prefix if config.table_cell_header_prefix and cell.is_column_header else config.table_cell_prefix) +
-                                (column or config.table_cell_empty_cell_placeholder) +
-                                (config.table_cell_header_suffix if config.table_cell_header_suffix and cell.is_column_header else config.table_cell_suffix)
+                                prefix + 
+                                (column or local_config.table_cell_empty_cell_placeholder) +
+                                (local_config.table_cell_header_suffix if local_config.table_cell_header_suffix else local_config.table_cell_suffix)
                             )
-                            if config.add_prefixes_and_suffixes_in_text else
-                            (column or config.table_cell_empty_cell_placeholder)
+                            if local_config.add_prefixes_and_suffixes_in_text or local_config.table_linearization_format == "html" else
+                            (column or local_config.table_cell_empty_cell_placeholder)
                         )
-                        text += config.table_column_separator
-                    text += (config.table_row_suffix if config.add_prefixes_and_suffixes_in_text else "")
-                    text += config.table_row_separator
+                        text += local_config.table_column_separator
+                    text += (local_config.table_row_suffix if local_config.add_prefixes_and_suffixes_in_text else "")
+                    text += local_config.table_row_separator
                     
             for _, row in rows[row_offset:]:
-                text += (config.table_row_prefix if config.add_prefixes_and_suffixes_in_text else "")
+                text += (local_config.table_row_prefix if local_config.add_prefixes_and_suffixes_in_text else "")
                 for cell in sorted(row, key=lambda c: c.col_index):
+                    # This will return row_index, col_index, row_index, col_index for regular cells
+                    first_row, first_col, last_row, last_col = cell._get_merged_cell_range()
+                    if cell in processed_cells and local_config.table_linearization_format == "html":
+                        continue
+                    
                     # Siblings includes the current cell
                     if cell.siblings:
                         children = []
-                        first_row, first_col, last_row, last_col = cell._get_merged_cell_range()
-                        if (cell.col_index == first_col and cell.row_index == first_row) or config.table_duplicate_text_in_merged_cells:
+                        if (cell.col_index == first_col and cell.row_index == first_row) or local_config.table_duplicate_text_in_merged_cells:
                             for sib in cell.siblings:
                                 children.extend(sib.children)
                                 processed_cells.add(sib)
-                            cell_text, _ = linearize_children(children, config=config, no_new_lines=True)
-                        elif cell.row_index == first_row and config.table_cell_left_merge_cell_placeholder:
-                            cell_text = config.table_cell_left_merge_cell_placeholder
-                        elif cell.col_index == first_col and config.table_cell_top_merge_cell_placeholder:
-                            cell_text = config.table_cell_top_merge_cell_placeholder
-                        elif cell.col_index != first_col and cell.row_index != first_row and config.table_cell_cross_merge_cell_placeholder:
-                            cell_text = config.table_cell_cross_merge_cell_placeholder
+                            cell_text, _ = linearize_children(children, config=local_config, no_new_lines=True)
+                        elif cell.row_index == first_row and local_config.table_cell_left_merge_cell_placeholder:
+                            cell_text = local_config.table_cell_left_merge_cell_placeholder
+                        elif cell.col_index == first_col and local_config.table_cell_top_merge_cell_placeholder:
+                            cell_text = local_config.table_cell_top_merge_cell_placeholder
+                        elif cell.col_index != first_col and cell.row_index != first_row and local_config.table_cell_cross_merge_cell_placeholder:
+                            cell_text = local_config.table_cell_cross_merge_cell_placeholder
                         else:
                             cell_text = ""
+                            
+                    # This is a regular cell
                     else:
-                        cell_text, _ = cell.get_text_and_words(config)
+                        cell_text, _ = cell.get_text_and_words(local_config)
+                    
+                    if local_config.table_linearization_format == "html":
+                        if cell.is_column_header:
+                            prefix = (
+                                '<th' +
+                                (f' colspan="{last_col - first_col + 1}" ' if last_col - first_col > 0 else '') +
+                                (f' rowspan="{last_row - first_row + 1}"' if last_row - first_row > 0 else '') +
+                                '>'
+                            )
+                        else:
+                            prefix = (
+                                '<td' +
+                                (f' colspan="{last_col - first_col + 1}" ' if last_col - first_col > 0 else '') +
+                                (f' rowspan="{last_row - first_row + 1}"' if last_row - first_row > 0 else '') +
+                                '>'
+                            )
+                    else:
+                        prefix = local_config.table_cell_header_prefix if local_config.table_cell_header_prefix and cell.is_column_header else local_config.table_cell_prefix
+                        
                     text += (
                         (
-                            (config.table_cell_header_prefix if config.table_cell_header_prefix and cell.is_column_header else config.table_cell_prefix) +
+                            prefix +
                             # Removes trailing whitespace in cell_text
-                            (cell_text.strip() or config.table_cell_empty_cell_placeholder) +
-                            (config.table_cell_header_suffix if config.table_cell_header_suffix and cell.is_column_header else config.table_cell_suffix)
+                            (cell_text.strip() or local_config.table_cell_empty_cell_placeholder) +
+                            (local_config.table_cell_header_suffix if local_config.table_cell_header_suffix and cell.is_column_header else local_config.table_cell_suffix)
                         )
-                        if config.add_prefixes_and_suffixes_in_text else
-                        (cell_text or config.table_cell_empty_cell_placeholder)
+                        if local_config.add_prefixes_and_suffixes_in_text else
+                        (cell_text or local_config.table_cell_empty_cell_placeholder)
                     ) 
-                    text += config.table_column_separator
-                if text and text[-1] == config.table_column_separator:
+                    text += local_config.table_column_separator
+                if text and text[-1] == local_config.table_column_separator:
                     text = text[:-1]
-                text += (config.table_row_suffix if config.add_prefixes_and_suffixes_in_text else "")
-                text += config.table_row_separator
-        text += (config.table_suffix if config.add_prefixes_and_suffixes_in_text else "")
+                text += (local_config.table_row_suffix if local_config.add_prefixes_and_suffixes_in_text else "")
+                text += local_config.table_row_separator
+                
+        if local_config.table_add_title_as_caption and self.title:
+            text += "<caption>" + self.title.get_text() + "</caption>"
+            
+        text += (local_config.table_suffix if local_config.add_prefixes_and_suffixes_in_text else "")
+        
         return text, words
 
     def to_txt(self):

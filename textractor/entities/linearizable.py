@@ -16,6 +16,8 @@ class Linearizable(ABC):
         """
         Returns the linearized text of the entity
 
+        :param config: Text linearization confi 
+        :type config:   
         :return: Linearized text of the entity
         :rtype: str
         """
@@ -33,7 +35,8 @@ class Linearizable(ABC):
         return self.get_text()
 
     def to_html(
-        self
+        self,
+        config: HTMLLinearizationConfig = HTMLLinearizationConfig()
     ) -> str:
         """
         Returns the HTML representation of the entity
@@ -41,10 +44,11 @@ class Linearizable(ABC):
         :return: HTML text of the entity
         :rtype: str
         """
-        return self.get_text(HTMLLinearizationConfig())
+        return self.get_text(config)
 
     def to_markdown(
-        self
+        self,
+        config: MarkdownLinearizationConfig = MarkdownLinearizationConfig()
     ) -> str:
         """
         Returns the markdown representation of the entity
@@ -52,7 +56,7 @@ class Linearizable(ABC):
         :return: Markdown text of the entity
         :rtype: str
         """
-        return self.get_text(MarkdownLinearizationConfig())
+        return self.get_text(config)
 
     @abstractmethod
     def get_text_and_words(

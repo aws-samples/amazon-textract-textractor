@@ -35,6 +35,7 @@ from textractor.data.constants import (
 )
 from textractor.utils.search_utils import SearchUtils
 from textractor.data.text_linearization_config import TextLinearizationConfig
+from textractor.data.html_linearization_config import HTMLLinearizationConfig
 from textractor.entities.linearizable import Linearizable
 
 
@@ -280,6 +281,22 @@ class Document(SpatialObject, Linearizable):
             return [self.pages[num] for num in page_no]
         else:
             raise InputError("page_no parameter doesn't match required data type.")
+
+    def to_html(self, config: HTMLLinearizationConfig = HTMLLinearizationConfig()):
+        """
+        Returns the HTML representation of the document, effectively calls Linearizable.to_html()
+        but add <html><body></body></html> around the result and put each page in a <div>. 
+
+        :return: HTML text of the entity
+        :rtype: str
+        """
+        
+        html = "<html><body>"
+        for page in self.pages:
+            html += f"<div>{page.to_html(config=config)}</div>"
+        html += "</body></html>"
+        
+        return html
 
     def __repr__(self):
         return os.linesep.join(
