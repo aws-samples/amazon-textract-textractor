@@ -5,11 +5,13 @@ import unittest
 import boto3
 import uuid
 import logging
+from lxml import html
 from tests.utils import get_fixture_path
 
 from textractor import Textractor
 from textractor.data.constants import TextractFeatures
 from textractor.data.text_linearization_config import TextLinearizationConfig
+from textractor.data.html_linearization_config import HTMLLinearizationConfig
 from textractor.entities.document import Document
 from textractor.exceptions import InvalidProfileNameError, S3FilePathMissing
 from textractor.utils.s3_utils import upload_to_s3, delete_from_s3
@@ -25,13 +27,14 @@ class TestGetTextAndWords(unittest.TestCase):
         self.profile_name = "default"
         if os.environ.get("CALL_TEXTRACT"):
             self.s3_client = boto3.session.Session(
-                profile_name=self.profile_name
+                #profile_name=self.profile_name
             ).client("s3", region_name="us-west-2")
 
             self.current_directory = os.path.abspath(os.path.dirname(__file__))
 
             self.extractor = Textractor(
-                profile_name=self.profile_name, kms_key_id=""
+                region_name="us-west-2"
+                #profile_name=self.profile_name, kms_key_id=""
             )
             self.fixture_directory = os.path.join(self.current_directory, "fixtures")
 
@@ -284,3 +287,41 @@ class TestGetTextAndWords(unittest.TestCase):
             "</figure>",
         ]:
             self.assertTrue(token in words, f"{token} is not in words")
+
+    def test_document_to_html(self):
+        for asset in ["amzn_q2.png", "fake_id.png", "form_1005.png", "form.png", "in-table-title.png", "matrix.png", "patient_intake_form_sample.png", "paystub_header.png", "paystub_single_table.png", "paystub_tables.png", "reading_order.pdf", "receipt.jpg", "sample-invoice.pdf", "screenshot.png", "single-page-1.png", "single-page-2.png", "test.png", "textractor-singlepage-doc.pdf"]:
+            # Testing that no asset causes the output to contain duplicate words
+            if os.environ.get("CALL_TEXTRACT"):
+                document = self.extractor.analyze_document(
+                    os.path.join(self.fixture_directory, asset),
+                    features=[
+                        TextractFeatures.LAYOUT,
+                        TextractFeatures.TABLES,
+                        TextractFeatures.FORMS,
+                        TextractFeatures.SIGNATURES
+                    ]
+                )
+                with open(get_fixture_path()[:-5] + "_" + asset + ".json", "w") as f:
+                    json.dump(document.response, f)
+            else:
+                document = Document.open(get_fixture_path()[:-5] + "_" + asset + ".json")
+
+            
+            html_document = document.to_html(HTMLLinearizationConfig(
+                figure_layout_prefix="<div><p>",
+                figure_layout_suffix="</p></div>",
+                footer_layout_prefix="<div><p>",
+                footer_layout_suffix="</p></div>",
+                key_value_layout_prefix="<div><p>",
+                key_value_layout_suffix="</p></div>",
+                page_num_prefix="<div><p>",
+                page_num_suffix="</p></div>",
+            ))
+            root = html.fromstring(html_document)
+            
+            for node in root.getiterator():
+                if node.text and node.tag not in ["p", "h1", "h2", "h3", "h4", "h5", "th", "td", "caption"]:
+                    raise Exception(f"Tag {node.tag} contains text {node.text}")
+
+if __name__ == "__main__":
+    TestGetTextAndWords().test_document_to_html()

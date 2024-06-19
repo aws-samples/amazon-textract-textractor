@@ -58,7 +58,7 @@ class HTMLLinearizationConfig(TextLinearizationConfig):
 
     list_layout_prefix: str = "<div>"
     
-    list_layout_suffix: str = "<div>"
+    list_layout_suffix: str = "</div>"
     
     table_layout_prefix: str = "<div>"
 
@@ -78,4 +78,4 @@ class HTMLLinearizationConfig(TextLinearizationConfig):
 
     page_num_prefix: str = "<div>"
     
-    page_num_suffix: str = "<div>"
+    page_num_suffix: str = "</div>"

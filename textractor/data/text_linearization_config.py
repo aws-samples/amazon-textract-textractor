@@ -113,6 +113,14 @@ class TextLinearizationConfig:
 
     table_cell_cross_merge_cell_placeholder: str = "" #: Placeholder for left merge cell (X)
 
+    table_title_prefix: str = "" #: Prefix for table title if it is outside of the table (floating)
+    
+    table_title_suffix: str = "" #: Suffix for table title if it is outside of the table (floating)
+
+    table_footers_prefix: str = "" #: Prefix for table footers if they are outside of the table (floating)
+    
+    table_footers_suffix: str = "" #: Suffix for table footers if they are outside of the table (floating)
+
     header_prefix: str = ""  #: Prefix for header layout elements
 
     header_suffix: str = ""  #: Suffix for header layout elements
