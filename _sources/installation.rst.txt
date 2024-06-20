@@ -9,7 +9,8 @@ ____________________________________
 
 Textractor is available on PyPI and can be installed with :code:`pip install amazon-textract-textractor`. By default this will install the minimal version of textractor. The following extras can be used to add features:
 
-- :code:`pdf` (:code:`pip install amazon-textract-textractor[pdf]`) includes :code:`pdf2image` and enables PDF rasterization in Textractor. Note that this is **not** necessary to call Textract with a PDF file.
+- :code:`pdfium` (:code:`pip install amazon-textract-textractor[pdfium]`) includes :code:`pypdfium2` and is the recommended way to enable PDF rasterization in Textractor. Note that this is **not** necessary to call Textract with a PDF file.
+- :code:`pdf` (:code:`pip install amazon-textract-textractor[pdf]`) includes :code:`pdf2image` and is an additional way to enable PDF rasterization in Textractor. Note that this is **not** necessary to call Textract with a PDF file.
 - :code:`torch` (:code:`pip install amazon-textract-textractor[torch]`) includes :code:`sentence_transformers` for better word search and matching. This will work on CPU but be noticeably slower than non-machine learning based approaches.
 - :code:`dev` (:code:`pip install amazon-textract-textractor[dev]`) includes all the dependencies above and everything else needed to test the code.
 

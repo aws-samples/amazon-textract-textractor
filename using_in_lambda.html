@@ -129,7 +129,7 @@ policy. We recommend that you review your lambda function and tailor the permiss
 </ol>
 <img alt="_images/1b.png" src="_images/1b.png" />
 <ol class="loweralpha simple" start="3">
-<li><p>Scroll to the bottom of the page and download the package that matches your Python installation. Packages with the <cite>-pdf</cite> suffix contains <cite>pdf2image</cite> and allow you to process PDF documents.</p></li>
+<li><p>Scroll to the bottom of the page and download the package that matches your Python installation. Packages with the <cite>-pdfium</cite> suffix contain <cite>pypdfium2</cite> and allow you to process PDF documents. Packages with the <cite>-pdf</cite> suffix contain <cite>pdf2image</cite> and also allow you to process PDF documents, however we recommend using <cite>pypdfium2</cite> as it does not require any OS-level dependencies.</p></li>
 </ol>
 <img alt="_images/1c.png" src="_images/1c.png" />
 </li>
@@ -160,7 +160,7 @@ policy. We recommend that you review your lambda function and tailor the permiss
 </li>
 <li><p>Update your code to use Textractor</p>
 <ol class="loweralpha simple">
-<li><p>If using the PDF version you have to update the <cite>PATH</cite> and <cite>LD_LIBRARY_PATH</cite> environment variables through the lambda function configuration interface or directly in code with the <cite>os</cite> module:</p></li>
+<li><p>If using the <cite>pdf2image</cite> PDF version you have to update the <cite>PATH</cite> and <cite>LD_LIBRARY_PATH</cite> environment variables through the lambda function configuration interface or directly in code with the <cite>os</cite> module:</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;LD_LIBRARY_PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/opt/python/bin/:</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;LD_LIBRARY_PATH&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PATH&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/opt/python/bin/:</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PATH&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
