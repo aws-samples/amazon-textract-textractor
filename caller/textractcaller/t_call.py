@@ -199,7 +199,7 @@ def generate_request_params(
 ) -> dict:
     params = {}
     if document_location and document:
-        raise ValueError("Only one at a time, documentat_location or document")
+        raise ValueError("Only one at a time, document_location or document")
     if document_location:
         params["DocumentLocation"] = document_location.get_dict()
     if document:
@@ -596,8 +596,6 @@ def call_textract(
         ext = ext.lower()
         is_pdf: bool = (ext is not None and ext.lower() in only_async_suffixes) or (mime_type == 'application/pdf')
 
-        if is_pdf and not is_s3_document:
-            raise ValueError("PDF only supported when located on S3")
         if not is_s3_document and force_async_api:
             raise ValueError("when forcing async, document has to be on s3")
         if not is_s3_document and output_config:
