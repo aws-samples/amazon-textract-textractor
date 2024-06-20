@@ -27,7 +27,7 @@ policy. We recommend that you review your lambda function and tailor the permiss
 
    .. image:: images/lambda_tutorial/1b.png
 
-   c. Scroll to the bottom of the page and download the package that matches your Python installation. Packages with the `-pdf` suffix contains `pdf2image` and allow you to process PDF documents. 
+   c. Scroll to the bottom of the page and download the package that matches your Python installation. Packages with the `-pdfium` suffix contain `pypdfium2` and allow you to process PDF documents. Packages with the `-pdf` suffix contain `pdf2image` and also allow you to process PDF documents, however we recommend using `pypdfium2` as it does not require any OS-level dependencies.
 
    .. image:: images/lambda_tutorial/1c.png
 
@@ -59,7 +59,7 @@ policy. We recommend that you review your lambda function and tailor the permiss
 
 4. Update your code to use Textractor
 
-   a. If using the PDF version you have to update the `PATH` and `LD_LIBRARY_PATH` environment variables through the lambda function configuration interface or directly in code with the `os` module: 
+   a. If using the `pdf2image` PDF version you have to update the `PATH` and `LD_LIBRARY_PATH` environment variables through the lambda function configuration interface or directly in code with the `os` module: 
 
    .. code-block:: python
 
