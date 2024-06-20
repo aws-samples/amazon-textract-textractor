@@ -179,7 +179,7 @@ This function is ideal for multipage PDFs or list of images.</p>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>IncorrectMethodException</strong> – Raised when the file source type is incompatible with the Textract API being called</p></li>
 <li><p><strong>InputError</strong> – Raised when the file source type is invalid</p></li>
-<li><p><strong>RegionMismatchError</strong> – Raised when the file source region is different the API region.</p></li>
+<li><p><strong>InvalidS3ObjectException</strong> – Raised when the file source region is different the API region.</p></li>
 <li><p><strong>exception</strong> – Raised if the Textract API call fails</p></li>
 </ul>
 </dd>
@@ -208,7 +208,7 @@ for a complete list.</p>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>InputError</strong> – Raised when the file_source could not be parsed</p></li>
-<li><p><strong>RegionMismatchError</strong> – Raised when the S3 object passed as file source is in a region that does not match the one used to create the Textractor object.</p></li>
+<li><p><strong>InvalidS3ObjectException</strong> – Raised when the S3 object passed as file source is in a region that does not match the one used to create the Textractor object.</p></li>
 <li><p><strong>exception</strong> – Raised when the Textract call fails</p></li>
 </ul>
 </dd>
@@ -336,7 +336,7 @@ and necessary only if the customer wants to visualize bounding boxes for their d
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>InputError</strong> – Raised when the file source type is invalid</p></li>
-<li><p><strong>RegionMismatchError</strong> – Raised when the file source region is different the API region.</p></li>
+<li><p><strong>InvalidS3ObjectException</strong> – Raised when the file source region is different the API region.</p></li>
 <li><p><strong>exception</strong> – Raised if the Textract API call fails</p></li>
 </ul>
 </dd>
