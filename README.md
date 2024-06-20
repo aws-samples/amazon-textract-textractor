@@ -17,7 +17,8 @@ If you are looking for the other amazon-textract-* packages, you can find them u
 Textractor is available on PyPI and can be installed with `pip install amazon-textract-textractor`. By default this will install the minimal version of Textractor which is suitable for lambda execution. The following extras can be used to add features:
 
 - `pandas` (`pip install "amazon-textract-textractor[pandas]"`) installs pandas which is used to enable DataFrame and CSV exports.
-- `pdf` (`pip install "amazon-textract-textractor[pdf]"`) includes `pdf2image` and enables PDF rasterization in Textractor. Note that this is **not** necessary to call Textract with a PDF file.
+- `pdfium` (`pip install amazon-textract-textractor[pdfium]`) includes `pypdfium2` and is the recommended way to enable PDF rasterization in Textractor. Note that this is **not** necessary to call Textract with a PDF file.
+- `pdf` (`pip install amazon-textract-textractor[pdf]`) includes `pdf2image` and is an additional way to enable PDF rasterization in Textractor. Note that this is **not** necessary to call Textract with a PDF file.
 - `torch` (`pip install "amazon-textract-textractor[torch]"`) includes `sentence_transformers` for better word search and matching. This will work on CPU but be noticeably slower than non-machine learning based approaches.
 - `dev` (`pip install "amazon-textract-textractor[dev]"`) includes all the dependencies above and everything else needed to test the code.
 
