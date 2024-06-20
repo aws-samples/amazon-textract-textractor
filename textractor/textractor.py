@@ -36,12 +36,15 @@ from textractcaller import (
 from textractcaller.t_call import Textract_Call_Mode, Textract_API, get_full_json
 
 try:
-    from pdf2image import convert_from_bytes, convert_from_path
+    try:
+        import pypdfium2
+    except:
+        import pdf2image
 
-    IS_PDF2IMAGE_INSTALLED = True
+    IS_PDF_RENDERING_ENABLED = True
 except ImportError:
-    IS_PDF2IMAGE_INSTALLED = False
-    logging.info("pdf2image is not installed, client-side PDF rasterizing is disabled")
+    IS_PDF_RENDERING_ENABLED = False
+    logging.info("pypdfium2 and pdf2image are both not installed, client-side PDF rasterizing is disabled")
 
 from textractor.data.constants import (
     TextractAPI,
@@ -51,12 +54,14 @@ from textractor.entities.document import Document
 from textractor.entities.lazy_document import LazyDocument
 from textractor.parsers import response_parser
 from textractor.utils.s3_utils import upload_to_s3, s3_path_to_bucket_and_prefix
+from textractor.utils.pdf_utils import rasterize_pdf
 from textractor.exceptions import (
     InputError,
     RegionMismatchError,
     IncorrectMethodException,
     MissingDependencyException,
     UnhandledCaseException,
+    UnsupportedDocumentException,
 )
 
 
@@ -129,8 +134,8 @@ class Textractor:
             )
             file_obj = s3_client.get_object(Bucket=bucket, Key=key).get("Body").read()
             if filepath.lower().endswith(".pdf"):
-                if IS_PDF2IMAGE_INSTALLED:
-                    images = convert_from_bytes(bytearray(file_obj))
+                if IS_PDF_RENDERING_ENABLED:
+                    images = rasterize_pdf(bytearray(file_obj))
                 else:
                     raise MissingDependencyException(
                         "pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call."
@@ -140,8 +145,8 @@ class Textractor:
 
         else:
             if filepath.lower().endswith(".pdf"):
-                if IS_PDF2IMAGE_INSTALLED:
-                    images = convert_from_path(filepath)
+                if IS_PDF_RENDERING_ENABLED:
+                    images = rasterize_pdf(filepath)
                 else:
                     raise MissingDependencyException(
                         "pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call."
@@ -155,7 +160,7 @@ class Textractor:
         return images
 
     def detect_document_text(
-        self, file_source, s3_output_path: str = "", save_image: bool = True
+        self, file_source, save_image: bool = True
     ) -> Document:
         """
         Make a call to the SYNC DetectDocumentText API, implicitly parses the response and produces a :class:`Document` object.
@@ -163,8 +168,6 @@ class Textractor:
 
         :param file_source: Path to a file stored locally, on an S3 bucket or PIL Image
         :type file_source: str or PIL.Image, required
-        :param s3_output_path: S3 path to store the output.
-        :type s3_output_path: str, optional
         :param save_image: Flag to indicate if document images are to be stored within the Document object. This is optional
                             and necessary only if the customer wants to visualize bounding boxes for their document entities.
         :type save_image: bool
@@ -181,12 +184,15 @@ class Textractor:
 
         elif isinstance(file_source, str):
             logging.debug("Filepath given.")
-            images = self._get_document_images_from_path(file_source)
-            if len(images) > 1:
-                raise IncorrectMethodException(
-                    "Input contains more than 1 page. Call start_document_text_detection instead."
-                )
-            file_source = _image_to_byte_array(images[0])
+            if not save_image and file_source.lower().endswith(".pdf"):
+                images = []
+            else:
+                images = self._get_document_images_from_path(file_source)
+                if len(images) > 1:
+                    raise IncorrectMethodException(
+                        "Input contains more than 1 page. Call start_document_analysis() instead."
+                    )
+                file_source = _image_to_byte_array(images[0])    
 
         elif isinstance(file_source, Image.Image):
             logging.debug("PIL Image given.")
@@ -202,18 +208,12 @@ class Textractor:
             images = []
             raise InputError("Input file_source format not supported.")
 
-        if not s3_output_path:
-            output_config = None
-        else:
-            bucket, prefix = s3_path_to_bucket_and_prefix(s3_output_path)
-            output_config = OutputConfig(s3_bucket=bucket, s3_prefix=prefix)
-
         try:
             response = call_textract(
                 input_document=file_source,
                 features=[],
                 queries_config=None,  # not supported yet
-                output_config=output_config,
+                output_config=None,
                 kms_key_id=self.kms_key_id,
                 job_tag="",
                 notification_channel=None,  # not supported yet
@@ -228,6 +228,10 @@ class Textractor:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
                     "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                )
+            elif exception.__class__.__name__ == "UnsupportedDocumentException":
+                raise UnsupportedDocumentException(
+                    "Textract returned an UnsupportedDocumentException, if file_source is a PDF, make sure that it only has one page or use start_document_text_detection. If your file_source is an image, make sure that it is not larger than 5MB."
                 )
             raise exception
 
@@ -343,7 +347,6 @@ class Textractor:
         file_source,
         features,
         queries: Union[QueriesConfig, List[Query], List[str]] = None,
-        s3_output_path: str = "",
         save_image: bool = True,
     ) -> Document:
         """
@@ -356,8 +359,6 @@ class Textractor:
         :type features: list, required
         :param queries: Queries to run on the document
         :type features: Union[QueriesConfig, List[Query], List[str]]
-        :param s3_output_path: Prefix to store the output on the S3 bucket (passed as param to Textractor).
-        :type s3_output_path: str, optional
         :param save_image: Flag to indicate if document images are to be stored within the Document object. This is optional
                             and necessary only if the customer wants to visualize bounding boxes for their document entities.
         :type save_image: bool
@@ -373,13 +374,15 @@ class Textractor:
 
         elif isinstance(file_source, str):
             logging.debug("Filepath given.")
-            images = self._get_document_images_from_path(file_source)
-            if len(images) > 1:
-                raise IncorrectMethodException(
-                    "Input contains more than 1 page. Call start_document_analysis() instead."
-                )
-            file_source = _image_to_byte_array(images[0])
-
+            if not save_image and file_source.lower().endswith(".pdf"):
+                images = []
+            else:
+                images = self._get_document_images_from_path(file_source)
+                if len(images) > 1:
+                    raise IncorrectMethodException(
+                        "Input contains more than 1 page. Call start_document_analysis() instead."
+                    )
+                file_source = _image_to_byte_array(images[0])    
         elif isinstance(file_source, Image.Image):
             logging.debug("PIL Image given.")
             images = [file_source]
@@ -393,12 +396,6 @@ class Textractor:
         else:
             images = []
             raise InputError("Input file_source format not supported.")
-
-        if not s3_output_path:
-            output_config = None
-        else:
-            bucket, prefix = s3_path_to_bucket_and_prefix(s3_output_path)
-            output_config = OutputConfig(s3_bucket=bucket, s3_prefix=prefix)
 
         if not isinstance(features, list):
             features = [features]
@@ -429,7 +426,7 @@ class Textractor:
                 input_document=file_source,
                 features=features,
                 queries_config=queries,  # not supported yet
-                output_config=output_config,
+                output_config=None,
                 kms_key_id=self.kms_key_id,
                 job_tag="",
                 notification_channel=None,  # not supported yet
@@ -444,6 +441,10 @@ class Textractor:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
                     "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                )
+            elif exception.__class__.__name__ == "UnsupportedDocumentException":
+                raise UnsupportedDocumentException(
+                    "Textract returned an UnsupportedDocumentException, if file_source is a PDF, make sure that it only has one page or use start_document_analysis. If your file_source is an image, make sure that it is not larger than 5MB."
                 )
             raise exception
 

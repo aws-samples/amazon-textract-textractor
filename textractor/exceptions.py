@@ -53,3 +53,8 @@ class UnhandledCaseException(Exception):
     """Raised when no statement matched the condition"""
 
     pass
+
+class UnsupportedDocumentException(Exception):
+    """Raised by the Textract API when the document could not be processed"""
+
+    pass
