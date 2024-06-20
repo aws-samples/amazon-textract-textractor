@@ -57,11 +57,11 @@ from textractor.utils.s3_utils import upload_to_s3, s3_path_to_bucket_and_prefix
 from textractor.utils.pdf_utils import rasterize_pdf
 from textractor.exceptions import (
     InputError,
-    RegionMismatchError,
     IncorrectMethodException,
     MissingDependencyException,
     UnhandledCaseException,
     UnsupportedDocumentException,
+    InvalidS3ObjectException,
 )
 
 
@@ -226,12 +226,12 @@ class Textractor:
             )
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
-                raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                raise InvalidS3ObjectException(
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             elif exception.__class__.__name__ == "UnsupportedDocumentException":
                 raise UnsupportedDocumentException(
-                    "Textract returned an UnsupportedDocumentException, if file_source is a PDF, make sure that it only has one page or use start_document_text_detection. If your file_source is an image, make sure that it is not larger than 5MB."
+                    "Textract returned UnsupportedDocumentException, if file_source is a PDF, make sure that it only has one page or use start_document_text_detection. If your file_source is an image, make sure that it is not larger than 5MB."
                 )
             raise exception
 
@@ -317,8 +317,8 @@ class Textractor:
             )
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
-                raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                raise InvalidS3ObjectException(
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             raise exception
 
@@ -439,8 +439,8 @@ class Textractor:
             )
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
-                raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                raise InvalidS3ObjectException(
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             elif exception.__class__.__name__ == "UnsupportedDocumentException":
                 raise UnsupportedDocumentException(
@@ -560,8 +560,8 @@ class Textractor:
             )
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
-                raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                raise InvalidS3ObjectException(
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             raise exception
 
@@ -600,7 +600,7 @@ class Textractor:
         :param save_image: Saves the images in the returned Document object for visualizing the results, defaults to False
         :type save_image: bool, optional
         :raises InputError: Raised when the file_source could not be parsed
-        :raises RegionMismatchError: Raised when the S3 object passed as file source is in a region that does not match the one used to create the Textractor object.
+        :raises InvalidS3ObjectException: Raised when the S3 object passed as file source is in a region that does not match the one used to create the Textractor object.
         :raises exception: Raised when the Textract call fails
         :return: Document
         :rtype: Document
@@ -628,8 +628,8 @@ class Textractor:
             )
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
-                raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                raise InvalidS3ObjectException(
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             raise exception
 
@@ -654,7 +654,7 @@ class Textractor:
         :type save_image: bool, optional
         :raises IncorrectMethodException: Raised when the file source type is incompatible with the Textract API being called
         :raises InputError: Raised when the file source type is invalid
-        :raises RegionMismatchError: Raised when the file source region is different the API region.
+        :raises InvalidS3ObjectException: Raised when the file source region is different the API region.
         :raises exception: Raised if the Textract API call fails
         :return: Document
         :rtype: Document
@@ -704,8 +704,8 @@ class Textractor:
             )
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
-                raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                raise InvalidS3ObjectException(
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             raise exception
 
@@ -745,7 +745,7 @@ class Textractor:
                             and necessary only if the customer wants to visualize bounding boxes for their document entities.
         :type save_image: bool
         :raises InputError: Raised when the file source type is invalid
-        :raises RegionMismatchError: Raised when the file source region is different the API region.
+        :raises InvalidS3ObjectException: Raised when the file source region is different the API region.
         :raises exception: Raised if the Textract API call fails
         :return: Lazy-loaded Document object
         :rtype: LazyDocument
@@ -790,8 +790,8 @@ class Textractor:
             )
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
-                raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                raise InvalidS3ObjectException(
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             raise exception
 
