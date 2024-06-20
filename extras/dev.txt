@@ -2,5 +2,6 @@ jupyterlab
 pandas
 pdf2image>=1.16,<1.17
 pytest
+lxml
 sentence-transformers>=2.2,<2.3
 sphinx-rtd-theme>=1.0,<1.1
