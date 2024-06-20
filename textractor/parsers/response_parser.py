@@ -1477,10 +1477,21 @@ def parser_analyze_expense_response(response):
     ]
     document = parse_document_api_response(response)
     for doc in response["ExpenseDocuments"]:
-        # FIXME
-        if len(doc["SummaryFields"]) == 0:
+        page_number = None
+        if len(doc["SummaryFields"]):
+            page_number = doc["SummaryFields"][0].get("PageNumber")
+        elif len(doc["LineItemGroups"]):
+            # A group must have at least one LineItem, and a LI must have at least one field:
+            first_field = doc["LineItemGroups"][0]["LineItems"][0]["LineItemExpenseFields"][0]
+            page_number = first_field.get("PageNumber")
+        if page_number is None:
+            logging.warning(
+                "Skipping parsing ExpenseDocument %s as its page number could not be determined"
+                % (doc["ExpenseIndex"],)
+            )
             continue
-        page = document.pages[doc["SummaryFields"][0]["PageNumber"] - 1]
+
+        page = document.pages[page_number - 1]
         summary_fields = []
         for summary_field in doc["SummaryFields"]:
             summary_fields.append(create_expense_from_field(summary_field, page))
@@ -1525,7 +1536,7 @@ def parser_analyze_expense_response(response):
             page=page.page_num,
         )
         expense_document.raw_object = doc
-        document.pages[summary_field["PageNumber"] - 1].expense_documents.append(
+        document.pages[page_number - 1].expense_documents.append(
             expense_document
         )
     document.response = response
