@@ -379,3 +379,96 @@ jobs:
         with:
           name: textractor-lambda-p312-pdf
           path: lambda_layer/
+  lambda-build-p38-pdfium:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.8:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=. && \
+          pip3 install pypdfium2 --target=.
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p38-pdfium
+          path: lambda_layer/
+  lambda-build-p39-pdfium:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.9:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=. && \
+          pip3 install pypdfium2 --target=. && \
+          cd .. \
+          && zip -r /textractor.zip python/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p39-pdfium
+          path: lambda_layer/
+  lambda-build-p310-pdfium:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.10:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=. && \
+          pip3 install pypdfium2 --target=. && \
+          cd .. \
+          && zip -r /textractor.zip python/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p310-pdfium
+          path: lambda_layer/
+  lambda-build-p311-pdfium:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.11:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=. && \
+          pip3 install pypdfium2 --target=. && \
+          cd .. \
+          && zip -r /textractor.zip python/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p311-pdfium
+          path: lambda_layer/
+  lambda-build-p312-pdfium:
+    runs-on: ubuntu-latest
+    container: public.ecr.aws/sam/build-python3.12:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: 'master'
+      - name: Install and build
+        run: |
+          mkdir -p lambda_layer/python && \
+          cd lambda_layer/python && \
+          pip3 install ../../ --target=. && \
+          pip3 install pypdfium2 --target=. && \
+          cd .. \
+          && zip -r /textractor.zip python/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: textractor-lambda-p312-pdfium
+          path: lambda_layer/
