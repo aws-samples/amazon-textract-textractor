@@ -227,11 +227,11 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             elif exception.__class__.__name__ == "UnsupportedDocumentException":
                 raise UnsupportedDocumentException(
-                    "Textract returned an UnsupportedDocumentException, if file_source is a PDF, make sure that it only has one page or use start_document_text_detection. If your file_source is an image, make sure that it is not larger than 5MB."
+                    "Textract returned UnsupportedDocumentException, if file_source is a PDF, make sure that it only has one page or use start_document_text_detection. If your file_source is an image, make sure that it is not larger than 5MB."
                 )
             raise exception
 
@@ -318,7 +318,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             raise exception
 
@@ -440,7 +440,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             elif exception.__class__.__name__ == "UnsupportedDocumentException":
                 raise UnsupportedDocumentException(
@@ -561,7 +561,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             raise exception
 
@@ -629,7 +629,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             raise exception
 
@@ -705,7 +705,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             raise exception
 
@@ -791,7 +791,7 @@ class Textractor:
         except Exception as exception:
             if exception.__class__.__name__ == "InvalidS3ObjectException":
                 raise RegionMismatchError(
-                    "Region passed in the profile_name and S3 bucket do not match. Ensure the regions are the same."
+                    "Textract returned InvalidS3ObjectException. Ensure that the s3 path is correct and that both the Textract API and the bucket are in the same region."
                 )
             raise exception
 
