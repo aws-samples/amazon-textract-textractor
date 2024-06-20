@@ -58,3 +58,8 @@ class UnsupportedDocumentException(Exception):
     """Raised by the Textract API when the document could not be processed"""
 
     pass
+
+class InvalidS3ObjectException(Exception):
+    """Raised by the Textract API when an S3 object could not be accessed"""
+    
+    pass
