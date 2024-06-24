@@ -17,11 +17,12 @@ from textractor.utils.s3_utils import upload_to_s3, delete_from_s3
 class TestTextractor(unittest.TestCase):
     def setUp(self):
         # insert credentials and filepaths here to run test
-        self.profile_name = "default"
+        #self.profile_name = "default"
         self.bucket_name = os.environ.get("S3_BUCKET", "textractor-tests")
         if os.environ.get("CALL_TEXTRACT"):
             self.s3_client = boto3.session.Session(
-                profile_name=self.profile_name
+                #profile_name=self.profile_name
+                region_name="us-west-2"
             ).client("s3", region_name="us-west-2")
 
             self.current_directory = os.path.abspath(os.path.dirname(__file__))
@@ -35,12 +36,13 @@ class TestTextractor(unittest.TestCase):
             self.image_1 = PIL.Image.open(os.path.join(self.current_directory, "fixtures/single-page-1.png"))
             self.image_2 = PIL.Image.open(os.path.join(self.current_directory, "fixtures/single-page-2.png"))
 
-            if self.profile_name is None:
-                raise InvalidProfileNameError(
-                    "Textractor could not be initialized. Populate profile_name with a valid input in tests/test_textractor.py."
-                )
+            #if self.profile_name is None:
+            #    raise InvalidProfileNameError(
+            #        "Textractor could not be initialized. Populate profile_name with a valid input in tests/test_textractor.py."
+            #    )
             self.extractor = Textractor(
-                profile_name=self.profile_name, kms_key_id=""
+                #profile_name=self.profile_name, kms_key_id=""
+                region_name="us-west-2"
             )
 
     def test_detect_document_text(self):

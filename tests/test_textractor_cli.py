@@ -26,11 +26,11 @@ def run_command(cmds: List):
 class TestTextractor(unittest.TestCase):
     def setUp(self):
         # insert credentials and filepaths here to run test
-        self.profile_name = "default"
+        #self.profile_name = "default"
         self.bucket_name = os.environ.get("S3_BUCKET", "textractor-tests")
         if os.environ.get("CALL_TEXTRACT"):
             self.s3_client = boto3.session.Session(
-                profile_name=self.profile_name
+                #profile_name=self.profile_name
             ).client("s3", region_name="us-west-2")
 
             self.current_directory = os.path.abspath(os.path.dirname(__file__))
