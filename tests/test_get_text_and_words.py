@@ -27,14 +27,13 @@ class TestGetTextAndWords(unittest.TestCase):
         self.profile_name = "default"
         if os.environ.get("CALL_TEXTRACT"):
             self.s3_client = boto3.session.Session(
-                #profile_name=self.profile_name
+                profile_name=self.profile_name
             ).client("s3", region_name="us-west-2")
 
             self.current_directory = os.path.abspath(os.path.dirname(__file__))
 
             self.extractor = Textractor(
-                #profile_name=self.profile_name, kms_key_id=""
-                region_name="us-west-2"
+                profile_name=self.profile_name, kms_key_id=""
             )
             self.fixture_directory = os.path.join(self.current_directory, "fixtures")
 
