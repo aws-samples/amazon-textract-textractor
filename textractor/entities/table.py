@@ -674,23 +674,24 @@ class Table(DocumentEntity):
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ):
+        local_config = deepcopy(config)
         words_ = self.words
         # If no text, return empty string
-        if not words_ and config.table_remove_column_headers:
+        if not words_ and local_config.table_remove_column_headers:
             return "", []
 
         # If not many words, only return text
-        if len(words_) < config.table_min_table_words:
+        if len(words_) < local_config.table_min_table_words:
             return linearize_children(words_, config=config)
 
-        words = [Word(str(uuid.uuid4()), self.bbox, config.table_prefix)] if config.table_prefix else []
+        words = [Word(str(uuid.uuid4()), self.bbox, local_config.table_prefix)] if local_config.table_prefix else []
         rows = sorted([(key, list(group)) for key, group in itertools.groupby(
             self.table_cells, key=lambda cell: cell.row_index
         )], key=lambda r: r[0])
         processed_cells = set()
         # Fill the table
         row_offset = 0
-        if config.table_flatten_headers:
+        if local_config.table_flatten_headers:
             columns = [[] for _ in range(len(rows[0][1]))]
             columns_bbox = [[] for _ in range(len(rows[0][1]))]
             for _, row in rows:
@@ -700,8 +701,8 @@ class Table(DocumentEntity):
                 for i, cell in enumerate(row):
                     if (
                         cell not in processed_cells or
-                        config.table_duplicate_text_in_merged_cells or
-                        config.table_flatten_headers
+                        local_config.table_duplicate_text_in_merged_cells or
+                        local_config.table_flatten_headers
                     ):
                         if cell.siblings:
                             # This handles the edge case where we are flattening the headers
@@ -720,21 +721,21 @@ class Table(DocumentEntity):
                             _, words = cell.get_text_and_words(config)
                             columns[i].extend(words)
                             columns_bbox[i].append(cell.bbox)
-                    elif config.table_cell_empty_cell_placeholder:
-                        columns[i].append(Word(str(uuid.uuid4()), cell.bbox, config.table_cell_empty_cell_placeholder))
+                    elif local_config.table_cell_empty_cell_placeholder:
+                        columns[i].append(Word(str(uuid.uuid4()), cell.bbox, local_config.table_cell_empty_cell_placeholder))
                 row_offset += 1
             if columns:
                 columns_bbox = [BoundingBox.enclosing_bbox(cbb) for cbb in columns_bbox]
-                if config.table_row_prefix and config.add_prefixes_and_suffixes_as_words:
-                    words.append(Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(columns_bbox), config.table_row_prefix, is_structure=True))
+                if local_config.table_row_prefix and local_config.add_prefixes_and_suffixes_as_words:
+                    words.append(Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(columns_bbox), local_config.table_row_prefix, is_structure=True))
                 for i, column in enumerate(columns):
                     words.append(
                         Word(
                             str(uuid.uuid4()),
                             columns_bbox[i],
-                            config.table_cell_header_prefix
-                            if config.table_cell_header_prefix
-                            else config.table_cell_prefix,
+                            local_config.table_cell_header_prefix
+                            if local_config.table_cell_header_prefix
+                            else local_config.table_cell_prefix,
                             is_structure=True
                         )
                     )
@@ -743,17 +744,17 @@ class Table(DocumentEntity):
                         Word(
                             str(uuid.uuid4()),
                             columns_bbox[i],
-                            config.table_cell_header_suffix
-                            if config.table_cell_header_suffix
-                            else config.table_cell_suffix,
+                            local_config.table_cell_header_suffix
+                            if local_config.table_cell_header_suffix
+                            else local_config.table_cell_suffix,
                             is_structure=True
                         )
                     )
-                if config.table_row_suffix and config.add_prefixes_and_suffixes_as_words:
-                    words.append(Word(str(uuid.uuid4()), columns_bbox, config.table_row_suffix, is_structure=True))
+                if local_config.table_row_suffix and local_config.add_prefixes_and_suffixes_as_words:
+                    words.append(Word(str(uuid.uuid4()), columns_bbox, local_config.table_row_suffix, is_structure=True))
         for _, cells in rows[row_offset:]:
-            if config.table_row_prefix and config.add_prefixes_and_suffixes_as_words:
-                words.append(Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(cells), config.table_row_prefix, is_structure=True))
+            if local_config.table_row_prefix and local_config.add_prefixes_and_suffixes_as_words:
+                words.append(Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(cells), local_config.table_row_prefix, is_structure=True))
             for cell in sorted(cells, key=lambda c: c.col_index):
                 # Siblings includes the current cell
                 if cell.siblings:
@@ -765,35 +766,35 @@ class Table(DocumentEntity):
                     row_index = first_row
                     row_span = last_row - first_row + 1
                     children = []
-                    if (cell.col_index == first_col and cell.row_index == first_row) or config.table_duplicate_text_in_merged_cells:
+                    if (cell.col_index == first_col and cell.row_index == first_row) or local_config.table_duplicate_text_in_merged_cells:
                         for sib in cell.siblings:
                             children.extend(sib.children)
                             processed_cells.add(sib)
                         _, cell_words = linearize_children(children, config=config, no_new_lines=True)
-                    elif cell.row_index == first_row and config.table_cell_left_merge_cell_placeholder:
+                    elif cell.row_index == first_row and local_config.table_cell_left_merge_cell_placeholder:
                         # Left-merge token
                         cell_words = [
                             Word(str(uuid.uuid4()),
                                 cell_bbox,
-                                config.table_cell_left_merge_cell_placeholder,
+                                local_config.table_cell_left_merge_cell_placeholder,
                                 is_structure=True
                             )
                         ]
-                    elif cell.col_index == first_col and config.table_cell_top_merge_cell_placeholder:
+                    elif cell.col_index == first_col and local_config.table_cell_top_merge_cell_placeholder:
                         # Top-merge token
                         cell_words = [
                             Word(str(uuid.uuid4()),
                                 cell_bbox,
-                                config.table_cell_top_merge_cell_placeholder,
+                                local_config.table_cell_top_merge_cell_placeholder,
                                 is_structure=True
                             )
                         ]
-                    elif cell.col_index != first_col and cell.row_index != first_row and config.table_cell_cross_merge_cell_placeholder:
+                    elif cell.col_index != first_col and cell.row_index != first_row and local_config.table_cell_cross_merge_cell_placeholder:
                         # Cross-merge token (left and top)
                         cell_words = [
                             Word(str(uuid.uuid4()),
                                 cell_bbox,
-                                config.table_cell_cross_merge_cell_placeholder,
+                                local_config.table_cell_cross_merge_cell_placeholder,
                                 is_structure=True
                             )
                         ]
@@ -807,15 +808,15 @@ class Table(DocumentEntity):
                     row_index = cell.row_index
                     row_span = cell.row_span
                     _, cell_words = cell.get_text_and_words(config)
-                if config.add_prefixes_and_suffixes_as_words:
-                    if config.table_cell_prefix or (config.table_cell_header_prefix and cell.is_column_header):
+                if local_config.add_prefixes_and_suffixes_as_words:
+                    if local_config.table_cell_prefix or (local_config.table_cell_header_prefix and cell.is_column_header):
                         words.append(
                             Word(
                                 str(uuid.uuid4()),
                                 cell_bbox,
-                                config.table_cell_header_prefix
-                                if cell.is_column_header and config.table_cell_header_prefix
-                                else config.table_cell_prefix,
+                                local_config.table_cell_header_prefix
+                                if cell.is_column_header and local_config.table_cell_header_prefix
+                                else local_config.table_cell_prefix,
                                 is_structure=True
                             )
                         )
@@ -827,15 +828,15 @@ class Table(DocumentEntity):
                         words[-1].row_span = row_span
 
                     words.extend(cell_words)
-                    if not cell_words and config.table_cell_empty_cell_placeholder:
-                        words.append(Word(str(uuid.uuid4()), cell_bbox, config.table_cell_empty_cell_placeholder))
+                    if not cell_words and local_config.table_cell_empty_cell_placeholder:
+                        words.append(Word(str(uuid.uuid4()), cell_bbox, local_config.table_cell_empty_cell_placeholder))
 
-                    if config.table_cell_suffix or (config.table_cell_header_suffix and cell.is_column_header):
+                    if local_config.table_cell_suffix or (local_config.table_cell_header_suffix and cell.is_column_header):
                         words.append(
                             Word(
                                 str(uuid.uuid4()),
                                 cell_bbox,
-                                config.table_cell_header_suffix if cell.is_column_header and config.table_cell_header_suffix else config.table_cell_suffix,
+                                local_config.table_cell_header_suffix if cell.is_column_header and local_config.table_cell_header_suffix else local_config.table_cell_suffix,
                                 is_structure=True
                             )
                         )
@@ -847,38 +848,37 @@ class Table(DocumentEntity):
                         words[-1].row_span = row_span
                 else:
                     words.extend(cell_words)
-            if config.table_row_suffix and config.add_prefixes_and_suffixes_as_words:
-                words.append(Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(cells), config.table_row_suffix, is_structure=True))
+            if local_config.table_row_suffix and local_config.add_prefixes_and_suffixes_as_words:
+                words.append(Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(cells), local_config.table_row_suffix, is_structure=True))
 
-        if config.table_suffix:
-            words.append(Word(str(uuid.uuid4()), self.bbox, config.table_suffix))
+        if local_config.table_suffix:
+            words.append(Word(str(uuid.uuid4()), self.bbox, local_config.table_suffix))
 
         for w in words:
             w.table_id = str(self.id)
             w.table_bbox = self.bbox
 
-        text = (config.table_prefix if config.add_prefixes_and_suffixes_in_text else "")
+        text = (local_config.table_prefix if local_config.add_prefixes_and_suffixes_in_text else "")
         # Markdown
-        if config.table_linearization_format == "markdown":
+        if local_config.table_linearization_format == "markdown":
             df = self.to_pandas(
                 use_columns=True,
                 config=config
             )
             has_column = any([isinstance(c, str) for c in df.columns])
-            if config.table_remove_column_headers:
+            if local_config.table_remove_column_headers:
                 headers = df.columns if has_column else ["" for c in df.columns]
             else:
                 headers = df.columns
             table = df.to_markdown(
-                tablefmt=config.table_tabulate_format, headers=headers, index=False
+                tablefmt=local_config.table_tabulate_format, headers=headers, index=False
             )
-            if config.table_tabulate_remove_extra_hyphens:
+            if local_config.table_tabulate_remove_extra_hyphens:
                 while "-" * 2 in table:
                     table = table.replace("--", "-")
             text += table
         # Plaintext or HTML
         else:
-            local_config = deepcopy(config)
             # FIXME: The cyclomatic complexity of doing things like this will be unsustainable.
             if local_config.table_flatten_semi_structured_as_plaintext and self.table_type == TableTypes.SEMI_STRUCTURED:
                 text = "<p>"
@@ -1030,7 +1030,7 @@ class Table(DocumentEntity):
                 text += (local_config.table_row_suffix if local_config.add_prefixes_and_suffixes_in_text else "")
                 text += local_config.table_row_separator
                 
-        if local_config.table_add_title_as_caption and self.title:
+        if local_config.table_add_title_as_caption and self.title and local_config.table_linearization_format == "html":
             text += "<caption>" + self.title.get_text() + "</caption>"
             
         text += (local_config.table_suffix if local_config.add_prefixes_and_suffixes_in_text else "")
