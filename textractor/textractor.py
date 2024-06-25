@@ -135,7 +135,7 @@ class Textractor:
             file_obj = s3_client.get_object(Bucket=bucket, Key=key).get("Body").read()
             if filepath.lower().endswith(".pdf"):
                 if IS_PDF_RENDERING_ENABLED:
-                    images = rasterize_pdf(bytearray(file_obj))
+                    images = rasterize_pdf(file_obj)
                 else:
                     raise MissingDependencyException(
                         "pdf2image is not installed. If you do not plan on using visualizations you can skip image generation using save_image=False in your function call."
