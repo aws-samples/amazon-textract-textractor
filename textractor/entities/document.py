@@ -8,6 +8,7 @@ import string
 import logging
 import xlsxwriter
 import io
+from pathlib import Path
 from typing import List, IO, Union, AnyStr, Tuple
 from copy import deepcopy
 from collections import defaultdict
@@ -48,12 +49,12 @@ class Document(SpatialObject, Linearizable):
     """
 
     @classmethod
-    def open(cls, fp: Union[dict, str, IO[AnyStr]]):
+    def open(cls, fp: Union[dict, str, Path, IO[AnyStr]]):
         """Create a Document object from a JSON file path, file handle or response dictionary
 
         :param fp: _description_
-        :type fp: Union[dict, str, IO[AnyStr]]
-        :raises InputError: Raised on input not being of type Union[dict, str, IO[AnyStr]]
+        :type fp: Union[dict, str, Path, IO[AnyStr]]
+        :raises InputError: Raised on input not being of type Union[dict, str, Path, IO[AnyStr]]
         :return: Document object
         :rtype: Document
         """
@@ -63,16 +64,19 @@ class Document(SpatialObject, Linearizable):
             return response_parser.parse(fp)
         elif isinstance(fp, str):
             if fp.startswith("s3://"):
-                # FIXME: Opening s3 clients for everythign should be avoided
+                # FIXME: Opening s3 clients for everything should be avoided
                 client = boto3.client("s3")
                 return response_parser.parse(json.load(download_from_s3(client, fp)))
+            with open(fp, "r") as f:
+                return response_parser.parse(json.load(f))
+        elif isinstance(fp, Path):
             with open(fp, "r") as f:
                 return response_parser.parse(json.load(f))
         elif isinstance(fp, io.IOBase):
             return response_parser.parse(json.load(fp))
         else:
             raise InputError(
-                f"Document.open() input must be of type dict, str or file handle, not {type(fp)}"
+                f"Document.open() input must be of type dict, str, Path or a file handle, not {type(fp)}"
             )
 
     def __init__(self, num_pages: int = 1):
