@@ -25,6 +25,7 @@ from textractor.data.constants import (
 )
 from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.utils.text_utils import group_elements_horizontally, linearize_children
+from textractor.utils.html_utils import add_id_to_html_tag
 
 
 class Layout(DocumentEntity):
@@ -122,7 +123,7 @@ class Layout(DocumentEntity):
             )
             if config.add_prefixes_and_suffixes_as_words:
                 return (
-                    config.page_num_prefix + final_text + config.page_num_suffix,
+                    add_id_to_html_tag(config.page_num_prefix, self.id, config) + final_text + config.page_num_suffix,
                     (
                         ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), is_structure=True), config.page_num_prefix] if config.page_num_prefix else []) +
                         final_words +
@@ -135,17 +136,18 @@ class Layout(DocumentEntity):
                     final_words,
                 )
         elif self.layout_type == LAYOUT_LIST:
-            final_text = config.list_layout_prefix
+            final_text = add_id_to_html_tag(config.list_layout_prefix, self.id, config)
             final_words = []
             for i, child in enumerate(
                 sorted(self.children, key=lambda x: x.reading_order)
             ):
                 child_text, child_words = child.get_text_and_words(config)
+                child_prefix = add_id_to_html_tag(config.list_element_prefix, child.id, config)
                 final_text += (
                     (
-                        config.list_element_prefix
+                        child_prefix
                         if (
-                            child_text[: len(config.list_element_prefix)] != config.list_element_prefix and
+                            child_text[:len(child_prefix)] != child_prefix and
                             config.add_prefixes_and_suffixes_in_text
                         ) else ""
                     )
@@ -162,7 +164,7 @@ class Layout(DocumentEntity):
                 )
                 if config.add_prefixes_and_suffixes_as_words:
                     final_words += (
-                        ([Word(str(uuid.uuid4(), BoundingBox.enclosing_bbox(child_words)), config.list_element_prefix, is_structure=True)] if config.list_element_prefix else []) +
+                        ([Word(str(uuid.uuid4(), BoundingBox.enclosing_bbox(child_words)), add_id_to_html_tag(config.list_element_prefix, child.id, config), is_structure=True)] if config.list_element_prefix else []) +
                         child_words + 
                         ([Word(str(uuid.uuid4(), BoundingBox.enclosing_bbox(child_words)), config.list_element_suffix, is_structure=True)] if config.list_element_suffix else [])
                     )
@@ -174,10 +176,10 @@ class Layout(DocumentEntity):
                 self.children, config, no_new_lines=True
             )
             if config.add_prefixes_and_suffixes_in_text:
-                final_text = config.title_prefix + final_text + config.title_suffix
+                final_text = add_id_to_html_tag(config.title_prefix, self.id, config) + final_text + config.title_suffix
             if config.add_prefixes_and_suffixes_as_words:
                 final_words = (
-                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.title_prefix, is_structure=True)] if config.title_prefix else []) + 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), add_id_to_html_tag(config.title_prefix, self.id, config), is_structure=True)] if config.title_prefix else []) + 
                     final_words + 
                     ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.title_suffix, is_structure=True)] if config.title_suffix else []) 
                 )
@@ -187,11 +189,11 @@ class Layout(DocumentEntity):
             )
             if config.add_prefixes_and_suffixes_in_text:
                 final_text = (
-                    config.header_prefix + final_text + config.header_suffix
+                    add_id_to_html_tag(config.header_prefix, self.id, config) + final_text + config.header_suffix
                 )
             if config.add_prefixes_and_suffixes_as_words:
                 final_words = (
-                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.header_prefix, is_structure=True)] if config.header_prefix else []) + 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), add_id_to_html_tag(config.header_prefix, self.id, config), is_structure=True)] if config.header_prefix else []) + 
                     final_words + 
                     ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.header_suffix, is_structure=True)] if config.header_suffix else []) 
                 )
@@ -201,11 +203,11 @@ class Layout(DocumentEntity):
             )
             if config.add_prefixes_and_suffixes_in_text:
                 final_text = (
-                    config.section_header_prefix + final_text + config.section_header_suffix
+                    add_id_to_html_tag(config.section_header_prefix, self.id, config) + final_text + config.section_header_suffix
                 )
             if config.add_prefixes_and_suffixes_as_words:
                 final_words = (
-                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.section_header_prefix, is_structure=True)] if config.section_header_prefix else []) + 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), add_id_to_html_tag(config.section_header_prefix, self.id, config), is_structure=True)] if config.section_header_prefix else []) + 
                     final_words + 
                     ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.section_header_suffix, is_structure=True)] if config.section_header_suffix else []) 
                 )
@@ -216,8 +218,14 @@ class Layout(DocumentEntity):
                 no_new_lines=True,
             )
             final_text = (
-                config.text_prefix + final_text + config.text_suffix
+                add_id_to_html_tag(config.text_prefix, self.id, config) + final_text + config.text_suffix
             )
+            if config.add_prefixes_and_suffixes_as_words:
+                final_words = (
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), add_id_to_html_tag(config.text_prefix, self.id, config), is_structure=True)] if config.text_prefix else []) + 
+                    final_words + 
+                    ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.text_suffix, is_structure=True)] if config.text_suffix else []) 
+                )
         else:
             final_text, final_words = linearize_children(
                 self.children,
@@ -229,40 +237,40 @@ class Layout(DocumentEntity):
             if config.add_prefixes_and_suffixes_in_text:
                 if self.layout_type == LAYOUT_TABLE:
                     final_text = (
-                        config.table_layout_prefix + final_text + config.table_layout_suffix
+                        add_id_to_html_tag(config.table_layout_prefix, self.id, config) + final_text + config.table_layout_suffix
                     )
                 elif self.layout_type == LAYOUT_KEY_VALUE:
                     final_text = (
-                        config.key_value_layout_prefix + final_text + config.key_value_layout_suffix
+                        add_id_to_html_tag(config.key_value_layout_prefix, self.id, config) + final_text + config.key_value_layout_suffix
                     )
                 elif self.layout_type == LAYOUT_FIGURE:
                     final_text = (
-                        config.figure_layout_prefix + final_text + config.figure_layout_suffix
+                        add_id_to_html_tag(config.figure_layout_prefix, self.id, config) + final_text + config.figure_layout_suffix
                     )
                 elif self.layout_type == LAYOUT_ENTITY:
                     final_text = (
-                        config.entity_layout_prefix + final_text + config.entity_layout_suffix
+                        add_id_to_html_tag(config.entity_layout_prefix, self.id, config) + final_text + config.entity_layout_suffix
                     )
                 elif self.layout_type == LAYOUT_FOOTER:
                     final_text = (
-                        config.footer_layout_prefix + final_text + config.footer_layout_suffix
+                        add_id_to_html_tag(config.footer_layout_prefix, self.id, config) + final_text + config.footer_layout_suffix
                     )
             if config.add_prefixes_and_suffixes_as_words:
                 if self.layout_type == LAYOUT_TABLE:
                     final_words = (
-                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.table_layout_prefix, is_structure=True)] if config.table_layout_prefix else []) + 
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), add_id_to_html_tag(config.table_layout_prefix, self.id, config), is_structure=True)] if config.table_layout_prefix else []) + 
                         final_words + 
                         ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.table_layout_suffix, is_structure=True)] if config.table_layout_suffix else []) 
                     )
                 elif self.layout_type == LAYOUT_KEY_VALUE:
                     final_words = (
-                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.key_value_layout_prefix, is_structure=True)] if config.key_value_layout_prefix else []) + 
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), add_id_to_html_tag(config.key_value_layout_prefix, self.id, config), is_structure=True)] if config.key_value_layout_prefix else []) + 
                         final_words + 
                         ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.key_value_layout_suffix, is_structure=True)] if config.key_value_layout_suffix else []) 
                     )
                 elif self.layout_type == LAYOUT_FIGURE:
                     final_words = (
-                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.figure_layout_prefix, is_structure=True)] if config.figure_layout_prefix else []) + 
+                        ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), add_id_to_html_tag(config.figure_layout_prefix, self.id, config), is_structure=True)] if config.figure_layout_prefix else []) + 
                         final_words + 
                         ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(final_words), config.figure_layout_suffix, is_structure=True)] if config.figure_layout_suffix else []) 
                     )

@@ -79,3 +79,7 @@ class HTMLLinearizationConfig(TextLinearizationConfig):
     page_num_prefix: str = "<div>"
     
     page_num_suffix: str = "</div>"
+    
+    add_ids_to_components: bool = False #: Adds Textract block id to the HTML markup. Only supported for HTML.
+    
+    add_short_ids_to_components: bool = False #: Adds the truncated (first 8 characters) Textract block id to the HTML markup. Only supported for HTML

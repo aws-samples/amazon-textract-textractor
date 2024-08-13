@@ -32,7 +32,7 @@ from textractor.utils.search_utils import SearchUtils, get_metadata_attr_name
 from textractor.utils.text_utils import group_elements_horizontally, linearize_children
 from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.data.html_linearization_config import HTMLLinearizationConfig
-
+from textractor.utils.html_utils import add_id_to_html_tag
 
 class Table(DocumentEntity):
     """
@@ -684,7 +684,7 @@ class Table(DocumentEntity):
         if len(words_) < local_config.table_min_table_words:
             return linearize_children(words_, config=config)
 
-        words = [Word(str(uuid.uuid4()), self.bbox, local_config.table_prefix)] if local_config.table_prefix else []
+        words = [Word(str(uuid.uuid4()), self.bbox, add_id_to_html_tag(local_config.table_prefix, self.id, local_config))] if local_config.table_prefix else []
         rows = sorted([(key, list(group)) for key, group in itertools.groupby(
             self.table_cells, key=lambda cell: cell.row_index
         )], key=lambda r: r[0])
@@ -858,7 +858,7 @@ class Table(DocumentEntity):
             w.table_id = str(self.id)
             w.table_bbox = self.bbox
 
-        text = (local_config.table_prefix if local_config.add_prefixes_and_suffixes_in_text else "")
+        text = (add_id_to_html_tag(local_config.table_prefix, self.id, local_config) if local_config.add_prefixes_and_suffixes_in_text else "")
         # Markdown
         if local_config.table_linearization_format == "markdown":
             df = self.to_pandas(
