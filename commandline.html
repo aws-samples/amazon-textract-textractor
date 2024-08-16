@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CLI &mdash; amazon-textract-textractor 1.0.0 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
+
+  
     <link rel="shortcut icon" href="_static/favicon.ico"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
@@ -30,11 +32,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> amazon-textract-textractor
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            amazon-textract-textractor
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -50,7 +56,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#processing-a-directory-of-files">Processing a directory of files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#visualizing-the-output">Visualizing the output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#textractor.cli.cli-_build_parser-positional-arguments">Positional Arguments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Sub-commands">Sub-commands</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#detect-document-text">detect-document-text</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#start-document-text-detection">start-document-text-detection</a></li>
@@ -89,8 +95,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>CLI</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CLI</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/commandline.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -184,8 +190,8 @@
                   <span class="o">...</span>
 </pre></div>
 </div>
-<section id="positional-arguments">
-<h3>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this heading"></a></h3>
+<section id="textractor.cli.cli-_build_parser-positional-arguments">
+<h3>Positional Arguments<a class="headerlink" href="#textractor.cli.cli-_build_parser-positional-arguments" title="Permalink to this heading"></a></h3>
 <dl class="option-list">
 <dt><kbd>subcommand</kbd></dt>
 <dd><p>Possible choices: detect-document-text, start-document-text-detection, analyze-document, start-document-analysis, analyze-expense, start-expense-analysis, analyze-id, get-result</p>
@@ -208,8 +214,8 @@
                                 <span class="n">file_source</span> <span class="n">output_file</span>
 </pre></div>
 </div>
-<section id="positional-arguments_repeat1">
-<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat1" title="Permalink to this heading"></a></h5>
+<section id="positional-arguments">
+<h5>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this heading"></a></h5>
 <dl class="option-list">
 <dt><kbd>file_source</kbd></dt>
 <dd><p>File to process, must be of type JPEG, PNG, TIFF, BMP. Can be an S3 path</p>
@@ -234,7 +240,7 @@
 </dd>
 <dt><kbd>--linearize</kbd></dt>
 <dd><p>Print the linearized document output</p>
-<p>Default: False</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 <dt><kbd>--linearize-config-path</kbd></dt>
 <dd><p>Configuration file for the linearization</p>
@@ -245,7 +251,7 @@
 </dd>
 <dt><kbd>--font-size-ratio</kbd></dt>
 <dd><p>Scales the text up or down, default is 0.75, which would be half the pixel height</p>
-<p>Default: 0.75</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">0.75</span></code></p>
 </dd>
 </dl>
 </section>
@@ -261,8 +267,8 @@
                                          <span class="n">file_source</span>
 </pre></div>
 </div>
-<section id="positional-arguments_repeat2">
-<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat2" title="Permalink to this heading"></a></h5>
+<section id="positional-arguments_repeat1">
+<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat1" title="Permalink to this heading"></a></h5>
 <dl class="option-list">
 <dt><kbd>file_source</kbd></dt>
 <dd><p>File to process, must be of type PDF, JPEG, PNG, TIFF, BMP. The file has to be in S3, you you can provide an S3 path with –upload-s3-path</p>
@@ -304,8 +310,8 @@
                             <span class="n">file_source</span> <span class="n">output_file</span>
 </pre></div>
 </div>
-<section id="positional-arguments_repeat3">
-<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat3" title="Permalink to this heading"></a></h5>
+<section id="positional-arguments_repeat2">
+<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat2" title="Permalink to this heading"></a></h5>
 <dl class="option-list">
 <dt><kbd>file_source</kbd></dt>
 <dd><p>File to process, must be of type JPEG, PNG, TIFF, BMP. Can be an S3 path</p>
@@ -336,7 +342,7 @@
 </dd>
 <dt><kbd>--linearize</kbd></dt>
 <dd><p>Print the linearized document output</p>
-<p>Default: False</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 <dt><kbd>--linearize-config-path</kbd></dt>
 <dd><p>Configuration file for the linearization</p>
@@ -347,7 +353,7 @@
 </dd>
 <dt><kbd>--font-size-ratio</kbd></dt>
 <dd><p>Scales the text up or down, default is 0.75, which would be half the pixel height</p>
-<p>Default: 0.75</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">0.75</span></code></p>
 </dd>
 </dl>
 </section>
@@ -366,8 +372,8 @@
                                    <span class="n">file_source</span>
 </pre></div>
 </div>
-<section id="positional-arguments_repeat4">
-<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat4" title="Permalink to this heading"></a></h5>
+<section id="positional-arguments_repeat3">
+<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat3" title="Permalink to this heading"></a></h5>
 <dl class="option-list">
 <dt><kbd>file_source</kbd></dt>
 <dd><p>File to process, must be of type PDF, JPEG, PNG, TIFF, BMP. The file has to be in S3, you you can provide an S3 path with –upload-s3-path</p>
@@ -411,8 +417,8 @@
                            <span class="n">file_source</span> <span class="n">output_file</span>
 </pre></div>
 </div>
-<section id="positional-arguments_repeat5">
-<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat5" title="Permalink to this heading"></a></h5>
+<section id="positional-arguments_repeat4">
+<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat4" title="Permalink to this heading"></a></h5>
 <dl class="option-list">
 <dt><kbd>file_source</kbd></dt>
 <dd><p>File to process, must be of type JPEG, PNG, TIFF, BMP. Can be an S3 path</p>
@@ -437,7 +443,7 @@
 </dd>
 <dt><kbd>--linearize</kbd></dt>
 <dd><p>Print the linearized document output</p>
-<p>Default: False</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 <dt><kbd>--linearize-config-path</kbd></dt>
 <dd><p>Configuration file for the linearization</p>
@@ -448,7 +454,7 @@
 </dd>
 <dt><kbd>--font-size-ratio</kbd></dt>
 <dd><p>Scales the text up or down, default is 0.75, which would be half the pixel height</p>
-<p>Default: 0.75</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">0.75</span></code></p>
 </dd>
 </dl>
 </section>
@@ -463,8 +469,8 @@
                                   <span class="n">file_source</span>
 </pre></div>
 </div>
-<section id="positional-arguments_repeat6">
-<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat6" title="Permalink to this heading"></a></h5>
+<section id="positional-arguments_repeat5">
+<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat5" title="Permalink to this heading"></a></h5>
 <dl class="option-list">
 <dt><kbd>file_source</kbd></dt>
 <dd><p>File to process, must be of type PDF, JPEG, PNG, TIFF, BMP. The file has to be in S3, you you can provide an S3 path with –upload-s3-path</p>
@@ -498,8 +504,8 @@
                       <span class="n">file_source</span> <span class="n">output_file</span>
 </pre></div>
 </div>
-<section id="positional-arguments_repeat7">
-<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat7" title="Permalink to this heading"></a></h5>
+<section id="positional-arguments_repeat6">
+<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat6" title="Permalink to this heading"></a></h5>
 <dl class="option-list">
 <dt><kbd>file_source</kbd></dt>
 <dd><p>File to process, must be of type JPEG, PNG, TIFF, BMP. Can be an S3 path</p>
@@ -536,8 +542,8 @@
                       <span class="n">job_id</span> <span class="p">{</span><span class="n">DETECT_TEXT</span><span class="p">,</span><span class="n">ANALYZE</span><span class="p">,</span><span class="n">EXPENSE</span><span class="p">}</span> <span class="n">output_file</span>
 </pre></div>
 </div>
-<section id="positional-arguments_repeat8">
-<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat8" title="Permalink to this heading"></a></h5>
+<section id="positional-arguments_repeat7">
+<h5>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat7" title="Permalink to this heading"></a></h5>
 <dl class="option-list">
 <dt><kbd>job_id</kbd></dt>
 <dd><p>Job ID, as returned by any of the asynchronous functions</p>
@@ -566,7 +572,7 @@
 </dd>
 <dt><kbd>--linearize</kbd></dt>
 <dd><p>Print the linearized document output</p>
-<p>Default: False</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 <dt><kbd>--linearize-config-path</kbd></dt>
 <dd><p>Configuration file for the linearization</p>
