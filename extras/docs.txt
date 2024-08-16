@@ -5,7 +5,7 @@ pytest
 Sphinx>=5.1,<5.2
 nbsphinx>=0.8,<0.9
 sphinx-rtd-theme>=1.0,<1.1
-sphinx-argparse
+sphinx-argparse>=0.5.1
 sphinxcontrib-applehelp>=1.0,<1.1
 sphinxcontrib-devhelp>=1.0,<1.1
 sphinxcontrib-htmlhelp>=2.0,<2.1
