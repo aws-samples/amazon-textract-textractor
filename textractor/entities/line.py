@@ -15,7 +15,8 @@ from textractor.entities.bbox import BoundingBox
 from textractor.exceptions import InputError
 from textractor.entities.document_entity import DocumentEntity
 from textractor.visualizers.entitylist import EntityList
-
+from textractor.utils.html_utils import escape_text
+from textractor.data.text_linearization_config import TextLinearizationConfig
 
 class Line(DocumentEntity):
     """
@@ -64,13 +65,13 @@ class Line(DocumentEntity):
         """
         return self._children
 
-    def get_text_and_words(self, config):
+    def get_text_and_words(self, config: TextLinearizationConfig = TextLinearizationConfig()):
         if not self.bbox:
             self.bbox = BoundingBox.enclosing_bbox(self.words)
         for w in self.words:
             w.line_id = self.id
             w.line_bbox = self.bbox
-        return self.text, self.words
+        return escape_text(self.text, config), self.words
 
     @property
     def page(self):
