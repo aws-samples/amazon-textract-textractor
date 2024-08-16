@@ -8,7 +8,7 @@ from textractor.data.constants import TextTypes
 from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.entities.bbox import BoundingBox
 from textractor.entities.document_entity import DocumentEntity
-
+from textractor.utils.html_utils import escape_text
 
 class Word(DocumentEntity):
     """
@@ -148,7 +148,7 @@ class Word(DocumentEntity):
     def get_text_and_words(
         self, config: TextLinearizationConfig = TextLinearizationConfig()
     ):
-        return self.text, [self]
+        return escape_text(self.text, config), [self]
 
     def __repr__(self) -> str:
         """
