@@ -531,7 +531,7 @@ def _create_signature_objects(
         if signature not in signatures_added:
             signatures_added.add(signature)
             layout = Layout(
-                entity_id=signature.id,
+                entity_id=str(uuid.uuid4()),
                 bbox=signature.bbox,
                 label=LAYOUT_ENTITY,
                 reading_order=-1,
@@ -1103,7 +1103,7 @@ def _create_table_objects(
         if table not in table_added:
             table_added.add(table)
             layout = Layout(
-                entity_id=table.id,
+                entity_id=str(uuid.uuid4()),
                 bbox=table.bbox,
                 label=LAYOUT_TABLE,
                 reading_order=-1,
@@ -1292,7 +1292,7 @@ def parse_document_api_response(response: dict) -> Document:
             if kv.id not in kv_added:
                 kv_added.add(kv.id)
                 layout = Layout(
-                    entity_id=kv.id,
+                    entity_id=str(uuid.uuid4()),
                     bbox=kv.bbox,
                     label=LAYOUT_KEY_VALUE,
                     reading_order=-1,

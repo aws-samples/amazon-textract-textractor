@@ -18,6 +18,7 @@ from textractor.entities.document_entity import DocumentEntity
 from textractor.data.constants import TextTypes
 from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.visualizers.entitylist import EntityList
+from textractor.utils.html_utils import add_id_to_html_tag
 
 
 class KeyValue(DocumentEntity):
@@ -235,12 +236,12 @@ class KeyValue(DocumentEntity):
             else " "
         )
         if config.add_prefixes_and_suffixes_in_text:
-            text = f"{config.key_value_prefix}{config.key_prefix}{key_text}{key_suffix}{value_text}{config.key_value_suffix}"
+            text = f"{add_id_to_html_tag(config.key_value_prefix, self.id, config)}{config.key_prefix}{key_text}{key_suffix}{value_text}{config.key_value_suffix}"
         else:
             text = f"{key_text}{config.same_paragraph_separator}{value_text}"
 
         if config.add_prefixes_and_suffixes_as_words:
-            words += [Word(str(uuid.uuid4()), self.bbox, config.key_value_prefix, is_structure=True)] if config.key_value_prefix else []
+            words += [Word(str(uuid.uuid4()), self.bbox, add_id_to_html_tag(config.key_value_prefix, self.id, config), is_structure=True)] if config.key_value_prefix else []
             if key_words:
                 words += (
                     ([Word(str(uuid.uuid4()), BoundingBox.enclosing_bbox(self.key), config.key_prefix, is_structure=True)] if config.key_prefix else []) +
