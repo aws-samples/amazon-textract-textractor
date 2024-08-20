@@ -490,7 +490,8 @@ class Table(DocumentEntity):
         new_table_cells = _get_new_table_cells(rows, filtered_rows)
 
         new_table = deepcopy(self)
-        new_table.add_cells(new_table_cells)
+        new_table.table_cells = new_table_cells
+        new_table._children = new_table_cells
 
         return new_table
 
