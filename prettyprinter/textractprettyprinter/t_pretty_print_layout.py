@@ -113,7 +113,7 @@ class LinearizeLayout:
 
     def _find_words_in_tables(
         self, word_ids: List[str]
-    ) -> Tuple[List[str], Dict[int, List[str]]]:
+    ) -> Tuple[List[str], List[Tuple[str, float]]]:
         """
         Check which word_ids are part of table cells and which are not.
 
@@ -121,17 +121,18 @@ class LinearizeLayout:
             word_ids (List[str]): List of word IDs to check.
 
         Returns:
-            Tuple[List[str], Dict[int, List[str]]]: A tuple containing:
+            Tuple[List[str], List[Tuple[str, float]]]: A tuple containing:
                 - List of word IDs not in any table
-                - Dictionary mapping table indices to lists of word IDs they contain
+                - List of tuples containing table IDs and the ratio of word IDs in the table
         """
         words_not_in_table = set(word_ids)
-        relevant_tables = set()
+        relevant_tables = []
         for table in self.tables:
             table_words = set(table["word_ids"]) & set(word_ids)
 
             if table_words:
-                relevant_tables.add(table["id"])
+                ratio = len(table_words) / len(table["word_ids"])
+                relevant_tables.append((table["id"], ratio))
                 words_not_in_table -= table_words
 
         return list(words_not_in_table), relevant_tables
@@ -240,16 +241,19 @@ class LinearizeLayout:
                         child_block = id2block[child_id]
                         for word_id in child_block["Relationships"][0]["Ids"]:
                             word_ids.append(word_id)
-                    words_not_in_table, relevant_table_ids = self._find_words_in_tables(
-                        word_ids
+                    words_not_in_table, relevant_table_infos = (
+                        self._find_words_in_tables(word_ids)
                     )
                     figure_caption = " ".join(
                         [id2block[word_id]["Text"] for word_id in words_not_in_table]
                     )
-                    for table_id in relevant_table_ids:
-                        table_block = id2block[table_id]
-                        table_text = self._generate_table_string(table_block, id2block)
-                        figure_caption += f"\n\n{table_text}"
+                    for table_id, ratio in relevant_table_infos:
+                        if ratio > 0.9:
+                            table_block = id2block[table_id]
+                            table_text = self._generate_table_string(
+                                table_block, id2block
+                            )
+                            figure_caption += f"\n\n{table_text}"
 
                 # Extract geometry information
                 geometry = block["Geometry"]
