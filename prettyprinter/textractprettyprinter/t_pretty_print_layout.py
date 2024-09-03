@@ -1,5 +1,6 @@
 import os
 import warnings
+import json
 import logging
 from trp.trp2 import TDocument
 from typing import List, Dict, Any, Tuple
@@ -231,7 +232,7 @@ class LinearizeLayout:
                     )
 
             elif block["BlockType"] == "LAYOUT_FIGURE":
-                figure_caption = None
+                figure_caption = ""
 
                 if "Relationships" in block:
                     word_ids = []
@@ -260,15 +261,16 @@ class LinearizeLayout:
                     "bounding_box": bounding_box,
                     "polygon": polygon,
                     "page": block.get("Page", 1),
+                    "caption": figure_caption,
                 }
 
                 # Convert figure_info to a string representation
-                figure_info_str = str(figure_info)
+                figure_info_str = json.dumps(figure_info)
 
                 if self.generate_markdown:
-                    yield f"![Figure]({(figure_caption or '').strip() })\n<!-- {figure_info_str} -->"
+                    yield f"![Figure]\n<!-- {figure_info_str} -->"
                 else:
-                    yield f"[Figure: {(figure_caption or '').strip()}]\n// {figure_info_str}"
+                    yield f"[Figure]\n// {figure_info_str}"
 
             if block["BlockType"] == "LINE" and "Text" in block:
                 if self.exclude_figure_text and self.figures:
