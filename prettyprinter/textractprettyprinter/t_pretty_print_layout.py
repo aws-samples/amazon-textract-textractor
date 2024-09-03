@@ -2,7 +2,7 @@ import os
 import warnings
 import logging
 from trp.trp2 import TDocument
-from typing import List
+from typing import List, Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +30,7 @@ class LinearizeLayout:
         self.save_txt_path = save_txt_path
         self.generate_markdown = generate_markdown
         self.figures = []
+        self.tables = []
 
     def _get_layout_blocks(self) -> tuple:
         """Get all blocks of type 'LAYOUT' and a dictionary of Ids mapped to their corresponding block."""
@@ -43,6 +44,23 @@ class LinearizeLayout:
             {"page": block.get("Page", 1), "geometry": block["Geometry"]["BoundingBox"]}
             for block in self.j["Blocks"]
             if block["BlockType"] == "LAYOUT_FIGURE"
+        ]
+        self.tables = [
+            {
+                "page": block.get("Page", 1),
+                "id": block.get("Id", ""),
+                "word_ids": [
+                    word_id
+                    for relationship in block.get("Relationships", [])
+                    if relationship["Type"] == "CHILD"
+                    for cell_id in relationship.get("Ids", [])
+                    for cell_rel in id2block[cell_id].get("Relationships", [])
+                    if cell_rel["Type"] == "CHILD"
+                    for word_id in cell_rel.get("Ids", [])
+                ],
+            }
+            for block in self.j["Blocks"]
+            if block["BlockType"] == "TABLE"
         ]
         if not layouts:
             logger.warning(
@@ -92,6 +110,87 @@ class LinearizeLayout:
         else:
             return False
 
+    def _find_words_in_tables(
+        self, word_ids: List[str]
+    ) -> Tuple[List[str], Dict[int, List[str]]]:
+        """
+        Check which word_ids are part of table cells and which are not.
+
+        Args:
+            word_ids (List[str]): List of word IDs to check.
+
+        Returns:
+            Tuple[List[str], Dict[int, List[str]]]: A tuple containing:
+                - List of word IDs not in any table
+                - Dictionary mapping table indices to lists of word IDs they contain
+        """
+        words_not_in_table = set(word_ids)
+        relevant_tables = set()
+        for table in self.tables:
+            table_words = set(table["word_ids"]) & set(word_ids)
+
+            if table_words:
+                relevant_tables.add(table["id"])
+                words_not_in_table -= table_words
+
+        return list(words_not_in_table), relevant_tables
+
+    def _generate_table_string(self, table_block, id2block):
+        table_content = {}
+        headers = {}
+        max_row = 0
+        max_col = 0
+        for cell_rel in table_block["Relationships"]:
+            if cell_rel["Type"] == "CHILD":
+                for cell_id in cell_rel["Ids"]:
+                    cell_block = id2block[cell_id]
+                    if "Relationships" in cell_block:
+                        cell_text = " ".join(
+                            [
+                                id2block[line_id]["Text"]
+                                for line_id in cell_block["Relationships"][0]["Ids"]
+                                if "Text" in id2block[line_id]
+                            ]
+                        )
+                        row_idx = cell_block["RowIndex"]
+                        col_idx = cell_block["ColumnIndex"]
+                        max_row = max(max_row, row_idx)
+                        max_col = max(max_col, col_idx)
+                        for r in range(cell_block.get("RowSpan", 1)):
+                            for c in range(cell_block.get("ColumnSpan", 1)):
+                                if (
+                                    "EntityTypes" in cell_block
+                                    and "COLUMN_HEADER" in cell_block["EntityTypes"]
+                                ):
+                                    headers[col_idx + c] = cell_text
+                                else:
+                                    table_content[(row_idx + r, col_idx + c)] = (
+                                        cell_text
+                                    )
+
+        table_data = []
+        start_row = 2 if headers else 1
+        for r in range(start_row, max_row + 1):
+            row_data = []
+            for c in range(1, max_col + 1):
+                row_data.append(table_content.get((r, c), ""))
+            table_data.append(row_data)
+
+        header_list = [headers.get(c, "") for c in range(1, max_col + 1)]
+
+        try:
+            from tabulate import tabulate
+        except ImportError:
+            raise ModuleNotFoundError(
+                "Could not import tabulate python package. "
+                "Please install it with `pip install tabulate`."
+            )
+
+        tab_fmt = "pipe" if self.generate_markdown else self.table_format
+        """If Markdown is enabled then default to pipe for tables"""
+
+        return tabulate(table_data, headers=header_list, tablefmt=tab_fmt)
+
     def _dfs(self, root, id2block):
         texts = []
         stack = [(root, 0)]
@@ -122,65 +221,7 @@ class LinearizeLayout:
                         break
 
                 if table_block and "Relationships" in table_block:
-                    table_content = {}
-                    headers = {}
-                    max_row = 0
-                    max_col = 0
-                    for cell_rel in table_block["Relationships"]:
-                        if cell_rel["Type"] == "CHILD":
-                            for cell_id in cell_rel["Ids"]:
-                                cell_block = id2block[cell_id]
-                                if "Relationships" in cell_block:
-                                    cell_text = " ".join(
-                                        [
-                                            id2block[line_id]["Text"]
-                                            for line_id in cell_block["Relationships"][
-                                                0
-                                            ]["Ids"]
-                                            if "Text" in id2block[line_id]
-                                        ]
-                                    )
-                                    row_idx = cell_block["RowIndex"]
-                                    col_idx = cell_block["ColumnIndex"]
-                                    max_row = max(max_row, row_idx)
-                                    max_col = max(max_col, col_idx)
-                                    for r in range(cell_block.get("RowSpan", 1)):
-                                        for c in range(cell_block.get("ColumnSpan", 1)):
-                                            if (
-                                                "EntityTypes" in cell_block
-                                                and "COLUMN_HEADER"
-                                                in cell_block["EntityTypes"]
-                                            ):
-                                                headers[col_idx + c] = cell_text
-                                            else:
-                                                table_content[
-                                                    (row_idx + r, col_idx + c)
-                                                ] = cell_text
-
-                    table_data = []
-                    start_row = 2 if headers else 1
-                    for r in range(start_row, max_row + 1):
-                        row_data = []
-                        for c in range(1, max_col + 1):
-                            row_data.append(table_content.get((r, c), ""))
-                        table_data.append(row_data)
-
-                    header_list = [headers.get(c, "") for c in range(1, max_col + 1)]
-
-                    try:
-                        from tabulate import tabulate
-                    except ImportError:
-                        raise ModuleNotFoundError(
-                            "Could not import tabulate python package. "
-                            "Please install it with `pip install tabulate`."
-                        )
-
-                    tab_fmt = "pipe" if self.generate_markdown else self.table_format
-                    """If Markdown is enabled then default to pipe for tables"""
-
-                    table_text = tabulate(
-                        table_data, headers=header_list, tablefmt=tab_fmt
-                    )
+                    table_text = self._generate_table_string(table_block, id2block)
                     yield table_text
                     continue
                 else:
@@ -190,14 +231,24 @@ class LinearizeLayout:
                     )
 
             elif block["BlockType"] == "LAYOUT_FIGURE":
-                figure_caption = ""
+                figure_caption = None
+
                 if "Relationships" in block:
+                    word_ids = []
                     for child_id in block["Relationships"][0]["Ids"]:
                         child_block = id2block[child_id]
-                        if child_block["BlockType"] == "LINE":
-                            figure_caption += child_block.get("Text", "") + " "
-                if not figure_caption:
-                    figure_caption = "No caption"
+                        for word_id in child_block["Relationships"][0]["Ids"]:
+                            word_ids.append(word_id)
+                    words_not_in_table, relevant_table_ids = self._find_words_in_tables(
+                        word_ids
+                    )
+                    figure_caption = " ".join(
+                        [id2block[word_id]["Text"] for word_id in words_not_in_table]
+                    )
+                    for table_id in relevant_table_ids:
+                        table_block = id2block[table_id]
+                        table_text = self._generate_table_string(table_block, id2block)
+                        figure_caption += f"\n\n{table_text}"
 
                 # Extract geometry information
                 geometry = block["Geometry"]
@@ -215,9 +266,9 @@ class LinearizeLayout:
                 figure_info_str = str(figure_info)
 
                 if self.generate_markdown:
-                    yield f"![Figure]({figure_caption.strip()})\n<!-- {figure_info_str} -->"
+                    yield f"![Figure]({(figure_caption or '').strip() })\n<!-- {figure_info_str} -->"
                 else:
-                    yield f"[Figure: {figure_caption.strip()}]\n// {figure_info_str}"
+                    yield f"[Figure: {(figure_caption or '').strip()}]\n// {figure_info_str}"
 
             if block["BlockType"] == "LINE" and "Text" in block:
                 if self.exclude_figure_text and self.figures:
