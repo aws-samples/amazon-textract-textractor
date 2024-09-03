@@ -189,6 +189,36 @@ class LinearizeLayout:
                                   Inlcuding TABLES feature may improve the layout output"
                     )
 
+            elif block["BlockType"] == "LAYOUT_FIGURE":
+                figure_caption = ""
+                if "Relationships" in block:
+                    for child_id in block["Relationships"][0]["Ids"]:
+                        child_block = id2block[child_id]
+                        if child_block["BlockType"] == "LINE":
+                            figure_caption += child_block.get("Text", "") + " "
+                if not figure_caption:
+                    figure_caption = "No caption"
+
+                # Extract geometry information
+                geometry = block["Geometry"]
+                bounding_box = geometry["BoundingBox"]
+                polygon = geometry["Polygon"]
+
+                # Create a dictionary with figure information
+                figure_info = {
+                    "bounding_box": bounding_box,
+                    "polygon": polygon,
+                    "page": block.get("Page", 1),
+                }
+
+                # Convert figure_info to a string representation
+                figure_info_str = str(figure_info)
+
+                if self.generate_markdown:
+                    yield f"![Figure]({figure_caption.strip()})\n<!-- {figure_info_str} -->"
+                else:
+                    yield f"[Figure: {figure_caption.strip()}]\n// {figure_info_str}"
+
             if block["BlockType"] == "LINE" and "Text" in block:
                 if self.exclude_figure_text and self.figures:
                     if any(
