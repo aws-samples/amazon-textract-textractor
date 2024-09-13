@@ -358,7 +358,7 @@ class Textractor:
         :param features: List of TextractFeatures to be extracted from the Document by the TextractAPI
         :type features: list, required
         :param queries: Queries to run on the document
-        :type features: Union[QueriesConfig, List[Query], List[str]]
+        :type queries: Union[QueriesConfig, List[Query], List[str]]
         :param save_image: Flag to indicate if document images are to be stored within the Document object. This is optional
                             and necessary only if the customer wants to visualize bounding boxes for their document entities.
         :type save_image: bool
