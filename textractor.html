@@ -153,8 +153,8 @@ This function is ideal for single page PDFs or single images.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file_source</strong> (<em>str</em><em> or </em><em>PIL.Image</em><em>, </em><em>required</em>) – Path to a file stored locally, on an S3 bucket or PIL Image</p></li>
-<li><p><strong>features</strong> (<em>Union</em><em>[</em><em>QueriesConfig</em><em>, </em><em>List</em><em>[</em><a class="reference internal" href="textractor.entities.html#textractor.entities.query.Query" title="textractor.entities.query.Query"><em>Query</em></a><em>]</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – List of TextractFeatures to be extracted from the Document by the TextractAPI</p></li>
-<li><p><strong>queries</strong> – Queries to run on the document</p></li>
+<li><p><strong>features</strong> (<em>list</em><em>, </em><em>required</em>) – List of TextractFeatures to be extracted from the Document by the TextractAPI</p></li>
+<li><p><strong>queries</strong> (<em>Union</em><em>[</em><em>QueriesConfig</em><em>, </em><em>List</em><em>[</em><a class="reference internal" href="textractor.entities.html#textractor.entities.query.Query" title="textractor.entities.query.Query"><em>Query</em></a><em>]</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Queries to run on the document</p></li>
 <li><p><strong>save_image</strong> (<em>bool</em>) – Flag to indicate if document images are to be stored within the Document object. This is optional
 and necessary only if the customer wants to visualize bounding boxes for their document entities.</p></li>
 </ul>
