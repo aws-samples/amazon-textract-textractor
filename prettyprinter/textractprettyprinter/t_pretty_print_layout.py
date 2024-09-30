@@ -115,7 +115,8 @@ class LinearizeLayout:
                                     max_col = max(max_col, col_idx)
                                     for r in range(cell_block.get('RowSpan', 1)):
                                         for c in range(cell_block.get('ColumnSpan', 1)):
-                                            if "EntityTypes" in cell_block and "COLUMN_HEADER" in cell_block["EntityTypes"]:
+                                            entity_types = cell_block["EntityTypes"]
+                                            if "EntityTypes" in cell_block and entity_types and "COLUMN_HEADER" in entity_types:
                                                 headers[col_idx + c] = cell_text
                                             else:
                                                 table_content[(row_idx + r, col_idx + c)] = cell_text
