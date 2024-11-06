@@ -66,6 +66,7 @@ from textractor.data.constants import (
     LAYOUT_TABLE,
     LAYOUT_KEY_VALUE,
 )
+from textractor.utils.legacy_utils import converter
 
 THRESHOLD = 0.95
 
@@ -1542,7 +1543,6 @@ def parser_analyze_expense_response(response):
     document.response = response
     return document
 
-
 def parse(response: dict) -> Document:
     """
     Ingests response data and API Call Mode and calls the appropriate function for it.
@@ -1559,4 +1559,4 @@ def parse(response: dict) -> Document:
     if "ExpenseDocuments" in response:
         return parser_analyze_expense_response(response)
     else:
-        return parse_document_api_response(response)
+        return parse_document_api_response(converter(response))
