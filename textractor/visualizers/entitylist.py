@@ -647,6 +647,8 @@ def _draw_bbox(
 
     # First drawing tables
     for entity in entities:
+        if entity.bbox is None:
+            continue
         width, height = image.size
         if entity.__class__.__name__ == "Table":
             overlayer_data = _get_overlayer_data(entity, width, height)
@@ -751,6 +753,8 @@ def _draw_bbox(
                     )
     # Second drawing bounding boxes
     for entity in entities:
+        if entity.bbox is None:
+            continue
         if entity.__class__.__name__ == "Query":
             overlayer_data = _get_overlayer_data(entity.result, width, height)
             drw.rectangle(
@@ -836,6 +840,8 @@ def _draw_bbox(
     # Second drawing, text
     if with_text:
         for entity in entities:
+            if entity.bbox is None:
+                continue
             if entity.__class__.__name__ == "Word":
                 width, height = image.size
                 overlayer_data = _get_overlayer_data(entity, width, height)
