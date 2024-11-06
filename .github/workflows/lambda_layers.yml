@@ -45,8 +45,8 @@ jobs:
       - name: Install Poppler
         run: |
           dnf install -y poppler-utils which mlocate libjpeg-devel fontconfig-devel libtiff-devel libpng-devel pkg-config
-          rpm -Uvh https://rpmfind.net/linux/opensuse/distribution/leap/15.2/repo/oss/x86_64/libopenjpeg1-1.5.2-lp152.4.9.x86_64.rpm
-          rpm -Uvh https://rpmfind.net/linux/opensuse/distribution/leap/15.3/repo/oss/x86_64/openjpeg-devel-1.5.2-2.28.x86_64.rpm
+          rpm -Uvh https://rpmfind.net/linux/opensuse/distribution/leap/15.5/repo/oss/x86_64/libopenjpeg1-1.5.2-150000.4.10.1.x86_64.rpm
+          rpm -Uvh https://rpmfind.net/linux/opensuse/distribution/leap/15.5/repo/oss/x86_64/openjpeg-devel-1.5.2-150000.4.10.1.x86_64.rpm
           updatedb && mkdir -p lambda_layer/python/bin
       - name: Copy dependencies
         run: |
