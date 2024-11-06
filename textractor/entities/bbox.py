@@ -31,8 +31,8 @@ class SpatialObject(ABC):
 class BoundingBox(SpatialObject):
     """
     Represents the bounding box of an object in the format of a dataclass with (x, y, width, height). \
-    By default :class:`BoundingBox` is set to work with denormalized co-ordinates: :math:`x \in [0, docwidth]` and :math:`y \in [0, docheight]`. \
-    Use the as_normalized_dict function to obtain BoundingBox with normalized co-ordinates: :math:`x \in [0, 1]` and :math:`y \in [0, 1]`. \\
+    By default :class:`BoundingBox` is set to work with denormalized co-ordinates: :math:`x \\in [0, docwidth]` and :math:`y \\in [0, docheight]`. \
+    Use the as_normalized_dict function to obtain BoundingBox with normalized co-ordinates: :math:`x \\in [0, 1]` and :math:`y \\in [0, 1]`. \\
 
     Create a BoundingBox like shown below: \\
 
