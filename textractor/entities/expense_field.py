@@ -185,7 +185,11 @@ class LineItemRow(DocumentEntity):
         # Dangerous, we need at least one expense in an expense row
         return BoundingBox.enclosing_bbox(
             [f.bbox for f in self._line_item_expense_fields],
-            spatial_object=self.expenses[0].bbox.spatial_object,
+            spatial_object=[
+                ex
+                for ex in self.expenses
+                if ex.bbox
+            ][0].bbox.spatial_object,
         )
 
     def __getitem__(self, index):
