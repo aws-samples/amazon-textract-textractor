@@ -14,11 +14,11 @@ from textractor.data.constants import (
 
 def converter(response):
     blocks_to_delete = []
-    page_block = None
+    page_blocks = []
     try:
         for i, block in enumerate(response["Blocks"]):
             if block.get("BlockType") == "PAGE":
-                page_block = block
+                page_blocks.append(block)
             elif block.get("BlockType", "").startswith("LAYOUT_FIGURE_"):
                 block["BlockType"] = LAYOUT_TEXT
             elif (
@@ -40,15 +40,19 @@ def converter(response):
             elif block.get("BlockType") == LAYOUT_FIGURE and "CONTAINER" in block.get("EntityTypes", []):
                 blocks_to_delete.append((i, block))
         
-        page_relationships = []
-        for relationship in page_block.get("Relationships", []):
-            if relationship["Type"] == "CHILD":
-                page_relationships = relationship["Ids"]
-                break
+        blocks_to_delete_id_set = set([b["Id"] for _, b in blocks_to_delete])
+        for page_block in page_blocks:
+            for relationship in page_block.get("Relationships", []):
+                if relationship["Type"] == "CHILD":
+                    relationship["Ids"] = [
+                        id
+                        for id in relationship["Ids"]
+                        if id not in blocks_to_delete_id_set
+                    ]
+                    break
             
         for i, block in blocks_to_delete[::-1]:
             del response["Blocks"][i]
-            page_relationships.remove(block["Id"])
     except Exception as ex:
         logging.warning(f"Failed to convert the response for backward compatibility. {str(ex)}")
     
