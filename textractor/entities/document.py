@@ -9,7 +9,7 @@ import logging
 import xlsxwriter
 import io
 from pathlib import Path
-from typing import List, IO, Union, AnyStr, Tuple
+from typing import List, IO, Union, AnyStr, Tuple, Optional
 from copy import deepcopy
 from collections import defaultdict
 from PIL import Image
@@ -23,7 +23,7 @@ from textractor.entities.table import Table
 from textractor.entities.query import Query
 from textractor.entities.signature import Signature
 from textractor.entities.layout import Layout
-from textractor.exceptions import InputError
+from textractor.exceptions import InputError, MissingDependencyException
 from textractor.entities.key_value import KeyValue
 from textractor.entities.bbox import SpatialObject
 from textractor.utils.s3_utils import download_from_s3
@@ -607,6 +607,49 @@ class Document(SpatialObject, Linearizable):
         logging.info(
             f"csv file stored at location {os.path.join(os.getcwd(),filepath)}"
         )
+
+    def export_kv_to_pandas(
+        self, 
+        trim: bool = True, 
+        confidence_threshold: float = 0.0, 
+        drop_confidence: bool = True
+        ):
+        """
+        Converts key-value pairs with optional confidence filtering into a pandas DataFrame.
+
+        :param trim: Flag to trim whitespace and punctuation from key and value text. Default is True.
+        :type trim: bool
+        :param confidence_threshold: Minimum confidence level required for a key-value pair to be included in the DataFrame. Default is 0.0.
+        :type confidence_threshold: float
+        :param drop_confidence: Flag to exclude the confidence column from the DataFrame. Default is True.
+        :type drop_confidence: bool
+
+        :return: A pandas DataFrame containing key-value pairs, and optionally their confidence scores.
+                The DataFrame will have 'Key' and 'Value' columns, and a 'Confidence' column if `drop_confidence` is False.
+        :rtype: pd.DataFrame
+        """
+        try:
+            from pandas import DataFrame
+        except ImportError:
+            raise MissingDependencyException("The pandas library is required for exporting tables to DataFrame objects. Please install it with `pip install pandas`.")
+        
+        keys: list[str] = []
+        values: list[str] = []
+        confidences: Optional[list[float]] = [] if not drop_confidence else None
+        
+        # Loop through key-values and filter by confidence threshold
+        for row in self.key_values:
+            if row.confidence > confidence_threshold:
+                keys.append(row.key.text.strip(": ").strip() if trim else row.key.text)
+                values.append(row.value.text.strip() if trim else row.value.text)
+                if confidences is not None:
+                    confidences.append(row.confidence)
+
+        data = {'Key': keys, 'Value': values}
+        if confidences is not None:
+            data['Confidence'] = confidences
+
+        return DataFrame(data)
 
     def export_kv_to_txt(
         self,
