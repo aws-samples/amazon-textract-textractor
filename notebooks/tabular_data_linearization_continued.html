@@ -505,7 +505,7 @@ div.rendered_html tbody tr:hover {
 <td></td>
 <td><p>Unit</p></td>
 </tr>
-<tr class="row-odd"><td><p></p></td>
+<tr class="row-odd"><td></td>
 <td></td>
 <td><p>Backup SRAM</p></td>
 <td><p>RTC and LSE</p></td>
@@ -519,7 +519,7 @@ div.rendered_html tbody tr:hover {
 <td></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p></p></td>
+<tr class="row-even"><td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -547,7 +547,7 @@ div.rendered_html tbody tr:hover {
 <td><p>24</p></td>
 <td><p>UA</p></td>
 </tr>
-<tr class="row-even"><td><p></p></td>
+<tr class="row-even"><td></td>
 <td></td>
 <td><p>ON</p></td>
 <td><p>OFF</p></td>
@@ -561,7 +561,7 @@ div.rendered_html tbody tr:hover {
 <td><p>87</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p></p></td>
+<tr class="row-odd"><td></td>
 <td></td>
 <td><p>OFF</p></td>
 <td><p>ON</p></td>
@@ -587,7 +587,7 @@ div.rendered_html tbody tr:hover {
 </td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p></p></td>
+<tr class="row-even"><td></td>
 <td></td>
 <td><p>ON</p></td>
 <td><p>ON</p></td>
@@ -626,8 +626,8 @@ div.rendered_html tbody tr:hover {
 <span class="k">def</span> <span class="nf">get_response_from_claude</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">prompt_data</span><span class="p">):</span>
     <span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
         <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Human: Given the following document:</span>
-<span class="s2">        </span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2"></span>
-<span class="s2">        Answer the following:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">prompt_data</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">        </span><span class="si">{</span><span class="n">context</span><span class="si">}</span>
+<span class="s2">        Answer the following:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">prompt_data</span><span class="si">}</span>
 <span class="s2">        Assistant:&quot;&quot;&quot;</span><span class="p">,</span>
         <span class="s2">&quot;max_tokens_to_sample&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
         <span class="s2">&quot;top_k&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>

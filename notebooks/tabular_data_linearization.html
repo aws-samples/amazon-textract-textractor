@@ -583,8 +583,8 @@ Guidance and Manufacturer&#39;s Declaration - Electromagnetic Immunity   The Min
 <span class="k">def</span> <span class="nf">get_response_from_claude</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">prompt_data</span><span class="p">):</span>
     <span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
         <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Human: Given the following document:</span>
-<span class="s2">        </span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2"></span>
-<span class="s2">        Answer the following:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">prompt_data</span><span class="si">}</span><span class="s2"></span>
+<span class="s2">        </span><span class="si">{</span><span class="n">context</span><span class="si">}</span>
+<span class="s2">        Answer the following:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">prompt_data</span><span class="si">}</span>
 <span class="s2">        Assistant:&quot;&quot;&quot;</span><span class="p">,</span>
         <span class="s2">&quot;max_tokens_to_sample&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
         <span class="s2">&quot;top_k&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
