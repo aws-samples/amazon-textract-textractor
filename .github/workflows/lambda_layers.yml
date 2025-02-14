@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     container: public.ecr.aws/sam/build-python3.12:latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: 'master'
       - name: Install and build
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     container: public.ecr.aws/sam/build-python3.12:latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: 'master'
       - name: Install and build
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     container: public.ecr.aws/sam/build-python3.12:latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: 'master'
       - name: Install Poppler
@@ -89,7 +89,7 @@ jobs:
           pip3 install pdf2image --target=. && \
           cd .. \
           && zip -r /textractor.zip python/
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: textractor-lambda-p312-pdf
           path: lambda_layer/
@@ -108,7 +108,7 @@ jobs:
           pip3 install pypdfium2 --target=. && \
           cd .. \
           && zip -r /textractor.zip python/
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: textractor-lambda-p312-pdfium
           path: lambda_layer/
