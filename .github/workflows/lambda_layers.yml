@@ -14,7 +14,7 @@ jobs:
           mkdir -p lambda_layer/python && \
           cd lambda_layer/python && \
           pip3 install ../../ --target=.
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: textractor-lambda-p312
           path: lambda_layer/
@@ -31,7 +31,7 @@ jobs:
           cd lambda_layer/python && \
           pip3 install ../../ --target=. && \
           pip3 install pandas --target=.
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: textractor-lambda-p312-pandas
           path: lambda_layer/
