@@ -168,7 +168,7 @@ class LinearizeLayout:
                 yield combined_text
                 
             if block["BlockType"].startswith('LAYOUT') and block["BlockType"] not in ["LAYOUT_TITLE", "LAYOUT_SECTION_HEADER"]:
-                if "Relationships" in block:
+                if "Relationships" in block and block["Relationships"] is not None:
                     relationships = block["Relationships"]
                     children = [(x, depth + 1) for x in relationships[0]['Ids']]            
                     stack.extend(reversed(children))
