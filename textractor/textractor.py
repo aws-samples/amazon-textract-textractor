@@ -34,18 +34,6 @@ from textractcaller import (
     QueriesConfig,
 )
 from textractcaller.t_call import Textract_Call_Mode, Textract_API, get_full_json
-
-try:
-    try:
-        import pypdfium2
-    except:
-        import pdf2image
-
-    IS_PDF_RENDERING_ENABLED = True
-except ImportError:
-    IS_PDF_RENDERING_ENABLED = False
-    logging.info("pypdfium2 and pdf2image are both not installed, client-side PDF rasterizing is disabled")
-
 from textractor.data.constants import (
     TextractAPI,
     TextractFeatures,
@@ -64,6 +52,18 @@ from textractor.exceptions import (
     InvalidS3ObjectException,
 )
 
+logger = logging.getLogger(__name__)
+
+try:
+    try:
+        import pypdfium2
+    except:
+        import pdf2image
+
+    IS_PDF_RENDERING_ENABLED = True
+except ImportError:
+    IS_PDF_RENDERING_ENABLED = False
+    logger.info("pypdfium2 and pdf2image are both not installed, client-side PDF rasterizing is disabled")
 
 class Textractor:
     """
@@ -183,7 +183,7 @@ class Textractor:
             )
 
         elif isinstance(file_source, str):
-            logging.debug("Filepath given.")
+            logger.debug("Filepath given.")
             if not save_image and file_source.lower().endswith(".pdf"):
                 images = []
             else:
@@ -195,12 +195,12 @@ class Textractor:
                 file_source = _image_to_byte_array(images[0])    
 
         elif isinstance(file_source, Image.Image):
-            logging.debug("PIL Image given.")
+            logger.debug("PIL Image given.")
             images = [file_source]
             file_source = _image_to_byte_array(file_source)
 
         elif isinstance(file_source, list) and isinstance(file_source[0], Image.Image):
-            logging.debug("List of PIL Image given.")
+            logger.debug("List of PIL Image given.")
             images = deepcopy(file_source)
             file_source = _image_to_byte_array(images[0])
 
@@ -373,7 +373,7 @@ class Textractor:
             )
 
         elif isinstance(file_source, str):
-            logging.debug("Filepath given.")
+            logger.debug("Filepath given.")
             if not save_image and file_source.lower().endswith(".pdf"):
                 images = []
             else:
@@ -384,12 +384,12 @@ class Textractor:
                     )
                 file_source = _image_to_byte_array(images[0])    
         elif isinstance(file_source, Image.Image):
-            logging.debug("PIL Image given.")
+            logger.debug("PIL Image given.")
             images = [file_source]
             file_source = _image_to_byte_array(file_source)
 
         elif isinstance(file_source, list) and isinstance(file_source[0], Image.Image):
-            logging.debug("List of PIL Image given.")
+            logger.debug("List of PIL Image given.")
             images = deepcopy(file_source)
             file_source = _image_to_byte_array(images[0])
 
@@ -606,13 +606,13 @@ class Textractor:
         :rtype: Document
         """
         if isinstance(file_source, str):
-            logging.debug("Filepath given.")
+            logger.debug("Filepath given.")
             images = self._get_document_images_from_path(file_source)
         elif isinstance(file_source, Image.Image):
-            logging.debug("PIL Image given.")
+            logger.debug("PIL Image given.")
             images = [file_source]
         elif isinstance(file_source, list) and isinstance(file_source[0], Image.Image):
-            logging.debug("List of PIL Image given.")
+            logger.debug("List of PIL Image given.")
             # FIXME: Is this needed?
             images = deepcopy(file_source)
         else:
@@ -665,7 +665,7 @@ class Textractor:
             )
 
         elif isinstance(file_source, str):
-            logging.debug("Filepath given.")
+            logger.debug("Filepath given.")
             images = self._get_document_images_from_path(file_source)
             if len(images) > 1:
                 raise IncorrectMethodException(
@@ -674,12 +674,12 @@ class Textractor:
             file_source = _image_to_byte_array(images[0])
 
         elif isinstance(file_source, Image.Image):
-            logging.debug("PIL Image given.")
+            logger.debug("PIL Image given.")
             images = [file_source.copy()]
             file_source = _image_to_byte_array(file_source)
 
         elif isinstance(file_source, list) and isinstance(file_source[0], Image.Image):
-            logging.debug("List of PIL Image given.")
+            logger.debug("List of PIL Image given.")
             images = deepcopy(file_source)
             file_source = _image_to_byte_array(images[0])
 

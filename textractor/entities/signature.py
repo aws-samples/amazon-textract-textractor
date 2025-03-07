@@ -6,8 +6,6 @@ This class contains the associated metadata with the :class:`Signature` entity i
 bounding box information, page number, Page ID and confidence of detection.
 """
 
-import logging
-from typing import List
 import uuid
 from textractor.data.text_linearization_config import TextLinearizationConfig
 

@@ -1,12 +1,7 @@
 """The IdentityDocument class is the object representation of an AnalyzeID response. It is similar to a dictionary. Despite its name it does not inherit from Document as the AnalyzeID response does not contains position information."""
 
 import os
-import string
-import logging
-import xlsxwriter
 from typing import List, Dict, Union
-from copy import deepcopy
-from collections import defaultdict
 from textractor.data.constants import AnalyzeIDFields
 from textractor.entities.bbox import SpatialObject
 from textractor.entities.identity_field import IdentityField

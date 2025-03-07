@@ -20,6 +20,7 @@ from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.visualizers.entitylist import EntityList
 from textractor.utils.html_utils import add_id_to_html_tag
 
+logger = logging.getLogger(__name__)
 
 class KeyValue(DocumentEntity):
     """
@@ -101,7 +102,7 @@ class KeyValue(DocumentEntity):
         :rtype: EntityList[Word]
         """
         if not self._words:
-            logging.info("Key contains no words objects.")
+            logger.info("Key contains no words objects.")
             return []
         return self._words
 
@@ -123,7 +124,7 @@ class KeyValue(DocumentEntity):
         :rtype: Value
         """
         if self._value is None:
-            logging.warning(
+            logger.warning(
                 "Asked for a value but it was never attributed "
                 "-> make sure to assign value to key with the `kv.value = <Value Object>` property setter"
             )
@@ -193,7 +194,7 @@ class KeyValue(DocumentEntity):
             )
 
         if not self.words:
-            logging.info("Document contains no word entities.")
+            logger.info("Document contains no word entities.")
             return []
         else:
             return EntityList(
@@ -211,12 +212,12 @@ class KeyValue(DocumentEntity):
             if len(self.value.children) == 1:
                 return self.value.children[0].is_selected()
             else:
-                logging.info(
+                logger.info(
                     "is_checked() was called on a KeyValue that contains more than one checkbox. Returning first checkbox"
                 )
                 return self.value.children[0].is_selected()
         else:
-            logging.info(
+            logger.info(
                 "is_checked() was called on a KeyValue that does not contain checkboxes. Returning False"
             )
             return False
