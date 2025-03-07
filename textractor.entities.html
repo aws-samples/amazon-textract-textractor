@@ -400,6 +400,28 @@ key-values and checkboxes. The user can manipulate original data or produce a co
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.document.Document.export_kv_to_pandas">
+<span class="sig-name descname"><span class="pre">export_kv_to_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_confidence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document.Document.export_kv_to_pandas" title="Permalink to this definition"></a></dt>
+<dd><p>Converts key-value pairs with optional confidence filtering into a pandas DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trim</strong> (<em>bool</em>) – Flag to trim whitespace and punctuation from key and value text. Default is True.</p></li>
+<li><p><strong>confidence_threshold</strong> (<em>float</em>) – Minimum confidence level required for a key-value pair to be included in the DataFrame. Default is 0.0.</p></li>
+<li><p><strong>drop_confidence</strong> (<em>bool</em>) – Flag to exclude the confidence column from the DataFrame. Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas DataFrame containing key-value pairs, and optionally their confidence scores.
+The DataFrame will have ‘Key’ and ‘Value’ columns, and a ‘Confidence’ column if <cite>drop_confidence</cite> is False.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="textractor.entities.document.Document.export_kv_to_txt">
 <span class="sig-name descname"><span class="pre">export_kv_to_txt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_kv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_checkboxes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Key-Values.txt'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#textractor.entities.document.Document.export_kv_to_txt" title="Permalink to this definition"></a></dt>
 <dd><p>Export key-value entities and checkboxes in txt format.</p>
