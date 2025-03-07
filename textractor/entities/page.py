@@ -73,8 +73,7 @@ class Page(SpatialObject, Linearizable):
         self._tables: EntityList[Table] = EntityList([])
         self._queries: EntityList[Query] = EntityList([])
         self._expense_documents: EntityList[ExpenseDocument] = EntityList([])
-        self._leaf_layouts: EntityList[Layout] = EntityList([])
-        self._container_layouts: EntityList[Layout] = EntityList([])
+        self._layouts: EntityList[Layout] = EntityList([])
         self.kv_cache = defaultdict(list)
         self.metadata = {}
         self.page_num = page_num
@@ -315,52 +314,27 @@ class Page(SpatialObject, Linearizable):
         :return: List of Layout objects.
         :rtype: EntityList
         """
-        return EntityList(
-            sorted(
-                self._leaf_layouts + self._container_layouts,
-                key=lambda c: c.reading_order,
-            )
-        )
+        return EntityList(sorted(self._layouts, key=lambda c: c.reading_order,))
 
     @property
-    def leaf_layouts(self) -> EntityList[Layout]:
+    def layouts(self) -> EntityList[Layout]:
         """
-        Returns all the leaf :class:`Layout` objects present in the Page.
+        Returns all the :class:`Layout` objects present in the Page.
 
         :return: List of Layout objects.
         :rtype: EntityList
         """
-        return self._leaf_layouts
+        return self._layouts
 
-    @leaf_layouts.setter
-    def leaf_layouts(self, leaf_layouts: List[Layout]):
+    @layouts.setter
+    def layouts(self, layouts: List[Layout]):
         """
-        Add leaf layout objects to the Page.
-
-        :param layouts: List of Layout objects.
-        :type layouts: list
-        """
-        self._leaf_layouts = EntityList(leaf_layouts)
-
-    @property
-    def container_layouts(self) -> EntityList[Layout]:
-        """
-        Returns all the container :class:`Layout` objects present in the Page.
-
-        :return: List of Layout objects.
-        :rtype: EntityList
-        """
-        return self._container_layouts
-
-    @container_layouts.setter
-    def container_layouts(self, container_layouts: List[Layout]):
-        """
-        Add Layout objects to the Page.
+        Add layout objects to the Page.
 
         :param layouts: List of Layout objects.
         :type layouts: list
         """
-        self._container_layouts = EntityList(container_layouts)
+        self._layouts = EntityList(layouts)
 
     @property
     def expense_documents(self) -> EntityList[ExpenseDocument]:
