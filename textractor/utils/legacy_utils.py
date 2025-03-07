@@ -12,6 +12,8 @@ from textractor.data.constants import (
     LAYOUT_PAGE_NUMBER,
 )
 
+logger = logging.getLogger(__name__)
+
 def converter(response):
     blocks_to_delete = []
     page_blocks = []
@@ -54,6 +56,6 @@ def converter(response):
         for i, block in blocks_to_delete[::-1]:
             del response["Blocks"][i]
     except Exception as ex:
-        logging.warning(f"Failed to convert the response for backward compatibility. {str(ex)}")
+        logger.warning(f"Failed to convert the response for backward compatibility. {str(ex)}")
     
     return response

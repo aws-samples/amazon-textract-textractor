@@ -39,6 +39,7 @@ from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.data.html_linearization_config import HTMLLinearizationConfig
 from textractor.entities.linearizable import Linearizable
 
+logger = logging.getLogger(__name__)
 
 class Document(SpatialObject, Linearizable):
     """
@@ -389,7 +390,7 @@ class Document(SpatialObject, Linearizable):
         :rtype: EntityList[Word]
         """
         if not self.words:
-            logging.warn("Document contains no word entities.")
+            logger.warning("Document contains no word entities.")
             return []
 
         filtered_words = EntityList()
@@ -554,12 +555,12 @@ class Document(SpatialObject, Linearizable):
                 lowest_similarity = top_n[-1][1]
 
         if not top_n:
-            logging.warning(
+            logger.warning(
                 f"Query key does not match any existing keys in the document.{os.linesep}{self.keys()}"
             )
             return EntityList([])
 
-        logging.info(f"Query key matched {len(top_n)} key-values in the document.")
+        logger.info(f"Query key matched {len(top_n)} key-values in the document.")
 
         return EntityList([value[0] for value in top_n])
 
@@ -586,14 +587,14 @@ class Document(SpatialObject, Linearizable):
         keys = []
         values = []
         if include_kv and not self.key_values:
-            logging.warning("Document does not contain key-values.")
+            logger.warning("Document does not contain key-values.")
         elif include_kv:
             for kv in self.key_values:
                 keys.append(" ".join([w.text for w in kv.key]))
                 values.append(kv.value.get_text())
 
         if include_checkboxes and not self.checkboxes:
-            logging.warning("Document does not contain checkbox elements.")
+            logger.warning("Document does not contain checkbox elements.")
         elif include_checkboxes:
             for kv in self.checkboxes:
                 keys.append(" ".join([w.text for w in kv.key]))
@@ -604,7 +605,7 @@ class Document(SpatialObject, Linearizable):
             for k, v in zip(keys, values):
                 f.write(f"{k}{sep}{v}{os.linesep}")
 
-        logging.info(
+        logger.info(
             f"csv file stored at location {os.path.join(os.getcwd(),filepath)}"
         )
 
@@ -670,7 +671,7 @@ class Document(SpatialObject, Linearizable):
         export_str = ""
         index = 1
         if include_kv and not self.key_values:
-            logging.warning("Document does not contain key-values.")
+            logger.warning("Document does not contain key-values.")
         elif include_kv:
             for kv in self.key_values:
                 export_str += (
@@ -679,7 +680,7 @@ class Document(SpatialObject, Linearizable):
                 index += 1
 
         if include_checkboxes and not self.checkboxes:
-            logging.warning("Document does not contain checkbox elements.")
+            logger.warning("Document does not contain checkbox elements.")
         elif include_checkboxes:
             for kv in self.checkboxes:
                 export_str += f"{index}. {kv.key.__repr__()} : {kv.value.children[0].status.name}{os.linesep}"
@@ -687,7 +688,7 @@ class Document(SpatialObject, Linearizable):
 
         with open(filepath, "w") as text_file:
             text_file.write(export_str)
-        logging.info(
+        logger.info(
             f"txt file stored at location {os.path.join(os.getcwd(),filepath)}"
         )
 
@@ -700,7 +701,7 @@ class Document(SpatialObject, Linearizable):
         :type filepath: str, required
         """
         if not filepath:
-            logging.error("Filepath required to store excel file.")
+            logger.error("Filepath required to store excel file.")
         workbook = xlsxwriter.Workbook(filepath)
         for table in self.tables:
             workbook = table.to_excel(
@@ -714,7 +715,7 @@ class Document(SpatialObject, Linearizable):
         :rtype: EntityList[Word]
         """
         if not self.words:
-            logging.warning("Words have not been assigned to this Document object.")
+            logger.warning("Words have not been assigned to this Document object.")
             return []
 
         else:
@@ -867,7 +868,7 @@ class Document(SpatialObject, Linearizable):
         )
 
         if not word_1_objects:
-            logging.warning(f"{word_1} not found in page {page}")
+            logger.warning(f"{word_1} not found in page {page}")
             return -1, -1, -1, -1
         else:
             word_1_obj = word_1_objects[0]
@@ -882,7 +883,7 @@ class Document(SpatialObject, Linearizable):
             )
             word_2_objects = [word for word in word_2_objects if word.page == page]
             if not word_2_objects:
-                logging.warning(f"{word_2} not found in page {page}")
+                logger.warning(f"{word_2} not found in page {page}")
                 return -1, -1, -1, -1
             else:
                 word_2_obj = word_2_objects[0]

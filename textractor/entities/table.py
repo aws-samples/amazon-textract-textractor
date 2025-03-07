@@ -34,6 +34,8 @@ from textractor.data.text_linearization_config import TextLinearizationConfig
 from textractor.data.html_linearization_config import HTMLLinearizationConfig
 from textractor.utils.html_utils import add_id_to_html_tag
 
+logger = logging.getLogger(__name__)
+
 class Table(DocumentEntity):
     """
     To create a new :class:`Table` object we need the following:
@@ -64,7 +66,7 @@ class Table(DocumentEntity):
         all_words = sum([cell.words for cell in self.table_cells], [])
 
         if not all_words:
-            logging.info("Table contains no word entities.")
+            logger.info("Table contains no word entities.")
 
         return EntityList(all_words)
 
@@ -310,7 +312,7 @@ class Table(DocumentEntity):
         """
 
         if (row_wise and column_wise) or (not row_wise and not column_wise):
-            logging.warning(
+            logger.warning(
                 "Both parameters cannot be equal. Choose one (row_wise=True or column_wise=True)"
             )
             return {}
@@ -350,7 +352,7 @@ class Table(DocumentEntity):
 
         cell_property = get_metadata_attr_name(cell_type)
         if cell_property == "":
-            logging.info("No cells of this type exist.")
+            logger.info("No cells of this type exist.")
             return []
         filtered_cells = {}
 
@@ -371,7 +373,7 @@ class Table(DocumentEntity):
             self._column_headers = filtered_cells
 
             if not self._column_headers:
-                logging.info("Column headers have not been identified in this table.")
+                logger.info("Column headers have not been identified in this table.")
 
         return filtered_cells
 
@@ -560,7 +562,7 @@ class Table(DocumentEntity):
                 use_columns = True
             else:
                 use_columns = False
-                logging.info(
+                logger.info(
                     f"The number of column header cell do not match the column count, ignoring them, {len(columns)} vs {self.column_count}"
                 )
 
@@ -632,7 +634,7 @@ class Table(DocumentEntity):
             if filepath is not None:
                 workbook = xlsxwriter.Workbook(filepath)
             else:
-                logging.error("You need to provide a filepath or a workbook")
+                logger.error("You need to provide a filepath or a workbook")
 
         worksheet = workbook.add_worksheet()
 

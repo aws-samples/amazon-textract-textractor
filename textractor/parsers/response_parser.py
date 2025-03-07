@@ -72,6 +72,7 @@ from textractor.utils.text_utils import compare_bounding_box
 
 THRESHOLD = 0.95
 
+logger = logging.getLogger(__name__)
 
 def _create_document_object(response: dict) -> Document:
     """
@@ -148,7 +149,7 @@ def _get_relationship_ids(block_json: Dict[str, Any], relationship: str) -> List
             if rel["Type"] == relationship
         ][0]
     except:
-        logging.info(
+        logger.info(
             f"{block_json['BlockType']} - {block_json['Id']} does not have ids with {relationship} relationship."
         )
     return ids
@@ -1590,7 +1591,7 @@ def parser_analyze_expense_response(response):
             first_field = doc["LineItemGroups"][0]["LineItems"][0]["LineItemExpenseFields"][0]
             page_number = first_field.get("PageNumber")
         if page_number is None:
-            logging.warning(
+            logger.warning(
                 "Skipping parsing ExpenseDocument %s as its page number could not be determined"
                 % (doc["ExpenseIndex"],)
             )

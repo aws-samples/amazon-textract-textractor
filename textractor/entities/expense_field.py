@@ -8,6 +8,7 @@ from textractor.entities.document_entity import DocumentEntity
 from textractor.data.constants import AnalyzeExpenseLineItemFields as AELineItems
 from typing import List, Tuple
 
+logger = logging.getLogger(__name__)
 
 @dataclasses.dataclass
 class ExpenseType:
@@ -257,7 +258,7 @@ class LineItemGroup(DocumentEntity):
         try:
             from pandas import DataFrame
         except ImportError:
-            logging.info(
+            logger.info(
                 "pandas library is required for exporting tables to DataFrame objects"
             )
             return None
