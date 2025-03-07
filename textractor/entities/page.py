@@ -738,6 +738,7 @@ class Page(SpatialObject, Linearizable):
         include_kv: bool = True,
         include_checkboxes: bool = True,
         filepath: str = "Key-Values.csv",
+        sep: str = ",",
     ):
         """
         Export key-value entities and checkboxes in csv format.
@@ -748,6 +749,8 @@ class Page(SpatialObject, Linearizable):
         :type include_checkboxes: bool
         :param filepath: Path to where file is to be stored.
         :type filepath: str
+        :param sep: Separator to be used in the csv file.
+        :type sep: str
         """
         keys = []
         values = []
@@ -766,9 +769,9 @@ class Page(SpatialObject, Linearizable):
                 values.append(kv.value.children[0].status.name)
 
         with open(filepath, "w") as f:
-            f.write(f"Key,Value{os.linesep}")
+            f.write(f"Key{sep}Value{os.linesep}")
             for k, v in zip(keys, values):
-                f.write(f"{k},{v}{os.linesep}")
+                f.write(f"{k}{sep}{v}{os.linesep}")
 
         logging.info(
             f"csv file stored at location {os.path.join(os.getcwd(), filepath)}"
