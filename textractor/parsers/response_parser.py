@@ -7,6 +7,7 @@ Use ResponseParser's parse function to handle API response and convert them to D
 import logging
 import uuid
 from copy import deepcopy
+from functools import cmp_to_key
 from typing import Any, List, Dict, Tuple
 from collections import defaultdict
 from textractor.entities.identity_document import IdentityDocument
@@ -67,6 +68,7 @@ from textractor.data.constants import (
     LAYOUT_KEY_VALUE,
 )
 from textractor.utils.legacy_utils import converter
+from textractor.utils.text_utils import compare_bounding_box
 
 THRESHOLD = 0.95
 
@@ -514,7 +516,7 @@ def _create_signature_objects(
         signature.page_id = page.id
 
     signatures_added = set()
-    for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
+    for layout in sorted(page.layouts, key=lambda x: x.bbox.y):
         if layout.layout_type == LAYOUT_ENTITY:
             continue
         for signature in sorted(signatures.values(), key=lambda x: x.bbox.y):
@@ -543,7 +545,7 @@ def _create_signature_objects(
             signature_layouts.append(layout)
 
     layouts_to_remove = []
-    for layout in page.leaf_layouts:
+    for layout in page.layouts:
         layouts_that_intersect = []
         for signature_layout in signature_layouts:
             intersection = layout.bbox.get_intersection(signature_layout.bbox).area
@@ -576,10 +578,10 @@ def _create_signature_objects(
                 layouts_to_remove.append(layout)
 
     for layout in layouts_to_remove:
-        page.leaf_layouts.remove(layout)
+        page.layouts.remove(layout)
 
     for layout in signature_layouts:
-        page.leaf_layouts.append(layout)
+        page.layouts.append(layout)
 
     return list(signatures_added)
 
@@ -691,19 +693,6 @@ def _create_keyvalue_objects(
         kv.page = page.page_num
         kv.page_id = page.id
 
-    #kv_added = set()
-    #for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
-    #    if layout.layout_type == LAYOUT_ENTITY:
-    #        continue
-    #    for kv in sorted(key_values, key=lambda x: x.bbox.y):
-    #        if (
-    #            layout.bbox.get_intersection(kv.bbox).area > THRESHOLD * kv.bbox.area
-    #            and kv not in kv_added
-    #        ):
-    #            layout.children.append(kv)
-    #            kv_added.add(kv)
-    #            key_values.remove(kv)
-
     return key_values, kv_words, selection_elements
 
 
@@ -735,14 +724,13 @@ def _create_layout_objects(
         if layout_id in page.child_ids:
             page_layouts.append(id_json_map[layout_id])
 
-    leaf_layouts = []
-    container_layouts = []
+    layouts = []
     parsed_blocks = set()
     for i, block in enumerate(page_layouts):
         if block["Id"] in parsed_blocks:
             continue
         if block["BlockType"] in (LAYOUT_LIST,):
-            container_layouts.append(
+            layouts.append(
                 Layout(
                     entity_id=block["Id"],
                     confidence=block["Confidence"],
@@ -760,7 +748,7 @@ def _create_layout_objects(
                 for leaf_id in relationship["Ids"]:
                     block = id_json_map[leaf_id]
                     parsed_blocks.add(leaf_id)
-                    container_layouts[-1].children.append(
+                    layouts[-1].children.append(
                         Layout(
                             entity_id=block["Id"],
                             confidence=block["Confidence"],
@@ -771,15 +759,15 @@ def _create_layout_objects(
                             ),
                         )
                     )
-                    container_layouts[-1].children[-1].raw_object = block
+                    layouts[-1].children[-1].raw_object = block
                     for relationship in (block.get("Relationships", []) or []):
                         if relationship["Type"] != "CHILD":
                             continue
-                        container_layouts[-1].children[-1].add_children(
+                        layouts[-1].children[-1].add_children(
                             [line_by_id[line_id] for line_id in relationship["Ids"] if line_id in line_by_id]
                         )
         else:
-            leaf_layouts.append(
+            layouts.append(
                 Layout(
                     entity_id=block["Id"],
                     confidence=block["Confidence"],
@@ -790,19 +778,19 @@ def _create_layout_objects(
                     ),
                 )
             )
-            leaf_layouts[-1].raw_object = block
+            layouts[-1].raw_object = block
             for relationship in (block.get("Relationships", []) or []):
                 if relationship["Type"] != "CHILD":
                     continue
-                leaf_layouts[-1].add_children(
+                layouts[-1].add_children(
                     [line_by_id[line_id] for line_id in relationship["Ids"] if line_id in line_by_id]
                 )
 
-    for layout in leaf_layouts + container_layouts:
+    for layout in layouts:
         layout.page = page.page_num
         layout.page_id = page.id
 
-    return container_layouts, leaf_layouts
+    return layouts
 
 
 def _create_table_cell_objects(
@@ -1089,7 +1077,7 @@ def _create_table_objects(
 
     # Assign tables to layout elements
     table_added = set()
-    for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
+    for layout in sorted(page.layouts, key=lambda x: x.bbox.y):
         if layout.layout_type == LAYOUT_TABLE:
             for table in sorted(list(tables.values()), key=lambda x: x.bbox.y):
                 if layout.bbox.get_intersection(table.bbox).area > THRESHOLD*table.bbox.area and table not in table_added:
@@ -1114,39 +1102,150 @@ def _create_table_objects(
             layout.page_id = page.id
             tables_layout.append(layout)
 
+    tables_layout.sort(key=cmp_to_key(compare_bounding_box))
+
     layouts_to_remove = []
-    for layout in page.leaf_layouts:
-        layouts_that_intersect = []
+    # Here we will be clever-er and split layouts
+    layouts_that_intersect = defaultdict(list)
+    for layout in page.layouts:
         for table_layout in tables_layout:
             intersection = layout.bbox.get_intersection(table_layout.bbox).area
             if intersection:
-                layouts_that_intersect.append(table_layout)
-        words_in_sub_layouts = set()
-        for i, intersect_layout in enumerate(
-            sorted(layouts_that_intersect, key=lambda l: (l.bbox.y, l.bbox.x))
-        ):
-            intersect_layout.reading_order = (
-                (layout.reading_order + (i + 1) * 0.1)
-                if intersect_layout.reading_order == -1
-                else min(
-                    intersect_layout.reading_order, layout.reading_order + (i + 1) * 0.1
-                )
-            )
+                layouts_that_intersect[layout].append((table_layout, intersection))
+
+    reversed_layouts_that_intersect = {}
+    for layout, intersect_tables in layouts_that_intersect.items():
+        for intersect_table, intersection in intersect_tables:
+            reversed_layouts_that_intersect[intersect_table] = reversed_layouts_that_intersect.get(intersect_table, []) + [(layout, intersection)]
+    
+    layout_tree = {}
+    for layout, intersect_tables in layouts_that_intersect.items():
+        vertical_overlap = False
+        for i, (intersect_layout, intersection) in enumerate(intersect_tables):
             for w in intersect_layout.children[0].words:
-                words_in_sub_layouts.add(w)
-        if words_in_sub_layouts:
-            for word in words_in_sub_layouts:
-                layout.remove(word)
-            if layout._children:
-                layout.bbox = BoundingBox.enclosing_bbox(layout._children)
+                layout.remove(w)
+            if (
+                len(reversed_layouts_that_intersect[intersect_layout]) <= 100 and
+                layout.layout_type != LAYOUT_FIGURE and
+                intersection >= intersect_layout.bbox.area * THRESHOLD and
+                layout.children
+            ):
+                    def has_vertical_overlap(bbox_a, bbox_b):
+                        # Before
+                        if bbox_a.y < bbox_b.y and (bbox_a.y + bbox_a.height) < bbox_b.y:
+                            return False
+                        # After
+                        elif bbox_a.y > bbox_b.y and bbox_a.y > (bbox_b.y + bbox_b.height):
+                            return False
+                        else:
+                            return True
+
+                    if any([
+                        has_vertical_overlap(c.bbox, intersect_layout.bbox) for c in layout.children
+                    ]) or vertical_overlap:
+                        vertical_overlap = True
+                        # There is some vertical overlap, we fall back to the old behavior
+                        intersect_layout.reading_order = (
+                            (layout.reading_order + (i + 1) * 0.01)
+                            if intersect_layout.reading_order == -1
+                            else min(
+                                intersect_layout.reading_order, layout.reading_order + (i + 1) * 0.01
+                            )
+                        )
+                    else:
+                        insert_layout = layout
+                        penalty = 0
+                        while True:
+                            if insert_layout.id in layout_tree:
+                                if layout_tree[insert_layout.id][1] is not None:
+                                    insert_layout = layout_tree[insert_layout.id][1]
+                                else:
+                                    insert_layout = layout_tree[insert_layout.id][0]
+                                    penalty = 0.001
+                            else:
+                                break
+                        if insert_layout is not None:
+                            child_above = [c for c in insert_layout.children if (c.bbox.y + c.bbox.height) < intersect_layout.bbox.y]
+                            child_below = [c for c in insert_layout.children if c.bbox.y > (intersect_layout.bbox.y + intersect_layout.bbox.height)]
+                            above_layout = None
+                            if child_above:
+                                above_layout = Layout(
+                                    str(uuid.uuid4()),
+                                    bbox=BoundingBox(
+                                        insert_layout.bbox.x,
+                                        insert_layout.bbox.y,
+                                        insert_layout.bbox.width,
+                                        intersect_layout.bbox.y - insert_layout.bbox.y,
+                                        spatial_object=insert_layout.bbox.spatial_object
+                                    ),
+                                    reading_order=insert_layout.reading_order,
+                                    label=insert_layout.layout_type,
+                                    confidence=insert_layout.confidence,
+                                )
+                                above_layout.page = insert_layout.page
+                                above_layout.page_id = insert_layout.page_id
+                                above_layout.add_children(child_above)
+                            intersect_layout.reading_order = insert_layout.reading_order + (i*2 + 1) * 0.01 + penalty
+                            below_layout = None
+                            if child_below:
+                                below_layout = Layout(
+                                    str(uuid.uuid4()),
+                                    bbox=BoundingBox(
+                                        insert_layout.bbox.x,
+                                        intersect_layout.bbox.y + intersect_layout.bbox.height,
+                                        insert_layout.bbox.width,
+                                        (
+                                            (insert_layout.bbox.y + insert_layout.bbox.height) -
+                                            (intersect_layout.bbox.y + intersect_layout.bbox.height)
+                                        ),
+                                        spatial_object=insert_layout.bbox.spatial_object
+                                    ),
+                                    reading_order=insert_layout.reading_order + (i*2 + 2) * 0.01,
+                                    label=insert_layout.layout_type,
+                                    confidence=insert_layout.confidence,
+                                )
+                                below_layout.page = insert_layout.page
+                                below_layout.page_id = insert_layout.page_id
+                                below_layout.add_children(child_below)
+                            layout_tree[insert_layout.id] = [above_layout, below_layout]
+                            layouts_to_remove.append(insert_layout)
+                        # This should never happen 
+                        else:
+                            intersect_layout.reading_order = (
+                                (layout.reading_order + (i + 1) * 0.01)
+                                if intersect_layout.reading_order == -1
+                                else min(
+                                    intersect_layout.reading_order, layout.reading_order + (i + 1) * 0.01 + penalty
+                                )
+                            )
             else:
-                layouts_to_remove.append(layout)
+                intersect_layout.reading_order = (
+                    sum([layout[0].reading_order for layout in reversed_layouts_that_intersect[intersect_layout]]) /
+                    len(reversed_layouts_that_intersect[intersect_layout])
+                )
+
+        if layout.layout_type == LAYOUT_FIGURE:
+            continue
+        elif layout._children:
+            layout.bbox = BoundingBox.enclosing_bbox(layout._children)
+        else:
+            layouts_to_remove.append(layout)
+            
 
     for layout in layouts_to_remove:
-        page.leaf_layouts.remove(layout)
+        try:
+            page.layouts.remove(layout)
+        except ValueError:
+            continue
 
     for layout in tables_layout:
-        page.leaf_layouts.append(layout)
+        page.layouts.append(layout)
+    
+    for layout in layout_tree:
+        if layout_tree[layout][0] and layout_tree[layout][0] not in layouts_to_remove:
+            page.layouts.append(layout_tree[layout][0])
+        if layout_tree[layout][1] and layout_tree[layout][1] not in layouts_to_remove:
+            page.layouts.append(layout_tree[layout][1])
 
     tables = list(tables.values())
     for table in tables:
@@ -1200,7 +1299,7 @@ def parse_document_api_response(response: dict) -> Document:
         line_by_id = {l.id: l for l in lines}
 
         # Creating layouts
-        container_layouts, leaf_layouts = _create_layout_objects(
+        layouts = _create_layout_objects(
             entity_id_map[LAYOUT],
             id_json_map,
             entity_id_map,
@@ -1209,7 +1308,7 @@ def parse_document_api_response(response: dict) -> Document:
         )
 
         # If no layouts were created, we create fake layouts
-        if not container_layouts and not leaf_layouts:
+        if not layouts:
             # We are in a scenario where the LAYOUT API was not called. We will fake wrap
             # all the lines to get a good linearized output regardless.
             for i, line in enumerate(lines):
@@ -1222,10 +1321,9 @@ def parse_document_api_response(response: dict) -> Document:
                 layout._children = [line]
                 layout.page = page.page_num
                 layout.page_id = page.id
-                leaf_layouts.append(layout)
+                layouts.append(layout)
 
-        page._container_layouts.extend(container_layouts)
-        page._leaf_layouts.extend(leaf_layouts)
+        page._layouts.extend(layouts)
 
         # Create key value objects
         key_values, kv_words, selection_elements = _create_keyvalue_objects(
@@ -1263,7 +1361,7 @@ def parse_document_api_response(response: dict) -> Document:
 
         # Using the kv_added returned by _create_table_objects, we try to match the remaining KVs
         # to existing layout elements.
-        for layout in sorted(page.leaf_layouts, key=lambda x: x.bbox.y):
+        for layout in sorted(page.layouts, key=lambda x: x.bbox.y):
             if layout.layout_type == LAYOUT_ENTITY:
                 continue
             for kv in sorted(key_values, key=lambda x: x.bbox.y):
@@ -1284,7 +1382,7 @@ def parse_document_api_response(response: dict) -> Document:
                     key_values.remove(kv)
 
         
-        page.leaf_layouts = [l for l in page.leaf_layouts if l.children or l.layout_type == LAYOUT_FIGURE]
+        page.layouts = [l for l in page.layouts if l.children or l.layout_type == LAYOUT_FIGURE]
 
         # We create layout elements for the KeyValues that did not match to a layout element in the
         # previous step
@@ -1308,7 +1406,7 @@ def parse_document_api_response(response: dict) -> Document:
         layouts_to_remove = []
         kv_layouts_to_ignore = []
         layouts_that_intersect = defaultdict(list)
-        for layout in page.leaf_layouts:
+        for layout in page.layouts:
             for kv_layout in kv_layouts:
                 intersection = layout.bbox.get_intersection(kv_layout.bbox).area
                 if intersection:
@@ -1341,12 +1439,12 @@ def parse_document_api_response(response: dict) -> Document:
 
         # Clean up layouts that became empty due to the previous step. 
         for layout in layouts_to_remove:
-            page.leaf_layouts.remove(layout)
+            page.layouts.remove(layout)
 
         # Add the new KV layouts to the page
         for layout in kv_layouts:
             if layout not in kv_layouts_to_ignore:
-                page.leaf_layouts.append(layout)
+                page.layouts.append(layout)
 
         # Set the page word, create lines for orphaned words
         all_words = table_words + kv_words + line_words
@@ -1383,12 +1481,18 @@ def parse_document_api_response(response: dict) -> Document:
         for layout in sorted(page.layouts, key=lambda l: l.reading_order):
             layout.visit(word_set)
             if not layout.children and layout.layout_type != LAYOUT_FIGURE:
-                try:
-                    page.leaf_layouts.remove(layout)
-                except:
-                    page.container_layouts.remove(layout)
+                page.layouts.remove(layout)
 
     document.pages = sorted(list(pages.values()), key=lambda x: x.page_num)
+
+    # Reset the reading order to be sequential strictly positive integers
+    for p in document.pages:
+        p._layouts = sorted(p.layouts, key=lambda l: l.reading_order)
+
+    for i, layout in enumerate([layout for p in document.pages for layout in p.layouts]):
+        # FIXME: This will break for figures within containers
+        layout.reading_order = i
+
     document.response = response
     return document
 
