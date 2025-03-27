@@ -128,7 +128,7 @@ Textractor can be cited using:
   title = {{Amazon Textractor}},
   url = {https://github.com/aws-samples/amazon-textract-textractor},
   version = {1.9.0},
-  year = {2024}
+  year = {2025}
 }
 ```
 
