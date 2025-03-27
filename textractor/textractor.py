@@ -127,12 +127,7 @@ class Textractor:
             bucket = edit_filepath.split("/")[0]
             key = edit_filepath[edit_filepath.index("/") + 1 :]
 
-            s3_client = (
-                boto3.session.Session(profile_name=self.profile_name).client("s3")
-                if self.profile_name is not None
-                else boto3.session.Session(region_name=self.region_name).client("s3")
-            )
-            file_obj = s3_client.get_object(Bucket=bucket, Key=key).get("Body").read()
+            file_obj = self.s3_client.get_object(Bucket=bucket, Key=key).get("Body").read()
             if filepath.lower().endswith(".pdf"):
                 if IS_PDF_RENDERING_ENABLED:
                     images = rasterize_pdf(file_obj)
@@ -339,6 +334,7 @@ class Textractor:
             response["JobId"],
             TextractAPI.DETECT_TEXT,
             textract_client=self.textract_client,
+            s3_client=self.s3_client,
             images=images,
         )
 
@@ -582,6 +578,7 @@ class Textractor:
             response["JobId"],
             TextractAPI.ANALYZE,
             textract_client=self.textract_client,
+            s3_client=self.s3_client,
             images=images,
             output_config=output_config,
         )
@@ -812,6 +809,7 @@ class Textractor:
             response["JobId"],
             TextractAPI.EXPENSE,
             textract_client=self.textract_client,
+            s3_client=self.s3_client,
             images=images,
         )
 
