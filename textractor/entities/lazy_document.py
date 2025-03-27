@@ -27,6 +27,7 @@ class LazyDocument:
         job_id: str,
         api: TextractAPI,
         textract_client=None,
+        s3_client=None,
         images=None,
         output_config: OutputConfig = None,
     ):
@@ -38,6 +39,7 @@ class LazyDocument:
         self.job_id = job_id
         self._api = api
         self._textract_client = textract_client
+        self._s3_client = s3_client
         self._document = None
         self._images = images
         self._output_config = output_config
@@ -104,6 +106,7 @@ class LazyDocument:
             "job_id",
             "_api",
             "_textract_client",
+            "_s3_client",
             "_document",
             "_images",
             "s3_polling_interval",
@@ -116,14 +119,13 @@ class LazyDocument:
 
         if self._document is None:
             if self._output_config:
-                s3_client = boto3.client("s3")
                 start = time.time()
                 response = None
                 while not results_exist(
                     self.job_id,
                     self._output_config.s3_bucket,
                     self._output_config.s3_prefix,
-                    s3_client,
+                    self._s3_client,
                 ):
                     time.sleep(self._s3_polling_interval)
                     if time.time() - start > self._textract_polling_interval:
@@ -158,7 +160,7 @@ class LazyDocument:
                     response = get_full_json_from_output_config(
                         self._output_config,
                         self.job_id,
-                        s3_client,
+                        self._s3_client,
                     )
             else:
                 if not self._textract_client:

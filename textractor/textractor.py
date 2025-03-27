@@ -334,6 +334,7 @@ class Textractor:
             response["JobId"],
             TextractAPI.DETECT_TEXT,
             textract_client=self.textract_client,
+            s3_client=self.s3_client,
             images=images,
         )
 
@@ -577,6 +578,7 @@ class Textractor:
             response["JobId"],
             TextractAPI.ANALYZE,
             textract_client=self.textract_client,
+            s3_client=self.s3_client,
             images=images,
             output_config=output_config,
         )
@@ -807,6 +809,7 @@ class Textractor:
             response["JobId"],
             TextractAPI.EXPENSE,
             textract_client=self.textract_client,
+            s3_client=self.s3_client,
             images=images,
         )
 
