@@ -139,7 +139,7 @@ class Layout(DocumentEntity):
             final_text = add_id_to_html_tag(config.list_layout_prefix, self.id, config)
             final_words = []
             for i, child in enumerate(
-                sorted(self.children, key=lambda x: x.reading_order)
+                sorted(filter(lambda c: isinstance(c, Layout), self.children), key=lambda x: x.reading_order)
             ):
                 child_text, child_words = child.get_text_and_words(config)
                 child_prefix = add_id_to_html_tag(config.list_element_prefix, child.id, config)
