@@ -1371,7 +1371,7 @@ def parse_document_api_response(response: dict) -> Document:
                     and kv.id not in kv_added
                 ):
                     # Ignore if the KV is already overlapping with a table
-                    if any([w.cell_id for w in kv.words]):
+                    if any([w.cell_id for w in kv.words]) or layout.layout_type == LAYOUT_LIST:
                         kv_added.add(kv.id)
                         continue
                     # Removing the duplicate words
