@@ -127,7 +127,7 @@ Textractor can be cited using:
   author = {Belval, Edouard and Delteil, Thomas and Schade, Martin and Radhakrishna, Srividhya},
   title = {{Amazon Textractor}},
   url = {https://github.com/aws-samples/amazon-textract-textractor},
-  version = {1.9.1},
+  version = {1.9.2},
   year = {2025}
 }
 ```
