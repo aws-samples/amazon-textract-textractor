@@ -35,6 +35,23 @@ class LinearizeLayout:
         self.figures = [{"page": block.get('Page', 1), "geometry": block['Geometry']['BoundingBox']} \
                         for block in self.j['Blocks'] \
                         if block['BlockType'] == 'LAYOUT_FIGURE']
+
+        """Avoid duplicating list contents: exclude LAYOUT* elements that are children of LAYOUT_LIST elements."""
+        list_layout_child_ids = set()
+        for layout in layouts:
+            layout_block = id2block[layout["Id"]]
+            if layout_block["BlockType"] != "LAYOUT_LIST":
+                continue
+            for relationship in [
+                r for r in layout_block.get("Relationships", []) if r["Type"] == "CHILD"
+            ]:
+                for rel_id in relationship["Ids"]:
+                    if id2block[rel_id]["BlockType"].startswith('LAYOUT'):
+                        list_layout_child_ids.add(rel_id)
+        layouts = [
+            layout for layout in layouts if layout["Id"] not in list_layout_child_ids
+        ]
+
         if not layouts:
             logger.warning("No LAYOUT information found in Textract response. \
                            Please use LAYOUT feature for AnalyzeDocument API call \
