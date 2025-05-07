@@ -24,6 +24,7 @@ import logging
 import uuid
 from PIL import Image
 from copy import deepcopy
+from botocore.config import Config
 from typing import List, Union
 from textractcaller import (
     call_textract,
@@ -79,6 +80,8 @@ class Textractor:
     :type profile_name: str, optional
     :param kms_key_id: Customer's AWS KMS key (cryptographic key)
     :type kms_key_id: str, optional
+    :param config: Botocore Config object to add additional configurations
+    :type config: botocore.config.Config, optional
     """
 
     def __init__(
@@ -86,10 +89,12 @@ class Textractor:
         profile_name: str = None,
         region_name: str = None,
         kms_key_id: str = "",
+        config: Config = None,
     ):
         self.profile_name = profile_name
         self.region_name = region_name
         self.kms_key_id = kms_key_id
+        self.config = config
 
         if self.profile_name is not None:
             self.session = boto3.session.Session(profile_name=self.profile_name)
@@ -103,7 +108,11 @@ class Textractor:
             raise InputError(
                 "Unable to initiate Textractor. Either profile_name or region requires an input parameter."
             )
-        if self.region_name is not None:
+        if self.region_name is not None and self.config is not None:
+            self.textract_client = self.session.client(
+                "textract", region_name=self.region_name, config=self.config
+            )
+        elif self.region_name is not None:
             self.textract_client = self.session.client(
                 "textract", region_name=self.region_name
             )
