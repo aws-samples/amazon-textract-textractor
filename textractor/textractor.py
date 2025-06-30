@@ -101,7 +101,7 @@ class Textractor:
             self.session = boto3.session.Session(region_name=self.region_name)
         else:
             raise InputError(
-                "Unable to initiate Textractor. Either profile_name or region requires an input parameter."
+                "Unable to initiate Textractor. Either profile_name or region_name requires an input parameter."
             )
         if self.region_name is not None:
             self.textract_client = self.session.client(
