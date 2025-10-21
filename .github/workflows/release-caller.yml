@@ -8,6 +8,9 @@ on:
   workflow_dispatch:
 
 # Package and upload the Python package
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
