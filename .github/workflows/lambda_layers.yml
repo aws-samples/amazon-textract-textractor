@@ -1,6 +1,9 @@
 name: lambda-layers
 on:
   workflow_dispatch:
+permissions:
+  contents: read
+
 jobs:
   lambda-build-p312:
     runs-on: ubuntu-latest
