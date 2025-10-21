@@ -9,6 +9,9 @@ on:
   workflow_dispatch:
 
 # Run the tests
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
