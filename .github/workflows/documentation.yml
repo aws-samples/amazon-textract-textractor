@@ -8,6 +8,10 @@ on:
   workflow_dispatch:
 
 # Compile the docs and deploy to GitHub pages
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
