@@ -539,6 +539,7 @@ def _create_signature_objects(
                 bbox=signature.bbox,
                 label=LAYOUT_ENTITY,
                 reading_order=-1,
+                confidence=signature.raw_object.get("Confidence", 0),
             )
             layout.children.append(signature)
             layout.page = page.page_num
@@ -1097,6 +1098,7 @@ def _create_table_objects(
                 bbox=table.bbox,
                 label=LAYOUT_TABLE,
                 reading_order=-1,
+                confidence=table.raw_object.get("Confidence", 0),
             )
             layout.children.append(table)
             layout.page = page.page_num
@@ -1318,6 +1320,7 @@ def parse_document_api_response(response: dict) -> Document:
                     bbox=line.bbox,
                     label=LAYOUT_ENTITY,
                     reading_order=i,
+                    confidence=line.raw_object.get("Confidence", 0) if hasattr(line, "raw_object") else 0,
                 )
                 layout._children = [line]
                 layout.page = page.page_num
@@ -1396,6 +1399,7 @@ def parse_document_api_response(response: dict) -> Document:
                     bbox=kv.bbox,
                     label=LAYOUT_KEY_VALUE,
                     reading_order=-1,
+                    confidence=kv.raw_object.get("Confidence", 0) if hasattr(kv, "raw_object") else 0,
                 )
                 layout.children.append(kv)
                 layout.page = page.page_num
