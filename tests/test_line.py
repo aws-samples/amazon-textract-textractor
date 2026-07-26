@@ -4,6 +4,7 @@ from textractor.entities.line import Line
 from textractor.entities.word import Word
 from textractor.data.constants import TextTypes
 from textractor.entities.bbox import BoundingBox
+from textractor.utils.text_utils import linearize_children
 from textractor.visualizers.entitylist import EntityList
 
 class TestLine(unittest.TestCase):
@@ -85,3 +86,25 @@ class TestLine(unittest.TestCase):
     def test_repr(self):
         """Test case setter for the repr function"""
         self.assertEqual(self.line.__repr__(), "TEST WORDS ADDED")
+
+
+    def test_line_dedup_is_deterministic(self):
+        """Check that the return value is deterministic.
+
+        5 lines sharing one bbox, rendered 5 times — empirically
+        <1-in-5000 chance of matching outputs without determinism.
+        """
+        outputs = []
+        for _ in range(5):
+            bbox = BoundingBox(0.1, 0.1, 0.05, 0.02)
+            lines = [Line(f"L{i}", bbox) for i in range(5)]
+            for i, line in enumerate(lines):
+                w = Word(f"W{i}", bbox, text=f"word{i}")
+                w.line = line
+                line._children = [w]
+            words = [line._children[0] for line in lines]
+            text, _ = linearize_children(words)
+            outputs.append(text)
+
+        for text in outputs[1:]:
+            self.assertEqual(text, outputs[0])
