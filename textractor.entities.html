@@ -1988,8 +1988,8 @@ No specific ordering is assumed since it is implicitly ordered by row and column
 <dd><p>Returns a dictionary of column_header (str) : List[TableCell] (in order).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cell_type</strong> (<a class="reference internal" href="textractor.data.constants.html#textractor.data.constants.CellTypes" title="textractor.data.constants.CellTypes"><em>CellTypes</em></a>) – supports CellTypes.COLUMN_HEADER as of now, will support SECTION_TITLE, FLOATING_TITLE,
-FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
+<dd class="field-odd"><p><strong>cell_type</strong> (<a class="reference internal" href="textractor.data.constants.html#textractor.data.constants.CellTypes" title="textractor.data.constants.CellTypes"><em>CellTypes</em></a>) – One of CellTypes.COLUMN_HEADER, SECTION_TITLE, FLOATING_TITLE,
+FLOATING_FOOTER or SUMMARY_CELL.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>{column_header (str) : List[TableCell]}</p>
@@ -2194,6 +2194,27 @@ FLOATING_FOOTER, SUMMARY_CELL in the future.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="textractor.entities.table.Table.to_list">
+<span class="sig-name descname"><span class="pre">to_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#textractor.entities.table.Table.to_list" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the table as a list of rows, each row being a list of the
+cell text strings ordered left-to-right, top-to-bottom.</p>
+<p>This is a lightweight alternative to <a class="reference internal" href="#textractor.entities.table.Table.to_pandas" title="textractor.entities.table.Table.to_pandas"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_pandas()</span></code></a> / <a class="reference internal" href="#textractor.entities.table.Table.to_csv" title="textractor.entities.table.Table.to_csv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_csv()</span></code></a>
+that has no third-party dependencies (no pandas), which is convenient in
+constrained environments such as AWS Lambda. Empty cells are represented
+by empty strings. Note that, unlike <a class="reference internal" href="#textractor.entities.table.Table.to_pandas" title="textractor.entities.table.Table.to_pandas"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_pandas()</span></code></a>, this method does
+not apply merged-cell placeholder or duplication logic; each cell’s raw
+text is used as-is.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Table contents as a nested list of strings.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[List[str]]</p>
 </dd>
 </dl>
 </dd></dl>
