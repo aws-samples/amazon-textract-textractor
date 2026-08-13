@@ -9,7 +9,7 @@ import logging
 import xlsxwriter
 import io
 from pathlib import Path
-from typing import List, IO, Union, AnyStr, Tuple, Optional
+from typing import List, IO, Union, AnyStr, Tuple, Optional, overload
 from copy import deepcopy
 from collections import defaultdict
 from PIL import Image
@@ -269,7 +269,13 @@ class Document(SpatialObject, Linearizable):
             flattened_words.extend(words)
         return config.layout_element_separator.join(text), flattened_words
 
-    def page(self, page_no: int = 0):
+    @overload
+    def page(self, page_no: int = 0) -> Page: ...
+
+    @overload
+    def page(self, page_no: list[int]) -> list[Page]: ...
+
+    def page(self, page_no: int | list[int] = 0) -> Page | list[Page]:
         """
         Returns :class:`Page` object/s depending on the input page_no. Follows zero-indexing.
 
