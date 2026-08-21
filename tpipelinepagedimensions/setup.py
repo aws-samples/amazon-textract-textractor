@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-requirements = ['boto3', 'botocore', 'Pillow>=10.3.0', 'pypdf>=3.9.0,<5.0']
+requirements = ['boto3', 'botocore', 'amazon-textract-response-parser>=0.1.17', 'Pillow>=10.3.0', 'pypdf>=3.9.0,<7.0']
 
 if sys.argv[-1] == 'publish-test':
     os.system(f"cd {os.path.dirname(__file__)}")
@@ -32,7 +32,6 @@ setup(name='amazon-textract-pipeline-pagedimensions',
       version='0.0.10',
       description='Amazon Textract Pipeline Component to add page dimensions to page block types',
       install_requires=requirements,
-      scripts=['bin/amazon-textract-pipeline-pagedimensions'],
       long_description_content_type='text/markdown',
       long_description=read('README.md'),
       author='Amazon Rekognition Textract Demoes',
