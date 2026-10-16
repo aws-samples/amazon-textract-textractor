@@ -25,7 +25,7 @@ import uuid
 from botocore.config import Config
 from PIL import Image
 from copy import deepcopy
-from typing import List, Union
+from typing import List, Sequence, Union
 from textractcaller import (
     call_textract,
     call_textract_analyzeid,
@@ -54,6 +54,9 @@ from textractor.exceptions import (
 )
 
 logger = logging.getLogger(__name__)
+
+FileSource = str | bytes | Image.Image
+TextractFeatureInput = TextractFeatures | Sequence[TextractFeatures]
 
 try:
     try:
@@ -87,10 +90,10 @@ class Textractor:
 
     def __init__(
         self,
-        profile_name: str = None,
-        region_name: str = None,
+        profile_name: str | None = None,
+        region_name: str | None = None,
         kms_key_id: str = "",
-        config: Config = None,
+        config: Config | None = None,
     ):
         self.profile_name = profile_name
         self.region_name = region_name
@@ -161,7 +164,7 @@ class Textractor:
         return images
 
     def detect_document_text(
-        self, file_source, save_image: bool = True
+        self, file_source: FileSource, save_image: bool = True
     ) -> Document:
         """
         Make a call to the SYNC DetectDocumentText API, implicitly parses the response and produces a :class:`Document` object.
@@ -346,9 +349,9 @@ class Textractor:
 
     def analyze_document(
         self,
-        file_source,
-        features,
-        queries: Union[QueriesConfig, List[Query], List[str]] = None,
+        file_source: FileSource,
+        features: TextractFeatureInput,
+        queries: Union[QueriesConfig, List[Query], List[str]] | None = None,
         save_image: bool = True,
     ) -> Document:
         """
@@ -459,11 +462,11 @@ class Textractor:
 
     def start_document_analysis(
         self,
-        file_source: Union[str, bytes, Image.Image],
-        features,
+        file_source: FileSource,
+        features: TextractFeatureInput,
         s3_output_path: str = "",
         s3_upload_path: str = "",
-        queries: Union[QueriesConfig, List[Query], List[str]] = None,
+        queries: Union[QueriesConfig, List[Query], List[str]] | None = None,
         client_request_token: str = "",
         job_tag: str = "",
         save_image: bool = True,
