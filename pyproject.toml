@@ -1,0 +1,90 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "amazon-textract-textractor"
+version = "1.10.0"
+description = "A package to use AWS Textract services."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10,<3.15"
+keywords = ["amazon", "textract", "aws", "ocr", "document"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
+]
+dependencies = [
+    "amazon-textract-caller>=0.2.4,<1",
+    "Pillow>=12.3.0",
+    "tabulate>=0.9,<0.10",
+    "XlsxWriter>=3.0,<4",
+    "rapidfuzz>=3.9.6,<4",
+    "PyYAML>=5.1,<7",
+]
+
+[dependency-groups]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+	"jupyterlab",
+	"pandas",
+	"pdf2image>=1.16,<1.17",
+	"pytest",
+	"Sphinx>=5.1,<5.2",
+	"nbsphinx>=0.8,<0.9",
+	"sphinx-rtd-theme>=2.0,<3.0",
+	"sphinx-argparse>=0.5.1",
+	"sphinxcontrib-applehelp>=1.0,<1.1",
+	"sphinxcontrib-devhelp>=1.0,<1.1",
+	"sphinxcontrib-htmlhelp>=2.0,<2.1",
+	"sphinxcontrib-jsmath>=1.0,<1.1",
+	"sphinxcontrib-qthelp>=1.0,<1.1",
+	"sphinxcontrib-serializinghtml>=1.1,<1.2",
+]
+dev = [
+	{ include-group = "test" },
+	{ include-group = "docs" },
+    "jupyterlab",
+    "pandas",
+    "pdf2image>=1.16,<1.17",
+    "pytest",
+    "lxml",
+    "sentence-transformers>=5.6.0",
+]
+
+[project.optional-dependencies]
+pandas = ["pandas"]
+pdf = ["pdf2image>=1.16,<1.17"]
+pdfium = ["pypdfium2"]
+torch = ["sentence-transformers>=5.6.0"]
+
+[project.urls]
+Homepage = "https://github.com/aws-samples/amazon-textract-textractor"
+
+[project.scripts]
+textractor = "textractor.cli.cli:textractor_cli"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["docs*", "tests*"]
+
+[tool.setuptools.package-data]
+textractor = ["py.typed"]
+
+[tool.flake8]
+max-line-length = 120
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
