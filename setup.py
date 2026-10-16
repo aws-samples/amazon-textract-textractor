@@ -54,11 +54,13 @@ setup(
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: 3.14",
+        "Typing :: Typed",
     ],
     keywords="amazon textract aws ocr document",
     python_requires=">=3.10",
     packages=find_packages(exclude=["docs", "tests"], ),
     include_package_data=True,
+    package_data={"textractor": ["py.typed"]},
     install_requires=read_requirements(os.path.join(here, "requirements.txt")),
     extras_require={
         f.split(".")[0]: read_requirements(os.path.join(here, "extras", f))

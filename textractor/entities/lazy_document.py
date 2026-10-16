@@ -6,6 +6,7 @@ import time
 from typing import Any
 
 from textractor.entities.document import Document
+from textractor.entities.page import Page
 from textractor.parsers.response_parser import parse
 from textractor.data.constants import TextractAPI
 from textractor.utils.results_utils import results_exist, get_full_json_from_output_config
@@ -90,6 +91,11 @@ class LazyDocument:
         :rtype: Document
         """
         return object.__getattribute__(self, "_document")
+
+    @property
+    def pages(self) -> list[Page]:
+        """Document pages; loads the Textract job result on first access."""
+        return self.__getattr__("pages")
 
     def __getattr__(self, __name: str) -> Any:
         """Proxy that gets the Document result when a document property is

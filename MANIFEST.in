@@ -1,3 +1,4 @@
 include *.txt
 recursive-include extras *.txt
 recursive-include textractor *
+include textractor/py.typed
