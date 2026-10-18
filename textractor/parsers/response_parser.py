@@ -1120,10 +1120,22 @@ def _create_table_objects(
             reversed_layouts_that_intersect[intersect_table] = reversed_layouts_that_intersect.get(intersect_table, []) + [(layout, intersection)]
     
     layout_tree = {}
+    # Cache each table-layout's words. ``Table.words`` re-linearizes every cell
+    # (O(cells)); a single large table-layout intersects many page layouts, so
+    # without this cache it is re-linearized once per overlapping layout -- the
+    # dominant cost on dense pages (~652 re-linearizations of a
+    # ~2000-cell table). The table-layout object is identical across iterations,
+    # so keying on id() collapses that to a single linearization. Removal
+    # semantics below are unchanged from the original per-word remove() loop.
+    table_layout_words = {}
     for layout, intersect_tables in layouts_that_intersect.items():
         vertical_overlap = False
         for i, (intersect_layout, intersection) in enumerate(intersect_tables):
-            for w in intersect_layout.children[0].words:
+            words = table_layout_words.get(id(intersect_layout))
+            if words is None:
+                words = list(intersect_layout.children[0].words)
+                table_layout_words[id(intersect_layout)] = words
+            for w in words:
                 layout.remove(w)
             if (
                 len(reversed_layouts_that_intersect[intersect_layout]) <= 100 and
