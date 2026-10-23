@@ -102,7 +102,7 @@ def linearize_children(
     """
 
     words_in_elements = [e for e in elements if isinstance(e, Word)]
-    lines = set([w.line for w in words_in_elements])
+    lines = list(dict.fromkeys(w.line for w in words_in_elements))
     new_lines = []
     for line in lines:
         if line is None:
